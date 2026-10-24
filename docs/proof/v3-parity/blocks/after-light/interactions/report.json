@@ -1,0 +1,135 @@
+[
+  {
+    "target": "candidate",
+    "slug": "card-folder",
+    "url": "http://localhost:8103/?slug=card-folder&theme=light",
+    "steps": [
+      {
+        "name": "rest",
+        "eventMs": 5735.800000071526,
+        "result": "captured"
+      },
+      {
+        "name": "privacy-reveal",
+        "eventMs": 6560.300000071526,
+        "result": "captured"
+      },
+      {
+        "name": "privacy-hide",
+        "eventMs": 7505.300000071526,
+        "result": "captured"
+      },
+      {
+        "name": "open",
+        "eventMs": 8258.5,
+        "result": "captured"
+      },
+      {
+        "name": "close",
+        "eventMs": 9081.800000071526,
+        "result": "captured"
+      }
+    ]
+  },
+  {
+    "target": "candidate",
+    "slug": "morphing-tabs",
+    "url": "http://localhost:8103/?slug=morphing-tabs&theme=light",
+    "steps": [
+      {
+        "name": "rest",
+        "eventMs": 3439.8000000715256,
+        "result": "captured"
+      },
+      {
+        "name": "hover-enter",
+        "eventMs": 4178,
+        "result": "captured"
+      },
+      {
+        "name": "select",
+        "eventMs": 5011.800000071526,
+        "result": "captured"
+      },
+      {
+        "name": "keyboard-next",
+        "eventMs": 5799.600000023842,
+        "result": "captured"
+      },
+      {
+        "name": "keyboard-reorder",
+        "eventMs": 6583.900000095367,
+        "result": "captured"
+      },
+      {
+        "name": "close-tab",
+        "eventMs": 7333.100000023842,
+        "error": "TimeoutError: locator.click: Timeout 5000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('button', { name: 'Close Archive', exact: true })\u001b[22m\n"
+      }
+    ]
+  },
+  {
+    "target": "candidate",
+    "slug": "prediction-market-card",
+    "url": "http://localhost:8103/?slug=prediction-market-card&theme=light",
+    "steps": [
+      {
+        "name": "rest",
+        "eventMs": 3311.100000023842,
+        "result": "captured"
+      },
+      {
+        "name": "hover-enter",
+        "eventMs": 4046.2999999523163,
+        "error": "TimeoutError: locator.hover: Timeout 5000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('button', { name: 'Trade Celtics at 51%', exact: true })\u001b[22m\n"
+      },
+      {
+        "name": "hover-leave",
+        "eventMs": 9047.899999976158,
+        "result": "captured"
+      },
+      {
+        "name": "keyboard-focus",
+        "eventMs": 9777,
+        "error": "TimeoutError: locator.focus: Timeout 5000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('button', { name: 'Trade Celtics at 51%', exact: true })\u001b[22m\n"
+      },
+      {
+        "name": "update-odds",
+        "eventMs": 14780.199999928474,
+        "result": "captured"
+      }
+    ]
+  },
+  {
+    "target": "candidate",
+    "slug": "signup-form",
+    "url": "http://localhost:8103/?slug=signup-form&theme=light",
+    "steps": [
+      {
+        "name": "rest",
+        "eventMs": 4487.899999976158,
+        "result": "captured"
+      },
+      {
+        "name": "blur-name",
+        "eventMs": 5241,
+        "result": "captured"
+      },
+      {
+        "name": "fix-name",
+        "eventMs": 6251,
+        "result": "captured"
+      },
+      {
+        "name": "password-reveal",
+        "eventMs": 7034.899999976158,
+        "result": "captured"
+      },
+      {
+        "name": "invalid-submit",
+        "eventMs": 7784.699999928474,
+        "result": "captured"
+      }
+    ]
+  }
+]

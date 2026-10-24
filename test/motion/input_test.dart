@@ -63,6 +63,26 @@ void main() {
       expect(find.text('Bad value'), findsOneWidget);
     });
 
+    testWidgets('reserveErrorLine keeps one message line without an error', (
+      tester,
+    ) async {
+      await tester.pumpWidget(_app(const BeuiInput()));
+      await tester.pumpAndSettle();
+      final collapsed = tester.getSize(find.byType(BeuiInput)).height;
+
+      await tester.pumpWidget(_app(const BeuiInput(reserveErrorLine: true)));
+      await tester.pumpAndSettle();
+      final reserved = tester.getSize(find.byType(BeuiInput)).height;
+      expect(reserved, collapsed + 22);
+
+      await tester.pumpWidget(
+        _app(const BeuiInput(reserveErrorLine: true, error: 'Bad value')),
+      );
+      await tester.pumpAndSettle();
+      expect(find.text('Bad value'), findsOneWidget);
+      expect(tester.getSize(find.byType(BeuiInput)).height, reserved);
+    });
+
     testWidgets('success shows the check CustomPaint', (tester) async {
       await tester.pumpWidget(_app(const BeuiInput(success: true)));
       await tester.pumpAndSettle();

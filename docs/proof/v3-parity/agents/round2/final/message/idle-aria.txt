@@ -1,0 +1,10 @@
+- group "Capture stage width 752 height 1000 reduced false":
+  - group "Conversation":
+    - text: Start with the smallest workflow that still feels complete.
+    - group "Conversation":
+      - group:
+        - group "user message": You Now What should we include in the first release? Sent
+        - group "assistant message": Assistant Now Response Start with the smallest workflow that still feels complete.
+  - textbox "Prompt Ask a follow-up…"
+  - button "Send prompt" [disabled]:
+    - button [disabled]

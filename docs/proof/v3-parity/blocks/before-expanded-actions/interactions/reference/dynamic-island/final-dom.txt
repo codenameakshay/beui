@@ -1,0 +1,272 @@
+beUI Native is free — Pro mobile blocks and screens are in presale from $99
+
+Reserve
+beUI Pro for mobile
+beUI
+Components
+Blocks
+Agents
+Charts
+Playground
+Sponsors
+Light theme
+Light theme
+Dark theme
+Dark theme
+System theme
+System theme
+1.9k
+Get Pro
+All
+Agents
+Components
+Blocks
+
+INTRO
+
+Home
+Changelog
+
+GUIDES
+
+Motion Guides
+Agent Guide
+OpenUI
+React Native Setup
+AI AGENTS
+18
+Voice Orb
+Message Bubble
+Message
+Message Scroller
+Prompt Input
+Todo List
+Code Block
+Approval Card
+File Diff
+Tool Result
+Streaming Response
+Image Generation
+Tool Approval
+Citations
+Agent Activity
+Agent Loading States
+AI Sidebar
+Chat App
+COMPONENTS
+54
+Timeline
+NEW
+Animated Alert
+Animated Collapsible
+Aspect Ratio
+Arc Picker
+Sortable List
+Image Viewer
+Date Range Picker
+Card
+Color Picker
+Animated Color Selector
+Animated Breadcrumb
+Tilt Card
+Button
+Animated CTA Buttons
+Expandable Control
+Adaptive Stepper
+Marquee
+Tabs
+Switch
+Input
+Select
+Combobox
+Multi Select
+Checkbox
+Radio Group
+Bottom Sheet
+Pull to Refresh
+Shared Layout Background
+Bounce Sidebar
+Animated Sidebar
+File Tree
+Preview Rail
+Dock
+Tooltip
+Animated Context Menu
+Popover
+Morphing Modal
+Center Morph Modal
+Text Animation
+Number Animation
+Animated Badge
+Action Swap
+Animated Toast Stack
+Theme Toggle
+Bouncy Accordion
+Drawer
+Scroll Animation
+Range Slider
+Wheel Picker
+Table
+Shader Background
+Cylinder Carousel
+Loader
+BLOCKS
+23
+Infinite Masonry
+Notification Stack
+Project Folder
+Card Folder
+Fixtures
+Availability Scheduler
+Multi-chain Swap
+Dynamic Island
+Command Palette
+Morphing Search
+Expandable Action Bar
+Overflow Actions
+Expandable Tabs
+Morphing Tabs
+Swipeable List
+File Upload
+Prediction Market
+Wallet Card
+OTP Input
+Sign Up Form
+Bloom Menu
+Feedback Widget
+404 / Not Found
+Blocks
+Dynamic Island
+Dynamic Island
+Copy Page
+
+iOS-style island pill that morphs between live activity views with bouncy shell resize and blur crossfades.
+
+Preview
+Preview
+Preview
+Usage
+Usage
+Code
+Code
+9:41
+Call
+Timer
+Music
+Dismiss
+Install
+
+Add it with the shadcn CLI, or copy the source manually.
+
+CLI
+CLI
+Manual
+Manual
+bun
+bun
+npm
+npm
+pnpm
+pnpm
+yarn
+yarn
+$ bunx --bun shadcn add @beui/
+dynamic-island
+dynamic-island
+API Reference
+DynamicIsland
+view
+string | null
+
+Active view id. `null` shows the compact pill.
+
+—
+compact?
+ReactNode
+
+Compact pill content, shown when no view is active.
+
+—
+children?
+ReactNode
+
+DynamicIslandView elements.
+
+—
+className?
+string
+—
+DynamicIslandView
+id
+string
+
+Matches the parent `view` prop when active.
+
+—
+className?
+string
+—
+Related components
+Swipeable List
+
+Mobile-style list rows that swipe left or right to reveal contextual action buttons.
+
+404 / Not Found
+
+Animated 404 pages in five styles: glitch scramble, magnetic digits, cursor spotlight, a fanning card stack and a typed terminal.
+
+Expandable Tabs
+
+Icon tab bar where the active tab expands to a labelled pill, with a panel above that morphs height and slides content direction-aware on switch.
+
+About Dynamic Island
+
+Dynamic Island is an iPhone-style island for React that morphs between live activity views. The pill resizes with a bouncy spring to fit each view, and the content cross-fades with a short blur, so switching from a compact state to a music player, timer or call view feels continuous. You pass views as children and choose which one is showing.
+
+When to use it
+A product page or landing page wants to show live status, such as an upload, timer or now playing track, in a compact pill.
+A web app needs a notification surface that grows for detail and shrinks back to a summary.
+A demo or portfolio recreates iOS interactions on the web.
+Accessibility
+
+The island is a polite live region, so screen readers announce a new view when it appears without interrupting the user. With reduced motion enabled, the content drops its scale and blur and switches with a short fade.
+
+FAQ
+How do I make a Dynamic Island in React?
+Install the block, wrap your views in DynamicIsland, give each DynamicIslandView an id, and set the view prop to the id you want to show. Pass null to show the compact state.
+Can I build this with CSS only?
+A static pill is easy in CSS, but the morph between views needs measured sizes and a spring. This component handles that with Framer Motion so the pill always fits its content.
+Does it work on desktop?
+Yes. It is a regular React component that renders anywhere on the page, not only on mobile.
+Keep in mind
+
+Some components on this site are inspired by or recreated from existing work across the web. I'm not here to take credit; just to learn, experiment, and sometimes push things a bit further. If something looks familiar and I forgot to mention you, reach out and I'll fix that right away.
+
+Updated Oct 18, 2026
+
+Web
+Web
+React Native
+React Native
+beUI
+Pro
+Limited Offer
+
+300+ blocks and premium motion components for React and Next.js.
+
+$179 lifetime access
+
+Explore beUI Pro
+Sponsors
+
+DIAMOND
+
+Tracwell
+
+Visitor insights for growth
+
+Illos
+
+Animated illustrations for product sites
+
+Become a sponsor

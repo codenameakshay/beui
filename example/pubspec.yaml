@@ -12,6 +12,9 @@ dependencies:
   beui:
     path: ../
   url_launcher: ^6.3.1
+  flutter_svg: ^2.2.4
+  http: ^1.6.0
+  vector_graphics_compiler: ^1.3.2
 
 dev_dependencies:
   flutter_test:
@@ -40,18 +43,19 @@ flutter:
           weight: 600
         - asset: assets/fonts/Geist-Bold.ttf
           weight: 700
-    # Code surfaces (BeuiCodeBlock, BeuiFileDiff) ask for `monospace`, the
-    # generic CSS family the source's `font-mono` resolves to. Flutter's web
-    # backends build their font collection from the asset manifest only — they
-    # do NOT fall back to the browser's generic families — so `monospace` (and
-    # Menlo/Consolas/…) resolve to nothing on web and code renders in the
-    # proportional default. Registering Geist Mono *under that generic name*
-    # gives the gallery and the visual harness a real mono face without the
-    # published package having to ship or name a font of its own. Same scope
-    # rule as Geist above: gallery only, never the package.
+    # BeuiTextTheme exposes the source name, Geist Mono. Existing code surfaces
+    # ask for `monospace`, so retain that alias for the same files. Flutter web
+    # cannot use the browser's generic font collection for CanvasKit text.
+    # Both registrations remain gallery-only, never in the published package.
     #
     # Geist Mono is (c) 2024 The Geist Project Authors, SIL OFL 1.1 —
     # redistributable. Licence text: assets/fonts/OFL.txt.
+    - family: Geist Mono
+      fonts:
+        - asset: assets/fonts/GeistMono-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/GeistMono-Medium.ttf
+          weight: 500
     - family: monospace
       fonts:
         - asset: assets/fonts/GeistMono-Regular.ttf

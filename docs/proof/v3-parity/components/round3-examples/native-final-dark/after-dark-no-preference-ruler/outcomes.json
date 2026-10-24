@@ -1,0 +1,2277 @@
+{
+  "example": {
+    "key": "ruler",
+    "id": "example/range-slider-ruler/ruler",
+    "preview": "range-slider-ruler",
+    "family": "range-slider",
+    "seed": 72.5,
+    "min": 40,
+    "max": 120,
+    "step": 0.5,
+    "flows": [
+      "drag",
+      "momentum",
+      "snap",
+      "keyboard",
+      "bounds",
+      "reduced-motion"
+    ]
+  },
+  "origin": "after",
+  "theme": "dark",
+  "motion": "no-preference",
+  "checks": [
+    {
+      "name": "seed",
+      "actual": 72.5,
+      "expected": 72.5,
+      "pass": true
+    },
+    {
+      "name": "drag publishes value",
+      "actual": 63.5,
+      "expected": "different from seed",
+      "pass": true
+    },
+    {
+      "name": "key Home",
+      "actual": 40,
+      "expected": 40,
+      "pass": true
+    },
+    {
+      "name": "key End",
+      "actual": 120,
+      "expected": 120,
+      "pass": true
+    },
+    {
+      "name": "key ArrowLeft",
+      "actual": 119.5,
+      "expected": 119.5,
+      "pass": true
+    },
+    {
+      "name": "key Home",
+      "actual": 40,
+      "expected": 40,
+      "pass": true
+    },
+    {
+      "name": "key PageUp",
+      "actual": 45,
+      "expected": 45,
+      "pass": true
+    },
+    {
+      "name": "key PageDown",
+      "actual": 40,
+      "expected": 40,
+      "pass": true
+    },
+    {
+      "name": "key ArrowRight",
+      "actual": 40.5,
+      "expected": 40.5,
+      "pass": true
+    },
+    {
+      "name": "key ArrowDown",
+      "actual": 40,
+      "expected": 40,
+      "pass": true
+    },
+    {
+      "name": "key ArrowUp",
+      "actual": 40.5,
+      "expected": 40.5,
+      "pass": true
+    }
+  ],
+  "observations": [
+    {
+      "label": "rest",
+      "atMs": 2.648665999993682,
+      "observed": {
+        "url": "http://127.0.0.1:18120/after/?example=ruler&theme=dark&captureProbe=1",
+        "reduce": false,
+        "active": {
+          "tag": "FLUTTER-VIEW",
+          "role": null,
+          "name": "flutter-view flt-scene-host {  font: normal normal 14px sans-serif;}flutter-view flt-semantics input[type=range] {  appearance: none;  -webkit-appearance: none;  width: 100%;  position: absolute;  border: none;  top: 0;  right: 0;  bottom: 0;  left: 0;}flutter-view input::selection {  background-color: transparent;}flutter-view textarea::selection {  background-color: transparent;}flutter-view flt-semantics input,flutter-view flt-semantics textarea,flutter-view flt-semantics [contentEditable=\"true\"] {  caret-color: transparent;}flutter-view .flt-text-editing::placeholder {  opacity: 0;}flutter-view:focus { outline: rgb(0, 0, 0) none 0px;}flutter-view .transparentTextEditing:-webkit-autofill,flutter-view .transparentTextEditing:-webkit-autofill:hover,flutter-view .transparentTextEditing:-webkit-autofill:focus,flutter-view .transparentTextEditing:-webkit-autofill:active {  opacity: 0 !important;}"
+        },
+        "probe": {
+          "disableAnimations": false,
+          "platformDisableAnimations": false,
+          "motionOverride": null,
+          "backgroundArgb": 4279571733,
+          "constraints": {
+            "minWidth": 0,
+            "maxWidth": 592,
+            "minHeight": 0,
+            "maxHeight": null
+          },
+          "rect": {
+            "x": 448,
+            "y": 130,
+            "width": 384,
+            "height": 100
+          }
+        },
+        "stage": null,
+        "controls": [
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": null,
+            "name": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1000,
+              "top": 0,
+              "right": 1280,
+              "bottom": 1000,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": null,
+            "name": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1000,
+              "top": 0,
+              "right": 1280,
+              "bottom": 1000,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": null,
+            "name": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1000,
+              "top": 0,
+              "right": 1280,
+              "bottom": 1000,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": null,
+            "name": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1000,
+              "top": 0,
+              "right": 1280,
+              "bottom": 1000,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "group",
+            "name": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 360,
+              "top": 0,
+              "right": 1280,
+              "bottom": 360,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": null,
+            "name": "Weight\n72.5\nkg\n40\n45\n50\n55\n60\n65\n70\n75\n80\n85\n90\n95\n100\n105\n110\n115\n120",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 448,
+              "y": 130,
+              "width": 384,
+              "height": 100,
+              "top": 130,
+              "right": 832,
+              "bottom": 230,
+              "left": 448
+            }
+          },
+          {
+            "tag": "INPUT",
+            "role": "slider",
+            "name": "",
+            "value": "72.5 kg",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 450,
+              "y": 132,
+              "width": 384,
+              "height": 96,
+              "top": 132,
+              "right": 834,
+              "bottom": 228,
+              "left": 450
+            }
+          }
+        ]
+      }
+    },
+    {
+      "label": "drag-held",
+      "atMs": 431.01512500000536,
+      "observed": {
+        "url": "http://127.0.0.1:18120/after/?example=ruler&theme=dark&captureProbe=1",
+        "reduce": false,
+        "active": {
+          "tag": "FLUTTER-VIEW",
+          "role": null,
+          "name": "flutter-view flt-scene-host {  font: normal normal 14px sans-serif;}flutter-view flt-semantics input[type=range] {  appearance: none;  -webkit-appearance: none;  width: 100%;  position: absolute;  border: none;  top: 0;  right: 0;  bottom: 0;  left: 0;}flutter-view input::selection {  background-color: transparent;}flutter-view textarea::selection {  background-color: transparent;}flutter-view flt-semantics input,flutter-view flt-semantics textarea,flutter-view flt-semantics [contentEditable=\"true\"] {  caret-color: transparent;}flutter-view .flt-text-editing::placeholder {  opacity: 0;}flutter-view:focus { outline: rgb(0, 0, 0) none 0px;}flutter-view .transparentTextEditing:-webkit-autofill,flutter-view .transparentTextEditing:-webkit-autofill:hover,flutter-view .transparentTextEditing:-webkit-autofill:focus,flutter-view .transparentTextEditing:-webkit-autofill:active {  opacity: 0 !important;}"
+        },
+        "probe": {
+          "disableAnimations": false,
+          "platformDisableAnimations": false,
+          "motionOverride": null,
+          "backgroundArgb": 4279571733,
+          "constraints": {
+            "minWidth": 0,
+            "maxWidth": 592,
+            "minHeight": 0,
+            "maxHeight": null
+          },
+          "rect": {
+            "x": 448,
+            "y": 130,
+            "width": 384,
+            "height": 100
+          }
+        },
+        "stage": null,
+        "controls": [
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": null,
+            "name": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1000,
+              "top": 0,
+              "right": 1280,
+              "bottom": 1000,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": null,
+            "name": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1000,
+              "top": 0,
+              "right": 1280,
+              "bottom": 1000,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": null,
+            "name": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1000,
+              "top": 0,
+              "right": 1280,
+              "bottom": 1000,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": null,
+            "name": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1000,
+              "top": 0,
+              "right": 1280,
+              "bottom": 1000,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "group",
+            "name": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 360,
+              "top": 0,
+              "right": 1280,
+              "bottom": 360,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": null,
+            "name": "Weight\n66.0\nkg\n40\n45\n50\n55\n60\n65\n70\n75\n80\n85\n90\n95\n100\n105\n110\n115\n120",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 448,
+              "y": 130,
+              "width": 384,
+              "height": 100,
+              "top": 130,
+              "right": 832,
+              "bottom": 230,
+              "left": 448
+            }
+          },
+          {
+            "tag": "INPUT",
+            "role": "slider",
+            "name": "",
+            "value": "66.0 kg",
+            "disabled": true,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 450,
+              "y": 132,
+              "width": 384,
+              "height": 96,
+              "top": 132,
+              "right": 834,
+              "bottom": 228,
+              "left": 450
+            }
+          }
+        ]
+      }
+    },
+    {
+      "label": "released",
+      "atMs": 953.1996249999793,
+      "observed": {
+        "url": "http://127.0.0.1:18120/after/?example=ruler&theme=dark&captureProbe=1",
+        "reduce": false,
+        "active": {
+          "tag": "FLUTTER-VIEW",
+          "role": null,
+          "name": "flutter-view flt-scene-host {  font: normal normal 14px sans-serif;}flutter-view flt-semantics input[type=range] {  appearance: none;  -webkit-appearance: none;  width: 100%;  position: absolute;  border: none;  top: 0;  right: 0;  bottom: 0;  left: 0;}flutter-view input::selection {  background-color: transparent;}flutter-view textarea::selection {  background-color: transparent;}flutter-view flt-semantics input,flutter-view flt-semantics textarea,flutter-view flt-semantics [contentEditable=\"true\"] {  caret-color: transparent;}flutter-view .flt-text-editing::placeholder {  opacity: 0;}flutter-view:focus { outline: rgb(0, 0, 0) none 0px;}flutter-view .transparentTextEditing:-webkit-autofill,flutter-view .transparentTextEditing:-webkit-autofill:hover,flutter-view .transparentTextEditing:-webkit-autofill:focus,flutter-view .transparentTextEditing:-webkit-autofill:active {  opacity: 0 !important;}"
+        },
+        "probe": {
+          "disableAnimations": false,
+          "platformDisableAnimations": false,
+          "motionOverride": null,
+          "backgroundArgb": 4279571733,
+          "constraints": {
+            "minWidth": 0,
+            "maxWidth": 592,
+            "minHeight": 0,
+            "maxHeight": null
+          },
+          "rect": {
+            "x": 448,
+            "y": 130,
+            "width": 384,
+            "height": 100
+          }
+        },
+        "stage": null,
+        "controls": [
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": null,
+            "name": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1000,
+              "top": 0,
+              "right": 1280,
+              "bottom": 1000,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": null,
+            "name": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1000,
+              "top": 0,
+              "right": 1280,
+              "bottom": 1000,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": null,
+            "name": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1000,
+              "top": 0,
+              "right": 1280,
+              "bottom": 1000,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": null,
+            "name": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1000,
+              "top": 0,
+              "right": 1280,
+              "bottom": 1000,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "group",
+            "name": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 360,
+              "top": 0,
+              "right": 1280,
+              "bottom": 360,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": null,
+            "name": "Weight\n63.5\nkg\n40\n45\n50\n55\n60\n65\n70\n75\n80\n85\n90\n95\n100\n105\n110\n115\n120",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 448,
+              "y": 130,
+              "width": 384,
+              "height": 100,
+              "top": 130,
+              "right": 832,
+              "bottom": 230,
+              "left": 448
+            }
+          },
+          {
+            "tag": "INPUT",
+            "role": "slider",
+            "name": "",
+            "value": "63.5 kg",
+            "disabled": true,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 450,
+              "y": 132,
+              "width": 384,
+              "height": 96,
+              "top": 132,
+              "right": 834,
+              "bottom": 228,
+              "left": 450
+            }
+          }
+        ]
+      }
+    },
+    {
+      "label": "key-Home-3",
+      "atMs": 1245.8450829999929,
+      "observed": {
+        "url": "http://127.0.0.1:18120/after/?example=ruler&theme=dark&captureProbe=1",
+        "reduce": false,
+        "active": {
+          "tag": "FLUTTER-VIEW",
+          "role": null,
+          "name": "flutter-view flt-scene-host {  font: normal normal 14px sans-serif;}flutter-view flt-semantics input[type=range] {  appearance: none;  -webkit-appearance: none;  width: 100%;  position: absolute;  border: none;  top: 0;  right: 0;  bottom: 0;  left: 0;}flutter-view input::selection {  background-color: transparent;}flutter-view textarea::selection {  background-color: transparent;}flutter-view flt-semantics input,flutter-view flt-semantics textarea,flutter-view flt-semantics [contentEditable=\"true\"] {  caret-color: transparent;}flutter-view .flt-text-editing::placeholder {  opacity: 0;}flutter-view:focus { outline: rgb(0, 0, 0) none 0px;}flutter-view .transparentTextEditing:-webkit-autofill,flutter-view .transparentTextEditing:-webkit-autofill:hover,flutter-view .transparentTextEditing:-webkit-autofill:focus,flutter-view .transparentTextEditing:-webkit-autofill:active {  opacity: 0 !important;}"
+        },
+        "probe": {
+          "disableAnimations": false,
+          "platformDisableAnimations": false,
+          "motionOverride": null,
+          "backgroundArgb": 4279571733,
+          "constraints": {
+            "minWidth": 0,
+            "maxWidth": 592,
+            "minHeight": 0,
+            "maxHeight": null
+          },
+          "rect": {
+            "x": 448,
+            "y": 130,
+            "width": 384,
+            "height": 100
+          }
+        },
+        "stage": null,
+        "controls": [
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": null,
+            "name": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1000,
+              "top": 0,
+              "right": 1280,
+              "bottom": 1000,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": null,
+            "name": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1000,
+              "top": 0,
+              "right": 1280,
+              "bottom": 1000,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": null,
+            "name": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1000,
+              "top": 0,
+              "right": 1280,
+              "bottom": 1000,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": null,
+            "name": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1000,
+              "top": 0,
+              "right": 1280,
+              "bottom": 1000,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "group",
+            "name": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 360,
+              "top": 0,
+              "right": 1280,
+              "bottom": 360,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": null,
+            "name": "Weight\n40.0\nkg\n40\n45\n50\n55\n60\n65\n70\n75\n80\n85\n90\n95\n100\n105\n110\n115\n120",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 448,
+              "y": 130,
+              "width": 384,
+              "height": 100,
+              "top": 130,
+              "right": 832,
+              "bottom": 230,
+              "left": 448
+            }
+          },
+          {
+            "tag": "INPUT",
+            "role": "slider",
+            "name": "",
+            "value": "40.0 kg",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 450,
+              "y": 132,
+              "width": 384,
+              "height": 96,
+              "top": 132,
+              "right": 834,
+              "bottom": 228,
+              "left": 450
+            }
+          }
+        ]
+      }
+    },
+    {
+      "label": "key-End-4",
+      "atMs": 1551.549708000006,
+      "observed": {
+        "url": "http://127.0.0.1:18120/after/?example=ruler&theme=dark&captureProbe=1",
+        "reduce": false,
+        "active": {
+          "tag": "FLUTTER-VIEW",
+          "role": null,
+          "name": "flutter-view flt-scene-host {  font: normal normal 14px sans-serif;}flutter-view flt-semantics input[type=range] {  appearance: none;  -webkit-appearance: none;  width: 100%;  position: absolute;  border: none;  top: 0;  right: 0;  bottom: 0;  left: 0;}flutter-view input::selection {  background-color: transparent;}flutter-view textarea::selection {  background-color: transparent;}flutter-view flt-semantics input,flutter-view flt-semantics textarea,flutter-view flt-semantics [contentEditable=\"true\"] {  caret-color: transparent;}flutter-view .flt-text-editing::placeholder {  opacity: 0;}flutter-view:focus { outline: rgb(0, 0, 0) none 0px;}flutter-view .transparentTextEditing:-webkit-autofill,flutter-view .transparentTextEditing:-webkit-autofill:hover,flutter-view .transparentTextEditing:-webkit-autofill:focus,flutter-view .transparentTextEditing:-webkit-autofill:active {  opacity: 0 !important;}"
+        },
+        "probe": {
+          "disableAnimations": false,
+          "platformDisableAnimations": false,
+          "motionOverride": null,
+          "backgroundArgb": 4279571733,
+          "constraints": {
+            "minWidth": 0,
+            "maxWidth": 592,
+            "minHeight": 0,
+            "maxHeight": null
+          },
+          "rect": {
+            "x": 448,
+            "y": 130,
+            "width": 384,
+            "height": 100
+          }
+        },
+        "stage": null,
+        "controls": [
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": null,
+            "name": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1000,
+              "top": 0,
+              "right": 1280,
+              "bottom": 1000,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": null,
+            "name": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1000,
+              "top": 0,
+              "right": 1280,
+              "bottom": 1000,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": null,
+            "name": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1000,
+              "top": 0,
+              "right": 1280,
+              "bottom": 1000,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": null,
+            "name": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1000,
+              "top": 0,
+              "right": 1280,
+              "bottom": 1000,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "group",
+            "name": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 360,
+              "top": 0,
+              "right": 1280,
+              "bottom": 360,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": null,
+            "name": "Weight\n120.0\nkg\n40\n45\n50\n55\n60\n65\n70\n75\n80\n85\n90\n95\n100\n105\n110\n115\n120",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 448,
+              "y": 130,
+              "width": 384,
+              "height": 100,
+              "top": 130,
+              "right": 832,
+              "bottom": 230,
+              "left": 448
+            }
+          },
+          {
+            "tag": "INPUT",
+            "role": "slider",
+            "name": "",
+            "value": "120.0 kg",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 450,
+              "y": 132,
+              "width": 384,
+              "height": 96,
+              "top": 132,
+              "right": 834,
+              "bottom": 228,
+              "left": 450
+            }
+          }
+        ]
+      }
+    },
+    {
+      "label": "key-ArrowLeft-5",
+      "atMs": 1817.0161249999946,
+      "observed": {
+        "url": "http://127.0.0.1:18120/after/?example=ruler&theme=dark&captureProbe=1",
+        "reduce": false,
+        "active": {
+          "tag": "FLUTTER-VIEW",
+          "role": null,
+          "name": "flutter-view flt-scene-host {  font: normal normal 14px sans-serif;}flutter-view flt-semantics input[type=range] {  appearance: none;  -webkit-appearance: none;  width: 100%;  position: absolute;  border: none;  top: 0;  right: 0;  bottom: 0;  left: 0;}flutter-view input::selection {  background-color: transparent;}flutter-view textarea::selection {  background-color: transparent;}flutter-view flt-semantics input,flutter-view flt-semantics textarea,flutter-view flt-semantics [contentEditable=\"true\"] {  caret-color: transparent;}flutter-view .flt-text-editing::placeholder {  opacity: 0;}flutter-view:focus { outline: rgb(0, 0, 0) none 0px;}flutter-view .transparentTextEditing:-webkit-autofill,flutter-view .transparentTextEditing:-webkit-autofill:hover,flutter-view .transparentTextEditing:-webkit-autofill:focus,flutter-view .transparentTextEditing:-webkit-autofill:active {  opacity: 0 !important;}"
+        },
+        "probe": {
+          "disableAnimations": false,
+          "platformDisableAnimations": false,
+          "motionOverride": null,
+          "backgroundArgb": 4279571733,
+          "constraints": {
+            "minWidth": 0,
+            "maxWidth": 592,
+            "minHeight": 0,
+            "maxHeight": null
+          },
+          "rect": {
+            "x": 448,
+            "y": 130,
+            "width": 384,
+            "height": 100
+          }
+        },
+        "stage": null,
+        "controls": [
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": null,
+            "name": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1000,
+              "top": 0,
+              "right": 1280,
+              "bottom": 1000,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": null,
+            "name": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1000,
+              "top": 0,
+              "right": 1280,
+              "bottom": 1000,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": null,
+            "name": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1000,
+              "top": 0,
+              "right": 1280,
+              "bottom": 1000,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": null,
+            "name": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1000,
+              "top": 0,
+              "right": 1280,
+              "bottom": 1000,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "group",
+            "name": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 360,
+              "top": 0,
+              "right": 1280,
+              "bottom": 360,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": null,
+            "name": "Weight\n119.5\nkg\n40\n45\n50\n55\n60\n65\n70\n75\n80\n85\n90\n95\n100\n105\n110\n115\n120",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 448,
+              "y": 130,
+              "width": 384,
+              "height": 100,
+              "top": 130,
+              "right": 832,
+              "bottom": 230,
+              "left": 448
+            }
+          },
+          {
+            "tag": "INPUT",
+            "role": "slider",
+            "name": "",
+            "value": "119.5 kg",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 450,
+              "y": 132,
+              "width": 384,
+              "height": 96,
+              "top": 132,
+              "right": 834,
+              "bottom": 228,
+              "left": 450
+            }
+          }
+        ]
+      }
+    },
+    {
+      "label": "key-Home-6",
+      "atMs": 2098.9282909999893,
+      "observed": {
+        "url": "http://127.0.0.1:18120/after/?example=ruler&theme=dark&captureProbe=1",
+        "reduce": false,
+        "active": {
+          "tag": "FLUTTER-VIEW",
+          "role": null,
+          "name": "flutter-view flt-scene-host {  font: normal normal 14px sans-serif;}flutter-view flt-semantics input[type=range] {  appearance: none;  -webkit-appearance: none;  width: 100%;  position: absolute;  border: none;  top: 0;  right: 0;  bottom: 0;  left: 0;}flutter-view input::selection {  background-color: transparent;}flutter-view textarea::selection {  background-color: transparent;}flutter-view flt-semantics input,flutter-view flt-semantics textarea,flutter-view flt-semantics [contentEditable=\"true\"] {  caret-color: transparent;}flutter-view .flt-text-editing::placeholder {  opacity: 0;}flutter-view:focus { outline: rgb(0, 0, 0) none 0px;}flutter-view .transparentTextEditing:-webkit-autofill,flutter-view .transparentTextEditing:-webkit-autofill:hover,flutter-view .transparentTextEditing:-webkit-autofill:focus,flutter-view .transparentTextEditing:-webkit-autofill:active {  opacity: 0 !important;}"
+        },
+        "probe": {
+          "disableAnimations": false,
+          "platformDisableAnimations": false,
+          "motionOverride": null,
+          "backgroundArgb": 4279571733,
+          "constraints": {
+            "minWidth": 0,
+            "maxWidth": 592,
+            "minHeight": 0,
+            "maxHeight": null
+          },
+          "rect": {
+            "x": 448,
+            "y": 130,
+            "width": 384,
+            "height": 100
+          }
+        },
+        "stage": null,
+        "controls": [
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": null,
+            "name": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1000,
+              "top": 0,
+              "right": 1280,
+              "bottom": 1000,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": null,
+            "name": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1000,
+              "top": 0,
+              "right": 1280,
+              "bottom": 1000,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": null,
+            "name": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1000,
+              "top": 0,
+              "right": 1280,
+              "bottom": 1000,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": null,
+            "name": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1000,
+              "top": 0,
+              "right": 1280,
+              "bottom": 1000,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "group",
+            "name": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 360,
+              "top": 0,
+              "right": 1280,
+              "bottom": 360,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": null,
+            "name": "Weight\n40.0\nkg\n40\n45\n50\n55\n60\n65\n70\n75\n80\n85\n90\n95\n100\n105\n110\n115\n120",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 448,
+              "y": 130,
+              "width": 384,
+              "height": 100,
+              "top": 130,
+              "right": 832,
+              "bottom": 230,
+              "left": 448
+            }
+          },
+          {
+            "tag": "INPUT",
+            "role": "slider",
+            "name": "",
+            "value": "40.0 kg",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 450,
+              "y": 132,
+              "width": 384,
+              "height": 96,
+              "top": 132,
+              "right": 834,
+              "bottom": 228,
+              "left": 450
+            }
+          }
+        ]
+      }
+    },
+    {
+      "label": "key-PageUp-7",
+      "atMs": 2369.1458749999874,
+      "observed": {
+        "url": "http://127.0.0.1:18120/after/?example=ruler&theme=dark&captureProbe=1",
+        "reduce": false,
+        "active": {
+          "tag": "FLUTTER-VIEW",
+          "role": null,
+          "name": "flutter-view flt-scene-host {  font: normal normal 14px sans-serif;}flutter-view flt-semantics input[type=range] {  appearance: none;  -webkit-appearance: none;  width: 100%;  position: absolute;  border: none;  top: 0;  right: 0;  bottom: 0;  left: 0;}flutter-view input::selection {  background-color: transparent;}flutter-view textarea::selection {  background-color: transparent;}flutter-view flt-semantics input,flutter-view flt-semantics textarea,flutter-view flt-semantics [contentEditable=\"true\"] {  caret-color: transparent;}flutter-view .flt-text-editing::placeholder {  opacity: 0;}flutter-view:focus { outline: rgb(0, 0, 0) none 0px;}flutter-view .transparentTextEditing:-webkit-autofill,flutter-view .transparentTextEditing:-webkit-autofill:hover,flutter-view .transparentTextEditing:-webkit-autofill:focus,flutter-view .transparentTextEditing:-webkit-autofill:active {  opacity: 0 !important;}"
+        },
+        "probe": {
+          "disableAnimations": false,
+          "platformDisableAnimations": false,
+          "motionOverride": null,
+          "backgroundArgb": 4279571733,
+          "constraints": {
+            "minWidth": 0,
+            "maxWidth": 592,
+            "minHeight": 0,
+            "maxHeight": null
+          },
+          "rect": {
+            "x": 448,
+            "y": 130,
+            "width": 384,
+            "height": 100
+          }
+        },
+        "stage": null,
+        "controls": [
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": null,
+            "name": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1000,
+              "top": 0,
+              "right": 1280,
+              "bottom": 1000,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": null,
+            "name": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1000,
+              "top": 0,
+              "right": 1280,
+              "bottom": 1000,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": null,
+            "name": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1000,
+              "top": 0,
+              "right": 1280,
+              "bottom": 1000,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": null,
+            "name": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1000,
+              "top": 0,
+              "right": 1280,
+              "bottom": 1000,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "group",
+            "name": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 360,
+              "top": 0,
+              "right": 1280,
+              "bottom": 360,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": null,
+            "name": "Weight\n45.0\nkg\n40\n45\n50\n55\n60\n65\n70\n75\n80\n85\n90\n95\n100\n105\n110\n115\n120",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 448,
+              "y": 130,
+              "width": 384,
+              "height": 100,
+              "top": 130,
+              "right": 832,
+              "bottom": 230,
+              "left": 448
+            }
+          },
+          {
+            "tag": "INPUT",
+            "role": "slider",
+            "name": "",
+            "value": "45.0 kg",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 450,
+              "y": 132,
+              "width": 384,
+              "height": 96,
+              "top": 132,
+              "right": 834,
+              "bottom": 228,
+              "left": 450
+            }
+          }
+        ]
+      }
+    },
+    {
+      "label": "key-PageDown-8",
+      "atMs": 2651.591832999984,
+      "observed": {
+        "url": "http://127.0.0.1:18120/after/?example=ruler&theme=dark&captureProbe=1",
+        "reduce": false,
+        "active": {
+          "tag": "FLUTTER-VIEW",
+          "role": null,
+          "name": "flutter-view flt-scene-host {  font: normal normal 14px sans-serif;}flutter-view flt-semantics input[type=range] {  appearance: none;  -webkit-appearance: none;  width: 100%;  position: absolute;  border: none;  top: 0;  right: 0;  bottom: 0;  left: 0;}flutter-view input::selection {  background-color: transparent;}flutter-view textarea::selection {  background-color: transparent;}flutter-view flt-semantics input,flutter-view flt-semantics textarea,flutter-view flt-semantics [contentEditable=\"true\"] {  caret-color: transparent;}flutter-view .flt-text-editing::placeholder {  opacity: 0;}flutter-view:focus { outline: rgb(0, 0, 0) none 0px;}flutter-view .transparentTextEditing:-webkit-autofill,flutter-view .transparentTextEditing:-webkit-autofill:hover,flutter-view .transparentTextEditing:-webkit-autofill:focus,flutter-view .transparentTextEditing:-webkit-autofill:active {  opacity: 0 !important;}"
+        },
+        "probe": {
+          "disableAnimations": false,
+          "platformDisableAnimations": false,
+          "motionOverride": null,
+          "backgroundArgb": 4279571733,
+          "constraints": {
+            "minWidth": 0,
+            "maxWidth": 592,
+            "minHeight": 0,
+            "maxHeight": null
+          },
+          "rect": {
+            "x": 448,
+            "y": 130,
+            "width": 384,
+            "height": 100
+          }
+        },
+        "stage": null,
+        "controls": [
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": null,
+            "name": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1000,
+              "top": 0,
+              "right": 1280,
+              "bottom": 1000,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": null,
+            "name": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1000,
+              "top": 0,
+              "right": 1280,
+              "bottom": 1000,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": null,
+            "name": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1000,
+              "top": 0,
+              "right": 1280,
+              "bottom": 1000,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": null,
+            "name": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1000,
+              "top": 0,
+              "right": 1280,
+              "bottom": 1000,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "group",
+            "name": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 360,
+              "top": 0,
+              "right": 1280,
+              "bottom": 360,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": null,
+            "name": "Weight\n40.0\nkg\n40\n45\n50\n55\n60\n65\n70\n75\n80\n85\n90\n95\n100\n105\n110\n115\n120",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 448,
+              "y": 130,
+              "width": 384,
+              "height": 100,
+              "top": 130,
+              "right": 832,
+              "bottom": 230,
+              "left": 448
+            }
+          },
+          {
+            "tag": "INPUT",
+            "role": "slider",
+            "name": "",
+            "value": "40.0 kg",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 450,
+              "y": 132,
+              "width": 384,
+              "height": 96,
+              "top": 132,
+              "right": 834,
+              "bottom": 228,
+              "left": 450
+            }
+          }
+        ]
+      }
+    },
+    {
+      "label": "key-ArrowRight-9",
+      "atMs": 2917.388332999981,
+      "observed": {
+        "url": "http://127.0.0.1:18120/after/?example=ruler&theme=dark&captureProbe=1",
+        "reduce": false,
+        "active": {
+          "tag": "FLUTTER-VIEW",
+          "role": null,
+          "name": "flutter-view flt-scene-host {  font: normal normal 14px sans-serif;}flutter-view flt-semantics input[type=range] {  appearance: none;  -webkit-appearance: none;  width: 100%;  position: absolute;  border: none;  top: 0;  right: 0;  bottom: 0;  left: 0;}flutter-view input::selection {  background-color: transparent;}flutter-view textarea::selection {  background-color: transparent;}flutter-view flt-semantics input,flutter-view flt-semantics textarea,flutter-view flt-semantics [contentEditable=\"true\"] {  caret-color: transparent;}flutter-view .flt-text-editing::placeholder {  opacity: 0;}flutter-view:focus { outline: rgb(0, 0, 0) none 0px;}flutter-view .transparentTextEditing:-webkit-autofill,flutter-view .transparentTextEditing:-webkit-autofill:hover,flutter-view .transparentTextEditing:-webkit-autofill:focus,flutter-view .transparentTextEditing:-webkit-autofill:active {  opacity: 0 !important;}"
+        },
+        "probe": {
+          "disableAnimations": false,
+          "platformDisableAnimations": false,
+          "motionOverride": null,
+          "backgroundArgb": 4279571733,
+          "constraints": {
+            "minWidth": 0,
+            "maxWidth": 592,
+            "minHeight": 0,
+            "maxHeight": null
+          },
+          "rect": {
+            "x": 448,
+            "y": 130,
+            "width": 384,
+            "height": 100
+          }
+        },
+        "stage": null,
+        "controls": [
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": null,
+            "name": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1000,
+              "top": 0,
+              "right": 1280,
+              "bottom": 1000,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": null,
+            "name": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1000,
+              "top": 0,
+              "right": 1280,
+              "bottom": 1000,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": null,
+            "name": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1000,
+              "top": 0,
+              "right": 1280,
+              "bottom": 1000,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": null,
+            "name": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1000,
+              "top": 0,
+              "right": 1280,
+              "bottom": 1000,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "group",
+            "name": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 360,
+              "top": 0,
+              "right": 1280,
+              "bottom": 360,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": null,
+            "name": "Weight\n40.5\nkg\n40\n45\n50\n55\n60\n65\n70\n75\n80\n85\n90\n95\n100\n105\n110\n115\n120",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 448,
+              "y": 130,
+              "width": 384,
+              "height": 100,
+              "top": 130,
+              "right": 832,
+              "bottom": 230,
+              "left": 448
+            }
+          },
+          {
+            "tag": "INPUT",
+            "role": "slider",
+            "name": "",
+            "value": "40.5 kg",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 450,
+              "y": 132,
+              "width": 384,
+              "height": 96,
+              "top": 132,
+              "right": 834,
+              "bottom": 228,
+              "left": 450
+            }
+          }
+        ]
+      }
+    },
+    {
+      "label": "key-ArrowDown-10",
+      "atMs": 3179.6547079999873,
+      "observed": {
+        "url": "http://127.0.0.1:18120/after/?example=ruler&theme=dark&captureProbe=1",
+        "reduce": false,
+        "active": {
+          "tag": "FLUTTER-VIEW",
+          "role": null,
+          "name": "flutter-view flt-scene-host {  font: normal normal 14px sans-serif;}flutter-view flt-semantics input[type=range] {  appearance: none;  -webkit-appearance: none;  width: 100%;  position: absolute;  border: none;  top: 0;  right: 0;  bottom: 0;  left: 0;}flutter-view input::selection {  background-color: transparent;}flutter-view textarea::selection {  background-color: transparent;}flutter-view flt-semantics input,flutter-view flt-semantics textarea,flutter-view flt-semantics [contentEditable=\"true\"] {  caret-color: transparent;}flutter-view .flt-text-editing::placeholder {  opacity: 0;}flutter-view:focus { outline: rgb(0, 0, 0) none 0px;}flutter-view .transparentTextEditing:-webkit-autofill,flutter-view .transparentTextEditing:-webkit-autofill:hover,flutter-view .transparentTextEditing:-webkit-autofill:focus,flutter-view .transparentTextEditing:-webkit-autofill:active {  opacity: 0 !important;}"
+        },
+        "probe": {
+          "disableAnimations": false,
+          "platformDisableAnimations": false,
+          "motionOverride": null,
+          "backgroundArgb": 4279571733,
+          "constraints": {
+            "minWidth": 0,
+            "maxWidth": 592,
+            "minHeight": 0,
+            "maxHeight": null
+          },
+          "rect": {
+            "x": 448,
+            "y": 130,
+            "width": 384,
+            "height": 100
+          }
+        },
+        "stage": null,
+        "controls": [
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": null,
+            "name": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1000,
+              "top": 0,
+              "right": 1280,
+              "bottom": 1000,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": null,
+            "name": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1000,
+              "top": 0,
+              "right": 1280,
+              "bottom": 1000,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": null,
+            "name": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1000,
+              "top": 0,
+              "right": 1280,
+              "bottom": 1000,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": null,
+            "name": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1000,
+              "top": 0,
+              "right": 1280,
+              "bottom": 1000,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "group",
+            "name": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 360,
+              "top": 0,
+              "right": 1280,
+              "bottom": 360,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": null,
+            "name": "Weight\n40.0\nkg\n40\n45\n50\n55\n60\n65\n70\n75\n80\n85\n90\n95\n100\n105\n110\n115\n120",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 448,
+              "y": 130,
+              "width": 384,
+              "height": 100,
+              "top": 130,
+              "right": 832,
+              "bottom": 230,
+              "left": 448
+            }
+          },
+          {
+            "tag": "INPUT",
+            "role": "slider",
+            "name": "",
+            "value": "40.0 kg",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 450,
+              "y": 132,
+              "width": 384,
+              "height": 96,
+              "top": 132,
+              "right": 834,
+              "bottom": 228,
+              "left": 450
+            }
+          }
+        ]
+      }
+    },
+    {
+      "label": "key-ArrowUp-11",
+      "atMs": 3450.522291000001,
+      "observed": {
+        "url": "http://127.0.0.1:18120/after/?example=ruler&theme=dark&captureProbe=1",
+        "reduce": false,
+        "active": {
+          "tag": "FLUTTER-VIEW",
+          "role": null,
+          "name": "flutter-view flt-scene-host {  font: normal normal 14px sans-serif;}flutter-view flt-semantics input[type=range] {  appearance: none;  -webkit-appearance: none;  width: 100%;  position: absolute;  border: none;  top: 0;  right: 0;  bottom: 0;  left: 0;}flutter-view input::selection {  background-color: transparent;}flutter-view textarea::selection {  background-color: transparent;}flutter-view flt-semantics input,flutter-view flt-semantics textarea,flutter-view flt-semantics [contentEditable=\"true\"] {  caret-color: transparent;}flutter-view .flt-text-editing::placeholder {  opacity: 0;}flutter-view:focus { outline: rgb(0, 0, 0) none 0px;}flutter-view .transparentTextEditing:-webkit-autofill,flutter-view .transparentTextEditing:-webkit-autofill:hover,flutter-view .transparentTextEditing:-webkit-autofill:focus,flutter-view .transparentTextEditing:-webkit-autofill:active {  opacity: 0 !important;}"
+        },
+        "probe": {
+          "disableAnimations": false,
+          "platformDisableAnimations": false,
+          "motionOverride": null,
+          "backgroundArgb": 4279571733,
+          "constraints": {
+            "minWidth": 0,
+            "maxWidth": 592,
+            "minHeight": 0,
+            "maxHeight": null
+          },
+          "rect": {
+            "x": 448,
+            "y": 130,
+            "width": 384,
+            "height": 100
+          }
+        },
+        "stage": null,
+        "controls": [
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": null,
+            "name": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1000,
+              "top": 0,
+              "right": 1280,
+              "bottom": 1000,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": null,
+            "name": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1000,
+              "top": 0,
+              "right": 1280,
+              "bottom": 1000,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": null,
+            "name": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1000,
+              "top": 0,
+              "right": 1280,
+              "bottom": 1000,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": null,
+            "name": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1000,
+              "top": 0,
+              "right": 1280,
+              "bottom": 1000,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "group",
+            "name": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 360,
+              "top": 0,
+              "right": 1280,
+              "bottom": 360,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": null,
+            "name": "Weight\n40.5\nkg\n40\n45\n50\n55\n60\n65\n70\n75\n80\n85\n90\n95\n100\n105\n110\n115\n120",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 448,
+              "y": 130,
+              "width": 384,
+              "height": 100,
+              "top": 130,
+              "right": 832,
+              "bottom": 230,
+              "left": 448
+            }
+          },
+          {
+            "tag": "INPUT",
+            "role": "slider",
+            "name": "",
+            "value": "40.5 kg",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 450,
+              "y": 132,
+              "width": 384,
+              "height": 96,
+              "top": 132,
+              "right": 834,
+              "bottom": 228,
+              "left": 450
+            }
+          }
+        ]
+      }
+    },
+    {
+      "label": "exit",
+      "atMs": 3708.664625000005,
+      "observed": {
+        "url": "http://127.0.0.1:18120/after/?example=ruler&theme=dark&captureProbe=1",
+        "reduce": false,
+        "active": {
+          "tag": "FLUTTER-VIEW",
+          "role": null,
+          "name": "flutter-view flt-scene-host {  font: normal normal 14px sans-serif;}flutter-view flt-semantics input[type=range] {  appearance: none;  -webkit-appearance: none;  width: 100%;  position: absolute;  border: none;  top: 0;  right: 0;  bottom: 0;  left: 0;}flutter-view input::selection {  background-color: transparent;}flutter-view textarea::selection {  background-color: transparent;}flutter-view flt-semantics input,flutter-view flt-semantics textarea,flutter-view flt-semantics [contentEditable=\"true\"] {  caret-color: transparent;}flutter-view .flt-text-editing::placeholder {  opacity: 0;}flutter-view:focus { outline: rgb(0, 0, 0) none 0px;}flutter-view .transparentTextEditing:-webkit-autofill,flutter-view .transparentTextEditing:-webkit-autofill:hover,flutter-view .transparentTextEditing:-webkit-autofill:focus,flutter-view .transparentTextEditing:-webkit-autofill:active {  opacity: 0 !important;}"
+        },
+        "probe": {
+          "disableAnimations": false,
+          "platformDisableAnimations": false,
+          "motionOverride": null,
+          "backgroundArgb": 4279571733,
+          "constraints": {
+            "minWidth": 0,
+            "maxWidth": 592,
+            "minHeight": 0,
+            "maxHeight": null
+          },
+          "rect": {
+            "x": 448,
+            "y": 130,
+            "width": 384,
+            "height": 100
+          }
+        },
+        "stage": null,
+        "controls": [
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": null,
+            "name": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1000,
+              "top": 0,
+              "right": 1280,
+              "bottom": 1000,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": null,
+            "name": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1000,
+              "top": 0,
+              "right": 1280,
+              "bottom": 1000,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": null,
+            "name": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1000,
+              "top": 0,
+              "right": 1280,
+              "bottom": 1000,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": null,
+            "name": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1000,
+              "top": 0,
+              "right": 1280,
+              "bottom": 1000,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "group",
+            "name": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 360,
+              "top": 0,
+              "right": 1280,
+              "bottom": 360,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": null,
+            "name": "Weight\n40.5\nkg\n40\n45\n50\n55\n60\n65\n70\n75\n80\n85\n90\n95\n100\n105\n110\n115\n120",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 448,
+              "y": 130,
+              "width": 384,
+              "height": 100,
+              "top": 130,
+              "right": 832,
+              "bottom": 230,
+              "left": 448
+            }
+          },
+          {
+            "tag": "INPUT",
+            "role": "slider",
+            "name": "",
+            "value": "40.5 kg",
+            "disabled": true,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 450,
+              "y": 132,
+              "width": 384,
+              "height": 96,
+              "top": 132,
+              "right": 834,
+              "bottom": 228,
+              "left": 450
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

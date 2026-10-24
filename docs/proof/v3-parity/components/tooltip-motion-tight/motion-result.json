@@ -1,0 +1,8 @@
+{
+  "content": [
+    {
+      "type": "text",
+      "text": "{\n  \"ref_energy\": 0.00243,\n  \"cand_energy\": 0.00215,\n  \"energy_ratio\": 0.883,\n  \"temporal_corr\": 0.1478197740090145,\n  \"ref_moving\": true,\n  \"cand_moving\": true,\n  \"motion_status\": \"compared\",\n  \"motion_score\": 88.3,\n  \"ref_signature\": [\n    0,\n    0,\n    0,\n    0,\n    0.0157,\n    0.0046,\n    0,\n    0,\n    0.0173,\n    0.0004,\n    0,\n    0,\n    0,\n    0.0163,\n    0.0034,\n    0,\n    0,\n    0,\n    0,\n    0,\n    0,\n    0,\n    0,\n    0,\n    0,\n    0.0163,\n    0.0014,\n    0,\n    0,\n    0,\n    0\n  ],\n  \"cand_signature\": [\n    0,\n    0,\n    0,\n    0,\n    0.014,\n    0.0032,\n    0,\n    0.0147,\n    0.0018,\n    0,\n    0,\n    0,\n    0.0156,\n    0.0014,\n    0,\n    0,\n    0,\n    0,\n    0,\n    0,\n    0,\n    0,\n    0.0159,\n    0,\n    0,\n    0,\n    0,\n    0,\n    0,\n    0,\n    0\n  ],\n  \"frames\": {\n    \"reference\": 32,\n    \"candidate\": 32\n  },\n  \"critique_rubric\": \"Motion comparison (both animate; motion energy ratio 0.88). `motion_status` is compared. A null `motion_score` is inconclusive (static or capture_unreliable), not a perfect 100. `temporal_corr` is the rhythm match (null for steady motion with no profile). Inspect the `motion_signature` chart (green=reference, blue=candidate): compare the curves' height (animation intensity) and shape (timing). Note this samples frames at a fixed cadence — a one-shot animation may have finished before capture, so a low score can mean 'not captured' as well as 'not faithful'.\",\n  \"stub\": false,\n  \"visuals\": []\n}"
+    }
+  ]
+}

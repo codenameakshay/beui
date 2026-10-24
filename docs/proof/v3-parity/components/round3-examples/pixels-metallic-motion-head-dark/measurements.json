@@ -1,0 +1,300 @@
+{
+  "method": "First original frame requested after event dispatch. Exact RGB subtraction; no masks or tolerance.",
+  "statePairing": "Matching native release/Home/End event ordinal. Exposure intervals differ and remain explicit. No trajectory or native60 approval.",
+  "crop": [
+    344,
+    0,
+    936,
+    478
+  ],
+  "results": [
+    {
+      "example": "source-dark-no-preference-metallic",
+      "state": "0-release",
+      "timing": [
+        {
+          "event": {
+            "atMs": 843,
+            "type": "up",
+            "button": "left",
+            "pointer": {
+              "x": 587.953125,
+              "y": 180
+            },
+            "requestedMs": 1821.9927910000001,
+            "dispatchBeforeMs": 1823.7708749999997,
+            "dispatchAfterMs": 1825.0818749999999
+          },
+          "frame": {
+            "index": 33,
+            "file": "original-frames/frame_000033.png",
+            "requestedMs": 1835.1272079999999,
+            "receivedMs": 1852.0481249999998,
+            "metadata": {
+              "timestamp": 1792758143.9360263,
+              "timestampMeaning": "response receipt; exposure lies inside request-response interval"
+            },
+            "sha256": "b93745a45824640d94da6d10ef151f129f7ddf46d928da233889f573e17bea91"
+          },
+          "requestAfterDispatchMs": 10.045333000000028,
+          "exposureUncertaintyMs": 16.920916999999918
+        },
+        {
+          "event": {
+            "atMs": 889,
+            "type": "up",
+            "button": "left",
+            "pointer": {
+              "x": 587.9474975585938,
+              "y": 180
+            },
+            "requestedMs": 2616.119416,
+            "dispatchBeforeMs": 2617.871666,
+            "dispatchAfterMs": 2618.9661659999997
+          },
+          "frame": {
+            "index": 27,
+            "file": "original-frames/frame_000027.png",
+            "requestedMs": 2630.744333,
+            "receivedMs": 2664.236583,
+            "metadata": {
+              "timestamp": 1792758145.3292253,
+              "timestampMeaning": "response receipt; exposure lies inside request-response interval"
+            },
+            "sha256": "8f63234c497cfad827c1e2323e49bed06d62765f20482fe8876dd74d278ccf89"
+          },
+          "requestAfterDispatchMs": 11.778167000000394,
+          "exposureUncertaintyMs": 33.492249999999785
+        }
+      ],
+      "source": "metallic-head-dark/source-dark-no-preference-metallic/recording/original-frames/frame_000033.png",
+      "candidate": "metallic-head-dark/after-dark-no-preference-metallic/recording/original-frames/frame_000027.png",
+      "sourceSha256": "b93745a45824640d94da6d10ef151f129f7ddf46d928da233889f573e17bea91",
+      "candidateSha256": "8f63234c497cfad827c1e2323e49bed06d62765f20482fe8876dd74d278ccf89",
+      "viewport": {
+        "width": 1280,
+        "height": 913,
+        "differentPixels": 7626,
+        "totalPixels": 1168640,
+        "absoluteChannelSum": 635821,
+        "maximumChannelDelta": 152,
+        "differenceBounds": [
+          496,
+          155,
+          787,
+          219
+        ],
+        "exactZero": false,
+        "rawDifference": "pixels-metallic-motion-head-dark/source-dark-no-preference-metallic-0-release-viewport.png"
+      },
+      "rawStage": {
+        "width": 592,
+        "height": 478,
+        "differentPixels": 7626,
+        "totalPixels": 282976,
+        "absoluteChannelSum": 635821,
+        "maximumChannelDelta": 152,
+        "differenceBounds": [
+          152,
+          155,
+          443,
+          219
+        ],
+        "exactZero": false,
+        "rawDifference": "pixels-metallic-motion-head-dark/source-dark-no-preference-metallic-0-release-rawStage.png"
+      }
+    },
+    {
+      "example": "source-dark-no-preference-metallic",
+      "state": "1-release",
+      "timing": [
+        {
+          "event": {
+            "atMs": 1377,
+            "type": "up",
+            "button": "left",
+            "pointer": {
+              "x": 705.03125,
+              "y": 180
+            },
+            "requestedMs": 2355.992791,
+            "dispatchBeforeMs": 2358.035833,
+            "dispatchAfterMs": 2359.4813329999997
+          },
+          "frame": {
+            "index": 55,
+            "file": "original-frames/frame_000055.png",
+            "requestedMs": 2386.490625,
+            "receivedMs": 2433.017041,
+            "metadata": {
+              "timestamp": 1792758144.5170078,
+              "timestampMeaning": "response receipt; exposure lies inside request-response interval"
+            },
+            "sha256": "00fecf9d90632031848bc832adb30d27531a34bedf9db7bd4f04100cadbeee3d"
+          },
+          "requestAfterDispatchMs": 27.009292000000187,
+          "exposureUncertaintyMs": 46.526416000000154
+        },
+        {
+          "event": {
+            "atMs": 1443,
+            "type": "up",
+            "button": "left",
+            "pointer": {
+              "x": 705.0223876953125,
+              "y": 180
+            },
+            "requestedMs": 3170.119416,
+            "dispatchBeforeMs": 3171.630708,
+            "dispatchAfterMs": 3172.5053749999997
+          },
+          "frame": {
+            "index": 44,
+            "file": "original-frames/frame_000044.png",
+            "requestedMs": 3198.14275,
+            "receivedMs": 3229.9219580000004,
+            "metadata": {
+              "timestamp": 1792758145.8949,
+              "timestampMeaning": "response receipt; exposure lies inside request-response interval"
+            },
+            "sha256": "fc05cdc6a5226fe57caee94b8157ec6984d346bae8c7c6e3cf3c0b34b642aa63"
+          },
+          "requestAfterDispatchMs": 25.637375000000247,
+          "exposureUncertaintyMs": 31.77920800000038
+        }
+      ],
+      "source": "metallic-head-dark/source-dark-no-preference-metallic/recording/original-frames/frame_000055.png",
+      "candidate": "metallic-head-dark/after-dark-no-preference-metallic/recording/original-frames/frame_000044.png",
+      "sourceSha256": "00fecf9d90632031848bc832adb30d27531a34bedf9db7bd4f04100cadbeee3d",
+      "candidateSha256": "fc05cdc6a5226fe57caee94b8157ec6984d346bae8c7c6e3cf3c0b34b642aa63",
+      "viewport": {
+        "width": 1280,
+        "height": 913,
+        "differentPixels": 6327,
+        "totalPixels": 1168640,
+        "absoluteChannelSum": 351288,
+        "maximumChannelDelta": 168,
+        "differenceBounds": [
+          492,
+          154,
+          787,
+          222
+        ],
+        "exactZero": false,
+        "rawDifference": "pixels-metallic-motion-head-dark/source-dark-no-preference-metallic-1-release-viewport.png"
+      },
+      "rawStage": {
+        "width": 592,
+        "height": 478,
+        "differentPixels": 6327,
+        "totalPixels": 282976,
+        "absoluteChannelSum": 351288,
+        "maximumChannelDelta": 168,
+        "differenceBounds": [
+          148,
+          154,
+          443,
+          222
+        ],
+        "exactZero": false,
+        "rawDifference": "pixels-metallic-motion-head-dark/source-dark-no-preference-metallic-1-release-rawStage.png"
+      }
+    },
+    {
+      "example": "source-dark-no-preference-metallic",
+      "state": "2-release",
+      "timing": [
+        {
+          "event": {
+            "atMs": 1906,
+            "type": "up",
+            "button": "left",
+            "pointer": {
+              "x": 768.634375,
+              "y": 180
+            },
+            "requestedMs": 2884.992791,
+            "dispatchBeforeMs": 2886.421333,
+            "dispatchAfterMs": 2887.123041
+          },
+          "frame": {
+            "index": 66,
+            "file": "original-frames/frame_000066.png",
+            "requestedMs": 2933.150208,
+            "receivedMs": 2982.722125,
+            "metadata": {
+              "timestamp": 1792758145.0667102,
+              "timestampMeaning": "response receipt; exposure lies inside request-response interval"
+            },
+            "sha256": "a7dadc111b1ce23c27a6b5ac6cf0d55e727a4ae4ef72f81da56ea86c4bdbee35"
+          },
+          "requestAfterDispatchMs": 46.02716700000019,
+          "exposureUncertaintyMs": 49.57191699999976
+        },
+        {
+          "event": {
+            "atMs": 1992,
+            "type": "up",
+            "button": "left",
+            "pointer": {
+              "x": 768.6290649414062,
+              "y": 180
+            },
+            "requestedMs": 3719.119416,
+            "dispatchBeforeMs": 3720.9130410000002,
+            "dispatchAfterMs": 3721.7729999999997
+          },
+          "frame": {
+            "index": 59,
+            "file": "original-frames/frame_000059.png",
+            "requestedMs": 3730.2987909999997,
+            "receivedMs": 3763.320916,
+            "metadata": {
+              "timestamp": 1792758146.4283082,
+              "timestampMeaning": "response receipt; exposure lies inside request-response interval"
+            },
+            "sha256": "903cfddd12c2289eaba18dc5b762afe4bdba80e042fc86e9eb525d47ab610765"
+          },
+          "requestAfterDispatchMs": 8.525791000000027,
+          "exposureUncertaintyMs": 33.022125000000415
+        }
+      ],
+      "source": "metallic-head-dark/source-dark-no-preference-metallic/recording/original-frames/frame_000066.png",
+      "candidate": "metallic-head-dark/after-dark-no-preference-metallic/recording/original-frames/frame_000059.png",
+      "sourceSha256": "a7dadc111b1ce23c27a6b5ac6cf0d55e727a4ae4ef72f81da56ea86c4bdbee35",
+      "candidateSha256": "903cfddd12c2289eaba18dc5b762afe4bdba80e042fc86e9eb525d47ab610765",
+      "viewport": {
+        "width": 1280,
+        "height": 913,
+        "differentPixels": 5029,
+        "totalPixels": 1168640,
+        "absoluteChannelSum": 275497,
+        "maximumChannelDelta": 182,
+        "differenceBounds": [
+          492,
+          154,
+          785,
+          222
+        ],
+        "exactZero": false,
+        "rawDifference": "pixels-metallic-motion-head-dark/source-dark-no-preference-metallic-2-release-viewport.png"
+      },
+      "rawStage": {
+        "width": 592,
+        "height": 478,
+        "differentPixels": 5029,
+        "totalPixels": 282976,
+        "absoluteChannelSum": 275497,
+        "maximumChannelDelta": 182,
+        "differenceBounds": [
+          148,
+          154,
+          441,
+          222
+        ],
+        "exactZero": false,
+        "rawDifference": "pixels-metallic-motion-head-dark/source-dark-no-preference-metallic-2-release-rawStage.png"
+      }
+    }
+  ]
+}

@@ -1,0 +1,91 @@
+{
+  "url": "http://127.0.0.1:18115/after/?theme=dark",
+  "viewport": {
+    "width": 800,
+    "height": 600
+  },
+  "theme": "dark",
+  "reducedMotion": "reduce",
+  "backend": "screenshots",
+  "loadWaitMs": 2500,
+  "finalHoldMs": 700,
+  "requireFlutterProbe": true,
+  "stageSelector": "flutter-view",
+  "servedJs": {
+    "url": "http://127.0.0.1:18115/after/main.dart.js",
+    "sha256": "e028e72d8c97bc6ebe25d25b59ec98ee2e09101cf1ebf4807c071d4f6bb45eb6",
+    "revision": "888fa569d36486a89f57b58f0896035615efda48"
+  },
+  "provenance": {
+    "pinnedSource": "a76e57c9bbc2837e96420b2610e9c82a3271bb05",
+    "liveDeployment": "unknown",
+    "transport": "native Playwright mouse and keyboard",
+    "baseline": "no originals or goldens overwritten"
+  },
+  "targets": {
+    "dot": {
+      "x": 137.83,
+      "y": 249.14
+    },
+    "exit": {
+      "x": 30,
+      "y": 30
+    }
+  },
+  "events": [
+    {
+      "atMs": 300,
+      "type": "move",
+      "target": "dot",
+      "caption": "Hover Studio April"
+    },
+    {
+      "atMs": 700,
+      "type": "click",
+      "target": "dot",
+      "caption": "Native click pins Studio"
+    },
+    {
+      "atMs": 1000,
+      "type": "move",
+      "target": "exit",
+      "caption": "Pointer exits focused dot"
+    },
+    {
+      "atMs": 1300,
+      "type": "key",
+      "key": "Tab",
+      "caption": "Tab traverses to Studio May"
+    },
+    {
+      "atMs": 1650,
+      "type": "key",
+      "key": "Home",
+      "caption": "Home does not select a series"
+    },
+    {
+      "atMs": 1950,
+      "type": "key",
+      "key": "Enter",
+      "caption": "Enter toggles Studio"
+    },
+    {
+      "atMs": 2250,
+      "type": "key",
+      "key": "Space",
+      "caption": "Space toggles Studio"
+    },
+    {
+      "atMs": 2550,
+      "type": "key",
+      "key": "Escape",
+      "caption": "Escape clears pin and readout"
+    },
+    {
+      "atMs": 2900,
+      "type": "key",
+      "key": "u",
+      "caption": "Replace ranks with reversed periods"
+    }
+  ]
+}

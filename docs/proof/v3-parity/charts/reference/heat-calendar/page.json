@@ -1,0 +1,1870 @@
+{
+  "url": "https://beui.dev/charts/heat-calendar",
+  "viewport": [
+    1440,
+    1000
+  ],
+  "text": "beUI Native is free — Pro mobile blocks and screens are in presale from $99\n\nReserve\nbeUI Pro for mobile\nbeUI\nComponents\nBlocks\nAgents\nCharts\nPlayground\nSponsors\nLight theme\nLight theme\nDark theme\nDark theme\nSystem theme\nSystem theme\n1.9k\nGet Pro\n\nINTRO\n\nHome\nCHARTS\n14\nSankey Chart\nNEW\nTreemap\nCandlestick Chart\nDonut Chart\nVolume Profile\nStatus Bar\nComposition Chart\nFunnel Chart\nLiquidity Heatmap\nBump Chart\nOrder Book\nHeat Calendar\nReturns Calendar\nPrice Target Fan\nCharts\nHeat Calendar\nHeat Calendar\nCopy Page\n\nComposable activity calendar with Grid, Legend, and Tooltip parts, controlled range selection, and UTC calendar dates. Supply weekly intensities to visualize activity and total a selected span.\n\nPreview\nPreview\nPreview\nUsage\nUsage\nCode\nCode\nJul\nAug\nSep\nOct\nJul 6 – Oct 23\nless\nmore\nInstall\n\nAdd it with the shadcn CLI, or copy the source manually.\n\nCLI\nCLI\nManual\nManual\nbun\nbun\nnpm\nnpm\npnpm\npnpm\nyarn\nyarn\n$ bunx --bun shadcn add @beui/\nheat-calendar\nheat-calendar\nAPI Reference\nHeatCalendar\nunit?\nstring\n\nNoun after every count, e.g. \"commits\", \"ships\".\n\n—\nweeks?\nnumber\n\nNumber of week columns.\n\n—\nmaxCount?\nnumber\n\nCount a cell at intensity 1 stands for; a cell reads `intensity × maxCount`.\n\n—\nvalues?\nnumber[][]\n\n`values[week][day]` intensities in 0..1, seven days per week. Missing values are zero.\n\n—\nendDate?\nDate\n\nLast UTC calendar day of the grid. Defaults to today after mount; explicit dates render identically in every timezone.\n\n—\ncolor?\nstring\n\nThe single hue. Any CSS color; magnitude maps to its strength, never to a second color.\n\n—\nclassName?\nstring\n—\nselection?\nHeatCalendarSelection | null\n\nControlled selection; null clears it. Cell coordinates are zero-based week/day (Monday first).\n\n—\ndefaultSelection?\nHeatCalendarSelection | null\n—\nonSelectionChange?\n((selection: HeatCalendarSelection | null) => void)\n—\nHeatCalendarGrid\nclassName?\nstring\n—\nHeatCalendarLegend\nclassName?\nstring\n—\nHeatCalendarTooltip\nclassName?\nstring\n—\nRelated components\nReturns Calendar\n\nComposable monthly returns calendar with Grid and Tooltip parts, controlled month or year selections, and compounded totals. Supply your own years and monthly percentages.\n\nPrice Target Fan\n\nComposable price target chart with Header, Plot, SVG, Axes, History, Targets, Now, Cursor, and Tooltip parts. Supply dated price history and targets; scrub with a pointer or keyboard and customize the active readout.\n\nTreemap\n\nProportional tiles that morph with your data, with value and share tooltips.\n\nAbout Heat Calendar\n\nHeat Calendar is a React contribution graph that shows activity as a grid of weeks and days in a single color, so a stronger shade means more activity. Cells spring in on a diagonal wave with Framer Motion, hovering lifts a cell and ripples its neighbours, and a shared tooltip shows the date and exact count. Clicking a cell anchors a range, and a second click locks the span with its total. The legend doubles as a filter by level.\n\nWhen to use it\nA developer profile or portfolio shows commits or deploys per day, GitHub style.\nA habit tracker, fitness or learning app shows streaks and consistency over the last few months.\nAn internal dashboard needs to total activity between two dates by clicking the start and end days.\nAccessibility\n\nEvery day is a button labeled with its count, unit and date, the selected range ends report a pressed state, and the focused cell is linked to the tooltip with aria-describedby. Escape clears the selection, and legend steps are buttons that filter the grid on focus or click. Hover lifts only run on devices that can hover. With reduced motion enabled, the entrance wave, ripple and press scale are removed and only fades remain.\n\nFAQ\nHow do I make a GitHub style contribution graph in React?\nPass HeatCalendar a values array shaped values[week][day] with intensities from 0 to 1, plus weeks, unit and maxCount, which sets the count an intensity of 1 stands for.\nWhy do the dates appear after the page loads?\nWithout endDate the grid ends on today, which is read after mount so server and client markup match. Pass endDate to render fixed dates immediately. Dates are calculated in UTC.\nCan I control the selected range?\nYes. Use selection with onSelectionChange, or defaultSelection. A selection is a start cell and optional end cell given as zero based week and day coordinates.\nContributed by\nSavva\n\nUpdated Oct 18, 2026\n\nbeUI\nPro\nLimited Offer\n\n300+ blocks and premium motion components for React and Next.js.\n\n$179 lifetime access\n\nExplore beUI Pro\nSponsors\n\nDIAMOND\n\nTracwell\n\nVisitor insights for growth\n\nIllos\n\nAnimated illustrations for product sites\n\nBecome a sponsor",
+  "elements": [
+    {
+      "tag": "svg",
+      "role": null,
+      "label": null,
+      "text": "",
+      "box": {
+        "x": -170.99627685546875,
+        "y": 0,
+        "width": 2880,
+        "height": 39
+      }
+    },
+    {
+      "tag": "svg",
+      "role": null,
+      "label": null,
+      "text": "",
+      "box": {
+        "x": -1311.7528076171875,
+        "y": 5.84375,
+        "width": 2880,
+        "height": 39
+      }
+    },
+    {
+      "tag": "svg",
+      "role": null,
+      "label": null,
+      "text": "",
+      "box": {
+        "x": 988.78125,
+        "y": 13.5,
+        "width": 12,
+        "height": 12
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "label": "Search components",
+      "text": "Search⌘K",
+      "box": {
+        "x": 1035.84375,
+        "y": 50,
+        "width": 36,
+        "height": 36
+      }
+    },
+    {
+      "tag": "svg",
+      "role": null,
+      "label": null,
+      "text": "",
+      "box": {
+        "x": 1046.84375,
+        "y": 61,
+        "width": 14,
+        "height": 14
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": "tab",
+      "label": null,
+      "text": "Light themeLight theme",
+      "box": {
+        "x": 1083.84375,
+        "y": 52,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "tag": "svg",
+      "role": null,
+      "label": null,
+      "text": "",
+      "box": {
+        "x": 1091.84375,
+        "y": 60,
+        "width": 16,
+        "height": 16
+      }
+    },
+    {
+      "tag": "svg",
+      "role": null,
+      "label": null,
+      "text": "",
+      "box": {
+        "x": 1091.84375,
+        "y": 60,
+        "width": 16,
+        "height": 16
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": "tab",
+      "label": null,
+      "text": "Dark themeDark theme",
+      "box": {
+        "x": 1115.84375,
+        "y": 52,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "tag": "svg",
+      "role": null,
+      "label": null,
+      "text": "",
+      "box": {
+        "x": 1123.84375,
+        "y": 60,
+        "width": 16,
+        "height": 16
+      }
+    },
+    {
+      "tag": "svg",
+      "role": null,
+      "label": null,
+      "text": "",
+      "box": {
+        "x": 1123.84375,
+        "y": 60,
+        "width": 16,
+        "height": 16
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": "tab",
+      "label": null,
+      "text": "System themeSystem theme",
+      "box": {
+        "x": 1147.84375,
+        "y": 52,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "tag": "svg",
+      "role": null,
+      "label": null,
+      "text": "",
+      "box": {
+        "x": 1155.84375,
+        "y": 60,
+        "width": 16,
+        "height": 16
+      }
+    },
+    {
+      "tag": "svg",
+      "role": null,
+      "label": null,
+      "text": "",
+      "box": {
+        "x": 1155.84375,
+        "y": 60,
+        "width": 16,
+        "height": 16
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "label": "Customize theme",
+      "text": "",
+      "box": {
+        "x": 1191.84375,
+        "y": 50,
+        "width": 36,
+        "height": 36
+      }
+    },
+    {
+      "tag": "svg",
+      "role": null,
+      "label": null,
+      "text": "",
+      "box": {
+        "x": 1201.84375,
+        "y": 60,
+        "width": 16,
+        "height": 16
+      }
+    },
+    {
+      "tag": "svg",
+      "role": null,
+      "label": null,
+      "text": "",
+      "box": {
+        "x": 1248.84375,
+        "y": 61,
+        "width": 14,
+        "height": 14
+      }
+    },
+    {
+      "tag": "svg",
+      "role": null,
+      "label": null,
+      "text": "",
+      "box": {
+        "x": 1378,
+        "y": 61,
+        "width": 14,
+        "height": 14
+      }
+    },
+    {
+      "tag": "svg",
+      "role": null,
+      "label": null,
+      "text": "",
+      "box": {
+        "x": 352.6875,
+        "y": 131,
+        "width": 14,
+        "height": 14
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "label": "Copy page as Markdown",
+      "text": "Copy Page",
+      "box": {
+        "x": 920.671875,
+        "y": 164,
+        "width": 102.328125,
+        "height": 32
+      }
+    },
+    {
+      "tag": "svg",
+      "role": null,
+      "label": null,
+      "text": "",
+      "box": {
+        "x": 930.671875,
+        "y": 173,
+        "width": 14,
+        "height": 14
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "label": "More page actions",
+      "text": "",
+      "box": {
+        "x": 1024,
+        "y": 164,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "tag": "svg",
+      "role": null,
+      "label": null,
+      "text": "",
+      "box": {
+        "x": 1033,
+        "y": 173,
+        "width": 14,
+        "height": 14
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": "tab",
+      "label": null,
+      "text": "PreviewPreview",
+      "box": {
+        "x": 308,
+        "y": 316,
+        "width": 80.1875,
+        "height": 32
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": "tab",
+      "label": null,
+      "text": "UsageUsage",
+      "box": {
+        "x": 392.1875,
+        "y": 316,
+        "width": 69.40625,
+        "height": 32
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": "tab",
+      "label": null,
+      "text": "CodeCode",
+      "box": {
+        "x": 465.59375,
+        "y": 316,
+        "width": 62.40625,
+        "height": 32
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "label": "Expand preview",
+      "text": "",
+      "box": {
+        "x": 1016,
+        "y": 312,
+        "width": 40,
+        "height": 40
+      }
+    },
+    {
+      "tag": "svg",
+      "role": null,
+      "label": null,
+      "text": "",
+      "box": {
+        "x": 1028,
+        "y": 324,
+        "width": 16,
+        "height": 16
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "label": "0 commits on Mon, Jul 6",
+      "text": "",
+      "box": {
+        "x": 520,
+        "y": 452,
+        "width": 20,
+        "height": 20
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "label": "3 commits on Tue, Jul 7",
+      "text": "",
+      "box": {
+        "x": 520,
+        "y": 472,
+        "width": 20,
+        "height": 20
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "label": "0 commits on Wed, Jul 8",
+      "text": "",
+      "box": {
+        "x": 520,
+        "y": 492,
+        "width": 20,
+        "height": 20
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "label": "4 commits on Thu, Jul 9",
+      "text": "",
+      "box": {
+        "x": 520,
+        "y": 512,
+        "width": 20,
+        "height": 20
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "label": "3 commits on Fri, Jul 10",
+      "text": "",
+      "box": {
+        "x": 520,
+        "y": 532,
+        "width": 20,
+        "height": 20
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "label": "0 commits on Sat, Jul 11",
+      "text": "",
+      "box": {
+        "x": 520,
+        "y": 552,
+        "width": 20,
+        "height": 20
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "label": "8 commits on Sun, Jul 12",
+      "text": "",
+      "box": {
+        "x": 520,
+        "y": 572,
+        "width": 20,
+        "height": 20
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "label": "13 commits on Mon, Jul 13",
+      "text": "",
+      "box": {
+        "x": 540,
+        "y": 452,
+        "width": 20,
+        "height": 20
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "label": "10 commits on Tue, Jul 14",
+      "text": "",
+      "box": {
+        "x": 540,
+        "y": 472,
+        "width": 20,
+        "height": 20
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "label": "1 commits on Wed, Jul 15",
+      "text": "",
+      "box": {
+        "x": 540,
+        "y": 492,
+        "width": 20,
+        "height": 20
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "label": "6 commits on Thu, Jul 16",
+      "text": "",
+      "box": {
+        "x": 540,
+        "y": 512,
+        "width": 20,
+        "height": 20
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "label": "12 commits on Fri, Jul 17",
+      "text": "",
+      "box": {
+        "x": 540,
+        "y": 532,
+        "width": 20,
+        "height": 20
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "label": "0 commits on Sat, Jul 18",
+      "text": "",
+      "box": {
+        "x": 540,
+        "y": 552,
+        "width": 20,
+        "height": 20
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "label": "5 commits on Sun, Jul 19",
+      "text": "",
+      "box": {
+        "x": 540,
+        "y": 572,
+        "width": 20,
+        "height": 20
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "label": "1 commits on Mon, Jul 20",
+      "text": "",
+      "box": {
+        "x": 560,
+        "y": 452,
+        "width": 20,
+        "height": 20
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "label": "8 commits on Tue, Jul 21",
+      "text": "",
+      "box": {
+        "x": 560,
+        "y": 472,
+        "width": 20,
+        "height": 20
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "label": "5 commits on Wed, Jul 22",
+      "text": "",
+      "box": {
+        "x": 560,
+        "y": 492,
+        "width": 20,
+        "height": 20
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "label": "4 commits on Thu, Jul 23",
+      "text": "",
+      "box": {
+        "x": 560,
+        "y": 512,
+        "width": 20,
+        "height": 20
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "label": "8 commits on Fri, Jul 24",
+      "text": "",
+      "box": {
+        "x": 560,
+        "y": 532,
+        "width": 20,
+        "height": 20
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "label": "0 commits on Sat, Jul 25",
+      "text": "",
+      "box": {
+        "x": 560,
+        "y": 552,
+        "width": 20,
+        "height": 20
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "label": "0 commits on Sun, Jul 26",
+      "text": "",
+      "box": {
+        "x": 560,
+        "y": 572,
+        "width": 20,
+        "height": 20
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "label": "8 commits on Mon, Jul 27",
+      "text": "",
+      "box": {
+        "x": 580,
+        "y": 452,
+        "width": 20,
+        "height": 20
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "label": "6 commits on Tue, Jul 28",
+      "text": "",
+      "box": {
+        "x": 580,
+        "y": 472,
+        "width": 20,
+        "height": 20
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "label": "5 commits on Wed, Jul 29",
+      "text": "",
+      "box": {
+        "x": 580,
+        "y": 492,
+        "width": 20,
+        "height": 20
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "label": "13 commits on Thu, Jul 30",
+      "text": "",
+      "box": {
+        "x": 580,
+        "y": 512,
+        "width": 20,
+        "height": 20
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "label": "0 commits on Fri, Jul 31",
+      "text": "",
+      "box": {
+        "x": 580,
+        "y": 532,
+        "width": 20,
+        "height": 20
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "label": "5 commits on Sat, Aug 1",
+      "text": "",
+      "box": {
+        "x": 580,
+        "y": 552,
+        "width": 20,
+        "height": 20
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "label": "0 commits on Sun, Aug 2",
+      "text": "",
+      "box": {
+        "x": 580,
+        "y": 572,
+        "width": 20,
+        "height": 20
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "label": "5 commits on Mon, Aug 3",
+      "text": "",
+      "box": {
+        "x": 600,
+        "y": 452,
+        "width": 20,
+        "height": 20
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "label": "4 commits on Tue, Aug 4",
+      "text": "",
+      "box": {
+        "x": 600,
+        "y": 472,
+        "width": 20,
+        "height": 20
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "label": "13 commits on Wed, Aug 5",
+      "text": "",
+      "box": {
+        "x": 600,
+        "y": 492,
+        "width": 20,
+        "height": 20
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "label": "9 commits on Thu, Aug 6",
+      "text": "",
+      "box": {
+        "x": 600,
+        "y": 512,
+        "width": 20,
+        "height": 20
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "label": "1 commits on Fri, Aug 7",
+      "text": "",
+      "box": {
+        "x": 600,
+        "y": 532,
+        "width": 20,
+        "height": 20
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "label": "0 commits on Sat, Aug 8",
+      "text": "",
+      "box": {
+        "x": 600,
+        "y": 552,
+        "width": 20,
+        "height": 20
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "label": "5 commits on Sun, Aug 9",
+      "text": "",
+      "box": {
+        "x": 600,
+        "y": 572,
+        "width": 20,
+        "height": 20
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "label": "6 commits on Mon, Aug 10",
+      "text": "",
+      "box": {
+        "x": 620,
+        "y": 452,
+        "width": 20,
+        "height": 20
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "label": "12 commits on Tue, Aug 11",
+      "text": "",
+      "box": {
+        "x": 620,
+        "y": 472,
+        "width": 20,
+        "height": 20
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "label": "8 commits on Wed, Aug 12",
+      "text": "",
+      "box": {
+        "x": 620,
+        "y": 492,
+        "width": 20,
+        "height": 20
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "label": "13 commits on Thu, Aug 13",
+      "text": "",
+      "box": {
+        "x": 620,
+        "y": 512,
+        "width": 20,
+        "height": 20
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "label": "4 commits on Fri, Aug 14",
+      "text": "",
+      "box": {
+        "x": 620,
+        "y": 532,
+        "width": 20,
+        "height": 20
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "label": "0 commits on Sat, Aug 15",
+      "text": "",
+      "box": {
+        "x": 620,
+        "y": 552,
+        "width": 20,
+        "height": 20
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "label": "0 commits on Sun, Aug 16",
+      "text": "",
+      "box": {
+        "x": 620,
+        "y": 572,
+        "width": 20,
+        "height": 20
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "label": "9 commits on Mon, Aug 17",
+      "text": "",
+      "box": {
+        "x": 640,
+        "y": 452,
+        "width": 20,
+        "height": 20
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "label": "11 commits on Tue, Aug 18",
+      "text": "",
+      "box": {
+        "x": 640,
+        "y": 472,
+        "width": 20,
+        "height": 20
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "label": "8 commits on Wed, Aug 19",
+      "text": "",
+      "box": {
+        "x": 640,
+        "y": 492,
+        "width": 20,
+        "height": 20
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "label": "10 commits on Thu, Aug 20",
+      "text": "",
+      "box": {
+        "x": 640,
+        "y": 512,
+        "width": 20,
+        "height": 20
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "label": "14 commits on Fri, Aug 21",
+      "text": "",
+      "box": {
+        "x": 640,
+        "y": 532,
+        "width": 20,
+        "height": 20
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "label": "3 commits on Sat, Aug 22",
+      "text": "",
+      "box": {
+        "x": 640,
+        "y": 552,
+        "width": 20,
+        "height": 20
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "label": "0 commits on Sun, Aug 23",
+      "text": "",
+      "box": {
+        "x": 640,
+        "y": 572,
+        "width": 20,
+        "height": 20
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "label": "2 commits on Mon, Aug 24",
+      "text": "",
+      "box": {
+        "x": 660,
+        "y": 452,
+        "width": 20,
+        "height": 20
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "label": "7 commits on Tue, Aug 25",
+      "text": "",
+      "box": {
+        "x": 660,
+        "y": 472,
+        "width": 20,
+        "height": 20
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "label": "8 commits on Wed, Aug 26",
+      "text": "",
+      "box": {
+        "x": 660,
+        "y": 492,
+        "width": 20,
+        "height": 20
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "label": "2 commits on Thu, Aug 27",
+      "text": "",
+      "box": {
+        "x": 660,
+        "y": 512,
+        "width": 20,
+        "height": 20
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "label": "6 commits on Fri, Aug 28",
+      "text": "",
+      "box": {
+        "x": 660,
+        "y": 532,
+        "width": 20,
+        "height": 20
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "label": "7 commits on Sat, Aug 29",
+      "text": "",
+      "box": {
+        "x": 660,
+        "y": 552,
+        "width": 20,
+        "height": 20
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "label": "0 commits on Sun, Aug 30",
+      "text": "",
+      "box": {
+        "x": 660,
+        "y": 572,
+        "width": 20,
+        "height": 20
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "label": "5 commits on Mon, Aug 31",
+      "text": "",
+      "box": {
+        "x": 680,
+        "y": 452,
+        "width": 20,
+        "height": 20
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "label": "7 commits on Tue, Sep 1",
+      "text": "",
+      "box": {
+        "x": 680,
+        "y": 472,
+        "width": 20,
+        "height": 20
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "label": "8 commits on Wed, Sep 2",
+      "text": "",
+      "box": {
+        "x": 680,
+        "y": 492,
+        "width": 20,
+        "height": 20
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "label": "12 commits on Thu, Sep 3",
+      "text": "",
+      "box": {
+        "x": 680,
+        "y": 512,
+        "width": 20,
+        "height": 20
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "label": "0 commits on Fri, Sep 4",
+      "text": "",
+      "box": {
+        "x": 680,
+        "y": 532,
+        "width": 20,
+        "height": 20
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "label": "2 commits on Sat, Sep 5",
+      "text": "",
+      "box": {
+        "x": 680,
+        "y": 552,
+        "width": 20,
+        "height": 20
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "label": "2 commits on Sun, Sep 6",
+      "text": "",
+      "box": {
+        "x": 680,
+        "y": 572,
+        "width": 20,
+        "height": 20
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "label": "8 commits on Mon, Sep 7",
+      "text": "",
+      "box": {
+        "x": 700,
+        "y": 452,
+        "width": 20,
+        "height": 20
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "label": "7 commits on Tue, Sep 8",
+      "text": "",
+      "box": {
+        "x": 700,
+        "y": 472,
+        "width": 20,
+        "height": 20
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "label": "8 commits on Wed, Sep 9",
+      "text": "",
+      "box": {
+        "x": 700,
+        "y": 492,
+        "width": 20,
+        "height": 20
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "label": "1 commits on Thu, Sep 10",
+      "text": "",
+      "box": {
+        "x": 700,
+        "y": 512,
+        "width": 20,
+        "height": 20
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "label": "7 commits on Fri, Sep 11",
+      "text": "",
+      "box": {
+        "x": 700,
+        "y": 532,
+        "width": 20,
+        "height": 20
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "label": "8 commits on Sat, Sep 12",
+      "text": "",
+      "box": {
+        "x": 700,
+        "y": 552,
+        "width": 20,
+        "height": 20
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "label": "0 commits on Sun, Sep 13",
+      "text": "",
+      "box": {
+        "x": 700,
+        "y": 572,
+        "width": 20,
+        "height": 20
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "label": "14 commits on Mon, Sep 14",
+      "text": "",
+      "box": {
+        "x": 720,
+        "y": 452,
+        "width": 20,
+        "height": 20
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "label": "0 commits on Tue, Sep 15",
+      "text": "",
+      "box": {
+        "x": 720,
+        "y": 472,
+        "width": 20,
+        "height": 20
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "label": "5 commits on Wed, Sep 16",
+      "text": "",
+      "box": {
+        "x": 720,
+        "y": 492,
+        "width": 20,
+        "height": 20
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "label": "4 commits on Thu, Sep 17",
+      "text": "",
+      "box": {
+        "x": 720,
+        "y": 512,
+        "width": 20,
+        "height": 20
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "label": "8 commits on Fri, Sep 18",
+      "text": "",
+      "box": {
+        "x": 720,
+        "y": 532,
+        "width": 20,
+        "height": 20
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "label": "6 commits on Sat, Sep 19",
+      "text": "",
+      "box": {
+        "x": 720,
+        "y": 552,
+        "width": 20,
+        "height": 20
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "label": "4 commits on Sun, Sep 20",
+      "text": "",
+      "box": {
+        "x": 720,
+        "y": 572,
+        "width": 20,
+        "height": 20
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "label": "11 commits on Mon, Sep 21",
+      "text": "",
+      "box": {
+        "x": 740,
+        "y": 452,
+        "width": 20,
+        "height": 20
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "label": "8 commits on Tue, Sep 22",
+      "text": "",
+      "box": {
+        "x": 740,
+        "y": 472,
+        "width": 20,
+        "height": 20
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "label": "13 commits on Wed, Sep 23",
+      "text": "",
+      "box": {
+        "x": 740,
+        "y": 492,
+        "width": 20,
+        "height": 20
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "label": "10 commits on Thu, Sep 24",
+      "text": "",
+      "box": {
+        "x": 740,
+        "y": 512,
+        "width": 20,
+        "height": 20
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "label": "10 commits on Fri, Sep 25",
+      "text": "",
+      "box": {
+        "x": 740,
+        "y": 532,
+        "width": 20,
+        "height": 20
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "label": "0 commits on Sat, Sep 26",
+      "text": "",
+      "box": {
+        "x": 740,
+        "y": 552,
+        "width": 20,
+        "height": 20
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "label": "6 commits on Sun, Sep 27",
+      "text": "",
+      "box": {
+        "x": 740,
+        "y": 572,
+        "width": 20,
+        "height": 20
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "label": "3 commits on Mon, Sep 28",
+      "text": "",
+      "box": {
+        "x": 760,
+        "y": 452,
+        "width": 20,
+        "height": 20
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "label": "9 commits on Tue, Sep 29",
+      "text": "",
+      "box": {
+        "x": 760,
+        "y": 472,
+        "width": 20,
+        "height": 20
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "label": "11 commits on Wed, Sep 30",
+      "text": "",
+      "box": {
+        "x": 760,
+        "y": 492,
+        "width": 20,
+        "height": 20
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "label": "9 commits on Thu, Oct 1",
+      "text": "",
+      "box": {
+        "x": 760,
+        "y": 512,
+        "width": 20,
+        "height": 20
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "label": "9 commits on Fri, Oct 2",
+      "text": "",
+      "box": {
+        "x": 760,
+        "y": 532,
+        "width": 20,
+        "height": 20
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "label": "7 commits on Sat, Oct 3",
+      "text": "",
+      "box": {
+        "x": 760,
+        "y": 552,
+        "width": 20,
+        "height": 20
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "label": "3 commits on Sun, Oct 4",
+      "text": "",
+      "box": {
+        "x": 760,
+        "y": 572,
+        "width": 20,
+        "height": 20
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "label": "14 commits on Mon, Oct 5",
+      "text": "",
+      "box": {
+        "x": 780,
+        "y": 452,
+        "width": 20,
+        "height": 20
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "label": "6 commits on Tue, Oct 6",
+      "text": "",
+      "box": {
+        "x": 780,
+        "y": 472,
+        "width": 20,
+        "height": 20
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "label": "3 commits on Wed, Oct 7",
+      "text": "",
+      "box": {
+        "x": 780,
+        "y": 492,
+        "width": 20,
+        "height": 20
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "label": "2 commits on Thu, Oct 8",
+      "text": "",
+      "box": {
+        "x": 780,
+        "y": 512,
+        "width": 20,
+        "height": 20
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "label": "0 commits on Fri, Oct 9",
+      "text": "",
+      "box": {
+        "x": 780,
+        "y": 532,
+        "width": 20,
+        "height": 20
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "label": "0 commits on Sat, Oct 10",
+      "text": "",
+      "box": {
+        "x": 780,
+        "y": 552,
+        "width": 20,
+        "height": 20
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "label": "6 commits on Sun, Oct 11",
+      "text": "",
+      "box": {
+        "x": 780,
+        "y": 572,
+        "width": 20,
+        "height": 20
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "label": "11 commits on Mon, Oct 12",
+      "text": "",
+      "box": {
+        "x": 800,
+        "y": 452,
+        "width": 20,
+        "height": 20
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "label": "12 commits on Tue, Oct 13",
+      "text": "",
+      "box": {
+        "x": 800,
+        "y": 472,
+        "width": 20,
+        "height": 20
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "label": "10 commits on Wed, Oct 14",
+      "text": "",
+      "box": {
+        "x": 800,
+        "y": 492,
+        "width": 20,
+        "height": 20
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "label": "1 commits on Thu, Oct 15",
+      "text": "",
+      "box": {
+        "x": 800,
+        "y": 512,
+        "width": 20,
+        "height": 20
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "label": "6 commits on Fri, Oct 16",
+      "text": "",
+      "box": {
+        "x": 800,
+        "y": 532,
+        "width": 20,
+        "height": 20
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "label": "0 commits on Sat, Oct 17",
+      "text": "",
+      "box": {
+        "x": 800,
+        "y": 552,
+        "width": 20,
+        "height": 20
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "label": "0 commits on Sun, Oct 18",
+      "text": "",
+      "box": {
+        "x": 800,
+        "y": 572,
+        "width": 20,
+        "height": 20
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "label": "6 commits on Mon, Oct 19",
+      "text": "",
+      "box": {
+        "x": 820,
+        "y": 452,
+        "width": 20,
+        "height": 20
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "label": "5 commits on Tue, Oct 20",
+      "text": "",
+      "box": {
+        "x": 820,
+        "y": 472,
+        "width": 20,
+        "height": 20
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "label": "9 commits on Wed, Oct 21",
+      "text": "",
+      "box": {
+        "x": 820,
+        "y": 492,
+        "width": 20,
+        "height": 20
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "label": "3 commits on Thu, Oct 22",
+      "text": "",
+      "box": {
+        "x": 820,
+        "y": 512,
+        "width": 20,
+        "height": 20
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "label": "5 commits on Fri, Oct 23",
+      "text": "",
+      "box": {
+        "x": 820,
+        "y": 532,
+        "width": 20,
+        "height": 20
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "label": "Show activity level 0",
+      "text": "",
+      "box": {
+        "x": 728.0625,
+        "y": 604,
+        "width": 12,
+        "height": 12
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "label": "Show activity level 1",
+      "text": "",
+      "box": {
+        "x": 744.0625,
+        "y": 604,
+        "width": 12,
+        "height": 12
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "label": "Show activity level 2",
+      "text": "",
+      "box": {
+        "x": 760.0625,
+        "y": 604,
+        "width": 12,
+        "height": 12
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "label": "Show activity level 3",
+      "text": "",
+      "box": {
+        "x": 776.0625,
+        "y": 604,
+        "width": 12,
+        "height": 12
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "label": "Show activity level 4",
+      "text": "",
+      "box": {
+        "x": 792.0625,
+        "y": 604,
+        "width": 12,
+        "height": 12
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": "tab",
+      "label": null,
+      "text": "CLICLI",
+      "box": {
+        "x": 308,
+        "y": 829,
+        "width": 49.34375,
+        "height": 32
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": "tab",
+      "label": null,
+      "text": "ManualManual",
+      "box": {
+        "x": 361.34375,
+        "y": 829,
+        "width": 76.203125,
+        "height": 32
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": "tab",
+      "label": null,
+      "text": "bunbun",
+      "box": {
+        "x": 317,
+        "y": 890,
+        "width": 41.3125,
+        "height": 28
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": "tab",
+      "label": null,
+      "text": "npmnpm",
+      "box": {
+        "x": 360.3125,
+        "y": 890,
+        "width": 44.671875,
+        "height": 28
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": "tab",
+      "label": null,
+      "text": "pnpmpnpm",
+      "box": {
+        "x": 406.984375,
+        "y": 890,
+        "width": 51.84375,
+        "height": 28
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": "tab",
+      "label": null,
+      "text": "yarnyarn",
+      "box": {
+        "x": 460.828125,
+        "y": 890,
+        "width": 44.5,
+        "height": 28
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "label": "Copy code",
+      "text": "",
+      "box": {
+        "x": 1011,
+        "y": 888,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "tag": "svg",
+      "role": null,
+      "label": null,
+      "text": "",
+      "box": {
+        "x": 1020,
+        "y": 897,
+        "width": 14,
+        "height": 14
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "label": null,
+      "text": "About Heat Calendar",
+      "box": {
+        "x": 292,
+        "y": 2968.5625,
+        "width": 776,
+        "height": 40
+      }
+    },
+    {
+      "tag": "svg",
+      "role": null,
+      "label": null,
+      "text": "",
+      "box": {
+        "x": 1040,
+        "y": 2980.5625,
+        "width": 16,
+        "height": 16
+      }
+    },
+    {
+      "tag": "svg",
+      "role": null,
+      "label": null,
+      "text": "",
+      "box": {
+        "x": 1299.375,
+        "y": 380.5,
+        "width": 14,
+        "height": 14
+      }
+    },
+    {
+      "tag": "svg",
+      "role": null,
+      "label": null,
+      "text": "",
+      "box": {
+        "x": 1379,
+        "y": 624.5,
+        "width": 16,
+        "height": 16
+      }
+    }
+  ]
+}

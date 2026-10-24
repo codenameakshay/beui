@@ -1,0 +1,71 @@
+--- docs/proof/v3-parity/resume-20261024/scheduler-disabled-focus/baseline-copy_menu.dart	2026-10-24 01:46:33
++++ lib/src/motion/availability_scheduler/copy_menu.dart	2026-10-24 01:46:07
+@@ -47,6 +47,7 @@
+   bool _copied = false;
+   final Set<BeuiDayKey> _picked = <BeuiDayKey>{};
+   Timer? _copiedTimer;
++  final _panelFocus = FocusScopeNode();
+ 
+   List<BeuiDayKey> get _others =>
+       BeuiDayKey.values.where((d) => d != widget.from).toList();
+@@ -54,6 +55,7 @@
+   @override
+   void dispose() {
+     _copiedTimer?.cancel();
++    _panelFocus.dispose();
+     super.dispose();
+   }
+ 
+@@ -71,6 +73,8 @@
+   void _apply(List<BeuiDayKey> targets) {
+     if (targets.isEmpty) return;
+     FocusManager.instance.primaryFocus?.unfocus();
++    // Clear the parent traversal history before the owner chooses focus.
++    _panelFocus.unfocus();
+     widget.onApply(targets);
+     _copiedTimer?.cancel();
+     setState(() {
+@@ -218,7 +222,8 @@
+         alignment: Alignment.topRight,
+         child: AnimatedBuilder(
+           animation: animation,
+-          child: panel,
++          // Keep the scope inside Align so the anchored panel stays loose.
++          child: FocusScope(node: _panelFocus, autofocus: true, child: panel),
+           builder: (context, child) {
+             final t = animation.value.clamp(0.0, 1.0);
+             if (reduce) return Opacity(opacity: t, child: child);
+@@ -330,8 +335,25 @@
+ class _FooterButtonState extends State<_FooterButton> {
+   bool _hovered = false;
+   bool _focusVisible = false;
++  final _focusNode = FocusNode();
+ 
+   @override
++  void didUpdateWidget(_FooterButton oldWidget) {
++    super.didUpdateWidget(oldWidget);
++    if (oldWidget.enabled && !widget.enabled && _focusNode.hasFocus) {
++      // A disabled action must not activate the previously focused action.
++      // Unfocus clears this menu scope's history and focuses the scope itself.
++      _focusNode.unfocus();
++    }
++  }
++
++  @override
++  void dispose() {
++    _focusNode.dispose();
++    super.dispose();
++  }
++
++  @override
+   Widget build(BuildContext context) {
+     final colors = widget.colors;
+     final enabled = widget.enabled;
+@@ -353,6 +375,7 @@
+         enabled: enabled,
+         label: widget.label,
+         child: FocusableActionDetector(
++          focusNode: _focusNode,
+           enabled: enabled,
+           shortcuts: const {
+             SingleActivator(LogicalKeyboardKey.enter): ActivateIntent(),

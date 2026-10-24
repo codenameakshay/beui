@@ -1,0 +1,44 @@
+Resolving dependencies...
+Downloading packages...
+  equatable 2.1.0 (3.0.0 available)
+  material_color_utilities 0.13.0 (0.13.1 available)
+  test_api 0.7.12 (0.7.15 available)
+  xml 7.0.1 (7.1.0 available)
+Got dependencies!
+4 packages have newer versions incompatible with dependency constraints.
+Try `flutter pub outdated` for more information.
+Resolving dependencies in `./example`...
+Downloading packages...
+Got dependencies in `./example`.
+00:00 +0: loading /Users/codenameakshay/.t3/worktrees/beui/t3-df4b55e2/test/charts/heat_calendar_native_regression_test.dart
+00:00 +0: legend pointer entry filters and scale exit clears (false)
+00:01 +1: Tab after final day filters legend and next Tab changes level (false)
+00:02 +2: removing inspected future day clears readout (false)
+00:02 +3: legend pointer entry filters and scale exit clears (true)
+00:02 +4: Tab after final day filters legend and next Tab changes level (true)
+00:03 +5: removing inspected future day clears readout (true)
+00:03 +6: semantic traversal visits days chronologically before the legend
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following assertion was thrown running a test:
+A SemanticsHandle was active at the end of the test.
+All SemanticsHandle instances must be disposed by calling dispose() on the SemanticsHandle.
+
+When the exception was thrown, this was the stack:
+#0      WidgetTester._verifySemanticsHandlesWereDisposed (package:flutter_test/src/widget_tester.dart:1074:7)
+#1      WidgetTester._endOfTestVerifications (package:flutter_test/src/widget_tester.dart:1063:5)
+#2      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1969:22)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+The test description was:
+  semantic traversal visits days chronologically before the legend
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:03 +6 -1: semantic traversal visits days chronologically before the legend [E]
+  Test failed. See exception logs above.
+  The test description was: semantic traversal visits days chronologically before the legend
+  
+00:03 +6 -1: Some tests failed.
+
+Failing tests:
+  /Users/codenameakshay/.t3/worktrees/beui/t3-df4b55e2/test/charts/heat_calendar_native_regression_test.dart: semantic traversal visits days chronologically before the legend

@@ -1,0 +1,140 @@
+{
+  "integrity": {
+    "passed": true,
+    "files": 2708,
+    "errors": []
+  },
+  "recordedBehavior": {
+    "passed": false,
+    "errors": [
+      "baseline-source/source-no-preference-accept: input trust",
+      "baseline-source/source-no-preference-reject: input trust"
+    ],
+    "runs": [
+      {
+        "run": "baseline-source/source-no-preference-accept",
+        "checks": 34,
+        "expectedDefect": false,
+        "failures": [],
+        "trustedInputs": 218
+      },
+      {
+        "run": "baseline-source/source-no-preference-reject",
+        "checks": 34,
+        "expectedDefect": false,
+        "failures": [],
+        "trustedInputs": 212
+      },
+      {
+        "run": "baseline-source/source-reduce-accept",
+        "checks": 34,
+        "expectedDefect": false,
+        "failures": [],
+        "trustedInputs": 212
+      },
+      {
+        "run": "baseline-source/source-reduce-reject",
+        "checks": 34,
+        "expectedDefect": false,
+        "failures": [],
+        "trustedInputs": 206
+      },
+      {
+        "run": "baseline-candidate-retry/candidate-no-preference-accept",
+        "checks": 34,
+        "expectedDefect": true,
+        "failures": [
+          "disabled Enter emits no proposal",
+          "disabled Enter preserves Friday"
+        ],
+        "trustedInputs": 92
+      },
+      {
+        "run": "baseline-candidate-retry/candidate-no-preference-reject",
+        "checks": 34,
+        "expectedDefect": true,
+        "failures": [
+          "disabled Enter emits no proposal"
+        ],
+        "trustedInputs": 89
+      },
+      {
+        "run": "baseline-candidate-retry/candidate-reduce-accept",
+        "checks": 34,
+        "expectedDefect": true,
+        "failures": [
+          "disabled Enter emits no proposal",
+          "disabled Enter preserves Friday"
+        ],
+        "trustedInputs": 104
+      },
+      {
+        "run": "baseline-candidate-retry/candidate-reduce-reject",
+        "checks": 34,
+        "expectedDefect": true,
+        "failures": [
+          "disabled Enter emits no proposal"
+        ],
+        "trustedInputs": 99
+      },
+      {
+        "run": "final-candidate/candidate-no-preference-accept",
+        "checks": 34,
+        "expectedDefect": false,
+        "failures": [],
+        "trustedInputs": 72
+      },
+      {
+        "run": "final-candidate/candidate-no-preference-reject",
+        "checks": 34,
+        "expectedDefect": false,
+        "failures": [],
+        "trustedInputs": 72
+      },
+      {
+        "run": "final-candidate/candidate-reduce-accept",
+        "checks": 34,
+        "expectedDefect": false,
+        "failures": [],
+        "trustedInputs": 72
+      },
+      {
+        "run": "final-candidate/candidate-reduce-reject",
+        "checks": 34,
+        "expectedDefect": false,
+        "failures": [],
+        "trustedInputs": 72
+      }
+    ]
+  },
+  "retainedFirstAttemptFailures": [
+    {
+      "run": "baseline-candidate/candidate-no-preference-accept",
+      "failures": [
+        "disabled Enter emits no proposal",
+        "disabled Enter preserves Friday",
+        "no page errors"
+      ]
+    },
+    {
+      "run": "baseline-candidate/candidate-no-preference-reject",
+      "failures": [
+        "disabled Enter emits no proposal"
+      ]
+    },
+    {
+      "run": "baseline-candidate/candidate-reduce-accept",
+      "failures": [
+        "disabled Enter emits no proposal",
+        "disabled Enter preserves Friday"
+      ]
+    },
+    {
+      "run": "baseline-candidate/candidate-reduce-reject",
+      "failures": [
+        "sequence completed"
+      ]
+    }
+  ],
+  "limits": "Checks recorded trusted native behavior and hashes; does not rerun browser, decode motion, or establish release readiness."
+}

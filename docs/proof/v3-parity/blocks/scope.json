@@ -1,0 +1,1438 @@
+{
+  "baseline": "5ec78ac30e1274727ddd185a883346e4d908e6c8",
+  "source": "a76e57c9bbc2837e96420b2610e9c82a3271bb05",
+  "registrySha256": "91e479f5b049fce71d2ad699d3728e85f201e0e083751a8eeac0bb934d639425",
+  "auditCommit": "fe9213f",
+  "rows": [
+    {
+      "id": "components/dock",
+      "family": "components",
+      "slug": "dock",
+      "galleryNewBadge": false,
+      "demo": "example/lib/demos/dock_demo.dart",
+      "demoExists": true,
+      "demoChanged": true,
+      "demoSha256": "e30bc0830fd0c00f9f0b46603c4153d1b81b4603100d13c26e3a87c50d2891da",
+      "sourceSlug": "dock",
+      "sourceUrl": "https://beui.dev/components/motion/dock",
+      "sourceFiles": [
+        {
+          "path": "components/motion/dock.tsx",
+          "sha256": "83cabddbfa41622000b1acb3122c7273dfbf396aab55724dea99f79e5af388de"
+        }
+      ],
+      "sourceExamples": [],
+      "sourcePreviewCandidates": [
+        "components/previews/motion/dock.preview.tsx"
+      ],
+      "publicWidgets": [
+        {
+          "symbol": "BeuiDock",
+          "file": "lib/src/motion/dock.dart",
+          "change": "unchanged"
+        }
+      ],
+      "requiresEvidence": true,
+      "verdict": "unverified",
+      "states": [
+        "rest",
+        "hover-exit",
+        "keyboard",
+        "reduced-motion",
+        "grouped actions separators active pill selection",
+        "pointer traverse hover exit keyboard and narrow layout"
+      ]
+    },
+    {
+      "id": "components/text-animation",
+      "family": "components",
+      "slug": "text-animation",
+      "galleryNewBadge": false,
+      "demo": "example/lib/demos/text_animation_demo.dart",
+      "demoExists": true,
+      "demoChanged": true,
+      "demoSha256": "a78a2053b4ecf7be0a18a5fbf7d0fa51ace33b9e002f41ebc676931f789536ca",
+      "sourceSlug": "text-animation",
+      "sourceUrl": "https://beui.dev/components/motion/text-animation",
+      "sourceFiles": [
+        {
+          "path": "components/motion/text-reveal.tsx",
+          "sha256": "9d3e79870b33032a9680c64600bc1b2ffdf7c30ea56e1dd2f80c165dfcc8d8ba"
+        },
+        {
+          "path": "components/motion/chromatic-text-reveal.tsx",
+          "sha256": "35c1083998c295b008735174d7cbdd72f8bd043bc171b2a666f66a0b1d6e13c3"
+        },
+        {
+          "path": "components/motion/text-shimmer.tsx",
+          "sha256": "a8ae8ca2966009a4c9d14085985cb2e571af1b5c75e8e64cb1f4dd99f3fb3236"
+        },
+        {
+          "path": "components/motion/text-cascade.tsx",
+          "sha256": "fff61ff6b7a7d376dad25e0e0768d547cd89b81b3fb912b1c52338251d8e9ebb"
+        },
+        {
+          "path": "components/motion/text-scramble.tsx",
+          "sha256": "398bdea1bb7ec795068cc0ab7fd55d6775721a7ab42fc9504c15bf47aa1c7617"
+        }
+      ],
+      "sourceExamples": [
+        {
+          "slug": "text-scramble",
+          "installSlug": "text-scramble",
+          "preview": "components/previews/motion/text-scramble.preview.tsx"
+        },
+        {
+          "slug": "chromatic-reveal",
+          "installSlug": "chromatic-text-reveal",
+          "preview": "components/previews/motion/chromatic-text-reveal.preview.tsx"
+        },
+        {
+          "slug": "reveal",
+          "installSlug": "text-reveal",
+          "preview": "components/previews/motion/text-reveal.preview.tsx"
+        },
+        {
+          "slug": "shimmer",
+          "installSlug": "text-shimmer",
+          "preview": "components/previews/motion/text-shimmer.preview.tsx"
+        },
+        {
+          "slug": "cascade",
+          "installSlug": "text-cascade",
+          "preview": "components/previews/motion/text-cascade.preview.tsx"
+        }
+      ],
+      "sourcePreviewCandidates": [
+        "components/previews/motion/text-animation.preview.tsx",
+        "components/previews/motion/text-scramble.preview.tsx",
+        "components/previews/motion/chromatic-text-reveal.preview.tsx",
+        "components/previews/motion/text-reveal.preview.tsx",
+        "components/previews/motion/text-shimmer.preview.tsx",
+        "components/previews/motion/text-cascade.preview.tsx"
+      ],
+      "publicWidgets": [
+        {
+          "symbol": "BeuiChromaticTextReveal",
+          "file": "lib/src/motion/chromatic_text_reveal.dart",
+          "change": "unchanged"
+        },
+        {
+          "symbol": "BeuiTextCascade",
+          "file": "lib/src/motion/text_cascade.dart",
+          "change": "unchanged"
+        },
+        {
+          "symbol": "BeuiTextReveal",
+          "file": "lib/src/motion/text_reveal.dart",
+          "change": "unchanged"
+        },
+        {
+          "symbol": "BeuiTextScramble",
+          "file": "lib/src/motion/text_scramble.dart",
+          "change": "added"
+        },
+        {
+          "symbol": "BeuiTextShimmer",
+          "file": "lib/src/motion/text_shimmer.dart",
+          "change": "unchanged"
+        }
+      ],
+      "requiresEvidence": true,
+      "verdict": "unverified",
+      "states": [
+        "rest",
+        "hover-exit",
+        "keyboard",
+        "reduced-motion",
+        "scramble reveal shimmer cascade chromatic all examples",
+        "scramble trigger repeat change text during animation",
+        "reveal prefix cycling word boundary and loop"
+      ]
+    },
+    {
+      "id": "components/number",
+      "family": "components",
+      "slug": "number",
+      "galleryNewBadge": false,
+      "demo": "example/lib/demos/number_demo.dart",
+      "demoExists": true,
+      "demoChanged": true,
+      "demoSha256": "b925148d6960f08eaeaad7700d8a5775c13cac40705f45d9e8597fe62af9d092",
+      "sourceSlug": "number",
+      "sourceUrl": "https://beui.dev/components/motion/number",
+      "sourceFiles": [
+        {
+          "path": "components/motion/animated-number.tsx",
+          "sha256": "60b86a1d2f9afcf7c7e91df00de4ff62f0500041a4a40b9216e25b2c89363a94"
+        },
+        {
+          "path": "components/motion/number-ticker.tsx",
+          "sha256": "122fe951f13aa06357eef56c4acb6c5f665caa87f8ac37c86b55f61d1f232975"
+        },
+        {
+          "path": "components/motion/digit-swap.tsx",
+          "sha256": "b2ac5b1189576d056691aa3fb83be9f08f726f2265c17de72ccf7a02bd2045be"
+        }
+      ],
+      "sourceExamples": [
+        {
+          "slug": "digit-swap",
+          "installSlug": "digit-swap",
+          "preview": "components/previews/motion/digit-swap.preview.tsx"
+        },
+        {
+          "slug": "ticker",
+          "installSlug": "number-ticker",
+          "preview": "components/previews/motion/number-ticker.preview.tsx"
+        },
+        {
+          "slug": "animated",
+          "installSlug": "animated-number",
+          "preview": "components/previews/motion/animated-number.preview.tsx"
+        }
+      ],
+      "sourcePreviewCandidates": [
+        "components/previews/motion/number.preview.tsx",
+        "components/previews/motion/digit-swap.preview.tsx",
+        "components/previews/motion/number-ticker.preview.tsx",
+        "components/previews/motion/animated-number.preview.tsx"
+      ],
+      "publicWidgets": [
+        {
+          "symbol": "BeuiAnimatedNumber",
+          "file": "lib/src/motion/animated_number.dart",
+          "change": "unchanged"
+        },
+        {
+          "symbol": "BeuiDigitSwap",
+          "file": "lib/src/motion/digit_swap.dart",
+          "change": "added"
+        },
+        {
+          "symbol": "BeuiNumberTicker",
+          "file": "lib/src/motion/number_ticker.dart",
+          "change": "unchanged"
+        }
+      ],
+      "requiresEvidence": true,
+      "verdict": "unverified",
+      "states": [
+        "rest",
+        "hover-exit",
+        "keyboard",
+        "reduced-motion",
+        "digit-swap mask reveal repeated Animate",
+        "number-ticker carries sign grouping decimals width changes",
+        "animated-number in-view from to and replay"
+      ]
+    },
+    {
+      "id": "blocks/infinite-masonry",
+      "family": "blocks",
+      "slug": "infinite-masonry",
+      "galleryNewBadge": true,
+      "demo": "example/lib/demos/infinite_masonry_demo.dart",
+      "demoExists": true,
+      "demoChanged": false,
+      "demoSha256": "c8838ab1757f28e4dfcc9dd27978dd904d72cc8d5d5e54633f60fd08ec5aa343",
+      "sourceSlug": "infinite-masonry",
+      "sourceUrl": "https://beui.dev/components/blocks/infinite-masonry",
+      "sourceFiles": [
+        {
+          "path": "components/motion/infinite-masonry.tsx",
+          "sha256": "df0b6f9249042fa612cdb55749ab3b8e44178267864f465527226737f2eeb36f"
+        }
+      ],
+      "sourceExamples": [],
+      "sourcePreviewCandidates": [
+        "components/previews/blocks/infinite-masonry.preview.tsx"
+      ],
+      "publicWidgets": [
+        {
+          "symbol": "BeuiInfiniteMasonry",
+          "file": "lib/src/motion/infinite_masonry.dart",
+          "change": "unchanged"
+        }
+      ],
+      "requiresEvidence": true,
+      "verdict": "unverified",
+      "states": [
+        "rest",
+        "hover-exit",
+        "keyboard",
+        "reduced-motion",
+        "variable-height cards responsive column changes",
+        "scroll load-more completion empty and exhausted",
+        "preserve positions during append"
+      ]
+    },
+    {
+      "id": "blocks/notification-stack",
+      "family": "blocks",
+      "slug": "notification-stack",
+      "galleryNewBadge": true,
+      "demo": "example/lib/demos/notification_stack_demo.dart",
+      "demoExists": true,
+      "demoChanged": false,
+      "demoSha256": "0060bf13d9098063259dccbb203b4a04996774aaf5219193189f2232ba9a2c64",
+      "sourceSlug": "notification-stack",
+      "sourceUrl": "https://beui.dev/components/blocks/notification-stack",
+      "sourceFiles": [
+        {
+          "path": "components/motion/notification-stack.tsx",
+          "sha256": "46dca1dee50b792df71a151c2c3839985ef71f6789fdd906422915a35732d711"
+        }
+      ],
+      "sourceExamples": [],
+      "sourcePreviewCandidates": [
+        "components/previews/blocks/notification-stack.preview.tsx"
+      ],
+      "publicWidgets": [
+        {
+          "symbol": "BeuiNotificationStack",
+          "file": "lib/src/motion/notification_stack.dart",
+          "change": "unchanged"
+        }
+      ],
+      "requiresEvidence": true,
+      "verdict": "unverified",
+      "states": [
+        "rest",
+        "hover-exit",
+        "keyboard",
+        "reduced-motion",
+        "summary hover focus tap expansion",
+        "enter exit dismiss and list reflow",
+        "leave and blur collapse without stale hover"
+      ]
+    },
+    {
+      "id": "blocks/project-folder",
+      "family": "blocks",
+      "slug": "project-folder",
+      "galleryNewBadge": true,
+      "demo": "example/lib/demos/project_folder_demo.dart",
+      "demoExists": true,
+      "demoChanged": true,
+      "demoSha256": "a9801c72a64623d77fdc1d4c9ac1c74435687e50db849b6d4ecb3256bc90d276",
+      "sourceSlug": "project-folder",
+      "sourceUrl": "https://beui.dev/components/blocks/project-folder",
+      "sourceFiles": [
+        {
+          "path": "components/motion/project-folder.tsx",
+          "sha256": "c8d96e9312fbe863cb141ff2c466cb780c1634797becfe4c12e658d62934d07d"
+        }
+      ],
+      "sourceExamples": [],
+      "sourcePreviewCandidates": [
+        "components/previews/blocks/project-folder.preview.tsx"
+      ],
+      "publicWidgets": [
+        {
+          "symbol": "BeuiProjectFolder",
+          "file": "lib/src/motion/project_folder.dart",
+          "change": "added"
+        }
+      ],
+      "requiresEvidence": true,
+      "verdict": "unverified",
+      "states": [
+        "rest",
+        "hover-exit",
+        "keyboard",
+        "reduced-motion",
+        "hover focus fan previews and exit",
+        "open morph overlay navigate files close and reopen",
+        "Escape focus return and empty folder"
+      ]
+    },
+    {
+      "id": "blocks/card-folder",
+      "family": "blocks",
+      "slug": "card-folder",
+      "galleryNewBadge": true,
+      "demo": "example/lib/demos/card_folder_demo.dart",
+      "demoExists": true,
+      "demoChanged": true,
+      "demoSha256": "37ab146f3e1579d0524c2c85fc758d4f7053c8793a4abcbf256d0c84440df1ea",
+      "sourceSlug": "card-folder",
+      "sourceUrl": "https://beui.dev/components/blocks/card-folder",
+      "sourceFiles": [
+        {
+          "path": "components/motion/card-folder.tsx",
+          "sha256": "0e4152ddb49f976eda6dc5693cd7c28b9d86937aa6afd3956b1bd45111510c3b"
+        }
+      ],
+      "sourceExamples": [],
+      "sourcePreviewCandidates": [
+        "components/previews/blocks/card-folder.preview.tsx"
+      ],
+      "publicWidgets": [
+        {
+          "symbol": "BeuiCardFolder",
+          "file": "lib/src/motion/card_folder.dart",
+          "change": "added"
+        }
+      ],
+      "requiresEvidence": true,
+      "verdict": "unverified",
+      "states": [
+        "rest",
+        "hover-exit",
+        "keyboard",
+        "reduced-motion",
+        "rest pocket hover reveal press release exit",
+        "card selection front back CVV reveal and hide",
+        "number ticker transition and copy feedback"
+      ]
+    },
+    {
+      "id": "blocks/knockout-bracket",
+      "family": "blocks",
+      "slug": "knockout-bracket",
+      "galleryNewBadge": true,
+      "demo": "example/lib/demos/knockout_bracket_demo.dart",
+      "demoExists": true,
+      "demoChanged": false,
+      "demoSha256": "20aeea8ebae44308ef37d6e23c51cc33a3d1fa772a076b08fb9636563923bc42",
+      "sourceSlug": "knockout-bracket",
+      "sourceUrl": "https://beui.dev/components/blocks/knockout-bracket",
+      "sourceFiles": [
+        {
+          "path": "components/motion/knockout-bracket.tsx",
+          "sha256": "877eb2ae7bbb08c60405dc01660f17819c936a99e9dcce5c36eefcfb30fa9869"
+        },
+        {
+          "path": "components/motion/knockout-wheel.tsx",
+          "sha256": "1523fa570106ff5efd8440d7511e9a17597bcf1ca09ffb14f27888526c554d9b"
+        }
+      ],
+      "sourceExamples": [
+        {
+          "slug": "knockout-wheel",
+          "installSlug": "knockout-wheel",
+          "preview": "components/previews/blocks/knockout-wheel.preview.tsx"
+        },
+        {
+          "slug": "knockout-bracket",
+          "installSlug": "knockout-bracket",
+          "preview": "components/previews/blocks/knockout-bracket.preview.tsx"
+        }
+      ],
+      "sourcePreviewCandidates": [
+        "components/previews/blocks/knockout-bracket.preview.tsx",
+        "components/previews/blocks/knockout-wheel.preview.tsx"
+      ],
+      "publicWidgets": [
+        {
+          "symbol": "BeuiKnockoutBracket",
+          "file": "lib/src/motion/knockout_bracket.dart",
+          "change": "unchanged"
+        },
+        {
+          "symbol": "BeuiKnockoutWheel",
+          "file": "lib/src/motion/knockout_wheel.dart",
+          "change": "unchanged"
+        }
+      ],
+      "requiresEvidence": true,
+      "verdict": "unverified",
+      "states": [
+        "rest",
+        "hover-exit",
+        "keyboard",
+        "reduced-motion",
+        "bracket and wheel separately",
+        "round next previous champion and third-place",
+        "hover focus fixture and reverse navigation"
+      ]
+    },
+    {
+      "id": "blocks/availability-scheduler",
+      "family": "blocks",
+      "slug": "availability-scheduler",
+      "galleryNewBadge": true,
+      "demo": "example/lib/demos/availability_scheduler_demo.dart",
+      "demoExists": true,
+      "demoChanged": false,
+      "demoSha256": "ac2eb4ff7cd1ebc6312bece1d72b11c9be62223b690e51b36202b07e11d443d2",
+      "sourceSlug": "availability-scheduler",
+      "sourceUrl": "https://beui.dev/components/blocks/availability-scheduler",
+      "sourceFiles": [
+        {
+          "path": "components/motion/availability-scheduler/index.tsx",
+          "sha256": "3c8206e6bbaf93531626e377d5bf2c225f666d44bfaed36085c8df9f0cbe2b52"
+        }
+      ],
+      "sourceExamples": [],
+      "sourcePreviewCandidates": [
+        "components/previews/blocks/availability-scheduler.preview.tsx"
+      ],
+      "publicWidgets": [
+        {
+          "symbol": "BeuiAvailabilityScheduler",
+          "file": "lib/src/motion/availability_scheduler/availability_scheduler.dart",
+          "change": "unchanged"
+        }
+      ],
+      "requiresEvidence": true,
+      "verdict": "unverified",
+      "states": [
+        "rest",
+        "hover-exit",
+        "keyboard",
+        "reduced-motion",
+        "available unavailable day toggle",
+        "add remove time range invalid overlap",
+        "copy-menu choose days apply outside close"
+      ]
+    },
+    {
+      "id": "blocks/swap",
+      "family": "blocks",
+      "slug": "swap",
+      "galleryNewBadge": false,
+      "demo": "example/lib/demos/swap_demo.dart",
+      "demoExists": true,
+      "demoChanged": false,
+      "demoSha256": "b26032e1b24330d87c3725dce436be63143d4edcf6e800a7f247df55f978a4d0",
+      "sourceSlug": "swap",
+      "sourceUrl": "https://beui.dev/components/blocks/swap",
+      "sourceFiles": [
+        {
+          "path": "components/motion/swap.tsx",
+          "sha256": "147ffe8b0ac7ddae0f067c84ff9d5b8767f68004c7d07a421e09b4f71cb521a2"
+        }
+      ],
+      "sourceExamples": [],
+      "sourcePreviewCandidates": [
+        "components/previews/blocks/swap.preview.tsx"
+      ],
+      "publicWidgets": [
+        {
+          "symbol": "BeuiMultiChainSwap",
+          "file": "lib/src/motion/swap/swap.dart",
+          "change": "unchanged"
+        }
+      ],
+      "requiresEvidence": false,
+      "verdict": "unverified",
+      "states": [
+        "rest",
+        "hover-exit",
+        "keyboard",
+        "reduced-motion",
+        "token and chain picker filter select Escape",
+        "reverse quote loading success error",
+        "amount keyboard entry and busy lockout"
+      ]
+    },
+    {
+      "id": "blocks/dynamic-island",
+      "family": "blocks",
+      "slug": "dynamic-island",
+      "galleryNewBadge": false,
+      "demo": "example/lib/demos/dynamic_island_demo.dart",
+      "demoExists": true,
+      "demoChanged": true,
+      "demoSha256": "a47a0d212ca402fec3858fd43c049bd10fc4e8f91c546e323d503fe94d7f5ade",
+      "sourceSlug": "dynamic-island",
+      "sourceUrl": "https://beui.dev/components/blocks/dynamic-island",
+      "sourceFiles": [
+        {
+          "path": "components/motion/dynamic-island.tsx",
+          "sha256": "4d5973955548b6d951ad09c3fba8873437fe2d9a21c0524a4a62f16bf3965b20"
+        }
+      ],
+      "sourceExamples": [],
+      "sourcePreviewCandidates": [
+        "components/previews/blocks/dynamic-island.preview.tsx"
+      ],
+      "publicWidgets": [
+        {
+          "symbol": "BeuiDynamicIsland",
+          "file": "lib/src/motion/dynamic_island.dart",
+          "change": "unchanged"
+        }
+      ],
+      "requiresEvidence": true,
+      "verdict": "unverified",
+      "states": [
+        "rest",
+        "hover-exit",
+        "keyboard",
+        "reduced-motion",
+        "compact every expanded view and back",
+        "slot unfurl suction text and measured dimensions",
+        "rapid controlled view change and empty view"
+      ]
+    },
+    {
+      "id": "blocks/command-palette",
+      "family": "blocks",
+      "slug": "command-palette",
+      "galleryNewBadge": false,
+      "demo": "example/lib/demos/command_palette_demo.dart",
+      "demoExists": true,
+      "demoChanged": false,
+      "demoSha256": "e9da6cd4e1b4ee8b9854863bdead53773d56506d807a552a40b91bd27925efe6",
+      "sourceSlug": "command-palette",
+      "sourceUrl": "https://beui.dev/components/blocks/command-palette",
+      "sourceFiles": [
+        {
+          "path": "components/motion/command-palette.tsx",
+          "sha256": "ca1868e0398556fa3cd9bf3602b661de025acef9bc2c6dce088e34940bd09b08"
+        }
+      ],
+      "sourceExamples": [],
+      "sourcePreviewCandidates": [
+        "components/previews/blocks/command-palette.preview.tsx"
+      ],
+      "publicWidgets": [
+        {
+          "symbol": "BeuiCommandPalette",
+          "file": "lib/src/motion/command_palette.dart",
+          "change": "unchanged"
+        }
+      ],
+      "requiresEvidence": false,
+      "verdict": "unverified",
+      "states": [
+        "rest",
+        "hover-exit",
+        "keyboard",
+        "reduced-motion",
+        "Meta Control K open Escape close",
+        "filter arrows enter hover active row",
+        "focus trap scroll-into-view empty query and no matches"
+      ]
+    },
+    {
+      "id": "blocks/morphing-search",
+      "family": "blocks",
+      "slug": "morphing-search",
+      "galleryNewBadge": true,
+      "demo": "example/lib/demos/morphing_search_demo.dart",
+      "demoExists": true,
+      "demoChanged": true,
+      "demoSha256": "5cf973b7b0c8667e26a6ea713e247dce8a5107ecadd5985976b902e21f3207c0",
+      "sourceSlug": "morphing-search",
+      "sourceUrl": "https://beui.dev/components/blocks/morphing-search",
+      "sourceFiles": [
+        {
+          "path": "components/motion/morphing-search.tsx",
+          "sha256": "01b0391a6cacfdd7e0e9125ed5f3b223ac8f8c58b725f3f01c6634cad96a8669"
+        },
+        {
+          "path": "components/motion/morphing-search-chips.tsx",
+          "sha256": "021df9f5e67f5aa3af58f81f9bc91768bb255135cc3525bc51f7efd91c318ee8"
+        }
+      ],
+      "sourceExamples": [
+        {
+          "slug": "chips",
+          "installSlug": "morphing-search-chips",
+          "preview": "components/previews/blocks/morphing-search-chips.preview.tsx"
+        },
+        {
+          "slug": "overlay",
+          "installSlug": "morphing-search",
+          "preview": "components/previews/blocks/morphing-search.preview.tsx"
+        }
+      ],
+      "sourcePreviewCandidates": [
+        "components/previews/blocks/morphing-search.preview.tsx",
+        "components/previews/blocks/morphing-search-chips.preview.tsx"
+      ],
+      "publicWidgets": [
+        {
+          "symbol": "BeuiMorphingSearch",
+          "file": "lib/src/motion/morphing_search.dart",
+          "change": "added"
+        },
+        {
+          "symbol": "BeuiMorphingSearchChips",
+          "file": "lib/src/motion/morphing_search_chips.dart",
+          "change": "added"
+        }
+      ],
+      "requiresEvidence": true,
+      "verdict": "unverified",
+      "states": [
+        "rest",
+        "hover-exit",
+        "keyboard",
+        "reduced-motion",
+        "field and icon trigger morph open close",
+        "type matching unmatched query selection and clear",
+        "arrows Enter Escape blur and outside dismissal"
+      ]
+    },
+    {
+      "id": "blocks/morphing-search-chips",
+      "family": "blocks",
+      "slug": "morphing-search-chips",
+      "galleryNewBadge": true,
+      "demo": "example/lib/demos/morphing_search_chips_demo.dart",
+      "demoExists": true,
+      "demoChanged": true,
+      "demoSha256": "39caf4bbe599eb5e2d049bad38808a66580946440178ec0e0812cfe7cd42dd5f",
+      "sourceSlug": "morphing-search",
+      "sourceUrl": "https://beui.dev/components/blocks/morphing-search",
+      "sourceFiles": [
+        {
+          "path": "components/motion/morphing-search.tsx",
+          "sha256": "01b0391a6cacfdd7e0e9125ed5f3b223ac8f8c58b725f3f01c6634cad96a8669"
+        },
+        {
+          "path": "components/motion/morphing-search-chips.tsx",
+          "sha256": "021df9f5e67f5aa3af58f81f9bc91768bb255135cc3525bc51f7efd91c318ee8"
+        }
+      ],
+      "sourceExamples": [
+        {
+          "slug": "chips",
+          "installSlug": "morphing-search-chips",
+          "preview": "components/previews/blocks/morphing-search-chips.preview.tsx"
+        },
+        {
+          "slug": "overlay",
+          "installSlug": "morphing-search",
+          "preview": "components/previews/blocks/morphing-search.preview.tsx"
+        }
+      ],
+      "sourcePreviewCandidates": [
+        "components/previews/blocks/morphing-search.preview.tsx",
+        "components/previews/blocks/morphing-search-chips.preview.tsx"
+      ],
+      "publicWidgets": [
+        {
+          "symbol": "BeuiMorphingSearch",
+          "file": "lib/src/motion/morphing_search.dart",
+          "change": "added"
+        },
+        {
+          "symbol": "BeuiMorphingSearchChips",
+          "file": "lib/src/motion/morphing_search_chips.dart",
+          "change": "added"
+        }
+      ],
+      "requiresEvidence": true,
+      "verdict": "unverified",
+      "states": [
+        "rest",
+        "hover-exit",
+        "keyboard",
+        "reduced-motion",
+        "focus docked bar expand recents",
+        "chip add remove clear results and no matches",
+        "keyboard Escape blur and hover leave"
+      ]
+    },
+    {
+      "id": "blocks/expandable-action-bar",
+      "family": "blocks",
+      "slug": "expandable-action-bar",
+      "galleryNewBadge": false,
+      "demo": "example/lib/demos/action_rails_demo.dart",
+      "demoExists": true,
+      "demoChanged": false,
+      "demoSha256": "96fe360ca62fa12fff2df4d47ba884700c2a325abb72a58950cc6eaa437ab1a1",
+      "sourceSlug": "expandable-action-bar",
+      "sourceUrl": "https://beui.dev/components/blocks/expandable-action-bar",
+      "sourceFiles": [
+        {
+          "path": "components/motion/expandable-action-bar.tsx",
+          "sha256": "80aa363748a37bc97e2b38bb30f13a85e75a30c3542f3443b1b1a8dfb4143c5a"
+        }
+      ],
+      "sourceExamples": [],
+      "sourcePreviewCandidates": [
+        "components/previews/blocks/expandable-action-bar.preview.tsx"
+      ],
+      "publicWidgets": [
+        {
+          "symbol": "BeuiExpandableActionBar",
+          "file": "lib/src/motion/expandable_action_bar.dart",
+          "change": "unchanged"
+        }
+      ],
+      "requiresEvidence": false,
+      "verdict": "unverified",
+      "states": [
+        "rest",
+        "hover-exit",
+        "keyboard",
+        "reduced-motion",
+        "each item hover focus expansion",
+        "press action label entrance exit and touch"
+      ]
+    },
+    {
+      "id": "blocks/overflow-actions",
+      "family": "blocks",
+      "slug": "overflow-actions",
+      "galleryNewBadge": false,
+      "demo": "example/lib/demos/action_rails_demo.dart",
+      "demoExists": true,
+      "demoChanged": false,
+      "demoSha256": "96fe360ca62fa12fff2df4d47ba884700c2a325abb72a58950cc6eaa437ab1a1",
+      "sourceSlug": "overflow-actions",
+      "sourceUrl": "https://beui.dev/components/blocks/overflow-actions",
+      "sourceFiles": [
+        {
+          "path": "components/motion/overflow-actions.tsx",
+          "sha256": "e68f7a7ceab9df6a3e343073eef43c806fd11af83437416d354aa93fd6a41301"
+        }
+      ],
+      "sourceExamples": [],
+      "sourcePreviewCandidates": [
+        "components/previews/blocks/overflow-actions.preview.tsx"
+      ],
+      "publicWidgets": [
+        {
+          "symbol": "BeuiOverflowActions",
+          "file": "lib/src/motion/overflow_actions.dart",
+          "change": "unchanged"
+        }
+      ],
+      "requiresEvidence": false,
+      "verdict": "unverified",
+      "states": [
+        "rest",
+        "hover-exit",
+        "keyboard",
+        "reduced-motion",
+        "hover pill rail expand leave collapse",
+        "touch tap toggle focus and action activation"
+      ]
+    },
+    {
+      "id": "blocks/expandable-tabs",
+      "family": "blocks",
+      "slug": "expandable-tabs",
+      "galleryNewBadge": false,
+      "demo": "example/lib/demos/expandable_tabs_demo.dart",
+      "demoExists": true,
+      "demoChanged": false,
+      "demoSha256": "621ad023bf346348256549ecd20f57d2ab18ff94e1ec856794639897d1c083fe",
+      "sourceSlug": "expandable-tabs",
+      "sourceUrl": "https://beui.dev/components/blocks/expandable-tabs",
+      "sourceFiles": [
+        {
+          "path": "components/motion/expandable-tabs.tsx",
+          "sha256": "35ec18de66399f9122bc66f3672bf14bbb1cf0926cb0cab661c5dd66d6da4b1d"
+        }
+      ],
+      "sourceExamples": [],
+      "sourcePreviewCandidates": [
+        "components/previews/blocks/expandable-tabs.preview.tsx"
+      ],
+      "publicWidgets": [
+        {
+          "symbol": "BeuiExpandableTabs",
+          "file": "lib/src/motion/expandable_tabs.dart",
+          "change": "unchanged"
+        }
+      ],
+      "requiresEvidence": false,
+      "verdict": "unverified",
+      "states": [
+        "rest",
+        "hover-exit",
+        "keyboard",
+        "reduced-motion",
+        "null closed first middle last selection",
+        "outside click Escape label blur and shell resize"
+      ]
+    },
+    {
+      "id": "blocks/morphing-tabs",
+      "family": "blocks",
+      "slug": "morphing-tabs",
+      "galleryNewBadge": true,
+      "demo": "example/lib/demos/morphing_tabs_demo.dart",
+      "demoExists": true,
+      "demoChanged": true,
+      "demoSha256": "27b6b42cc5a924d226470191386e0fee77481aec30c0007c9c139ea296c829ac",
+      "sourceSlug": "morphing-tabs",
+      "sourceUrl": "https://beui.dev/components/blocks/morphing-tabs",
+      "sourceFiles": [
+        {
+          "path": "components/motion/morphing-tabs.tsx",
+          "sha256": "8741a1d1d84a134a8b1725e5f142ec4913e403da593fa8b1a77a5d3055201c19"
+        }
+      ],
+      "sourceExamples": [],
+      "sourcePreviewCandidates": [
+        "components/previews/blocks/morphing-tabs.preview.tsx"
+      ],
+      "publicWidgets": [
+        {
+          "symbol": "BeuiMorphingTabs",
+          "file": "lib/src/motion/morphing_tabs.dart",
+          "change": "added"
+        }
+      ],
+      "requiresEvidence": true,
+      "verdict": "unverified",
+      "states": [
+        "rest",
+        "hover-exit",
+        "keyboard",
+        "reduced-motion",
+        "select each tab shared surface morph",
+        "drag reorder close tab and active replacement",
+        "rapid reversal keyboard nav and controlled state"
+      ]
+    },
+    {
+      "id": "blocks/swipeable-list",
+      "family": "blocks",
+      "slug": "swipeable-list",
+      "galleryNewBadge": false,
+      "demo": "example/lib/demos/swipeable_list_demo.dart",
+      "demoExists": true,
+      "demoChanged": false,
+      "demoSha256": "1391221116de0c1ef0d1ee082fe4c60648a7fe930c531b59329edcf979c6daf8",
+      "sourceSlug": "swipeable-list",
+      "sourceUrl": "https://beui.dev/components/blocks/swipeable-list",
+      "sourceFiles": [
+        {
+          "path": "components/motion/swipeable-list.tsx",
+          "sha256": "a77023f94ff0600ce93770cd1e1f3e77fff91a12450a1d75b493698b56ffbac9"
+        }
+      ],
+      "sourceExamples": [],
+      "sourcePreviewCandidates": [
+        "components/previews/blocks/swipeable-list.preview.tsx"
+      ],
+      "publicWidgets": [
+        {
+          "symbol": "BeuiSwipeableList",
+          "file": "lib/src/motion/swipeable_list.dart",
+          "change": "unchanged"
+        }
+      ],
+      "requiresEvidence": false,
+      "verdict": "unverified",
+      "states": [
+        "rest",
+        "hover-exit",
+        "keyboard",
+        "reduced-motion",
+        "left right drag velocity snap and cancel",
+        "only one open row disabled and action activation",
+        "closed rails unfocusable and RTL"
+      ]
+    },
+    {
+      "id": "blocks/file-upload",
+      "family": "blocks",
+      "slug": "file-upload",
+      "galleryNewBadge": false,
+      "demo": "example/lib/demos/file_upload_demo.dart",
+      "demoExists": true,
+      "demoChanged": false,
+      "demoSha256": "998376277cdecdbfacefb840842f7e0ff0f46ce28b0883b840bd1f66d6e24e3c",
+      "sourceSlug": "file-upload",
+      "sourceUrl": "https://beui.dev/components/blocks/file-upload",
+      "sourceFiles": [
+        {
+          "path": "components/motion/file-upload.tsx",
+          "sha256": "6cb4f94a1d0e3b668436ae8b624ee8e9070eb6bc2602281e27045befd655dd17"
+        },
+        {
+          "path": "components/motion/attachment-upload.tsx",
+          "sha256": "dbdba67bef018eb17e3d8e9aa651a5616531542dba1b0b85678efa899aec7efa"
+        }
+      ],
+      "sourceExamples": [
+        {
+          "slug": "attachment-upload",
+          "installSlug": "attachment-upload",
+          "preview": "components/previews/blocks/attachment-upload.preview.tsx"
+        },
+        {
+          "slug": "upload-queue",
+          "installSlug": "file-upload",
+          "preview": "components/previews/blocks/file-upload.preview.tsx"
+        }
+      ],
+      "sourcePreviewCandidates": [
+        "components/previews/blocks/file-upload.preview.tsx",
+        "components/previews/blocks/attachment-upload.preview.tsx"
+      ],
+      "publicWidgets": [
+        {
+          "symbol": "BeuiAttachmentUpload",
+          "file": "lib/src/motion/attachment_upload.dart",
+          "change": "unchanged"
+        },
+        {
+          "symbol": "BeuiFileUpload",
+          "file": "lib/src/motion/file_upload.dart",
+          "change": "unchanged"
+        }
+      ],
+      "requiresEvidence": false,
+      "verdict": "unverified",
+      "states": [
+        "rest",
+        "hover-exit",
+        "keyboard",
+        "reduced-motion",
+        "attachment workspace and queue variants",
+        "drag drop picker max-files too-large disabled",
+        "queued uploading success error retry remove audio play"
+      ]
+    },
+    {
+      "id": "blocks/prediction-market",
+      "family": "blocks",
+      "slug": "prediction-market",
+      "galleryNewBadge": false,
+      "demo": "example/lib/demos/prediction_market_demo.dart",
+      "demoExists": true,
+      "demoChanged": false,
+      "demoSha256": "9ecac9e96fb07f77395f7a150b9890b82925a4fb5bc7e60092f0d022f96da2c1",
+      "sourceSlug": "prediction-market",
+      "sourceUrl": "https://beui.dev/components/blocks/prediction-market",
+      "sourceFiles": [
+        {
+          "path": "components/motion/prediction-market.tsx",
+          "sha256": "33098218d8cfa9a150f79b0514a317f9e9b0db4ad0f82ab7e38e1ae49b6fa98e"
+        },
+        {
+          "path": "components/motion/prediction-market-card.tsx",
+          "sha256": "387982bd70eb1fa83fcd0a900f59236c5417851ec697f6885c7fb14ed69351a3"
+        }
+      ],
+      "sourceExamples": [
+        {
+          "slug": "market-cards",
+          "installSlug": "prediction-market-card",
+          "preview": "components/previews/blocks/prediction-market-card.preview.tsx"
+        },
+        {
+          "slug": "trade-ticket",
+          "installSlug": "prediction-market",
+          "preview": "components/previews/blocks/prediction-market.preview.tsx"
+        }
+      ],
+      "sourcePreviewCandidates": [
+        "components/previews/blocks/prediction-market.preview.tsx",
+        "components/previews/blocks/prediction-market-card.preview.tsx"
+      ],
+      "publicWidgets": [
+        {
+          "symbol": "BeuiPredictionMarket",
+          "file": "lib/src/motion/prediction_market.dart",
+          "change": "unchanged"
+        },
+        {
+          "symbol": "BeuiPredictionMarketCard",
+          "file": "lib/src/motion/prediction_market_card.dart",
+          "change": "added"
+        }
+      ],
+      "requiresEvidence": true,
+      "verdict": "unverified",
+      "states": [
+        "rest",
+        "hover-exit",
+        "keyboard",
+        "reduced-motion",
+        "listing card plus trade ticket",
+        "buy sell outcome change amount animation",
+        "submit loading result and validation"
+      ]
+    },
+    {
+      "id": "blocks/prediction-market-card",
+      "family": "blocks",
+      "slug": "prediction-market-card",
+      "galleryNewBadge": true,
+      "demo": "example/lib/demos/prediction_market_card_demo.dart",
+      "demoExists": true,
+      "demoChanged": true,
+      "demoSha256": "508be5098869beab0f7d75a149577ae1cf8b82cceb70f78cda9e910ccd3bc1c4",
+      "sourceSlug": "prediction-market",
+      "sourceUrl": "https://beui.dev/components/blocks/prediction-market",
+      "sourceFiles": [
+        {
+          "path": "components/motion/prediction-market.tsx",
+          "sha256": "33098218d8cfa9a150f79b0514a317f9e9b0db4ad0f82ab7e38e1ae49b6fa98e"
+        },
+        {
+          "path": "components/motion/prediction-market-card.tsx",
+          "sha256": "387982bd70eb1fa83fcd0a900f59236c5417851ec697f6885c7fb14ed69351a3"
+        }
+      ],
+      "sourceExamples": [
+        {
+          "slug": "market-cards",
+          "installSlug": "prediction-market-card",
+          "preview": "components/previews/blocks/prediction-market-card.preview.tsx"
+        },
+        {
+          "slug": "trade-ticket",
+          "installSlug": "prediction-market",
+          "preview": "components/previews/blocks/prediction-market.preview.tsx"
+        }
+      ],
+      "sourcePreviewCandidates": [
+        "components/previews/blocks/prediction-market.preview.tsx",
+        "components/previews/blocks/prediction-market-card.preview.tsx"
+      ],
+      "publicWidgets": [
+        {
+          "symbol": "BeuiPredictionMarket",
+          "file": "lib/src/motion/prediction_market.dart",
+          "change": "unchanged"
+        },
+        {
+          "symbol": "BeuiPredictionMarketCard",
+          "file": "lib/src/motion/prediction_market_card.dart",
+          "change": "added"
+        }
+      ],
+      "requiresEvidence": true,
+      "verdict": "unverified",
+      "states": [
+        "rest",
+        "hover-exit",
+        "keyboard",
+        "reduced-motion",
+        "rest percent to Yes No hover morph and exit",
+        "bookmark active inactive focus activation",
+        "image caption odds and card click"
+      ]
+    },
+    {
+      "id": "blocks/wallet-card",
+      "family": "blocks",
+      "slug": "wallet-card",
+      "galleryNewBadge": true,
+      "demo": "example/lib/demos/wallet_card_demo.dart",
+      "demoExists": true,
+      "demoChanged": false,
+      "demoSha256": "125f8f4fdb3c052579fa40133a6507fb0fa1d34fff6a821ca92943d6ed854431",
+      "sourceSlug": "wallet-card",
+      "sourceUrl": "https://beui.dev/components/blocks/wallet-card",
+      "sourceFiles": [
+        {
+          "path": "components/motion/wallet-card/index.tsx",
+          "sha256": "224195b666a0b141109b4b8e631a54c3b261fbb7219205752d6b145cc2c119b1"
+        }
+      ],
+      "sourceExamples": [],
+      "sourcePreviewCandidates": [
+        "components/previews/blocks/wallet-card.preview.tsx"
+      ],
+      "publicWidgets": [
+        {
+          "symbol": "BeuiWalletCard",
+          "file": "lib/src/motion/wallet_card/wallet_card.dart",
+          "change": "unchanged"
+        }
+      ],
+      "requiresEvidence": true,
+      "verdict": "unverified",
+      "states": [
+        "rest",
+        "hover-exit",
+        "keyboard",
+        "reduced-motion",
+        "account switcher search open select close",
+        "privacy balance cascade copy feedback",
+        "Send Deposit Swap Buy action states"
+      ]
+    },
+    {
+      "id": "blocks/otp-input",
+      "family": "blocks",
+      "slug": "otp-input",
+      "galleryNewBadge": false,
+      "demo": "example/lib/demos/otp_input_demo.dart",
+      "demoExists": true,
+      "demoChanged": false,
+      "demoSha256": "ad843502f4d6895dc74d196b59b02cc5c54cd49691f9ac094d7e7fda40ddfdba",
+      "sourceSlug": "otp-input",
+      "sourceUrl": "https://beui.dev/components/blocks/otp-input",
+      "sourceFiles": [
+        {
+          "path": "components/motion/otp-input.tsx",
+          "sha256": "b43ac65bdfe26d1ff1ed25f87e82f7f6f84ef84ea5b20d77a6316b84a8afdd00"
+        }
+      ],
+      "sourceExamples": [],
+      "sourcePreviewCandidates": [
+        "components/previews/blocks/otp-input.preview.tsx"
+      ],
+      "publicWidgets": [
+        {
+          "symbol": "BeuiOtpInput",
+          "file": "lib/src/motion/otp_input.dart",
+          "change": "unchanged"
+        }
+      ],
+      "requiresEvidence": false,
+      "verdict": "unverified",
+      "states": [
+        "rest",
+        "hover-exit",
+        "keyboard",
+        "reduced-motion",
+        "empty partial full error success and mask",
+        "paste SMS autofill arrows Backspace Delete Home End",
+        "shake draw digit roll and onComplete only empty-to-full"
+      ]
+    },
+    {
+      "id": "blocks/signup-form",
+      "family": "blocks",
+      "slug": "signup-form",
+      "galleryNewBadge": true,
+      "demo": "example/lib/demos/signup_form_demo.dart",
+      "demoExists": true,
+      "demoChanged": true,
+      "demoSha256": "1fecc186287b197deed4df2278fcf43298e26af0f6e81a727cfde006e8305b2c",
+      "sourceSlug": "signup-form",
+      "sourceUrl": "https://beui.dev/components/blocks/signup-form",
+      "sourceFiles": [
+        {
+          "path": "components/motion/signup-form.tsx",
+          "sha256": "af110bd9ccd202bcf17072d37e99f7423ce2bf3e5581b7def6e2f9f57044c132"
+        }
+      ],
+      "sourceExamples": [],
+      "sourcePreviewCandidates": [
+        "components/previews/blocks/signup-form.preview.tsx"
+      ],
+      "publicWidgets": [
+        {
+          "symbol": "BeuiSignUpForm",
+          "file": "lib/src/motion/signup_form.dart",
+          "change": "added"
+        }
+      ],
+      "requiresEvidence": true,
+      "verdict": "unverified",
+      "states": [
+        "rest",
+        "hover-exit",
+        "keyboard",
+        "reduced-motion",
+        "pristine focus blur punish-late invalid fields",
+        "password visibility strength meter and corrections",
+        "submit loading success error retry and busy lockout"
+      ]
+    },
+    {
+      "id": "blocks/bloom-menu",
+      "family": "blocks",
+      "slug": "bloom-menu",
+      "galleryNewBadge": true,
+      "demo": "example/lib/demos/bloom_menu_demo.dart",
+      "demoExists": true,
+      "demoChanged": false,
+      "demoSha256": "c9e079713a3aaae05ef4a0d2b3ee0e5a3eff41d3602a1474fefd8b8c8dabd841",
+      "sourceSlug": "bloom-menu",
+      "sourceUrl": "https://beui.dev/components/blocks/bloom-menu",
+      "sourceFiles": [
+        {
+          "path": "components/motion/bloom-menu.tsx",
+          "sha256": "603252bc891f8abd23becf3d6675233fc482875b321ee34005f64258844d0415"
+        }
+      ],
+      "sourceExamples": [],
+      "sourcePreviewCandidates": [
+        "components/previews/blocks/bloom-menu.preview.tsx"
+      ],
+      "publicWidgets": [
+        {
+          "symbol": "BeuiBloomMenu",
+          "file": "lib/src/motion/bloom_menu.dart",
+          "change": "unchanged"
+        }
+      ],
+      "requiresEvidence": true,
+      "verdict": "unverified",
+      "states": [
+        "rest",
+        "hover-exit",
+        "keyboard",
+        "reduced-motion",
+        "trigger panel morph iris reveal and reverse",
+        "radial item stagger press outside Escape close",
+        "focus trap and restore"
+      ]
+    },
+    {
+      "id": "blocks/feedback-widget",
+      "family": "blocks",
+      "slug": "feedback-widget",
+      "galleryNewBadge": true,
+      "demo": "example/lib/demos/feedback_widget_demo.dart",
+      "demoExists": true,
+      "demoChanged": false,
+      "demoSha256": "95856c4255ad57f4137e1a885b3281b35d6f69c0102e2d53fe8fd718d049b9ae",
+      "sourceSlug": "feedback-widget",
+      "sourceUrl": "https://beui.dev/components/blocks/feedback-widget",
+      "sourceFiles": [
+        {
+          "path": "components/motion/feedback-widget.tsx",
+          "sha256": "5b40e052460e0afec09637ee2e35e2b854144a80dc4d9e1fd33fd36387c0e143"
+        }
+      ],
+      "sourceExamples": [],
+      "sourcePreviewCandidates": [
+        "components/previews/blocks/feedback-widget.preview.tsx"
+      ],
+      "publicWidgets": [
+        {
+          "symbol": "BeuiFeedbackWidget",
+          "file": "lib/src/motion/feedback_widget.dart",
+          "change": "unchanged"
+        }
+      ],
+      "requiresEvidence": true,
+      "verdict": "unverified",
+      "states": [
+        "rest",
+        "hover-exit",
+        "keyboard",
+        "reduced-motion",
+        "trigger open draft close reopen",
+        "empty invalid sending success failure retry",
+        "text keyboard submit outside Escape"
+      ]
+    },
+    {
+      "id": "blocks/not-found",
+      "family": "blocks",
+      "slug": "not-found",
+      "galleryNewBadge": false,
+      "demo": "example/lib/demos/not_found_demo.dart",
+      "demoExists": true,
+      "demoChanged": false,
+      "demoSha256": "c71d7dae23e6980e01f781d16ffe06d08e8109fabc2dc9488253972a02f8bcf6",
+      "sourceSlug": "not-found",
+      "sourceUrl": "https://beui.dev/components/blocks/not-found",
+      "sourceFiles": [
+        {
+          "path": "components/motion/not-found/index.tsx",
+          "sha256": "df94905c8d6bbf61e8b1bc02382d62f05aeb9fe84c21c18e3acdd3c0d024ea1d"
+        },
+        {
+          "path": "components/motion/not-found/shared.tsx",
+          "sha256": "b1e779139cf21f4298a473288a797e8bb18454015111836986090cb2d7638ff9"
+        },
+        {
+          "path": "components/motion/not-found/glitch.tsx",
+          "sha256": "0ba47583401ff24673fc555a4fac60eec79c7970f3d15206c6318fc9701be6a4"
+        },
+        {
+          "path": "components/motion/not-found/magnetic.tsx",
+          "sha256": "85e1a04fc8e62977e6a2703f7ed0bf9e8d3ecefc6a1c348074ab19e4a815a59b"
+        },
+        {
+          "path": "components/motion/not-found/spotlight.tsx",
+          "sha256": "e8cec908005a1801e37cba336e9271d65ff0068c6dc11b82c59d045a9820b28c"
+        },
+        {
+          "path": "components/motion/not-found/stacked.tsx",
+          "sha256": "697577c99f6ed16a499d8f0873fe5b3a6747b72cae95ba8de76f410c7ffab53b"
+        },
+        {
+          "path": "components/motion/not-found/terminal.tsx",
+          "sha256": "dc4f29b56320a24031250f3ae680e838916ac33546d720a68cfc55cb36be2311"
+        }
+      ],
+      "sourceExamples": [
+        {
+          "slug": "glitch",
+          "installSlug": "not-found-glitch",
+          "preview": "components/previews/blocks/not-found-glitch.preview.tsx"
+        },
+        {
+          "slug": "magnetic",
+          "installSlug": "not-found-magnetic",
+          "preview": "components/previews/blocks/not-found-magnetic.preview.tsx"
+        },
+        {
+          "slug": "spotlight",
+          "installSlug": "not-found-spotlight",
+          "preview": "components/previews/blocks/not-found-spotlight.preview.tsx"
+        },
+        {
+          "slug": "stacked",
+          "installSlug": "not-found-stacked",
+          "preview": "components/previews/blocks/not-found-stacked.preview.tsx"
+        },
+        {
+          "slug": "terminal",
+          "installSlug": "not-found-terminal",
+          "preview": "components/previews/blocks/not-found-terminal.preview.tsx"
+        }
+      ],
+      "sourcePreviewCandidates": [
+        "components/previews/blocks/not-found-glitch.preview.tsx",
+        "components/previews/blocks/not-found-magnetic.preview.tsx",
+        "components/previews/blocks/not-found-spotlight.preview.tsx",
+        "components/previews/blocks/not-found-stacked.preview.tsx",
+        "components/previews/blocks/not-found-terminal.preview.tsx"
+      ],
+      "publicWidgets": [
+        {
+          "symbol": "BeuiMagneticButton",
+          "file": "lib/src/motion/button/magnetic.dart",
+          "change": "unchanged"
+        },
+        {
+          "symbol": "BeuiMagnetic",
+          "file": "lib/src/motion/magnetic.dart",
+          "change": "unchanged"
+        },
+        {
+          "symbol": "BeuiNotFoundGlitch",
+          "file": "lib/src/motion/not_found.dart",
+          "change": "unchanged"
+        },
+        {
+          "symbol": "BeuiNotFoundMagnetic",
+          "file": "lib/src/motion/not_found.dart",
+          "change": "unchanged"
+        },
+        {
+          "symbol": "BeuiNotFoundSpotlight",
+          "file": "lib/src/motion/not_found.dart",
+          "change": "unchanged"
+        },
+        {
+          "symbol": "BeuiNotFoundStacked",
+          "file": "lib/src/motion/not_found.dart",
+          "change": "unchanged"
+        },
+        {
+          "symbol": "BeuiNotFoundTerminal",
+          "file": "lib/src/motion/not_found.dart",
+          "change": "unchanged"
+        }
+      ],
+      "requiresEvidence": false,
+      "verdict": "unverified",
+      "states": [
+        "rest",
+        "hover-exit",
+        "keyboard",
+        "reduced-motion",
+        "glitch magnetic spotlight stacked terminal",
+        "CTA press hover exit and touch fallback",
+        "terminal type-in and loop boundaries"
+      ]
+    }
+  ]
+}

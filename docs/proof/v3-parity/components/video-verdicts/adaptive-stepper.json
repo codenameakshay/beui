@@ -1,0 +1,114 @@
+{
+  "id": "components/adaptive-stepper",
+  "owner": "components",
+  "newBadge": true,
+  "demoChanged": true,
+  "sourceUrl": "https://beui.dev/components/motion/adaptive-stepper",
+  "sourceFiles": [
+    {
+      "path": "components/motion/adaptive-stepper.tsx",
+      "sha256": "61f78544e5606ae089953471af7e792507deb062e544774b6a1ed1ce85f3e96d"
+    }
+  ],
+  "sourcePreviews": [
+    "components/previews/motion/adaptive-stepper.preview.tsx"
+  ],
+  "sourceExamples": [],
+  "widgetParts": [
+    "BeuiAdaptiveStepper",
+    "BeuiAdaptiveStepperDecrement",
+    "BeuiAdaptiveStepperValue",
+    "BeuiAdaptiveStepperIncrement"
+  ],
+  "states": [
+    "rest",
+    "hover-exit",
+    "keyboard",
+    "reduced-motion",
+    "decrement value increment parts",
+    "min max disabled and controlled rejection",
+    "repeat increments reversal and liquid connection through morph"
+  ],
+  "themes": [
+    "dark",
+    "light"
+  ],
+  "verdict": "Known mismatch or failed visual gate",
+  "implementation": "not changed in this repair checkpoint",
+  "missing": "No complete matched-width 60 FPS reference/before/after state set or independent visual verdict.",
+  "captures": [
+    {
+      "id": "candidate-light-adaptive-stepper",
+      "slug": "adaptive-stepper",
+      "origin": "candidate",
+      "theme": "light",
+      "code": 0,
+      "configPath": "/Users/codenameakshay/.t3/worktrees/beui/t3-48d38279/docs/proof/v3-parity/components/release-recordings-run2/configs/candidate-light-adaptive-stepper.json",
+      "runDirectory": "/Users/codenameakshay/.t3/worktrees/beui/t3-48d38279/docs/proof/v3-parity/components/release-recordings-run2/candidate-light-adaptive-stepper",
+      "missingTargets": [],
+      "stats": {
+        "originEpochMs": 1792743452937,
+        "backend": "screenshots",
+        "startMs": 5262.51975,
+        "sequenceStartMs": 5262.980875,
+        "stopMs": 9082.29975,
+        "frames": 118,
+        "durationMs": 3807.875156402588,
+        "measuredFps": 30.72579724765277,
+        "medianIntervalMs": 33.010005950927734,
+        "maxIntervalMs": 62.38269805908203,
+        "reorderedDeliveries": 0,
+        "fastMotionVerdict": "inconclusive; inspect per-event gaps, not nominal frame rate",
+        "errors": [],
+        "video": {
+          "width": 1280,
+          "height": 913,
+          "decodedFrames": 118
+        }
+      },
+      "video": {
+        "path": "release-recordings-run2/candidate-light-adaptive-stepper/capture.mp4",
+        "bytes": 656130,
+        "sha256": "3e91adaf47a3dec9b7da2aa7da047f0c1a01cbe638e88a9e2497f3a552784593"
+      }
+    },
+    {
+      "id": "candidate-dark-adaptive-stepper",
+      "slug": "adaptive-stepper",
+      "origin": "candidate",
+      "theme": "dark",
+      "code": 0,
+      "configPath": "/Users/codenameakshay/.t3/worktrees/beui/t3-48d38279/docs/proof/v3-parity/components/release-recordings-run2/configs/candidate-dark-adaptive-stepper.json",
+      "runDirectory": "/Users/codenameakshay/.t3/worktrees/beui/t3-48d38279/docs/proof/v3-parity/components/release-recordings-run2/candidate-dark-adaptive-stepper",
+      "missingTargets": [],
+      "stats": {
+        "originEpochMs": 1792743738350,
+        "backend": "screenshots",
+        "startMs": 5151.251125,
+        "sequenceStartMs": 5151.359917,
+        "stopMs": 8968.137666999999,
+        "frames": 116,
+        "durationMs": 3813.660144805908,
+        "measuredFps": 30.154758324919587,
+        "medianIntervalMs": 33.265113830566406,
+        "maxIntervalMs": 51.57327651977539,
+        "reorderedDeliveries": 0,
+        "fastMotionVerdict": "inconclusive; inspect per-event gaps, not nominal frame rate",
+        "errors": [],
+        "video": {
+          "width": 1280,
+          "height": 913,
+          "decodedFrames": 116
+        }
+      },
+      "video": {
+        "path": "release-recordings-run2/candidate-dark-adaptive-stepper/capture.mp4",
+        "bytes": 642778,
+        "sha256": "c5f2855749f6edb5ee3eea07601f18cfa6d8c6207168aedb7cbb340a9c1d060b"
+      }
+    }
+  ],
+  "changeVideos": [],
+  "knownGaps": "Liquid blur/contrast silhouette and 600ms overshooting geometry are absent.",
+  "coverage": "Default preview recording only. No complete state or example parity certificate."
+}

@@ -1,0 +1,38 @@
+{
+  target: 'source',
+  reducedMotion: 'no-preference',
+  states: 5,
+  frames: 141,
+  decoded: 141,
+  checks: 24,
+  failures: []
+}
+{
+  target: 'source',
+  reducedMotion: 'reduce',
+  states: 5,
+  frames: 16,
+  decoded: 16,
+  checks: 24,
+  failures: []
+}
+FAIL candidate no-preference home focus {"tag":"BODY","label":null,"text":""}
+{
+  target: 'candidate',
+  reducedMotion: 'no-preference',
+  states: 5,
+  frames: 34,
+  decoded: 34,
+  checks: 24,
+  failures: [ 'home focus' ]
+}
+FAIL candidate reduce home focus {"tag":"BODY","label":null,"text":""}
+{
+  target: 'candidate',
+  reducedMotion: 'reduce',
+  states: 5,
+  frames: 16,
+  decoded: 16,
+  checks: 24,
+  failures: [ 'home focus' ]
+}

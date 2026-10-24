@@ -1,0 +1,5743 @@
+{
+  "target": "candidate",
+  "reducedMotion": "no-preference",
+  "owner": "reject",
+  "browser": "156.0.8078.48",
+  "scripts": [
+    {
+      "url": "http://127.0.0.1:18184/flutter_bootstrap.js",
+      "sha256": "ccb4fc0855f323d6002fb4e85aba4bdbb159ad4c0f2f7557bcc0f98ee764ef8e",
+      "bytes": 13094
+    },
+    {
+      "url": "http://127.0.0.1:18184/main.dart.js",
+      "sha256": "fe4c7150924bf697f82b9bd27169d94c3401cff54ecc51d576e66cf14ea7cc22",
+      "bytes": 2038962
+    },
+    {
+      "url": "https://www.gstatic.com/flutter-canvaskit/5d531788691ec3404cac0cee66ead4007b177363/chromium/canvaskit.js",
+      "sha256": "6018b12bd8ed37e6952eee72d59c1cf7ad707ccdb74a0a45190010f77edd9068",
+      "bytes": 86226
+    },
+    {
+      "url": "https://www.gstatic.com/flutter-canvaskit/5d531788691ec3404cac0cee66ead4007b177363/chromium/canvaskit.wasm",
+      "sha256": "ba4024133403777f41c709b9e76e9f4bdb76c73d33adba8645527a59d815d824",
+      "bytes": 5428553
+    }
+  ],
+  "states": [
+    {
+      "fixture": {
+        "value": {
+          "mon": {
+            "enabled": true,
+            "ranges": [
+              {
+                "id": "mon-fixed",
+                "start": "08:30",
+                "end": "16:30"
+              }
+            ]
+          },
+          "tue": {
+            "enabled": false,
+            "ranges": [
+              {
+                "id": "tue-fixed",
+                "start": "10:00",
+                "end": "12:00"
+              }
+            ]
+          },
+          "wed": {
+            "enabled": true,
+            "ranges": [
+              {
+                "id": "wed-fixed",
+                "start": "10:00",
+                "end": "12:00"
+              }
+            ]
+          },
+          "thu": {
+            "enabled": true,
+            "ranges": [
+              {
+                "id": "thu-fixed",
+                "start": "10:00",
+                "end": "12:00"
+              }
+            ]
+          },
+          "fri": {
+            "enabled": true,
+            "ranges": [
+              {
+                "id": "fri-fixed",
+                "start": "10:00",
+                "end": "12:00"
+              }
+            ]
+          },
+          "sat": {
+            "enabled": false,
+            "ranges": [
+              {
+                "id": "sat-fixed",
+                "start": "10:00",
+                "end": "12:00"
+              }
+            ]
+          },
+          "sun": {
+            "enabled": true,
+            "ranges": [
+              {
+                "id": "sun-fixed",
+                "start": "10:00",
+                "end": "12:00"
+              }
+            ]
+          }
+        },
+        "calls": [],
+        "reject": true
+      },
+      "reduce": false,
+      "focus": {
+        "tag": "FLUTTER-VIEW",
+        "role": null,
+        "label": null,
+        "text": "Monday8:30 AM\n8:30 AM–4:30 PM\n4:30 PMRemove\nRemove time rangeAdd time\nAdd time range to MondayCopy times\nCopy Monday hours to other daysTuesdayUnavailableAdd time\nAdd time range to TuesdayCopy times\nCopy Tuesday hours to other daysWednesday10:00 AM\n10:00 AM–12:00 PM\n12:00 PMRemove\nRemove time rangeAdd time\nAdd time range to WednesdayCopy times\nCopy Wednesday hours to other daysThursday10:00 AM\n10:00 AM–12:00 PM\n12:00 PMRemove\nRemove time rangeAdd time\nAdd time range to ThursdayCopy times\nCopy Thursday hours to other daysFriday10:00 AM\n10:00 AM–12:00 PM\n12:00 PMRemove\nRemove time rangeAdd time\nAdd time range to FridayCopy times\nCopy Friday hours to other daysSaturdayUnavailableAdd time\nAdd time range to SaturdayCopy times\nCopy Saturday hours to other daysSunday10:00 AM\n10:00 AM–12:00 PM\n12:00 PMRemove\nRemove time rangeAdd time\nAdd time range to SundayCopy times\nCopy Sunday hours to other daysflutter-view flt-scene-host {  font: normal normal 14px sans-serif;}flutter-view flt-semantics input[type=range] {  appearance: none;  -webkit-appearance: none;  width: 100%;  position: absolute;  border: none;  top: 0;  right: 0;  bottom: 0;  left: 0;}flutter-view input::selection {  background-color: transparent;}flutter-view textarea::selection {  background-color: transparent;}flutter-view flt-semantics input,flutter-view flt-semantics textarea,flutter-view flt-semantics [contentEditable=\"true\"] {  caret-color: transparent;}flutter-view .flt-text-editing::placeholder {  opacity: 0;}flutter-view:focus { outline: rgb(0, 0, 0) none 0px;}flutter-view .transparentTextEditing:-webkit-autofill,flutter-view .transparentTextEditing:-webkit-autofill:hover,flutter-view .transparentTextEditing:-webkit-autofill:focus,flutter-view .transparentTextEditing:-webkit-autofill:active {  opacity: 0 !important;}"
+      },
+      "fields": [],
+      "chips": [],
+      "popup": false,
+      "options": [],
+      "name": "rest",
+      "aria": "- group:\n  - switch [checked]\n  - text: Monday\n  - button \"8:30 AM 8:30 AM\"\n  - text: –\n  - button \"4:30 PM 4:30 PM\"\n  - button \"Remove Remove time range\"\n  - button \"Add time Add time range to Monday\"\n  - button \"Copy times Copy Monday hours to other days\"\n  - switch\n  - text: Tuesday Unavailable\n  - button \"Add time Add time range to Tuesday\"\n  - button \"Copy times Copy Tuesday hours to other days\"\n  - switch [checked]\n  - text: Wednesday\n  - button \"10:00 AM 10:00 AM\"\n  - text: –\n  - button \"12:00 PM 12:00 PM\"\n  - button \"Remove Remove time range\"\n  - button \"Add time Add time range to Wednesday\"\n  - button \"Copy times Copy Wednesday hours to other days\"\n  - switch [checked]\n  - text: Thursday\n  - button \"10:00 AM 10:00 AM\"\n  - text: –\n  - button \"12:00 PM 12:00 PM\"\n  - button \"Remove Remove time range\"\n  - button \"Add time Add time range to Thursday\"\n  - button \"Copy times Copy Thursday hours to other days\"\n  - switch [checked]\n  - text: Friday\n  - button \"10:00 AM 10:00 AM\"\n  - text: –\n  - button \"12:00 PM 12:00 PM\"\n  - button \"Remove Remove time range\"\n  - button \"Add time Add time range to Friday\"\n  - button \"Copy times Copy Friday hours to other days\"\n  - switch\n  - text: Saturday Unavailable\n  - button \"Add time Add time range to Saturday\"\n  - button \"Copy times Copy Saturday hours to other days\"\n  - switch [checked]\n  - text: Sunday\n  - button \"10:00 AM 10:00 AM\"\n  - text: –\n  - button \"12:00 PM 12:00 PM\"\n  - button \"Remove Remove time range\"\n  - button \"Add time Add time range to Sunday\"\n  - button \"Copy times Copy Sunday hours to other days\"",
+      "screenshot": {
+        "file": "rest.png",
+        "sha256": "b8ee3a39aeb9b20afd0a7206dd0e2390e3e4649dae3b98a28577f08868727ffc"
+      }
+    },
+    {
+      "fixture": {
+        "value": {
+          "mon": {
+            "enabled": true,
+            "ranges": [
+              {
+                "id": "mon-fixed",
+                "start": "08:30",
+                "end": "16:30"
+              }
+            ]
+          },
+          "tue": {
+            "enabled": false,
+            "ranges": [
+              {
+                "id": "tue-fixed",
+                "start": "10:00",
+                "end": "12:00"
+              }
+            ]
+          },
+          "wed": {
+            "enabled": true,
+            "ranges": [
+              {
+                "id": "wed-fixed",
+                "start": "10:00",
+                "end": "12:00"
+              }
+            ]
+          },
+          "thu": {
+            "enabled": true,
+            "ranges": [
+              {
+                "id": "thu-fixed",
+                "start": "10:00",
+                "end": "12:00"
+              }
+            ]
+          },
+          "fri": {
+            "enabled": true,
+            "ranges": [
+              {
+                "id": "fri-fixed",
+                "start": "10:00",
+                "end": "12:00"
+              }
+            ]
+          },
+          "sat": {
+            "enabled": false,
+            "ranges": [
+              {
+                "id": "sat-fixed",
+                "start": "10:00",
+                "end": "12:00"
+              }
+            ]
+          },
+          "sun": {
+            "enabled": true,
+            "ranges": [
+              {
+                "id": "sun-fixed",
+                "start": "10:00",
+                "end": "12:00"
+              }
+            ]
+          }
+        },
+        "calls": [],
+        "reject": true
+      },
+      "reduce": false,
+      "focus": {
+        "tag": "FLT-SEMANTICS",
+        "role": "button",
+        "label": null,
+        "text": "Copy times\nCopy Monday hours to other days"
+      },
+      "fields": [],
+      "chips": [],
+      "popup": false,
+      "options": [],
+      "name": "opened",
+      "aria": "- text: Copy times\n- group:\n  - switch [checked]\n  - text: Monday\n  - button \"8:30 AM 8:30 AM\"\n  - text: –\n  - button \"4:30 PM 4:30 PM\"\n  - button \"Remove Remove time range\"\n  - button \"Add time Add time range to Monday\"\n  - button \"Copy times Copy Monday hours to other days\" [expanded]\n  - button\n  - text: Copy times to\n  - group \"Tuesday\":\n    - checkbox\n  - group \"Wednesday\":\n    - checkbox\n  - group \"Thursday\":\n    - checkbox\n  - group \"Friday\":\n    - checkbox\n  - group \"Saturday\":\n    - checkbox\n  - group \"Sunday\":\n    - checkbox\n  - button \"Every day Every day\"\n  - button \"Apply Apply\" [disabled]\n  - switch\n  - text: Tuesday Unavailable\n  - button \"Add time Add time range to Tuesday\"\n  - button \"Copy times Copy Tuesday hours to other days\"\n  - switch [checked]\n  - text: Wednesday\n  - button \"10:00 AM 10:00 AM\"\n  - text: –\n  - button \"12:00 PM 12:00 PM\"\n  - button \"Remove Remove time range\"\n  - button \"Add time Add time range to Wednesday\"\n  - button \"Copy times Copy Wednesday hours to other days\"\n  - switch [checked]\n  - text: Thursday\n  - button \"10:00 AM 10:00 AM\"\n  - text: –\n  - button \"12:00 PM 12:00 PM\"\n  - button \"Remove Remove time range\"\n  - button \"Add time Add time range to Thursday\"\n  - button \"Copy times Copy Thursday hours to other days\"\n  - switch [checked]\n  - text: Friday\n  - button \"10:00 AM 10:00 AM\"\n  - text: –\n  - button \"12:00 PM 12:00 PM\"\n  - button \"Remove Remove time range\"\n  - button \"Add time Add time range to Friday\"\n  - button \"Copy times Copy Friday hours to other days\"\n  - switch\n  - text: Saturday Unavailable\n  - button \"Add time Add time range to Saturday\"\n  - button \"Copy times Copy Saturday hours to other days\"\n  - switch [checked]\n  - text: Sunday\n  - button \"10:00 AM 10:00 AM\"\n  - text: –\n  - button \"12:00 PM 12:00 PM\"\n  - button \"Remove Remove time range\"\n  - button \"Add time Add time range to Sunday\"\n  - button \"Copy times Copy Sunday hours to other days\"",
+      "screenshot": {
+        "file": "opened.png",
+        "sha256": "780b19dfeba960b7772974d727e0a8bfecf866763d3af0a3bf31a29a3227a792"
+      }
+    },
+    {
+      "fixture": {
+        "value": {
+          "mon": {
+            "enabled": true,
+            "ranges": [
+              {
+                "id": "mon-fixed",
+                "start": "08:30",
+                "end": "16:30"
+              }
+            ]
+          },
+          "tue": {
+            "enabled": false,
+            "ranges": [
+              {
+                "id": "tue-fixed",
+                "start": "10:00",
+                "end": "12:00"
+              }
+            ]
+          },
+          "wed": {
+            "enabled": true,
+            "ranges": [
+              {
+                "id": "wed-fixed",
+                "start": "10:00",
+                "end": "12:00"
+              }
+            ]
+          },
+          "thu": {
+            "enabled": true,
+            "ranges": [
+              {
+                "id": "thu-fixed",
+                "start": "10:00",
+                "end": "12:00"
+              }
+            ]
+          },
+          "fri": {
+            "enabled": true,
+            "ranges": [
+              {
+                "id": "fri-fixed",
+                "start": "10:00",
+                "end": "12:00"
+              }
+            ]
+          },
+          "sat": {
+            "enabled": false,
+            "ranges": [
+              {
+                "id": "sat-fixed",
+                "start": "10:00",
+                "end": "12:00"
+              }
+            ]
+          },
+          "sun": {
+            "enabled": true,
+            "ranges": [
+              {
+                "id": "sun-fixed",
+                "start": "10:00",
+                "end": "12:00"
+              }
+            ]
+          }
+        },
+        "calls": [],
+        "reject": true
+      },
+      "reduce": false,
+      "focus": {
+        "tag": "FLT-SEMANTICS",
+        "role": "checkbox",
+        "label": null,
+        "text": ""
+      },
+      "fields": [],
+      "chips": [],
+      "popup": false,
+      "options": [],
+      "name": "selected",
+      "aria": "- group:\n  - switch [checked]\n  - text: Monday\n  - button \"8:30 AM 8:30 AM\"\n  - text: –\n  - button \"4:30 PM 4:30 PM\"\n  - button \"Remove Remove time range\"\n  - button \"Add time Add time range to Monday\"\n  - button \"Copy times Copy Monday hours to other days\" [expanded]\n  - button\n  - text: Copy times to\n  - group \"Tuesday\":\n    - checkbox [checked]\n  - group \"Wednesday\":\n    - checkbox\n  - group \"Thursday\":\n    - checkbox\n  - group \"Friday\":\n    - checkbox\n  - group \"Saturday\":\n    - checkbox\n  - group \"Sunday\":\n    - checkbox\n  - button \"Every day Every day\"\n  - button \"Apply Apply\"\n  - switch\n  - text: Tuesday Unavailable\n  - button \"Add time Add time range to Tuesday\"\n  - button \"Copy times Copy Tuesday hours to other days\"\n  - switch [checked]\n  - text: Wednesday\n  - button \"10:00 AM 10:00 AM\"\n  - text: –\n  - button \"12:00 PM 12:00 PM\"\n  - button \"Remove Remove time range\"\n  - button \"Add time Add time range to Wednesday\"\n  - button \"Copy times Copy Wednesday hours to other days\"\n  - switch [checked]\n  - text: Thursday\n  - button \"10:00 AM 10:00 AM\"\n  - text: –\n  - button \"12:00 PM 12:00 PM\"\n  - button \"Remove Remove time range\"\n  - button \"Add time Add time range to Thursday\"\n  - button \"Copy times Copy Thursday hours to other days\"\n  - switch [checked]\n  - text: Friday\n  - button \"10:00 AM 10:00 AM\"\n  - text: –\n  - button \"12:00 PM 12:00 PM\"\n  - button \"Remove Remove time range\"\n  - button \"Add time Add time range to Friday\"\n  - button \"Copy times Copy Friday hours to other days\"\n  - switch\n  - text: Saturday Unavailable\n  - button \"Add time Add time range to Saturday\"\n  - button \"Copy times Copy Saturday hours to other days\"\n  - switch [checked]\n  - text: Sunday\n  - button \"10:00 AM 10:00 AM\"\n  - text: –\n  - button \"12:00 PM 12:00 PM\"\n  - button \"Remove Remove time range\"\n  - button \"Add time Add time range to Sunday\"\n  - button \"Copy times Copy Sunday hours to other days\"",
+      "screenshot": {
+        "file": "selected.png",
+        "sha256": "f5a97c78e2795e1e7fd9582b6d808ad57e298a603d63ae5196278e09d494fa25"
+      }
+    },
+    {
+      "fixture": {
+        "value": {
+          "mon": {
+            "enabled": true,
+            "ranges": [
+              {
+                "id": "mon-fixed",
+                "start": "08:30",
+                "end": "16:30"
+              }
+            ]
+          },
+          "tue": {
+            "enabled": false,
+            "ranges": [
+              {
+                "id": "tue-fixed",
+                "start": "10:00",
+                "end": "12:00"
+              }
+            ]
+          },
+          "wed": {
+            "enabled": true,
+            "ranges": [
+              {
+                "id": "wed-fixed",
+                "start": "10:00",
+                "end": "12:00"
+              }
+            ]
+          },
+          "thu": {
+            "enabled": true,
+            "ranges": [
+              {
+                "id": "thu-fixed",
+                "start": "10:00",
+                "end": "12:00"
+              }
+            ]
+          },
+          "fri": {
+            "enabled": true,
+            "ranges": [
+              {
+                "id": "fri-fixed",
+                "start": "10:00",
+                "end": "12:00"
+              }
+            ]
+          },
+          "sat": {
+            "enabled": false,
+            "ranges": [
+              {
+                "id": "sat-fixed",
+                "start": "10:00",
+                "end": "12:00"
+              }
+            ]
+          },
+          "sun": {
+            "enabled": true,
+            "ranges": [
+              {
+                "id": "sun-fixed",
+                "start": "10:00",
+                "end": "12:00"
+              }
+            ]
+          }
+        },
+        "calls": [
+          {
+            "mon": {
+              "enabled": true,
+              "ranges": [
+                {
+                  "id": "mon-fixed",
+                  "start": "08:30",
+                  "end": "16:30"
+                }
+              ]
+            },
+            "tue": {
+              "enabled": true,
+              "ranges": [
+                {
+                  "id": "tue-c0",
+                  "start": "08:30",
+                  "end": "16:30"
+                }
+              ]
+            },
+            "wed": {
+              "enabled": true,
+              "ranges": [
+                {
+                  "id": "wed-fixed",
+                  "start": "10:00",
+                  "end": "12:00"
+                }
+              ]
+            },
+            "thu": {
+              "enabled": true,
+              "ranges": [
+                {
+                  "id": "thu-fixed",
+                  "start": "10:00",
+                  "end": "12:00"
+                }
+              ]
+            },
+            "fri": {
+              "enabled": true,
+              "ranges": [
+                {
+                  "id": "fri-fixed",
+                  "start": "10:00",
+                  "end": "12:00"
+                }
+              ]
+            },
+            "sat": {
+              "enabled": false,
+              "ranges": [
+                {
+                  "id": "sat-fixed",
+                  "start": "10:00",
+                  "end": "12:00"
+                }
+              ]
+            },
+            "sun": {
+              "enabled": true,
+              "ranges": [
+                {
+                  "id": "sun-fixed",
+                  "start": "10:00",
+                  "end": "12:00"
+                }
+              ]
+            }
+          }
+        ],
+        "reject": true
+      },
+      "reduce": false,
+      "focus": {
+        "tag": "FLUTTER-VIEW",
+        "role": null,
+        "label": null,
+        "text": "Monday8:30 AM\n8:30 AM–4:30 PM\n4:30 PMRemove\nRemove time rangeAdd time\nAdd time range to MondayCopy times\nCopy Monday hours to other daysTuesdayUnavailableAdd time\nAdd time range to TuesdayCopy times\nCopy Tuesday hours to other daysWednesday10:00 AM\n10:00 AM–12:00 PM\n12:00 PMRemove\nRemove time rangeAdd time\nAdd time range to WednesdayCopy times\nCopy Wednesday hours to other daysThursday10:00 AM\n10:00 AM–12:00 PM\n12:00 PMRemove\nRemove time rangeAdd time\nAdd time range to ThursdayCopy times\nCopy Thursday hours to other daysFriday10:00 AM\n10:00 AM–12:00 PM\n12:00 PMRemove\nRemove time rangeAdd time\nAdd time range to FridayCopy times\nCopy Friday hours to other daysSaturdayUnavailableAdd time\nAdd time range to SaturdayCopy times\nCopy Saturday hours to other daysSunday10:00 AM\n10:00 AM–12:00 PM\n12:00 PMRemove\nRemove time rangeAdd time\nAdd time range to SundayCopy times\nCopy Sunday hours to other daysflutter-view flt-scene-host {  font: normal normal 14px sans-serif;}flutter-view flt-semantics input[type=range] {  appearance: none;  -webkit-appearance: none;  width: 100%;  position: absolute;  border: none;  top: 0;  right: 0;  bottom: 0;  left: 0;}flutter-view input::selection {  background-color: transparent;}flutter-view textarea::selection {  background-color: transparent;}flutter-view flt-semantics input,flutter-view flt-semantics textarea,flutter-view flt-semantics [contentEditable=\"true\"] {  caret-color: transparent;}flutter-view .flt-text-editing::placeholder {  opacity: 0;}flutter-view:focus { outline: rgb(0, 0, 0) none 0px;}flutter-view .transparentTextEditing:-webkit-autofill,flutter-view .transparentTextEditing:-webkit-autofill:hover,flutter-view .transparentTextEditing:-webkit-autofill:focus,flutter-view .transparentTextEditing:-webkit-autofill:active {  opacity: 0 !important;}"
+      },
+      "fields": [],
+      "chips": [],
+      "popup": false,
+      "options": [],
+      "name": "applied",
+      "aria": "- group:\n  - switch [checked]\n  - text: Monday\n  - button \"8:30 AM 8:30 AM\"\n  - text: –\n  - button \"4:30 PM 4:30 PM\"\n  - button \"Remove Remove time range\"\n  - button \"Add time Add time range to Monday\"\n  - button \"Copy times Copy Monday hours to other days\"\n  - switch\n  - text: Tuesday Unavailable\n  - button \"Add time Add time range to Tuesday\"\n  - button \"Copy times Copy Tuesday hours to other days\"\n  - switch [checked]\n  - text: Wednesday\n  - button \"10:00 AM 10:00 AM\"\n  - text: –\n  - button \"12:00 PM 12:00 PM\"\n  - button \"Remove Remove time range\"\n  - button \"Add time Add time range to Wednesday\"\n  - button \"Copy times Copy Wednesday hours to other days\"\n  - switch [checked]\n  - text: Thursday\n  - button \"10:00 AM 10:00 AM\"\n  - text: –\n  - button \"12:00 PM 12:00 PM\"\n  - button \"Remove Remove time range\"\n  - button \"Add time Add time range to Thursday\"\n  - button \"Copy times Copy Thursday hours to other days\"\n  - switch [checked]\n  - text: Friday\n  - button \"10:00 AM 10:00 AM\"\n  - text: –\n  - button \"12:00 PM 12:00 PM\"\n  - button \"Remove Remove time range\"\n  - button \"Add time Add time range to Friday\"\n  - button \"Copy times Copy Friday hours to other days\"\n  - switch\n  - text: Saturday Unavailable\n  - button \"Add time Add time range to Saturday\"\n  - button \"Copy times Copy Saturday hours to other days\"\n  - switch [checked]\n  - text: Sunday\n  - button \"10:00 AM 10:00 AM\"\n  - text: –\n  - button \"12:00 PM 12:00 PM\"\n  - button \"Remove Remove time range\"\n  - button \"Add time Add time range to Sunday\"\n  - button \"Copy times Copy Sunday hours to other days\"",
+      "screenshot": {
+        "file": "applied.png",
+        "sha256": "e87208b33fb45826e051b1b10ba590d7c95dadb94f05cb01f684890795e7f116"
+      }
+    },
+    {
+      "fixture": {
+        "value": {
+          "mon": {
+            "enabled": true,
+            "ranges": [
+              {
+                "id": "mon-fixed",
+                "start": "08:30",
+                "end": "16:30"
+              }
+            ]
+          },
+          "tue": {
+            "enabled": false,
+            "ranges": [
+              {
+                "id": "tue-fixed",
+                "start": "10:00",
+                "end": "12:00"
+              }
+            ]
+          },
+          "wed": {
+            "enabled": true,
+            "ranges": [
+              {
+                "id": "wed-fixed",
+                "start": "10:00",
+                "end": "12:00"
+              }
+            ]
+          },
+          "thu": {
+            "enabled": true,
+            "ranges": [
+              {
+                "id": "thu-fixed",
+                "start": "10:00",
+                "end": "12:00"
+              }
+            ]
+          },
+          "fri": {
+            "enabled": true,
+            "ranges": [
+              {
+                "id": "fri-fixed",
+                "start": "10:00",
+                "end": "12:00"
+              }
+            ]
+          },
+          "sat": {
+            "enabled": false,
+            "ranges": [
+              {
+                "id": "sat-fixed",
+                "start": "10:00",
+                "end": "12:00"
+              }
+            ]
+          },
+          "sun": {
+            "enabled": true,
+            "ranges": [
+              {
+                "id": "sun-fixed",
+                "start": "10:00",
+                "end": "12:00"
+              }
+            ]
+          }
+        },
+        "calls": [
+          {
+            "mon": {
+              "enabled": true,
+              "ranges": [
+                {
+                  "id": "mon-fixed",
+                  "start": "08:30",
+                  "end": "16:30"
+                }
+              ]
+            },
+            "tue": {
+              "enabled": true,
+              "ranges": [
+                {
+                  "id": "tue-c0",
+                  "start": "08:30",
+                  "end": "16:30"
+                }
+              ]
+            },
+            "wed": {
+              "enabled": true,
+              "ranges": [
+                {
+                  "id": "wed-fixed",
+                  "start": "10:00",
+                  "end": "12:00"
+                }
+              ]
+            },
+            "thu": {
+              "enabled": true,
+              "ranges": [
+                {
+                  "id": "thu-fixed",
+                  "start": "10:00",
+                  "end": "12:00"
+                }
+              ]
+            },
+            "fri": {
+              "enabled": true,
+              "ranges": [
+                {
+                  "id": "fri-fixed",
+                  "start": "10:00",
+                  "end": "12:00"
+                }
+              ]
+            },
+            "sat": {
+              "enabled": false,
+              "ranges": [
+                {
+                  "id": "sat-fixed",
+                  "start": "10:00",
+                  "end": "12:00"
+                }
+              ]
+            },
+            "sun": {
+              "enabled": true,
+              "ranges": [
+                {
+                  "id": "sun-fixed",
+                  "start": "10:00",
+                  "end": "12:00"
+                }
+              ]
+            }
+          }
+        ],
+        "reject": true
+      },
+      "reduce": false,
+      "focus": {
+        "tag": "FLT-SEMANTICS",
+        "role": "switch",
+        "label": null,
+        "text": ""
+      },
+      "fields": [],
+      "chips": [],
+      "popup": false,
+      "options": [],
+      "name": "post-apply-tab",
+      "aria": "- group:\n  - switch [checked]\n  - text: Monday\n  - button \"8:30 AM 8:30 AM\"\n  - text: –\n  - button \"4:30 PM 4:30 PM\"\n  - button \"Remove Remove time range\"\n  - button \"Add time Add time range to Monday\"\n  - button \"Copy times Copy Monday hours to other days\"\n  - switch\n  - text: Tuesday Unavailable\n  - button \"Add time Add time range to Tuesday\"\n  - button \"Copy times Copy Tuesday hours to other days\"\n  - switch [checked]\n  - text: Wednesday\n  - button \"10:00 AM 10:00 AM\"\n  - text: –\n  - button \"12:00 PM 12:00 PM\"\n  - button \"Remove Remove time range\"\n  - button \"Add time Add time range to Wednesday\"\n  - button \"Copy times Copy Wednesday hours to other days\"\n  - switch [checked]\n  - text: Thursday\n  - button \"10:00 AM 10:00 AM\"\n  - text: –\n  - button \"12:00 PM 12:00 PM\"\n  - button \"Remove Remove time range\"\n  - button \"Add time Add time range to Thursday\"\n  - button \"Copy times Copy Thursday hours to other days\"\n  - switch [checked]\n  - text: Friday\n  - button \"10:00 AM 10:00 AM\"\n  - text: –\n  - button \"12:00 PM 12:00 PM\"\n  - button \"Remove Remove time range\"\n  - button \"Add time Add time range to Friday\"\n  - button \"Copy times Copy Friday hours to other days\"\n  - switch\n  - text: Saturday Unavailable\n  - button \"Add time Add time range to Saturday\"\n  - button \"Copy times Copy Saturday hours to other days\"\n  - switch [checked]\n  - text: Sunday\n  - button \"10:00 AM 10:00 AM\"\n  - text: –\n  - button \"12:00 PM 12:00 PM\"\n  - button \"Remove Remove time range\"\n  - button \"Add time Add time range to Sunday\"\n  - button \"Copy times Copy Sunday hours to other days\"",
+      "screenshot": {
+        "file": "post-apply-tab.png",
+        "sha256": "f430179774bdd2113db0d9e05ab255037ab301ea8b663cf3eaa688463afd735d"
+      }
+    },
+    {
+      "fixture": {
+        "value": {
+          "mon": {
+            "enabled": true,
+            "ranges": [
+              {
+                "id": "mon-fixed",
+                "start": "08:30",
+                "end": "16:30"
+              }
+            ]
+          },
+          "tue": {
+            "enabled": false,
+            "ranges": [
+              {
+                "id": "tue-fixed",
+                "start": "10:00",
+                "end": "12:00"
+              }
+            ]
+          },
+          "wed": {
+            "enabled": true,
+            "ranges": [
+              {
+                "id": "wed-fixed",
+                "start": "10:00",
+                "end": "12:00"
+              }
+            ]
+          },
+          "thu": {
+            "enabled": true,
+            "ranges": [
+              {
+                "id": "thu-fixed",
+                "start": "10:00",
+                "end": "12:00"
+              }
+            ]
+          },
+          "fri": {
+            "enabled": true,
+            "ranges": [
+              {
+                "id": "fri-fixed",
+                "start": "10:00",
+                "end": "12:00"
+              }
+            ]
+          },
+          "sat": {
+            "enabled": false,
+            "ranges": [
+              {
+                "id": "sat-fixed",
+                "start": "10:00",
+                "end": "12:00"
+              }
+            ]
+          },
+          "sun": {
+            "enabled": true,
+            "ranges": [
+              {
+                "id": "sun-fixed",
+                "start": "10:00",
+                "end": "12:00"
+              }
+            ]
+          }
+        },
+        "calls": [
+          {
+            "mon": {
+              "enabled": true,
+              "ranges": [
+                {
+                  "id": "mon-fixed",
+                  "start": "08:30",
+                  "end": "16:30"
+                }
+              ]
+            },
+            "tue": {
+              "enabled": true,
+              "ranges": [
+                {
+                  "id": "tue-c0",
+                  "start": "08:30",
+                  "end": "16:30"
+                }
+              ]
+            },
+            "wed": {
+              "enabled": true,
+              "ranges": [
+                {
+                  "id": "wed-fixed",
+                  "start": "10:00",
+                  "end": "12:00"
+                }
+              ]
+            },
+            "thu": {
+              "enabled": true,
+              "ranges": [
+                {
+                  "id": "thu-fixed",
+                  "start": "10:00",
+                  "end": "12:00"
+                }
+              ]
+            },
+            "fri": {
+              "enabled": true,
+              "ranges": [
+                {
+                  "id": "fri-fixed",
+                  "start": "10:00",
+                  "end": "12:00"
+                }
+              ]
+            },
+            "sat": {
+              "enabled": false,
+              "ranges": [
+                {
+                  "id": "sat-fixed",
+                  "start": "10:00",
+                  "end": "12:00"
+                }
+              ]
+            },
+            "sun": {
+              "enabled": true,
+              "ranges": [
+                {
+                  "id": "sun-fixed",
+                  "start": "10:00",
+                  "end": "12:00"
+                }
+              ]
+            }
+          }
+        ],
+        "reject": true
+      },
+      "reduce": false,
+      "focus": {
+        "tag": "FLT-SEMANTICS",
+        "role": "button",
+        "label": null,
+        "text": "Copy times\nCopy Monday hours to other days"
+      },
+      "fields": [],
+      "chips": [],
+      "popup": false,
+      "options": [],
+      "name": "reopened",
+      "aria": "- text: Copy times\n- group:\n  - switch [checked]\n  - text: Monday\n  - button \"8:30 AM 8:30 AM\"\n  - text: –\n  - button \"4:30 PM 4:30 PM\"\n  - button \"Remove Remove time range\"\n  - button \"Add time Add time range to Monday\"\n  - button \"Copy times Copy Monday hours to other days\" [expanded]\n  - button\n  - text: Copy times to\n  - group \"Tuesday\":\n    - checkbox\n  - group \"Wednesday\":\n    - checkbox\n  - group \"Thursday\":\n    - checkbox\n  - group \"Friday\":\n    - checkbox\n  - group \"Saturday\":\n    - checkbox\n  - group \"Sunday\":\n    - checkbox\n  - button \"Every day Every day\"\n  - button \"Apply Apply\" [disabled]\n  - switch\n  - text: Tuesday Unavailable\n  - button \"Add time Add time range to Tuesday\"\n  - button \"Copy times Copy Tuesday hours to other days\"\n  - switch [checked]\n  - text: Wednesday\n  - button \"10:00 AM 10:00 AM\"\n  - text: –\n  - button \"12:00 PM 12:00 PM\"\n  - button \"Remove Remove time range\"\n  - button \"Add time Add time range to Wednesday\"\n  - button \"Copy times Copy Wednesday hours to other days\"\n  - switch [checked]\n  - text: Thursday\n  - button \"10:00 AM 10:00 AM\"\n  - text: –\n  - button \"12:00 PM 12:00 PM\"\n  - button \"Remove Remove time range\"\n  - button \"Add time Add time range to Thursday\"\n  - button \"Copy times Copy Thursday hours to other days\"\n  - switch [checked]\n  - text: Friday\n  - button \"10:00 AM 10:00 AM\"\n  - text: –\n  - button \"12:00 PM 12:00 PM\"\n  - button \"Remove Remove time range\"\n  - button \"Add time Add time range to Friday\"\n  - button \"Copy times Copy Friday hours to other days\"\n  - switch\n  - text: Saturday Unavailable\n  - button \"Add time Add time range to Saturday\"\n  - button \"Copy times Copy Saturday hours to other days\"\n  - switch [checked]\n  - text: Sunday\n  - button \"10:00 AM 10:00 AM\"\n  - text: –\n  - button \"12:00 PM 12:00 PM\"\n  - button \"Remove Remove time range\"\n  - button \"Add time Add time range to Sunday\"\n  - button \"Copy times Copy Sunday hours to other days\"",
+      "screenshot": {
+        "file": "reopened.png",
+        "sha256": "780b19dfeba960b7772974d727e0a8bfecf866763d3af0a3bf31a29a3227a792"
+      }
+    },
+    {
+      "fixture": {
+        "value": {
+          "mon": {
+            "enabled": true,
+            "ranges": [
+              {
+                "id": "mon-fixed",
+                "start": "08:30",
+                "end": "16:30"
+              }
+            ]
+          },
+          "tue": {
+            "enabled": false,
+            "ranges": [
+              {
+                "id": "tue-fixed",
+                "start": "10:00",
+                "end": "12:00"
+              }
+            ]
+          },
+          "wed": {
+            "enabled": true,
+            "ranges": [
+              {
+                "id": "wed-fixed",
+                "start": "10:00",
+                "end": "12:00"
+              }
+            ]
+          },
+          "thu": {
+            "enabled": true,
+            "ranges": [
+              {
+                "id": "thu-fixed",
+                "start": "10:00",
+                "end": "12:00"
+              }
+            ]
+          },
+          "fri": {
+            "enabled": true,
+            "ranges": [
+              {
+                "id": "fri-fixed",
+                "start": "10:00",
+                "end": "12:00"
+              }
+            ]
+          },
+          "sat": {
+            "enabled": false,
+            "ranges": [
+              {
+                "id": "sat-fixed",
+                "start": "10:00",
+                "end": "12:00"
+              }
+            ]
+          },
+          "sun": {
+            "enabled": true,
+            "ranges": [
+              {
+                "id": "sun-fixed",
+                "start": "10:00",
+                "end": "12:00"
+              }
+            ]
+          }
+        },
+        "calls": [
+          {
+            "mon": {
+              "enabled": true,
+              "ranges": [
+                {
+                  "id": "mon-fixed",
+                  "start": "08:30",
+                  "end": "16:30"
+                }
+              ]
+            },
+            "tue": {
+              "enabled": true,
+              "ranges": [
+                {
+                  "id": "tue-c0",
+                  "start": "08:30",
+                  "end": "16:30"
+                }
+              ]
+            },
+            "wed": {
+              "enabled": true,
+              "ranges": [
+                {
+                  "id": "wed-fixed",
+                  "start": "10:00",
+                  "end": "12:00"
+                }
+              ]
+            },
+            "thu": {
+              "enabled": true,
+              "ranges": [
+                {
+                  "id": "thu-fixed",
+                  "start": "10:00",
+                  "end": "12:00"
+                }
+              ]
+            },
+            "fri": {
+              "enabled": true,
+              "ranges": [
+                {
+                  "id": "fri-fixed",
+                  "start": "10:00",
+                  "end": "12:00"
+                }
+              ]
+            },
+            "sat": {
+              "enabled": false,
+              "ranges": [
+                {
+                  "id": "sat-fixed",
+                  "start": "10:00",
+                  "end": "12:00"
+                }
+              ]
+            },
+            "sun": {
+              "enabled": true,
+              "ranges": [
+                {
+                  "id": "sun-fixed",
+                  "start": "10:00",
+                  "end": "12:00"
+                }
+              ]
+            }
+          },
+          {
+            "mon": {
+              "enabled": true,
+              "ranges": [
+                {
+                  "id": "mon-fixed",
+                  "start": "08:30",
+                  "end": "16:30"
+                }
+              ]
+            },
+            "tue": {
+              "enabled": true,
+              "ranges": [
+                {
+                  "id": "tue-c1",
+                  "start": "08:30",
+                  "end": "16:30"
+                }
+              ]
+            },
+            "wed": {
+              "enabled": true,
+              "ranges": [
+                {
+                  "id": "wed-c2",
+                  "start": "08:30",
+                  "end": "16:30"
+                }
+              ]
+            },
+            "thu": {
+              "enabled": true,
+              "ranges": [
+                {
+                  "id": "thu-c3",
+                  "start": "08:30",
+                  "end": "16:30"
+                }
+              ]
+            },
+            "fri": {
+              "enabled": true,
+              "ranges": [
+                {
+                  "id": "fri-c4",
+                  "start": "08:30",
+                  "end": "16:30"
+                }
+              ]
+            },
+            "sat": {
+              "enabled": true,
+              "ranges": [
+                {
+                  "id": "sat-c5",
+                  "start": "08:30",
+                  "end": "16:30"
+                }
+              ]
+            },
+            "sun": {
+              "enabled": true,
+              "ranges": [
+                {
+                  "id": "sun-c6",
+                  "start": "08:30",
+                  "end": "16:30"
+                }
+              ]
+            }
+          }
+        ],
+        "reject": true
+      },
+      "reduce": false,
+      "focus": {
+        "tag": "FLUTTER-VIEW",
+        "role": null,
+        "label": null,
+        "text": "Monday8:30 AM\n8:30 AM–4:30 PM\n4:30 PMRemove\nRemove time rangeAdd time\nAdd time range to MondayCopy times\nCopy Monday hours to other daysTuesdayUnavailableAdd time\nAdd time range to TuesdayCopy times\nCopy Tuesday hours to other daysWednesday10:00 AM\n10:00 AM–12:00 PM\n12:00 PMRemove\nRemove time rangeAdd time\nAdd time range to WednesdayCopy times\nCopy Wednesday hours to other daysThursday10:00 AM\n10:00 AM–12:00 PM\n12:00 PMRemove\nRemove time rangeAdd time\nAdd time range to ThursdayCopy times\nCopy Thursday hours to other daysFriday10:00 AM\n10:00 AM–12:00 PM\n12:00 PMRemove\nRemove time rangeAdd time\nAdd time range to FridayCopy times\nCopy Friday hours to other daysSaturdayUnavailableAdd time\nAdd time range to SaturdayCopy times\nCopy Saturday hours to other daysSunday10:00 AM\n10:00 AM–12:00 PM\n12:00 PMRemove\nRemove time rangeAdd time\nAdd time range to SundayCopy times\nCopy Sunday hours to other daysflutter-view flt-scene-host {  font: normal normal 14px sans-serif;}flutter-view flt-semantics input[type=range] {  appearance: none;  -webkit-appearance: none;  width: 100%;  position: absolute;  border: none;  top: 0;  right: 0;  bottom: 0;  left: 0;}flutter-view input::selection {  background-color: transparent;}flutter-view textarea::selection {  background-color: transparent;}flutter-view flt-semantics input,flutter-view flt-semantics textarea,flutter-view flt-semantics [contentEditable=\"true\"] {  caret-color: transparent;}flutter-view .flt-text-editing::placeholder {  opacity: 0;}flutter-view:focus { outline: rgb(0, 0, 0) none 0px;}flutter-view .transparentTextEditing:-webkit-autofill,flutter-view .transparentTextEditing:-webkit-autofill:hover,flutter-view .transparentTextEditing:-webkit-autofill:focus,flutter-view .transparentTextEditing:-webkit-autofill:active {  opacity: 0 !important;}"
+      },
+      "fields": [],
+      "chips": [],
+      "popup": false,
+      "options": [],
+      "name": "everyday",
+      "aria": "- group:\n  - switch [checked]\n  - text: Monday\n  - button \"8:30 AM 8:30 AM\"\n  - text: –\n  - button \"4:30 PM 4:30 PM\"\n  - button \"Remove Remove time range\"\n  - button \"Add time Add time range to Monday\"\n  - button \"Copy times Copy Monday hours to other days\"\n  - switch\n  - text: Tuesday Unavailable\n  - button \"Add time Add time range to Tuesday\"\n  - button \"Copy times Copy Tuesday hours to other days\"\n  - switch [checked]\n  - text: Wednesday\n  - button \"10:00 AM 10:00 AM\"\n  - text: –\n  - button \"12:00 PM 12:00 PM\"\n  - button \"Remove Remove time range\"\n  - button \"Add time Add time range to Wednesday\"\n  - button \"Copy times Copy Wednesday hours to other days\"\n  - switch [checked]\n  - text: Thursday\n  - button \"10:00 AM 10:00 AM\"\n  - text: –\n  - button \"12:00 PM 12:00 PM\"\n  - button \"Remove Remove time range\"\n  - button \"Add time Add time range to Thursday\"\n  - button \"Copy times Copy Thursday hours to other days\"\n  - switch [checked]\n  - text: Friday\n  - button \"10:00 AM 10:00 AM\"\n  - text: –\n  - button \"12:00 PM 12:00 PM\"\n  - button \"Remove Remove time range\"\n  - button \"Add time Add time range to Friday\"\n  - button \"Copy times Copy Friday hours to other days\"\n  - switch\n  - text: Saturday Unavailable\n  - button \"Add time Add time range to Saturday\"\n  - button \"Copy times Copy Saturday hours to other days\"\n  - switch [checked]\n  - text: Sunday\n  - button \"10:00 AM 10:00 AM\"\n  - text: –\n  - button \"12:00 PM 12:00 PM\"\n  - button \"Remove Remove time range\"\n  - button \"Add time Add time range to Sunday\"\n  - button \"Copy times Copy Sunday hours to other days\"",
+      "screenshot": {
+        "file": "everyday.png",
+        "sha256": "e87208b33fb45826e051b1b10ba590d7c95dadb94f05cb01f684890795e7f116"
+      }
+    },
+    {
+      "fixture": {
+        "value": {
+          "mon": {
+            "enabled": true,
+            "ranges": [
+              {
+                "id": "mon-fixed",
+                "start": "08:30",
+                "end": "16:30"
+              }
+            ]
+          },
+          "tue": {
+            "enabled": false,
+            "ranges": [
+              {
+                "id": "tue-fixed",
+                "start": "10:00",
+                "end": "12:00"
+              }
+            ]
+          },
+          "wed": {
+            "enabled": true,
+            "ranges": [
+              {
+                "id": "wed-fixed",
+                "start": "10:00",
+                "end": "12:00"
+              }
+            ]
+          },
+          "thu": {
+            "enabled": true,
+            "ranges": [
+              {
+                "id": "thu-fixed",
+                "start": "10:00",
+                "end": "12:00"
+              }
+            ]
+          },
+          "fri": {
+            "enabled": true,
+            "ranges": [
+              {
+                "id": "fri-fixed",
+                "start": "10:00",
+                "end": "12:00"
+              }
+            ]
+          },
+          "sat": {
+            "enabled": false,
+            "ranges": [
+              {
+                "id": "sat-fixed",
+                "start": "10:00",
+                "end": "12:00"
+              }
+            ]
+          },
+          "sun": {
+            "enabled": true,
+            "ranges": [
+              {
+                "id": "sun-fixed",
+                "start": "10:00",
+                "end": "12:00"
+              }
+            ]
+          }
+        },
+        "calls": [
+          {
+            "mon": {
+              "enabled": true,
+              "ranges": [
+                {
+                  "id": "mon-fixed",
+                  "start": "08:30",
+                  "end": "16:30"
+                }
+              ]
+            },
+            "tue": {
+              "enabled": true,
+              "ranges": [
+                {
+                  "id": "tue-c0",
+                  "start": "08:30",
+                  "end": "16:30"
+                }
+              ]
+            },
+            "wed": {
+              "enabled": true,
+              "ranges": [
+                {
+                  "id": "wed-fixed",
+                  "start": "10:00",
+                  "end": "12:00"
+                }
+              ]
+            },
+            "thu": {
+              "enabled": true,
+              "ranges": [
+                {
+                  "id": "thu-fixed",
+                  "start": "10:00",
+                  "end": "12:00"
+                }
+              ]
+            },
+            "fri": {
+              "enabled": true,
+              "ranges": [
+                {
+                  "id": "fri-fixed",
+                  "start": "10:00",
+                  "end": "12:00"
+                }
+              ]
+            },
+            "sat": {
+              "enabled": false,
+              "ranges": [
+                {
+                  "id": "sat-fixed",
+                  "start": "10:00",
+                  "end": "12:00"
+                }
+              ]
+            },
+            "sun": {
+              "enabled": true,
+              "ranges": [
+                {
+                  "id": "sun-fixed",
+                  "start": "10:00",
+                  "end": "12:00"
+                }
+              ]
+            }
+          },
+          {
+            "mon": {
+              "enabled": true,
+              "ranges": [
+                {
+                  "id": "mon-fixed",
+                  "start": "08:30",
+                  "end": "16:30"
+                }
+              ]
+            },
+            "tue": {
+              "enabled": true,
+              "ranges": [
+                {
+                  "id": "tue-c1",
+                  "start": "08:30",
+                  "end": "16:30"
+                }
+              ]
+            },
+            "wed": {
+              "enabled": true,
+              "ranges": [
+                {
+                  "id": "wed-c2",
+                  "start": "08:30",
+                  "end": "16:30"
+                }
+              ]
+            },
+            "thu": {
+              "enabled": true,
+              "ranges": [
+                {
+                  "id": "thu-c3",
+                  "start": "08:30",
+                  "end": "16:30"
+                }
+              ]
+            },
+            "fri": {
+              "enabled": true,
+              "ranges": [
+                {
+                  "id": "fri-c4",
+                  "start": "08:30",
+                  "end": "16:30"
+                }
+              ]
+            },
+            "sat": {
+              "enabled": true,
+              "ranges": [
+                {
+                  "id": "sat-c5",
+                  "start": "08:30",
+                  "end": "16:30"
+                }
+              ]
+            },
+            "sun": {
+              "enabled": true,
+              "ranges": [
+                {
+                  "id": "sun-c6",
+                  "start": "08:30",
+                  "end": "16:30"
+                }
+              ]
+            }
+          }
+        ],
+        "reject": true
+      },
+      "reduce": false,
+      "focus": {
+        "tag": "FLT-SEMANTICS",
+        "role": "switch",
+        "label": null,
+        "text": ""
+      },
+      "fields": [],
+      "chips": [],
+      "popup": false,
+      "options": [],
+      "name": "post-everyday-tab",
+      "aria": "- group:\n  - switch [checked]\n  - text: Monday\n  - button \"8:30 AM 8:30 AM\"\n  - text: –\n  - button \"4:30 PM 4:30 PM\"\n  - button \"Remove Remove time range\"\n  - button \"Add time Add time range to Monday\"\n  - button \"Copy times Copy Monday hours to other days\"\n  - switch\n  - text: Tuesday Unavailable\n  - button \"Add time Add time range to Tuesday\"\n  - button \"Copy times Copy Tuesday hours to other days\"\n  - switch [checked]\n  - text: Wednesday\n  - button \"10:00 AM 10:00 AM\"\n  - text: –\n  - button \"12:00 PM 12:00 PM\"\n  - button \"Remove Remove time range\"\n  - button \"Add time Add time range to Wednesday\"\n  - button \"Copy times Copy Wednesday hours to other days\"\n  - switch [checked]\n  - text: Thursday\n  - button \"10:00 AM 10:00 AM\"\n  - text: –\n  - button \"12:00 PM 12:00 PM\"\n  - button \"Remove Remove time range\"\n  - button \"Add time Add time range to Thursday\"\n  - button \"Copy times Copy Thursday hours to other days\"\n  - switch [checked]\n  - text: Friday\n  - button \"10:00 AM 10:00 AM\"\n  - text: –\n  - button \"12:00 PM 12:00 PM\"\n  - button \"Remove Remove time range\"\n  - button \"Add time Add time range to Friday\"\n  - button \"Copy times Copy Friday hours to other days\"\n  - switch\n  - text: Saturday Unavailable\n  - button \"Add time Add time range to Saturday\"\n  - button \"Copy times Copy Saturday hours to other days\"\n  - switch [checked]\n  - text: Sunday\n  - button \"10:00 AM 10:00 AM\"\n  - text: –\n  - button \"12:00 PM 12:00 PM\"\n  - button \"Remove Remove time range\"\n  - button \"Add time Add time range to Sunday\"\n  - button \"Copy times Copy Sunday hours to other days\"",
+      "screenshot": {
+        "file": "post-everyday-tab.png",
+        "sha256": "f430179774bdd2113db0d9e05ab255037ab301ea8b663cf3eaa688463afd735d"
+      }
+    }
+  ],
+  "checks": [
+    {
+      "name": "selected checkbox",
+      "pass": true,
+      "actual": "- group:\n  - switch [checked]\n  - text: Monday\n  - button \"8:30 AM 8:30 AM\"\n  - text: –\n  - button \"4:30 PM 4:30 PM\"\n  - button \"Remove Remove time range\"\n  - button \"Add time Add time range to Monday\"\n  - button \"Copy times Copy Monday hours to other days\" [expanded]\n  - button\n  - text: Copy times to\n  - group \"Tuesday\":\n    - checkbox [checked]\n  - group \"Wednesday\":\n    - checkbox\n  - group \"Thursday\":\n    - checkbox\n  - group \"Friday\":\n    - checkbox\n  - group \"Saturday\":\n    - checkbox\n  - group \"Sunday\":\n    - checkbox\n  - button \"Every day Every day\"\n  - button \"Apply Apply\"\n  - switch\n  - text: Tuesday Unavailable\n  - button \"Add time Add time range to Tuesday\"\n  - button \"Copy times Copy Tuesday hours to other days\"\n  - switch [checked]\n  - text: Wednesday\n  - button \"10:00 AM 10:00 AM\"\n  - text: –\n  - button \"12:00 PM 12:00 PM\"\n  - button \"Remove Remove time range\"\n  - button \"Add time Add time range to Wednesday\"\n  - button \"Copy times Copy Wednesday hours to other days\"\n  - switch [checked]\n  - text: Thursday\n  - button \"10:00 AM 10:00 AM\"\n  - text: –\n  - button \"12:00 PM 12:00 PM\"\n  - button \"Remove Remove time range\"\n  - button \"Add time Add time range to Thursday\"\n  - button \"Copy times Copy Thursday hours to other days\"\n  - switch [checked]\n  - text: Friday\n  - button \"10:00 AM 10:00 AM\"\n  - text: –\n  - button \"12:00 PM 12:00 PM\"\n  - button \"Remove Remove time range\"\n  - button \"Add time Add time range to Friday\"\n  - button \"Copy times Copy Friday hours to other days\"\n  - switch\n  - text: Saturday Unavailable\n  - button \"Add time Add time range to Saturday\"\n  - button \"Copy times Copy Saturday hours to other days\"\n  - switch [checked]\n  - text: Sunday\n  - button \"10:00 AM 10:00 AM\"\n  - text: –\n  - button \"12:00 PM 12:00 PM\"\n  - button \"Remove Remove time range\"\n  - button \"Add time Add time range to Sunday\"\n  - button \"Copy times Copy Sunday hours to other days\""
+    },
+    {
+      "name": "one callback",
+      "pass": true,
+      "actual": [
+        {
+          "mon": {
+            "enabled": true,
+            "ranges": [
+              {
+                "id": "mon-fixed",
+                "start": "08:30",
+                "end": "16:30"
+              }
+            ]
+          },
+          "tue": {
+            "enabled": true,
+            "ranges": [
+              {
+                "id": "tue-c0",
+                "start": "08:30",
+                "end": "16:30"
+              }
+            ]
+          },
+          "wed": {
+            "enabled": true,
+            "ranges": [
+              {
+                "id": "wed-fixed",
+                "start": "10:00",
+                "end": "12:00"
+              }
+            ]
+          },
+          "thu": {
+            "enabled": true,
+            "ranges": [
+              {
+                "id": "thu-fixed",
+                "start": "10:00",
+                "end": "12:00"
+              }
+            ]
+          },
+          "fri": {
+            "enabled": true,
+            "ranges": [
+              {
+                "id": "fri-fixed",
+                "start": "10:00",
+                "end": "12:00"
+              }
+            ]
+          },
+          "sat": {
+            "enabled": false,
+            "ranges": [
+              {
+                "id": "sat-fixed",
+                "start": "10:00",
+                "end": "12:00"
+              }
+            ]
+          },
+          "sun": {
+            "enabled": true,
+            "ranges": [
+              {
+                "id": "sun-fixed",
+                "start": "10:00",
+                "end": "12:00"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "payload mon",
+      "pass": true,
+      "actual": {
+        "enabled": true,
+        "ranges": [
+          {
+            "id": "mon-fixed",
+            "start": "08:30",
+            "end": "16:30"
+          }
+        ]
+      }
+    },
+    {
+      "name": "payload tue",
+      "pass": true,
+      "actual": {
+        "enabled": true,
+        "ranges": [
+          {
+            "id": "tue-c0",
+            "start": "08:30",
+            "end": "16:30"
+          }
+        ]
+      }
+    },
+    {
+      "name": "payload wed",
+      "pass": true,
+      "actual": {
+        "enabled": true,
+        "ranges": [
+          {
+            "id": "wed-fixed",
+            "start": "10:00",
+            "end": "12:00"
+          }
+        ]
+      }
+    },
+    {
+      "name": "payload thu",
+      "pass": true,
+      "actual": {
+        "enabled": true,
+        "ranges": [
+          {
+            "id": "thu-fixed",
+            "start": "10:00",
+            "end": "12:00"
+          }
+        ]
+      }
+    },
+    {
+      "name": "payload fri",
+      "pass": true,
+      "actual": {
+        "enabled": true,
+        "ranges": [
+          {
+            "id": "fri-fixed",
+            "start": "10:00",
+            "end": "12:00"
+          }
+        ]
+      }
+    },
+    {
+      "name": "payload sat",
+      "pass": true,
+      "actual": {
+        "enabled": false,
+        "ranges": [
+          {
+            "id": "sat-fixed",
+            "start": "10:00",
+            "end": "12:00"
+          }
+        ]
+      }
+    },
+    {
+      "name": "payload sun",
+      "pass": true,
+      "actual": {
+        "enabled": true,
+        "ranges": [
+          {
+            "id": "sun-fixed",
+            "start": "10:00",
+            "end": "12:00"
+          }
+        ]
+      }
+    },
+    {
+      "name": "controlled owner",
+      "pass": true,
+      "actual": {
+        "mon": {
+          "enabled": true,
+          "ranges": [
+            {
+              "id": "mon-fixed",
+              "start": "08:30",
+              "end": "16:30"
+            }
+          ]
+        },
+        "tue": {
+          "enabled": false,
+          "ranges": [
+            {
+              "id": "tue-fixed",
+              "start": "10:00",
+              "end": "12:00"
+            }
+          ]
+        },
+        "wed": {
+          "enabled": true,
+          "ranges": [
+            {
+              "id": "wed-fixed",
+              "start": "10:00",
+              "end": "12:00"
+            }
+          ]
+        },
+        "thu": {
+          "enabled": true,
+          "ranges": [
+            {
+              "id": "thu-fixed",
+              "start": "10:00",
+              "end": "12:00"
+            }
+          ]
+        },
+        "fri": {
+          "enabled": true,
+          "ranges": [
+            {
+              "id": "fri-fixed",
+              "start": "10:00",
+              "end": "12:00"
+            }
+          ]
+        },
+        "sat": {
+          "enabled": false,
+          "ranges": [
+            {
+              "id": "sat-fixed",
+              "start": "10:00",
+              "end": "12:00"
+            }
+          ]
+        },
+        "sun": {
+          "enabled": true,
+          "ranges": [
+            {
+              "id": "sun-fixed",
+              "start": "10:00",
+              "end": "12:00"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "panel closed",
+      "pass": true,
+      "actual": "- group:\n  - switch [checked]\n  - text: Monday\n  - button \"8:30 AM 8:30 AM\"\n  - text: –\n  - button \"4:30 PM 4:30 PM\"\n  - button \"Remove Remove time range\"\n  - button \"Add time Add time range to Monday\"\n  - button \"Copy times Copy Monday hours to other days\"\n  - switch\n  - text: Tuesday Unavailable\n  - button \"Add time Add time range to Tuesday\"\n  - button \"Copy times Copy Tuesday hours to other days\"\n  - switch [checked]\n  - text: Wednesday\n  - button \"10:00 AM 10:00 AM\"\n  - text: –\n  - button \"12:00 PM 12:00 PM\"\n  - button \"Remove Remove time range\"\n  - button \"Add time Add time range to Wednesday\"\n  - button \"Copy times Copy Wednesday hours to other days\"\n  - switch [checked]\n  - text: Thursday\n  - button \"10:00 AM 10:00 AM\"\n  - text: –\n  - button \"12:00 PM 12:00 PM\"\n  - button \"Remove Remove time range\"\n  - button \"Add time Add time range to Thursday\"\n  - button \"Copy times Copy Thursday hours to other days\"\n  - switch [checked]\n  - text: Friday\n  - button \"10:00 AM 10:00 AM\"\n  - text: –\n  - button \"12:00 PM 12:00 PM\"\n  - button \"Remove Remove time range\"\n  - button \"Add time Add time range to Friday\"\n  - button \"Copy times Copy Friday hours to other days\"\n  - switch\n  - text: Saturday Unavailable\n  - button \"Add time Add time range to Saturday\"\n  - button \"Copy times Copy Saturday hours to other days\"\n  - switch [checked]\n  - text: Sunday\n  - button \"10:00 AM 10:00 AM\"\n  - text: –\n  - button \"12:00 PM 12:00 PM\"\n  - button \"Remove Remove time range\"\n  - button \"Add time Add time range to Sunday\"\n  - button \"Copy times Copy Sunday hours to other days\""
+    },
+    {
+      "name": "second callback",
+      "pass": true,
+      "actual": [
+        {
+          "mon": {
+            "enabled": true,
+            "ranges": [
+              {
+                "id": "mon-fixed",
+                "start": "08:30",
+                "end": "16:30"
+              }
+            ]
+          },
+          "tue": {
+            "enabled": true,
+            "ranges": [
+              {
+                "id": "tue-c0",
+                "start": "08:30",
+                "end": "16:30"
+              }
+            ]
+          },
+          "wed": {
+            "enabled": true,
+            "ranges": [
+              {
+                "id": "wed-fixed",
+                "start": "10:00",
+                "end": "12:00"
+              }
+            ]
+          },
+          "thu": {
+            "enabled": true,
+            "ranges": [
+              {
+                "id": "thu-fixed",
+                "start": "10:00",
+                "end": "12:00"
+              }
+            ]
+          },
+          "fri": {
+            "enabled": true,
+            "ranges": [
+              {
+                "id": "fri-fixed",
+                "start": "10:00",
+                "end": "12:00"
+              }
+            ]
+          },
+          "sat": {
+            "enabled": false,
+            "ranges": [
+              {
+                "id": "sat-fixed",
+                "start": "10:00",
+                "end": "12:00"
+              }
+            ]
+          },
+          "sun": {
+            "enabled": true,
+            "ranges": [
+              {
+                "id": "sun-fixed",
+                "start": "10:00",
+                "end": "12:00"
+              }
+            ]
+          }
+        },
+        {
+          "mon": {
+            "enabled": true,
+            "ranges": [
+              {
+                "id": "mon-fixed",
+                "start": "08:30",
+                "end": "16:30"
+              }
+            ]
+          },
+          "tue": {
+            "enabled": true,
+            "ranges": [
+              {
+                "id": "tue-c1",
+                "start": "08:30",
+                "end": "16:30"
+              }
+            ]
+          },
+          "wed": {
+            "enabled": true,
+            "ranges": [
+              {
+                "id": "wed-c2",
+                "start": "08:30",
+                "end": "16:30"
+              }
+            ]
+          },
+          "thu": {
+            "enabled": true,
+            "ranges": [
+              {
+                "id": "thu-c3",
+                "start": "08:30",
+                "end": "16:30"
+              }
+            ]
+          },
+          "fri": {
+            "enabled": true,
+            "ranges": [
+              {
+                "id": "fri-c4",
+                "start": "08:30",
+                "end": "16:30"
+              }
+            ]
+          },
+          "sat": {
+            "enabled": true,
+            "ranges": [
+              {
+                "id": "sat-c5",
+                "start": "08:30",
+                "end": "16:30"
+              }
+            ]
+          },
+          "sun": {
+            "enabled": true,
+            "ranges": [
+              {
+                "id": "sun-c6",
+                "start": "08:30",
+                "end": "16:30"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "everyday mon",
+      "pass": true,
+      "actual": {
+        "enabled": true,
+        "ranges": [
+          {
+            "id": "mon-fixed",
+            "start": "08:30",
+            "end": "16:30"
+          }
+        ]
+      }
+    },
+    {
+      "name": "everyday tue",
+      "pass": true,
+      "actual": {
+        "enabled": true,
+        "ranges": [
+          {
+            "id": "tue-c1",
+            "start": "08:30",
+            "end": "16:30"
+          }
+        ]
+      }
+    },
+    {
+      "name": "everyday wed",
+      "pass": true,
+      "actual": {
+        "enabled": true,
+        "ranges": [
+          {
+            "id": "wed-c2",
+            "start": "08:30",
+            "end": "16:30"
+          }
+        ]
+      }
+    },
+    {
+      "name": "everyday thu",
+      "pass": true,
+      "actual": {
+        "enabled": true,
+        "ranges": [
+          {
+            "id": "thu-c3",
+            "start": "08:30",
+            "end": "16:30"
+          }
+        ]
+      }
+    },
+    {
+      "name": "everyday fri",
+      "pass": true,
+      "actual": {
+        "enabled": true,
+        "ranges": [
+          {
+            "id": "fri-c4",
+            "start": "08:30",
+            "end": "16:30"
+          }
+        ]
+      }
+    },
+    {
+      "name": "everyday sat",
+      "pass": true,
+      "actual": {
+        "enabled": true,
+        "ranges": [
+          {
+            "id": "sat-c5",
+            "start": "08:30",
+            "end": "16:30"
+          }
+        ]
+      }
+    },
+    {
+      "name": "everyday sun",
+      "pass": true,
+      "actual": {
+        "enabled": true,
+        "ranges": [
+          {
+            "id": "sun-c6",
+            "start": "08:30",
+            "end": "16:30"
+          }
+        ]
+      }
+    },
+    {
+      "name": "trusted keyboard input",
+      "pass": true,
+      "actual": [
+        {
+          "type": "click",
+          "isTrusted": false,
+          "x": 0,
+          "y": 0,
+          "time": 398.59999990463257,
+          "tag": "FLT-SEMANTICS-PLACEHOLDER",
+          "label": "Enable accessibility"
+        }
+      ]
+    },
+    {
+      "name": "no page errors",
+      "pass": true,
+      "actual": []
+    },
+    {
+      "name": "video encode",
+      "pass": true,
+      "actual": 0
+    }
+  ],
+  "frames": [
+    {
+      "file": "original-frames/frame_000000.png",
+      "sha256": "8d3ca371123a767d8459fde39fa187a3aeb48f99fe6ecb31f1272e82891abfc4",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 1113,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792783865.739458,
+        "monotonicTimestamp": 600654.345338
+      }
+    },
+    {
+      "file": "original-frames/frame_000001.png",
+      "sha256": "0eed02509232bbe8049cd55e78879a280a84cfc53a2dad23f4f2970549af21f3",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 1113,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792783865.839455,
+        "monotonicTimestamp": 600654.445334
+      }
+    },
+    {
+      "file": "original-frames/frame_000002.png",
+      "sha256": "2218ccdecaee9e8341b3d3cbf83c82c6dd400cef569fc85afb1c447e4104ca08",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 1113,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792783865.889454,
+        "monotonicTimestamp": 600654.495332
+      }
+    },
+    {
+      "file": "original-frames/frame_000003.png",
+      "sha256": "b62ebf08103c303eb84e3affda2b71a83b06499cd5b180888e480428572cf10b",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 1113,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792783865.939452,
+        "monotonicTimestamp": 600654.54533
+      }
+    },
+    {
+      "file": "original-frames/frame_000004.png",
+      "sha256": "521304bd1e971151cdd398526567346aa40183847eb7e05e6936c80dc889b08e",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 1113,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792783865.989452,
+        "monotonicTimestamp": 600654.595328
+      }
+    },
+    {
+      "file": "original-frames/frame_000005.png",
+      "sha256": "e8ef01618052cd07409d7ddd159ccc27fd44f22ab428e5aca086cc0fd6736d28",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 1113,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792783866.03945,
+        "monotonicTimestamp": 600654.645326
+      }
+    },
+    {
+      "file": "original-frames/frame_000006.png",
+      "sha256": "224bceab058a612bd7a83e3a8f03a59886558cf7d9ae8e47d80cb01daa985045",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 1113,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792783866.089448,
+        "monotonicTimestamp": 600654.695324
+      }
+    },
+    {
+      "file": "original-frames/frame_000007.png",
+      "sha256": "c5ea3e6b043c9a82406a261dd477d9879606286061da2a8f50947ceff7ff76c6",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 1113,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792783866.139447,
+        "monotonicTimestamp": 600654.745322
+      }
+    },
+    {
+      "file": "original-frames/frame_000008.png",
+      "sha256": "c020fde0d3a17796539f60c3543064ee30c3e1a17e6a557c92b2b2107bd3dfd4",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 1113,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792783866.189446,
+        "monotonicTimestamp": 600654.79532
+      }
+    },
+    {
+      "file": "original-frames/frame_000009.png",
+      "sha256": "9394cec996979065468a63364d1b4a2e7c8770a8bdee620a07817c76367562b4",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 1113,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792783866.239445,
+        "monotonicTimestamp": 600654.845318
+      }
+    },
+    {
+      "file": "original-frames/frame_000010.png",
+      "sha256": "ed1dc66e8da278d5ad5452ba73aa11a8efee370c64a50142cde138a2052ad297",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 1113,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792783866.289443,
+        "monotonicTimestamp": 600654.895316
+      }
+    },
+    {
+      "file": "original-frames/frame_000011.png",
+      "sha256": "6903203357abb637ef31fd62c78866dfd49aeaccc8a1dcc0f42f9eec9afcebfe",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 1113,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792783866.339442,
+        "monotonicTimestamp": 600654.945314
+      }
+    },
+    {
+      "file": "original-frames/frame_000012.png",
+      "sha256": "dbca8c3e08c13509b1674e4fbdf1db426b99e917d705d3cbee2de6f0020408a0",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 1113,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792783866.38944,
+        "monotonicTimestamp": 600654.995312
+      }
+    },
+    {
+      "file": "original-frames/frame_000013.png",
+      "sha256": "7e431718b896a1d691d991c0824be29b7aff2d6ac814158965d638f0ff742a88",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 1113,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792783866.439439,
+        "monotonicTimestamp": 600655.04531
+      }
+    },
+    {
+      "file": "original-frames/frame_000014.png",
+      "sha256": "0c000a665a4a9f3197f10755dc49826cd9250810cc212ed89be955d5358b363f",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 1113,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792783866.489438,
+        "monotonicTimestamp": 600655.095308
+      }
+    },
+    {
+      "file": "original-frames/frame_000015.png",
+      "sha256": "baa623cc13398dd2010ce93d507d4bdab0d02adfa1316dcbe06b9a8e71cf715e",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 1113,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792783866.539437,
+        "monotonicTimestamp": 600655.145306
+      }
+    },
+    {
+      "file": "original-frames/frame_000016.png",
+      "sha256": "ff4d543c6e211350dcf9f9414c0d71cf3d723140e2f01fdb99536e9d5024d05d",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 1113,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792783866.589436,
+        "monotonicTimestamp": 600655.195304
+      }
+    },
+    {
+      "file": "original-frames/frame_000017.png",
+      "sha256": "874f085e0ddc4320080944109599d4a7219823758b9b1a79276e9d1ff6cff5e2",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 1113,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792783866.639434,
+        "monotonicTimestamp": 600655.245302
+      }
+    },
+    {
+      "file": "original-frames/frame_000018.png",
+      "sha256": "049388df4db109231b579e766edf96a2580aa8b71294fa6baac45939c835ce1d",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 1113,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792783866.689433,
+        "monotonicTimestamp": 600655.2953
+      }
+    },
+    {
+      "file": "original-frames/frame_000019.png",
+      "sha256": "606717bf20ae01efb82e1e0e38076fdc9f65d6490801663e36517bb4bf0fdabd",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 1113,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792783866.739431,
+        "monotonicTimestamp": 600655.345298
+      }
+    },
+    {
+      "file": "original-frames/frame_000020.png",
+      "sha256": "a0c619c700ea764675989d9b86bf46b786f7203935f2ec2e48b10c72822b3236",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 1113,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792783866.78943,
+        "monotonicTimestamp": 600655.395296
+      }
+    },
+    {
+      "file": "original-frames/frame_000021.png",
+      "sha256": "cf6a95a965c1829ef635a9b8138d4f56c7bc1bc428fe817ac8f5d564783baaeb",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 1113,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792783866.839429,
+        "monotonicTimestamp": 600655.445294
+      }
+    },
+    {
+      "file": "original-frames/frame_000022.png",
+      "sha256": "55fbee66d89e2cc8b088efb45d138a067738a53dd3634484f0f198d60a280d74",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 1113,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792783866.939427,
+        "monotonicTimestamp": 600655.54529
+      }
+    },
+    {
+      "file": "original-frames/frame_000023.png",
+      "sha256": "0323548ec5258eef068bd00c55983d5d5c33f75fa612cb4cabe0fbd24f92e081",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 1113,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792783866.989425,
+        "monotonicTimestamp": 600655.595288
+      }
+    },
+    {
+      "file": "original-frames/frame_000024.png",
+      "sha256": "55fbee66d89e2cc8b088efb45d138a067738a53dd3634484f0f198d60a280d74",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 1113,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792783867.039424,
+        "monotonicTimestamp": 600655.645286
+      }
+    },
+    {
+      "file": "original-frames/frame_000025.png",
+      "sha256": "95e9a4a96a229e96d892288a0da5baa556837e4b475cec339a1adf6d1af50147",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 1113,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792783867.089423,
+        "monotonicTimestamp": 600655.695284
+      }
+    },
+    {
+      "file": "original-frames/frame_000026.png",
+      "sha256": "6c9b08adb4c55bc3b32e6752dc9a7497447ebb7dd9099d3cdddc08c2c6a82a73",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 1113,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792783867.139421,
+        "monotonicTimestamp": 600655.745282
+      }
+    },
+    {
+      "file": "original-frames/frame_000027.png",
+      "sha256": "4d7fb57faa006b8b1d355b459fb9631fd8ea9bd4fc3b7c21c316b7d94c4ac425",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 1113,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792783867.18942,
+        "monotonicTimestamp": 600655.79528
+      }
+    },
+    {
+      "file": "original-frames/frame_000028.png",
+      "sha256": "4d7fb57faa006b8b1d355b459fb9631fd8ea9bd4fc3b7c21c316b7d94c4ac425",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 1113,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792783867.239419,
+        "monotonicTimestamp": 600655.845278
+      }
+    },
+    {
+      "file": "original-frames/frame_000029.png",
+      "sha256": "55fbee66d89e2cc8b088efb45d138a067738a53dd3634484f0f198d60a280d74",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 1113,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792783867.356083,
+        "monotonicTimestamp": 600655.96194
+      }
+    },
+    {
+      "file": "original-frames/frame_000030.png",
+      "sha256": "27c5d722321fd56221949cd907af61ff883da64854f6c4ca5c880974cceba5d6",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 1113,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792783867.406081,
+        "monotonicTimestamp": 600656.011938
+      }
+    },
+    {
+      "file": "original-frames/frame_000031.png",
+      "sha256": "ea627393d4fc520ea2765d5f121c434842601c9eb065607c8eb064e115168477",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 1113,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792783867.45608,
+        "monotonicTimestamp": 600656.061936
+      }
+    },
+    {
+      "file": "original-frames/frame_000032.png",
+      "sha256": "60eaa28df26bb6b687d2fcbf25b7450f8da8786f753393bcb57c3e1c3dcfab0a",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 1113,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792783867.506079,
+        "monotonicTimestamp": 600656.111934
+      }
+    },
+    {
+      "file": "original-frames/frame_000033.png",
+      "sha256": "fe1883ad4b48e09ab9bc44f0e36a3e88f47b847ba812899c967aca05ddb6efe5",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 1113,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792783867.556077,
+        "monotonicTimestamp": 600656.161932
+      }
+    },
+    {
+      "file": "original-frames/frame_000034.png",
+      "sha256": "ffff47bfa6d91f7472d903e867305fcd12d8c9ab0430d46aeb0641a04fd056b2",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 1113,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792783867.606075,
+        "monotonicTimestamp": 600656.21193
+      }
+    },
+    {
+      "file": "original-frames/frame_000035.png",
+      "sha256": "55fbee66d89e2cc8b088efb45d138a067738a53dd3634484f0f198d60a280d74",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 1113,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792783867.706073,
+        "monotonicTimestamp": 600656.311926
+      }
+    },
+    {
+      "file": "original-frames/frame_000036.png",
+      "sha256": "7e8720fa00ab01831c30dfee9b3ee080f8c9b09fca7996ebf69ceebfd8790bbd",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 1113,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792783867.756072,
+        "monotonicTimestamp": 600656.361924
+      }
+    },
+    {
+      "file": "original-frames/frame_000037.png",
+      "sha256": "55fbee66d89e2cc8b088efb45d138a067738a53dd3634484f0f198d60a280d74",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 1113,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792783867.80607,
+        "monotonicTimestamp": 600656.411922
+      }
+    },
+    {
+      "file": "original-frames/frame_000038.png",
+      "sha256": "e629fac15ca27f1786940456c3899b74e6a724622b654750c6dfe4b9d781d1ee",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 1113,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792783867.856069,
+        "monotonicTimestamp": 600656.46192
+      }
+    },
+    {
+      "file": "original-frames/frame_000039.png",
+      "sha256": "584075ce456e68b1f181eff799f42f03633f2ceb4a93bab66d2797440158bf8e",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 1113,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792783867.906068,
+        "monotonicTimestamp": 600656.511918
+      }
+    },
+    {
+      "file": "original-frames/frame_000040.png",
+      "sha256": "77c7c89f4da000547dc8eba010444f7bee0a84eed3615d6cebd4cc92aad4388a",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 1113,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792783867.956066,
+        "monotonicTimestamp": 600656.561916
+      }
+    },
+    {
+      "file": "original-frames/frame_000041.png",
+      "sha256": "81e5affbe9550eaa9a70882f40890ecc43b9bbf0bcd02a922d203137568f9dfa",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 1113,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792783868.056065,
+        "monotonicTimestamp": 600656.661912
+      }
+    },
+    {
+      "file": "original-frames/frame_000042.png",
+      "sha256": "0d52dd907c981b694a8fa9f55db306289f2db62f2c44d51d84464f8175e82314",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 1113,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792783868.106063,
+        "monotonicTimestamp": 600656.71191
+      }
+    },
+    {
+      "file": "original-frames/frame_000043.png",
+      "sha256": "aa9743a55c83943e65ec81b390163f73f8609d0aaf4aa9edf7a42124e742f79e",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 1113,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792783868.156062,
+        "monotonicTimestamp": 600656.761908
+      }
+    },
+    {
+      "file": "original-frames/frame_000044.png",
+      "sha256": "46d4dd4de3b7848974ad0e486067ec4864e805d4520117915c9cde5d3df74bfb",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 1113,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792783868.206059,
+        "monotonicTimestamp": 600656.811906
+      }
+    },
+    {
+      "file": "original-frames/frame_000045.png",
+      "sha256": "94073893fa070115a450e21bc828e69225d2cb5ae56d595c3dc245ce5c54ad03",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 1113,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792783868.256059,
+        "monotonicTimestamp": 600656.861904
+      }
+    },
+    {
+      "file": "original-frames/frame_000046.png",
+      "sha256": "54c02e3c24415a039b087d495d5a76105fe791fa3b8267fce09d54ce53120ea5",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 1113,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792783868.356057,
+        "monotonicTimestamp": 600656.9619
+      }
+    },
+    {
+      "file": "original-frames/frame_000047.png",
+      "sha256": "0095bdbe1fb03618e1d10cf4d62a74cde70697d7761b73c4c135417d3cb4fa2d",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 1113,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792783868.406055,
+        "monotonicTimestamp": 600657.011898
+      }
+    },
+    {
+      "file": "original-frames/frame_000048.png",
+      "sha256": "59f7cbb0829ffc941477fd0bfc3ba404fa8b4b4242f38a67932875cc79cff1c5",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 1113,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792783868.456054,
+        "monotonicTimestamp": 600657.061896
+      }
+    },
+    {
+      "file": "original-frames/frame_000049.png",
+      "sha256": "52b90b3c35117de5330d7014f8992605a03d4ccdf912315234d1436ab35ab0de",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 1113,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792783868.506052,
+        "monotonicTimestamp": 600657.111894
+      }
+    },
+    {
+      "file": "original-frames/frame_000050.png",
+      "sha256": "c5c674ec3cd50c3792b3f4ac7641e472c7b6aecf771ec9dbde6a44d7afb9d017",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 1113,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792783868.556051,
+        "monotonicTimestamp": 600657.161892
+      }
+    },
+    {
+      "file": "original-frames/frame_000051.png",
+      "sha256": "55fbee66d89e2cc8b088efb45d138a067738a53dd3634484f0f198d60a280d74",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 1113,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792783868.606049,
+        "monotonicTimestamp": 600657.21189
+      }
+    },
+    {
+      "file": "original-frames/frame_000052.png",
+      "sha256": "925c9fe2ed64e1a53647f0eb7d905df29d88f7bbc5c7618ebf729789bb2eab1d",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 1113,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792783868.722714,
+        "monotonicTimestamp": 600657.328552
+      }
+    },
+    {
+      "file": "original-frames/frame_000053.png",
+      "sha256": "a708ff556b7c287d6c0df3366ab5783b8ed63493dab2f0417f64a78c4cffeebb",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 1113,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792783868.839377,
+        "monotonicTimestamp": 600657.445214
+      }
+    },
+    {
+      "file": "original-frames/frame_000054.png",
+      "sha256": "5a5956c73388610fa742c20cdebea9df8afaaf988c60485302d8966eb3355725",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 1113,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792783868.889375,
+        "monotonicTimestamp": 600657.495212
+      }
+    },
+    {
+      "file": "original-frames/frame_000055.png",
+      "sha256": "33cb3c084cfb1fbe812d68313a73a78268f72bedc033426a53a4d0696f177a81",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 1113,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792783868.939375,
+        "monotonicTimestamp": 600657.54521
+      }
+    },
+    {
+      "file": "original-frames/frame_000056.png",
+      "sha256": "89b825b6eb4a89d633a25c316f6b23e8bd21896e0be17197c11d515b9f294e62",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 1113,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792783868.989373,
+        "monotonicTimestamp": 600657.595208
+      }
+    },
+    {
+      "file": "original-frames/frame_000057.png",
+      "sha256": "5745312474048e568e9d88ac5a02f01c83d9595215963d7b5ba84a75736533c5",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 1113,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792783869.039372,
+        "monotonicTimestamp": 600657.645206
+      }
+    },
+    {
+      "file": "original-frames/frame_000058.png",
+      "sha256": "bbb2b3a12c079843f799da1beaf91bf84aee77f3f1d92d7d345ed88e1f45ba01",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 1113,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792783869.08937,
+        "monotonicTimestamp": 600657.695204
+      }
+    },
+    {
+      "file": "original-frames/frame_000059.png",
+      "sha256": "bbb2b3a12c079843f799da1beaf91bf84aee77f3f1d92d7d345ed88e1f45ba01",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 1113,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792783869.139369,
+        "monotonicTimestamp": 600657.745202
+      }
+    },
+    {
+      "file": "original-frames/frame_000060.png",
+      "sha256": "7f07bb3503b2cb5b6988d1be2dd70ba115a5765af292979e9131fb6e3d9bf206",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 1113,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792783869.339365,
+        "monotonicTimestamp": 600657.945194
+      }
+    },
+    {
+      "file": "original-frames/frame_000061.png",
+      "sha256": "4329b2161d5de4b210274936290198f065825ced4021fe71ebc5a639cd9d7f1f",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 1113,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792783869.57269,
+        "monotonicTimestamp": 600658.178518
+      }
+    },
+    {
+      "file": "original-frames/frame_000062.png",
+      "sha256": "68f12062755db5e15b680d3449293a9fe3bdc67fcf7dfe8c28725df7c8a2b3b4",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 1113,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792783869.722688,
+        "monotonicTimestamp": 600658.328512
+      }
+    },
+    {
+      "file": "original-frames/frame_000063.png",
+      "sha256": "af945c6da18403ec3a0a316fb3c30b9aeeb0756a4ec5e85f6de6bd238aeb978e",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 1113,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792783869.772686,
+        "monotonicTimestamp": 600658.37851
+      }
+    },
+    {
+      "file": "original-frames/frame_000064.png",
+      "sha256": "92703b8ddd535fd1cc0175992d8ff7d0b098c8b0d1a52aed09a55ac43c93e4a5",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 1113,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792783869.822684,
+        "monotonicTimestamp": 600658.428508
+      }
+    },
+    {
+      "file": "original-frames/frame_000065.png",
+      "sha256": "88bc41f29a224763a820d8422b30365c8d481b98bd7c3ebf1ee91437c6b91e54",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 1113,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792783869.872683,
+        "monotonicTimestamp": 600658.478506
+      }
+    },
+    {
+      "file": "original-frames/frame_000066.png",
+      "sha256": "e27a42e0187d1f5bc10a07377475c436a2c6af1ff4efd628e6759451cdc6de4b",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 1113,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792783869.922682,
+        "monotonicTimestamp": 600658.528504
+      }
+    },
+    {
+      "file": "original-frames/frame_000067.png",
+      "sha256": "370802685b662526351fbcb8532b6650e7e1da4ffbbf35d1d99836ff18f035bb",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 1113,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792783869.97268,
+        "monotonicTimestamp": 600658.578502
+      }
+    },
+    {
+      "file": "original-frames/frame_000068.png",
+      "sha256": "64acd161ed7d29ef934c2aa8955bb2e7842a71fafec2b7c9197dfb8f98785d85",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 1113,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792783870.02268,
+        "monotonicTimestamp": 600658.6285
+      }
+    },
+    {
+      "file": "original-frames/frame_000069.png",
+      "sha256": "05a2b4b8143cfa0e918a5e9141d8ac84d058f513f69c1ed7cf544399b0aa5f4d",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 1113,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792783870.389337,
+        "monotonicTimestamp": 600658.995152
+      }
+    },
+    {
+      "file": "original-frames/frame_000070.png",
+      "sha256": "640862ebd693676d6bcc1f18b3d0c90d98092d3d938f436469166cb267871940",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 1113,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792783870.922656,
+        "monotonicTimestamp": 600659.528464
+      }
+    },
+    {
+      "file": "original-frames/frame_000071.png",
+      "sha256": "d6c2d2494b83c5ee085b5733ba95450275defad996224567a29b1c202eb578c6",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 1113,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792783870.972654,
+        "monotonicTimestamp": 600659.578462
+      }
+    },
+    {
+      "file": "original-frames/frame_000072.png",
+      "sha256": "ef1c08677daa3b6f444935b124722ebfaa73c0e018251ec52e867fd452dc56b7",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 1113,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792783871.022654,
+        "monotonicTimestamp": 600659.62846
+      }
+    },
+    {
+      "file": "original-frames/frame_000073.png",
+      "sha256": "fc1d22f72f2cca69cb76bdaaefed69af60a655de57ef5582ee345c0d668369e0",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 1113,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792783871.072652,
+        "monotonicTimestamp": 600659.678458
+      }
+    },
+    {
+      "file": "original-frames/frame_000074.png",
+      "sha256": "0857eeb8f45511ee4393abe727e05be36d0ddfdf84b114f4ef5cf45103d2223b",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 1113,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792783871.122651,
+        "monotonicTimestamp": 600659.728456
+      }
+    },
+    {
+      "file": "original-frames/frame_000075.png",
+      "sha256": "015defc7b046dba5b4f6a513f3a30e7578642b8c36fd7c32f05a4eeb468b9d0e",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 1113,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792783871.172649,
+        "monotonicTimestamp": 600659.778454
+      }
+    },
+    {
+      "file": "original-frames/frame_000076.png",
+      "sha256": "1135238b5364d3f208e1a269d94a9f4181652bb56417583aad9b02e4cb3d97c3",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 1113,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792783871.222648,
+        "monotonicTimestamp": 600659.828452
+      }
+    },
+    {
+      "file": "original-frames/frame_000077.png",
+      "sha256": "03731d453b1cfb84a07fe8d389e7ce00d942d781853bbfe08c66c66b50bae042",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 1113,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792783871.272647,
+        "monotonicTimestamp": 600659.87845
+      }
+    },
+    {
+      "file": "original-frames/frame_000078.png",
+      "sha256": "7f85da14a1874536c78f6826844bc2eb1f2bdd5abef755c9e96fe44a3f429c91",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 1113,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792783871.322645,
+        "monotonicTimestamp": 600659.928448
+      }
+    },
+    {
+      "file": "original-frames/frame_000079.png",
+      "sha256": "6891f54d34832f9c98f3f311e3f0379a765e669eaa5a4b986f17f41f29cd83d5",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 1113,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792783871.372644,
+        "monotonicTimestamp": 600659.978446
+      }
+    },
+    {
+      "file": "original-frames/frame_000080.png",
+      "sha256": "346d49b8075b43bf6b80365c32715e00e355dbac5f2d912f3e405d8bbb9345be",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 1113,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792783871.422643,
+        "monotonicTimestamp": 600660.028444
+      }
+    },
+    {
+      "file": "original-frames/frame_000081.png",
+      "sha256": "16a319b01d8bce60b7ae483bb06f0be5e0ef0bb237ec197b60c0d887fe448e60",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 1113,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792783871.472642,
+        "monotonicTimestamp": 600660.078442
+      }
+    },
+    {
+      "file": "original-frames/frame_000082.png",
+      "sha256": "5d4e9022c85f422934a9a6cba4d7b50b7c0c53a200fc82f662447cff211fb93a",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 1113,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792783871.522641,
+        "monotonicTimestamp": 600660.12844
+      }
+    },
+    {
+      "file": "original-frames/frame_000083.png",
+      "sha256": "e288c395437d5d735de6f87a0eaafc2a5e41493a8eb0bf492935e8bd3b63d864",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 1113,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792783871.57264,
+        "monotonicTimestamp": 600660.178438
+      }
+    },
+    {
+      "file": "original-frames/frame_000084.png",
+      "sha256": "dec095fe64a11043259e62f9151e3a9923f27da8dbb92caf189ee134bc8bfef7",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 1113,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792783871.622638,
+        "monotonicTimestamp": 600660.228436
+      }
+    },
+    {
+      "file": "original-frames/frame_000085.png",
+      "sha256": "c8d75d4de4898069dcaf871a43099f37755739a5cb293fd664db5d0e536050e8",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 1113,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792783871.672636,
+        "monotonicTimestamp": 600660.278434
+      }
+    },
+    {
+      "file": "original-frames/frame_000086.png",
+      "sha256": "a0b49b79c6cc823f4652b007d71c1b4633a9c764b1581595128114763c55e5dc",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 1113,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792783871.722635,
+        "monotonicTimestamp": 600660.328432
+      }
+    },
+    {
+      "file": "original-frames/frame_000087.png",
+      "sha256": "216a84380a627b1b93c10b512438bec98161e8b49b2ecd49f9b3290ac31cf4dd",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 1113,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792783871.772633,
+        "monotonicTimestamp": 600660.37843
+      }
+    },
+    {
+      "file": "original-frames/frame_000088.png",
+      "sha256": "d6d3fe653aefe5a21855d42a79b7eb598ef79355cce0c9e5ced319cb26d46ae1",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 1113,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792783871.822632,
+        "monotonicTimestamp": 600660.428428
+      }
+    },
+    {
+      "file": "original-frames/frame_000089.png",
+      "sha256": "5c836108ecec78f28694c1f7a0ffbafd5a54a09d2426f24f0078fd33cf67b054",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 1113,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792783871.87263,
+        "monotonicTimestamp": 600660.478426
+      }
+    },
+    {
+      "file": "original-frames/frame_000090.png",
+      "sha256": "742c9734700fec176e7c2d4157293f35c20890a645e3f170af2b3abb42f6f9dc",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 1113,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792783871.92263,
+        "monotonicTimestamp": 600660.528424
+      }
+    },
+    {
+      "file": "original-frames/frame_000091.png",
+      "sha256": "cf6a95a965c1829ef635a9b8138d4f56c7bc1bc428fe817ac8f5d564783baaeb",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 1113,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792783871.972628,
+        "monotonicTimestamp": 600660.578422
+      }
+    },
+    {
+      "file": "original-frames/frame_000092.png",
+      "sha256": "55fbee66d89e2cc8b088efb45d138a067738a53dd3634484f0f198d60a280d74",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 1113,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792783872.072626,
+        "monotonicTimestamp": 600660.678418
+      }
+    },
+    {
+      "file": "original-frames/frame_000093.png",
+      "sha256": "34ca809f1113c6ff0cacc931027b88a02fc4a7f1e0e0b7e597ecefab5fb8e1a1",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 1113,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792783872.122625,
+        "monotonicTimestamp": 600660.728416
+      }
+    },
+    {
+      "file": "original-frames/frame_000094.png",
+      "sha256": "55fbee66d89e2cc8b088efb45d138a067738a53dd3634484f0f198d60a280d74",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 1113,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792783872.172623,
+        "monotonicTimestamp": 600660.778414
+      }
+    },
+    {
+      "file": "original-frames/frame_000095.png",
+      "sha256": "6c9b08adb4c55bc3b32e6752dc9a7497447ebb7dd9099d3cdddc08c2c6a82a73",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 1113,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792783872.222622,
+        "monotonicTimestamp": 600660.828412
+      }
+    },
+    {
+      "file": "original-frames/frame_000096.png",
+      "sha256": "25b211363a709add500d8743379dd7501ac4b8add9e474cbbf42525aa150fbbb",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 1113,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792783872.272621,
+        "monotonicTimestamp": 600660.87841
+      }
+    },
+    {
+      "file": "original-frames/frame_000097.png",
+      "sha256": "4d7fb57faa006b8b1d355b459fb9631fd8ea9bd4fc3b7c21c316b7d94c4ac425",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 1113,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792783872.32262,
+        "monotonicTimestamp": 600660.928408
+      }
+    },
+    {
+      "file": "original-frames/frame_000098.png",
+      "sha256": "55fbee66d89e2cc8b088efb45d138a067738a53dd3634484f0f198d60a280d74",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 1113,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792783872.40595,
+        "monotonicTimestamp": 600661.011738
+      }
+    },
+    {
+      "file": "original-frames/frame_000099.png",
+      "sha256": "2053b8f14727cea529e30bc29eac1f50294007b1e5fd8e405f63c79a53e304b1",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 1113,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792783872.45595,
+        "monotonicTimestamp": 600661.061736
+      }
+    },
+    {
+      "file": "original-frames/frame_000100.png",
+      "sha256": "55fbee66d89e2cc8b088efb45d138a067738a53dd3634484f0f198d60a280d74",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 1113,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792783872.505948,
+        "monotonicTimestamp": 600661.111734
+      }
+    },
+    {
+      "file": "original-frames/frame_000101.png",
+      "sha256": "60eaa28df26bb6b687d2fcbf25b7450f8da8786f753393bcb57c3e1c3dcfab0a",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 1113,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792783872.555947,
+        "monotonicTimestamp": 600661.161732
+      }
+    },
+    {
+      "file": "original-frames/frame_000102.png",
+      "sha256": "8045c0c6d286383862fc43392846fb0ac27fac86ec255da2f779be657293ddcf",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 1113,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792783872.605946,
+        "monotonicTimestamp": 600661.21173
+      }
+    },
+    {
+      "file": "original-frames/frame_000103.png",
+      "sha256": "ffff47bfa6d91f7472d903e867305fcd12d8c9ab0430d46aeb0641a04fd056b2",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 1113,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792783872.655944,
+        "monotonicTimestamp": 600661.261728
+      }
+    },
+    {
+      "file": "original-frames/frame_000104.png",
+      "sha256": "ffff47bfa6d91f7472d903e867305fcd12d8c9ab0430d46aeb0641a04fd056b2",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 1113,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792783872.705943,
+        "monotonicTimestamp": 600661.311726
+      }
+    },
+    {
+      "file": "original-frames/frame_000105.png",
+      "sha256": "55fbee66d89e2cc8b088efb45d138a067738a53dd3634484f0f198d60a280d74",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 1113,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792783872.805941,
+        "monotonicTimestamp": 600661.411722
+      }
+    },
+    {
+      "file": "original-frames/frame_000106.png",
+      "sha256": "60c9d7a8c65ba58afbbc60f31e40d19cb630b6df3776bae5e454fd7cb761a9af",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 1113,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792783872.855939,
+        "monotonicTimestamp": 600661.46172
+      }
+    },
+    {
+      "file": "original-frames/frame_000107.png",
+      "sha256": "952d3595053581f532040486b2c91416f9e7a83d4b893eb4c7afbe51d2bf3e3d",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 1113,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792783872.905938,
+        "monotonicTimestamp": 600661.511718
+      }
+    },
+    {
+      "file": "original-frames/frame_000108.png",
+      "sha256": "608ce0a5270605f017decbdb8a86ecbb7dcdc8cad08e0ec12ffc4278f1acc98d",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 1113,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792783872.955937,
+        "monotonicTimestamp": 600661.561716
+      }
+    },
+    {
+      "file": "original-frames/frame_000109.png",
+      "sha256": "77c7c89f4da000547dc8eba010444f7bee0a84eed3615d6cebd4cc92aad4388a",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 1113,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792783873.005935,
+        "monotonicTimestamp": 600661.611714
+      }
+    },
+    {
+      "file": "original-frames/frame_000110.png",
+      "sha256": "55fbee66d89e2cc8b088efb45d138a067738a53dd3634484f0f198d60a280d74",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 1113,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792783873.055934,
+        "monotonicTimestamp": 600661.661712
+      }
+    },
+    {
+      "file": "original-frames/frame_000111.png",
+      "sha256": "81e5affbe9550eaa9a70882f40890ecc43b9bbf0bcd02a922d203137568f9dfa",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 1113,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792783873.172598,
+        "monotonicTimestamp": 600661.778374
+      }
+    },
+    {
+      "file": "original-frames/frame_000112.png",
+      "sha256": "baa0898a66f48ae6e4c00a7334a4a9fc2b53e5116bc5a0b8ba81d0fd77339ffe",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 1113,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792783873.222596,
+        "monotonicTimestamp": 600661.828372
+      }
+    },
+    {
+      "file": "original-frames/frame_000113.png",
+      "sha256": "df9dcdfb9e580211e82044e1063b87f4b0c255b3eee18f90a87805bf581bbaed",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 1113,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792783873.272595,
+        "monotonicTimestamp": 600661.87837
+      }
+    },
+    {
+      "file": "original-frames/frame_000114.png",
+      "sha256": "94073893fa070115a450e21bc828e69225d2cb5ae56d595c3dc245ce5c54ad03",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 1113,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792783873.322594,
+        "monotonicTimestamp": 600661.928368
+      }
+    },
+    {
+      "file": "original-frames/frame_000115.png",
+      "sha256": "94073893fa070115a450e21bc828e69225d2cb5ae56d595c3dc245ce5c54ad03",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 1113,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792783873.372592,
+        "monotonicTimestamp": 600661.978366
+      }
+    },
+    {
+      "file": "original-frames/frame_000116.png",
+      "sha256": "54c02e3c24415a039b087d495d5a76105fe791fa3b8267fce09d54ce53120ea5",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 1113,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792783873.489256,
+        "monotonicTimestamp": 600662.095028
+      }
+    },
+    {
+      "file": "original-frames/frame_000117.png",
+      "sha256": "a1ff2b5a0118277679e3a94240c5a9947c6f3ff2d91d74834de4ad6b58351fc7",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 1113,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792783873.539255,
+        "monotonicTimestamp": 600662.145026
+      }
+    },
+    {
+      "file": "original-frames/frame_000118.png",
+      "sha256": "372c66a283e2533e29072619c3e2cb77197122838236130373b2e2ea7c7de0cc",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 1113,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792783873.589254,
+        "monotonicTimestamp": 600662.195024
+      }
+    },
+    {
+      "file": "original-frames/frame_000119.png",
+      "sha256": "c5c674ec3cd50c3792b3f4ac7641e472c7b6aecf771ec9dbde6a44d7afb9d017",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 1113,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792783873.639252,
+        "monotonicTimestamp": 600662.245022
+      }
+    },
+    {
+      "file": "original-frames/frame_000120.png",
+      "sha256": "55fbee66d89e2cc8b088efb45d138a067738a53dd3634484f0f198d60a280d74",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 1113,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792783873.68925,
+        "monotonicTimestamp": 600662.29502
+      }
+    },
+    {
+      "file": "original-frames/frame_000121.png",
+      "sha256": "925c9fe2ed64e1a53647f0eb7d905df29d88f7bbc5c7618ebf729789bb2eab1d",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 1113,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792783873.772582,
+        "monotonicTimestamp": 600662.37835
+      }
+    },
+    {
+      "file": "original-frames/frame_000122.png",
+      "sha256": "49e1c0ef4ecb66c2f3f8572856e9375b1b378e5cbe1a726606037272d1aeb520",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 1113,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792783873.972577,
+        "monotonicTimestamp": 600662.578342
+      }
+    },
+    {
+      "file": "original-frames/frame_000123.png",
+      "sha256": "55fbee66d89e2cc8b088efb45d138a067738a53dd3634484f0f198d60a280d74",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 1113,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792783874.205904,
+        "monotonicTimestamp": 600662.811666
+      }
+    },
+    {
+      "file": "original-frames/frame_000124.png",
+      "sha256": "8250dfeba5a43f13ef277e102790b3bd45c7fe5b53f8530f3276a07988458c51",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 1113,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792783874.255902,
+        "monotonicTimestamp": 600662.861664
+      }
+    },
+    {
+      "file": "original-frames/frame_000125.png",
+      "sha256": "2c7f895c0237efd1c6663c0da90c2faeeb2c0dd576c28c4f7ff7a10adc445a8e",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 1113,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792783874.305901,
+        "monotonicTimestamp": 600662.911662
+      }
+    },
+    {
+      "file": "original-frames/frame_000126.png",
+      "sha256": "58d3bec15c803a4f2b7957d1f1c3f7cc34326132c133ae7904869fdc6f6e2415",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 1113,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792783874.355901,
+        "monotonicTimestamp": 600662.96166
+      }
+    },
+    {
+      "file": "original-frames/frame_000127.png",
+      "sha256": "b51c4f1fb8b720323e4829f3599a9845a3edb8445374c4e4b40b57b2dfde7bcd",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 1113,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792783874.405898,
+        "monotonicTimestamp": 600663.011658
+      }
+    },
+    {
+      "file": "original-frames/frame_000128.png",
+      "sha256": "64acd161ed7d29ef934c2aa8955bb2e7842a71fafec2b7c9197dfb8f98785d85",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 1113,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792783874.455897,
+        "monotonicTimestamp": 600663.061656
+      }
+    },
+    {
+      "file": "original-frames/frame_000129.png",
+      "sha256": "05a2b4b8143cfa0e918a5e9141d8ac84d058f513f69c1ed7cf544399b0aa5f4d",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 1113,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792783874.805888,
+        "monotonicTimestamp": 600663.411642
+      }
+    }
+  ],
+  "inputs": [
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 295.6999999284744,
+      "tag": "FLUTTER-VIEW",
+      "label": null
+    },
+    {
+      "type": "click",
+      "isTrusted": false,
+      "x": 0,
+      "y": 0,
+      "time": 398.59999990463257,
+      "tag": "FLT-SEMANTICS-PLACEHOLDER",
+      "label": "Enable accessibility"
+    },
+    {
+      "type": "keyup",
+      "key": "Tab",
+      "isTrusted": true,
+      "time": 1645.5999999046326,
+      "tag": "FLUTTER-VIEW",
+      "label": null
+    },
+    {
+      "type": "focusout",
+      "isTrusted": true,
+      "time": 1657.1999999284744,
+      "tag": "FLUTTER-VIEW",
+      "label": null
+    },
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 1657.2999999523163,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusout",
+      "isTrusted": true,
+      "time": 1722.3999999761581,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 1722.6999999284744,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": "Tab",
+      "isTrusted": true,
+      "time": 1724,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": "Tab",
+      "isTrusted": true,
+      "time": 1797.7999999523163,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusout",
+      "isTrusted": true,
+      "time": 1807.2999999523163,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 1807.5,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusout",
+      "isTrusted": true,
+      "time": 1872.7999999523163,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 1872.8999999761581,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": "Tab",
+      "isTrusted": true,
+      "time": 1874.3999999761581,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": "Enter",
+      "isTrusted": true,
+      "time": 1950.1999999284744,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": "Tab",
+      "isTrusted": true,
+      "time": 2490,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusout",
+      "isTrusted": true,
+      "time": 2507.1999999284744,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 2507.399999976158,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": "Tab",
+      "isTrusted": true,
+      "time": 2565.2999999523163,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusout",
+      "isTrusted": true,
+      "time": 2571.7999999523163,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 2572,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": "Tab",
+      "isTrusted": true,
+      "time": 2642,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusout",
+      "isTrusted": true,
+      "time": 2655.899999976158,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 2656.1999999284744,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": "Tab",
+      "isTrusted": true,
+      "time": 2714.399999976158,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusout",
+      "isTrusted": true,
+      "time": 2724,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 2724.1999999284744,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusout",
+      "isTrusted": true,
+      "time": 2756.899999976158,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "keydown",
+      "key": "Tab",
+      "isTrusted": true,
+      "time": 2785.5,
+      "tag": "BODY",
+      "label": null
+    },
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 2785.6999999284744,
+      "tag": "FLUTTER-VIEW",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": "Tab",
+      "isTrusted": true,
+      "time": 2786.1999999284744,
+      "tag": "FLUTTER-VIEW",
+      "label": null
+    },
+    {
+      "type": "focusout",
+      "isTrusted": true,
+      "time": 2790.5999999046326,
+      "tag": "FLUTTER-VIEW",
+      "label": null
+    },
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 2790.5999999046326,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusout",
+      "isTrusted": true,
+      "time": 2860.899999976158,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 2861.0999999046326,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": "Tab",
+      "isTrusted": true,
+      "time": 2862.2999999523163,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": "Tab",
+      "isTrusted": true,
+      "time": 2935,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusout",
+      "isTrusted": true,
+      "time": 2939,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 2939.0999999046326,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": "Tab",
+      "isTrusted": true,
+      "time": 3009,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusout",
+      "isTrusted": true,
+      "time": 3023.5,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 3023.6999999284744,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": "Tab",
+      "isTrusted": true,
+      "time": 3083.5999999046326,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusout",
+      "isTrusted": true,
+      "time": 3088.2999999523163,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 3088.399999976158,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusout",
+      "isTrusted": true,
+      "time": 3122.5,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "keydown",
+      "key": "Tab",
+      "isTrusted": true,
+      "time": 3156.899999976158,
+      "tag": "BODY",
+      "label": null
+    },
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 3157,
+      "tag": "FLUTTER-VIEW",
+      "label": null
+    },
+    {
+      "type": "focusout",
+      "isTrusted": true,
+      "time": 3159.2999999523163,
+      "tag": "FLUTTER-VIEW",
+      "label": null
+    },
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 3159.399999976158,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": "Tab",
+      "isTrusted": true,
+      "time": 3160.399999976158,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusout",
+      "isTrusted": true,
+      "time": 3235.5999999046326,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 3235.899999976158,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": "Tab",
+      "isTrusted": true,
+      "time": 3236.899999976158,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": "Tab",
+      "isTrusted": true,
+      "time": 3310.6999999284744,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusout",
+      "isTrusted": true,
+      "time": 3322.399999976158,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 3322.5999999046326,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": "Tab",
+      "isTrusted": true,
+      "time": 3386.399999976158,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusout",
+      "isTrusted": true,
+      "time": 3388.7999999523163,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 3388.899999976158,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": "Tab",
+      "isTrusted": true,
+      "time": 3461.1999999284744,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusout",
+      "isTrusted": true,
+      "time": 3473.399999976158,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 3473.6999999284744,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusout",
+      "isTrusted": true,
+      "time": 3522.5,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "keydown",
+      "key": "Tab",
+      "isTrusted": true,
+      "time": 3532.1999999284744,
+      "tag": "BODY",
+      "label": null
+    },
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 3532.2999999523163,
+      "tag": "FLUTTER-VIEW",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": "Tab",
+      "isTrusted": true,
+      "time": 3532.7999999523163,
+      "tag": "FLUTTER-VIEW",
+      "label": null
+    },
+    {
+      "type": "focusout",
+      "isTrusted": true,
+      "time": 3608.0999999046326,
+      "tag": "FLUTTER-VIEW",
+      "label": null
+    },
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 3608.2999999523163,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": "Tab",
+      "isTrusted": true,
+      "time": 3609.399999976158,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": "Tab",
+      "isTrusted": true,
+      "time": 3683.1999999284744,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusout",
+      "isTrusted": true,
+      "time": 3688.6999999284744,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 3688.899999976158,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": "Tab",
+      "isTrusted": true,
+      "time": 3758.399999976158,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusout",
+      "isTrusted": true,
+      "time": 3771.5,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 3771.6999999284744,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": "Tab",
+      "isTrusted": true,
+      "time": 3832.399999976158,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusout",
+      "isTrusted": true,
+      "time": 3839.0999999046326,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 3839.2999999523163,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusout",
+      "isTrusted": true,
+      "time": 3872.6999999284744,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "keydown",
+      "key": "Tab",
+      "isTrusted": true,
+      "time": 3906,
+      "tag": "BODY",
+      "label": null
+    },
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 3906.0999999046326,
+      "tag": "FLUTTER-VIEW",
+      "label": null
+    },
+    {
+      "type": "focusout",
+      "isTrusted": true,
+      "time": 3908.1999999284744,
+      "tag": "FLUTTER-VIEW",
+      "label": null
+    },
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 3908.2999999523163,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": "Tab",
+      "isTrusted": true,
+      "time": 3909.2999999523163,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusout",
+      "isTrusted": true,
+      "time": 3983.5999999046326,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 3983.7999999523163,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": "Tab",
+      "isTrusted": true,
+      "time": 3984.7999999523163,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": "Tab",
+      "isTrusted": true,
+      "time": 4057.0999999046326,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusout",
+      "isTrusted": true,
+      "time": 4072.0999999046326,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 4072.2999999523163,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": "Tab",
+      "isTrusted": true,
+      "time": 4129.699999928474,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusout",
+      "isTrusted": true,
+      "time": 4140.099999904633,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 4140.299999952316,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusout",
+      "isTrusted": true,
+      "time": 4171.699999928474,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "keydown",
+      "key": "Tab",
+      "isTrusted": true,
+      "time": 4202.399999976158,
+      "tag": "BODY",
+      "label": null
+    },
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 4202.5,
+      "tag": "FLUTTER-VIEW",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": "Tab",
+      "isTrusted": true,
+      "time": 4203,
+      "tag": "FLUTTER-VIEW",
+      "label": null
+    },
+    {
+      "type": "focusout",
+      "isTrusted": true,
+      "time": 4206.799999952316,
+      "tag": "FLUTTER-VIEW",
+      "label": null
+    },
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 4206.899999976158,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusout",
+      "isTrusted": true,
+      "time": 4277.099999904633,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 4277.299999952316,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": "Tab",
+      "isTrusted": true,
+      "time": 4278.399999976158,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": "Tab",
+      "isTrusted": true,
+      "time": 4350.699999928474,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusout",
+      "isTrusted": true,
+      "time": 4356.199999928474,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 4356.399999976158,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": "Tab",
+      "isTrusted": true,
+      "time": 4424.599999904633,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusout",
+      "isTrusted": true,
+      "time": 4440.099999904633,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 4440.299999952316,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "keydown",
+      "key": "Tab",
+      "isTrusted": true,
+      "time": 4496.199999928474,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusout",
+      "isTrusted": true,
+      "time": 4496.199999928474,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": "Tab",
+      "isTrusted": true,
+      "time": 4497,
+      "tag": "BODY",
+      "label": null
+    },
+    {
+      "type": "keydown",
+      "key": "Tab",
+      "isTrusted": true,
+      "time": 4569.299999952316,
+      "tag": "BODY",
+      "label": null
+    },
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 4569.5,
+      "tag": "FLUTTER-VIEW",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": "Tab",
+      "isTrusted": true,
+      "time": 4572,
+      "tag": "FLUTTER-VIEW",
+      "label": null
+    },
+    {
+      "type": "focusout",
+      "isTrusted": true,
+      "time": 4646.399999976158,
+      "tag": "FLUTTER-VIEW",
+      "label": null
+    },
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 4646.5,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": "Tab",
+      "isTrusted": true,
+      "time": 4647.5,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": " ",
+      "isTrusted": true,
+      "time": 4724.299999952316,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusout",
+      "isTrusted": true,
+      "time": 5244.099999904633,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 5244.099999904633,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": "Tab",
+      "isTrusted": true,
+      "time": 5245.199999928474,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusout",
+      "isTrusted": true,
+      "time": 5320.199999928474,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 5320.199999928474,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": "Tab",
+      "isTrusted": true,
+      "time": 5321.299999952316,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusout",
+      "isTrusted": true,
+      "time": 5396.5,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 5396.5,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": "Tab",
+      "isTrusted": true,
+      "time": 5397.599999904633,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusout",
+      "isTrusted": true,
+      "time": 5470.5,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 5470.5,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": "Tab",
+      "isTrusted": true,
+      "time": 5471.699999928474,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusout",
+      "isTrusted": true,
+      "time": 5545.199999928474,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 5545.199999928474,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": "Tab",
+      "isTrusted": true,
+      "time": 5546.199999928474,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusout",
+      "isTrusted": true,
+      "time": 5621.199999928474,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 5621.299999952316,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": "Tab",
+      "isTrusted": true,
+      "time": 5622.299999952316,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": "Tab",
+      "isTrusted": true,
+      "time": 5696.5,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusout",
+      "isTrusted": true,
+      "time": 5706,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 5706.099999904633,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": "Enter",
+      "isTrusted": true,
+      "time": 5770,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusout",
+      "isTrusted": true,
+      "time": 5789.899999976158,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 5790.099999904633,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusout",
+      "isTrusted": true,
+      "time": 5921.899999976158,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 5921.899999976158,
+      "tag": "FLUTTER-VIEW",
+      "label": null
+    },
+    {
+      "type": "focusout",
+      "isTrusted": true,
+      "time": 6290.199999928474,
+      "tag": "FLUTTER-VIEW",
+      "label": null
+    },
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 6290.299999952316,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": "Tab",
+      "isTrusted": true,
+      "time": 6291.199999928474,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusout",
+      "isTrusted": true,
+      "time": 6811,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 6811.099999904633,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": "Tab",
+      "isTrusted": true,
+      "time": 6812,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": "Tab",
+      "isTrusted": true,
+      "time": 6886.5,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusout",
+      "isTrusted": true,
+      "time": 6888.699999928474,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 6889,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": "Tab",
+      "isTrusted": true,
+      "time": 6960.399999976158,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusout",
+      "isTrusted": true,
+      "time": 6972.199999928474,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 6972.5,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": "Enter",
+      "isTrusted": true,
+      "time": 7034,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": "Tab",
+      "isTrusted": true,
+      "time": 7585.899999976158,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusout",
+      "isTrusted": true,
+      "time": 7590.399999976158,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 7590.699999928474,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": "Tab",
+      "isTrusted": true,
+      "time": 7658.399999976158,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusout",
+      "isTrusted": true,
+      "time": 7672.099999904633,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 7672.199999928474,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": "Tab",
+      "isTrusted": true,
+      "time": 7732.599999904633,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusout",
+      "isTrusted": true,
+      "time": 7740.199999928474,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 7740.399999976158,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": "Tab",
+      "isTrusted": true,
+      "time": 7806.899999976158,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusout",
+      "isTrusted": true,
+      "time": 7822.199999928474,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 7822.299999952316,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusout",
+      "isTrusted": true,
+      "time": 7871.799999952316,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "keydown",
+      "key": "Tab",
+      "isTrusted": true,
+      "time": 7879.399999976158,
+      "tag": "BODY",
+      "label": null
+    },
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 7879.5,
+      "tag": "FLUTTER-VIEW",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": "Tab",
+      "isTrusted": true,
+      "time": 7879.799999952316,
+      "tag": "FLUTTER-VIEW",
+      "label": null
+    },
+    {
+      "type": "focusout",
+      "isTrusted": true,
+      "time": 7953.699999928474,
+      "tag": "FLUTTER-VIEW",
+      "label": null
+    },
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 7953.799999952316,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": "Tab",
+      "isTrusted": true,
+      "time": 7954.799999952316,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": "Tab",
+      "isTrusted": true,
+      "time": 8027.699999928474,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusout",
+      "isTrusted": true,
+      "time": 8038.699999928474,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 8038.899999976158,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": "Tab",
+      "isTrusted": true,
+      "time": 8099.399999976158,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusout",
+      "isTrusted": true,
+      "time": 8105.599999904633,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 8105.799999952316,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": "Tab",
+      "isTrusted": true,
+      "time": 8174.5,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusout",
+      "isTrusted": true,
+      "time": 8188.199999928474,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 8188.299999952316,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusout",
+      "isTrusted": true,
+      "time": 8221.599999904633,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "keydown",
+      "key": "Tab",
+      "isTrusted": true,
+      "time": 8246.299999952316,
+      "tag": "BODY",
+      "label": null
+    },
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 8246.5,
+      "tag": "FLUTTER-VIEW",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": "Tab",
+      "isTrusted": true,
+      "time": 8247.599999904633,
+      "tag": "FLUTTER-VIEW",
+      "label": null
+    },
+    {
+      "type": "focusout",
+      "isTrusted": true,
+      "time": 8255.799999952316,
+      "tag": "FLUTTER-VIEW",
+      "label": null
+    },
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 8255.799999952316,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusout",
+      "isTrusted": true,
+      "time": 8322.5,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 8322.599999904633,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": "Tab",
+      "isTrusted": true,
+      "time": 8323.699999928474,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": "Tab",
+      "isTrusted": true,
+      "time": 8396.299999952316,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusout",
+      "isTrusted": true,
+      "time": 8404.399999976158,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 8404.599999904633,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": "Tab",
+      "isTrusted": true,
+      "time": 8468.299999952316,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusout",
+      "isTrusted": true,
+      "time": 8472.699999928474,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 8472.799999952316,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": "Tab",
+      "isTrusted": true,
+      "time": 8542.799999952316,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusout",
+      "isTrusted": true,
+      "time": 8556.399999976158,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 8556.599999904633,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusout",
+      "isTrusted": true,
+      "time": 8588.199999928474,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "keydown",
+      "key": "Tab",
+      "isTrusted": true,
+      "time": 8615,
+      "tag": "BODY",
+      "label": null
+    },
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 8615.099999904633,
+      "tag": "FLUTTER-VIEW",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": "Tab",
+      "isTrusted": true,
+      "time": 8615.5,
+      "tag": "FLUTTER-VIEW",
+      "label": null
+    },
+    {
+      "type": "focusout",
+      "isTrusted": true,
+      "time": 8621.899999976158,
+      "tag": "FLUTTER-VIEW",
+      "label": null
+    },
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 8622,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusout",
+      "isTrusted": true,
+      "time": 8690.899999976158,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 8691.099999904633,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": "Tab",
+      "isTrusted": true,
+      "time": 8692.099999904633,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": "Tab",
+      "isTrusted": true,
+      "time": 8765.099999904633,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusout",
+      "isTrusted": true,
+      "time": 8772.099999904633,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 8772.199999928474,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": "Tab",
+      "isTrusted": true,
+      "time": 8840.599999904633,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusout",
+      "isTrusted": true,
+      "time": 8855.799999952316,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 8856,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": "Tab",
+      "isTrusted": true,
+      "time": 8917.099999904633,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusout",
+      "isTrusted": true,
+      "time": 8923.299999952316,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 8923.5,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusout",
+      "isTrusted": true,
+      "time": 8956,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "keydown",
+      "key": "Tab",
+      "isTrusted": true,
+      "time": 8990.799999952316,
+      "tag": "BODY",
+      "label": null
+    },
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 8991,
+      "tag": "FLUTTER-VIEW",
+      "label": null
+    },
+    {
+      "type": "focusout",
+      "isTrusted": true,
+      "time": 8992.899999976158,
+      "tag": "FLUTTER-VIEW",
+      "label": null
+    },
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 8993,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": "Tab",
+      "isTrusted": true,
+      "time": 8993.799999952316,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusout",
+      "isTrusted": true,
+      "time": 9069.299999952316,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 9069.5,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": "Tab",
+      "isTrusted": true,
+      "time": 9070.599999904633,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": "Tab",
+      "isTrusted": true,
+      "time": 9145.299999952316,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusout",
+      "isTrusted": true,
+      "time": 9154.799999952316,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 9155,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": "Tab",
+      "isTrusted": true,
+      "time": 9219.5,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusout",
+      "isTrusted": true,
+      "time": 9221.599999904633,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 9221.799999952316,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusout",
+      "isTrusted": true,
+      "time": 9254.699999928474,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "keydown",
+      "key": "Tab",
+      "isTrusted": true,
+      "time": 9294.199999928474,
+      "tag": "BODY",
+      "label": null
+    },
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 9294.299999952316,
+      "tag": "FLUTTER-VIEW",
+      "label": null
+    },
+    {
+      "type": "focusout",
+      "isTrusted": true,
+      "time": 9296.299999952316,
+      "tag": "FLUTTER-VIEW",
+      "label": null
+    },
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 9296.399999976158,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": "Tab",
+      "isTrusted": true,
+      "time": 9297.599999904633,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusout",
+      "isTrusted": true,
+      "time": 9372.599999904633,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 9372.799999952316,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": "Tab",
+      "isTrusted": true,
+      "time": 9373.799999952316,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": "Tab",
+      "isTrusted": true,
+      "time": 9448.399999976158,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusout",
+      "isTrusted": true,
+      "time": 9456.599999904633,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 9456.799999952316,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": "Tab",
+      "isTrusted": true,
+      "time": 9525.099999904633,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusout",
+      "isTrusted": true,
+      "time": 9538.199999928474,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 9538.5,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "keydown",
+      "key": "Tab",
+      "isTrusted": true,
+      "time": 9599.5,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusout",
+      "isTrusted": true,
+      "time": 9599.599999904633,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 9600.199999928474,
+      "tag": "FLUTTER-VIEW",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": "Tab",
+      "isTrusted": true,
+      "time": 9600.5,
+      "tag": "FLUTTER-VIEW",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": "Tab",
+      "isTrusted": true,
+      "time": 9674.599999904633,
+      "tag": "FLUTTER-VIEW",
+      "label": null
+    },
+    {
+      "type": "focusout",
+      "isTrusted": true,
+      "time": 9688.899999976158,
+      "tag": "FLUTTER-VIEW",
+      "label": null
+    },
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 9688.899999976158,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusout",
+      "isTrusted": true,
+      "time": 9748.899999976158,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 9748.899999976158,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": "Tab",
+      "isTrusted": true,
+      "time": 9749.899999976158,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusout",
+      "isTrusted": true,
+      "time": 9823.599999904633,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 9823.599999904633,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": "Tab",
+      "isTrusted": true,
+      "time": 9824.5,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusout",
+      "isTrusted": true,
+      "time": 9897.599999904633,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 9897.599999904633,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": "Tab",
+      "isTrusted": true,
+      "time": 9898.599999904633,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusout",
+      "isTrusted": true,
+      "time": 9971.399999976158,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 9971.5,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": "Tab",
+      "isTrusted": true,
+      "time": 9972.5,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusout",
+      "isTrusted": true,
+      "time": 10045.799999952316,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 10045.799999952316,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": "Tab",
+      "isTrusted": true,
+      "time": 10046.799999952316,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusout",
+      "isTrusted": true,
+      "time": 10120.899999976158,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 10121.099999904633,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": "Tab",
+      "isTrusted": true,
+      "time": 10122.199999928474,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": " ",
+      "isTrusted": true,
+      "time": 10195.399999976158,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusout",
+      "isTrusted": true,
+      "time": 10355,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 10355.099999904633,
+      "tag": "FLUTTER-VIEW",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": "Tab",
+      "isTrusted": true,
+      "time": 10718.199999928474,
+      "tag": "FLUTTER-VIEW",
+      "label": null
+    },
+    {
+      "type": "focusout",
+      "isTrusted": true,
+      "time": 10722,
+      "tag": "FLUTTER-VIEW",
+      "label": null
+    },
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 10722,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    }
+  ],
+  "errors": []
+}

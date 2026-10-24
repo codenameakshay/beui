@@ -1,0 +1,117 @@
+{
+  "url": "http://127.0.0.1:18120/after/?example=bubble&theme=light&captureProbe=1",
+  "theme": "light",
+  "reducedMotion": "reduce",
+  "viewport": {
+    "width": 1280,
+    "height": 1000
+  },
+  "loadWaitMs": 1500,
+  "backend": "screenshots",
+  "requireFlutterProbe": true,
+  "servedJs": {
+    "url": "http://127.0.0.1:18120/after/main.dart.js",
+    "sha256": "aad35cf010d8f9ccf6ac3972a4bd6d4e238c7e6cc09e208ead46199720d54574",
+    "revision": "2af952c5"
+  },
+  "provenance": {
+    "example": "example/range-slider-bubble/bubble",
+    "origin": "after",
+    "recorderHash": "2aa405da2051b7a59a3010f7b0e3291108e3c51c65f6e1e76bf73bca120709ca",
+    "sourceDeployment": "pinned-isolated-preview; live deployment revision unknown"
+  },
+  "targets": {
+    "p0": {
+      "x": 563.2,
+      "y": 208
+    },
+    "p1": {
+      "x": 716.8,
+      "y": 208
+    },
+    "p2": {
+      "x": 774.4,
+      "y": 208
+    },
+    "p3": {
+      "x": 10,
+      "y": 10
+    }
+  },
+  "events": [
+    {
+      "atMs": 439,
+      "type": "move",
+      "target": "p0"
+    },
+    {
+      "atMs": 444,
+      "type": "down"
+    },
+    {
+      "atMs": 598,
+      "type": "move",
+      "target": "p1"
+    },
+    {
+      "atMs": 804,
+      "type": "move",
+      "target": "p2"
+    },
+    {
+      "atMs": 812,
+      "type": "up"
+    },
+    {
+      "atMs": 1305,
+      "type": "key",
+      "key": "Home"
+    },
+    {
+      "atMs": 1604,
+      "type": "key",
+      "key": "End"
+    },
+    {
+      "atMs": 1870,
+      "type": "key",
+      "key": "ArrowLeft"
+    },
+    {
+      "atMs": 2136,
+      "type": "key",
+      "key": "Home"
+    },
+    {
+      "atMs": 2403,
+      "type": "key",
+      "key": "PageUp"
+    },
+    {
+      "atMs": 2668,
+      "type": "key",
+      "key": "PageDown"
+    },
+    {
+      "atMs": 2934,
+      "type": "key",
+      "key": "ArrowRight"
+    },
+    {
+      "atMs": 3201,
+      "type": "key",
+      "key": "ArrowDown"
+    },
+    {
+      "atMs": 3470,
+      "type": "key",
+      "key": "ArrowUp"
+    },
+    {
+      "atMs": 3737,
+      "type": "move",
+      "target": "p3"
+    }
+  ],
+  "finalHoldMs": 500
+}

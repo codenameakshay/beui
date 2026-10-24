@@ -1,3 +1,61 @@
+## 3.0.0
+
+beUI 3.0.0 integrates the remaining v3 catalog families into one package:
+motion components, blocks, agents, and charts.
+
+### Compatibility changes
+
+* Prediction Market odds callbacks now report `side: "yes"` for every row, including rows displaying No, matching the source preview. The callback signature is unchanged.
+* Feedback rejects empty or whitespace-only submissions. Closing discards the draft and selected sentiment; a rejected submission keeps the draft for retry.
+* `BeuiTextTheme` defaults now name Geist and Geist Mono. Consumers must provide those fonts; the package still bundles no font assets.
+
+### Components
+
+* Port Timeline, Animated Alert, Collapsible, Aspect Ratio, Arc Picker, Sortable List, Image Viewer, Date Range Picker, Card, Color Picker, Color Selector, Breadcrumb, Expandable Control, Adaptive Stepper, Combobox, Multi Select and File Tree.
+* Add `BeuiMetallicButton`, `BeuiTextScramble`, `BeuiDigitSwap` and `BeuiInlineSlider`.
+* Tabs gain optional icons (`always` / `selected`) plus overflow chevrons; tooltip gains arrow, align, disabled, `BeuiTooltipProvider`, `followCursor` and collision-aware flip.
+* Color Selector selection ring hugs the active swatch in the swatch color; Adaptive Stepper rest actions paint circular surfaces and hover with muted; Digit Swap gallery Animate control is compact under the digits.
+* Input gains `reserveErrorLine` so validation does not shift nearby content.
+* Table gallery adds editable and async bands (`onCellEdit`, `onEndReached`).
+* Reorder the motion gallery to match beui.dev (New first, then All).
+* Fix stale component lifecycle and gesture-release state, reduced-motion geometry, Alert exit continuity, Card gallery control names, Number gallery overflow, and Image Viewer demo opening.
+
+### Blocks
+
+* Project Folder (`BeuiProjectFolder`) — file fan on hover/focus that morphs into a focus-managed overlay grid; folder rotateX springs with the fan.
+* Card Folder (`BeuiCardFolder`) — landscape card in a stitched purse pocket, with DigitSwap details and an optional overflow action.
+* Morphing Search (`BeuiMorphingSearch`, `BeuiMorphingSearchChips`) — field or icon that morphs into results, plus a chip search bar with recents. The docked bar stays hittable while recents are open. Gallery slug `morphing-search-chips` isolates Chip Search.
+* Morphing Tabs (`BeuiMorphingTabs`) — reorderable tabs whose selected item grows into a cream content surface on charcoal chrome (`#292929` / `#fafaf8`). Inactive tabs pack left with a hover fill.
+* Sign Up Form (`BeuiSignUpForm`) — composed registration with punish-late field errors, strength meter, and a stateful submit.
+* Prediction Market cards (`BeuiPredictionMarketCard`) — listing cards with a single odds pill (percent at rest, Yes/No on hover), payout multipliers, volume sparkline, and bookmarks, stacked with the existing trade ticket. Gallery slug `prediction-market-card` isolates the listing.
+* Gallery order now matches beui.dev/components/blocks (Fixtures title; File Upload and Prediction Market stack their install targets).
+
+### Agents
+
+* `BeuiVoiceOrb` — breathing liquid voice visualization with flowing
+  highlights, custom pigments, a voice-reactive silhouette, a caller-owned
+  analyser, offscreen pause, a reduced-motion freeze, and a `size` override
+  (default `w-64` / 256; the live preview uses `sm:w-72` / 288).
+* Gallery order now matches the source agents page clusters, then extras
+  (AI Sidebar, Chat App, Voice Orb, Agent Theme).
+
+### Charts
+
+* Chart tooltip numeric labels use `BeuiChartTicker` for digit animation.
+* `BeuiTreemap` — order-preserving binary tiles that spring to new sizes, with path tooltips and a group legend.
+* `BeuiCandlestickChart` — OHLC candles with a live last price, volume, and keyboard inspection.
+* `BeuiDonutChart` — round-capped ring with a live center, legend, and sweep-in motion.
+* `BeuiVolumeProfile` — volume-by-price bins with POC and a value-area highlight.
+* `BeuiStatusBar` — proportional incident bar with operational / degraded / outage statuses.
+* `BeuiCompositionChart` — 100% stacked bar or area composition across periods.
+* `BeuiFunnelChart` — conversion funnel with curved morphs and drop-off tooltips.
+* `BeuiLiquidityHeatmap` — order-book liquidity bands over time with a cubic price trace through adjacent row centers.
+* `BeuiBumpChart` — ranking bump chart with curved series that break on missing periods.
+* `BeuiOrderBook` — live bid/ask depth tables, spread, and a balance bar; rest depth bars fill the row height.
+* `BeuiHeatCalendar` — GitHub-style contribution heatmap with range selection; filtered cells fade; 16-week legends place the date range opposite less/more.
+* `BeuiReturnsCalendar` — monthly returns grid with gain/loss tint and compounded totals; month labels use JS `Math.round`.
+* `BeuiPriceTargetFan` — high/mean/low target fan over a history path.
+
 ## 2.0.0
 
 Codebase slop audit. No component was redesigned; this release removes

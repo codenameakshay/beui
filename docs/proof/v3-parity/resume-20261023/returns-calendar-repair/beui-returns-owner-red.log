@@ -1,0 +1,69 @@
+00:00 +0: loading /Users/codenameakshay/.t3/worktrees/beui/t3-df4b55e2/test/charts/returns_calendar_native_regression_test.dart
+00:00 +0: reverse without grid replacement
+00:00 +1: whole calendar teardown
+00:00 +2: grid replacement does not delete live registration
+00:00 +3: global keyed calendar reparent preserves focus
+00:01 +4: duplicate years have distinct stable occurrence identities
+00:01 +5: outside focus is not stolen on row replacement
+00:01 +6: year identity and missing months, reduce=false
+00:01 +7: empty calendar does not restore fixture focus history, reduce=false
+00:01 +8: year identity and missing months, reduce=true
+00:01 +9: empty calendar does not restore fixture focus history, reduce=true
+00:01 +10: reordering preserves month and annual focus identities and index selection
+00:02 +11: global grid moves between owners then replacement
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test:
+Expected: <true>
+  Actual: <false>
+
+When the exception was thrown, this was the stack:
+#4      main.<anonymous closure> (file:///Users/codenameakshay/.t3/worktrees/beui/t3-df4b55e2/test/charts/returns_calendar_native_regression_test.dart:358:5)
+<asynchronous suspension>
+#5      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#6      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+This was caught by the test expectation on the following line:
+  file:///Users/codenameakshay/.t3/worktrees/beui/t3-df4b55e2/test/charts/returns_calendar_native_regression_test.dart line 358
+The test description was:
+  global grid moves between owners then replacement
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:02 +11 -1: global grid moves between owners then replacement [E]
+  Test failed. See exception logs above.
+  The test description was: global grid moves between owners then replacement
+  
+00:02 +11 -1: old owner cannot unfocus moved grid
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test:
+Expected: <true>
+  Actual: <false>
+
+When the exception was thrown, this was the stack:
+#4      main.<anonymous closure> (file:///Users/codenameakshay/.t3/worktrees/beui/t3-df4b55e2/test/charts/returns_calendar_native_regression_test.dart:397:5)
+<asynchronous suspension>
+#5      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#6      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+This was caught by the test expectation on the following line:
+  file:///Users/codenameakshay/.t3/worktrees/beui/t3-df4b55e2/test/charts/returns_calendar_native_regression_test.dart line 397
+The test description was:
+  old owner cannot unfocus moved grid
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:02 +11 -2: old owner cannot unfocus moved grid [E]
+  Test failed. See exception logs above.
+  The test description was: old owner cannot unfocus moved grid
+  
+00:02 +11 -2: repeated replacement retains pending position
+00:02 +12 -2: outside cell focus cancels pending position
+00:02 +13 -2: Some tests failed.
+
+Failing tests:
+  /Users/codenameakshay/.t3/worktrees/beui/t3-df4b55e2/test/charts/returns_calendar_native_regression_test.dart: global grid moves between owners then replacement
+  /Users/codenameakshay/.t3/worktrees/beui/t3-df4b55e2/test/charts/returns_calendar_native_regression_test.dart: old owner cannot unfocus moved grid

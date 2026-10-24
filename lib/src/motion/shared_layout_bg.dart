@@ -45,22 +45,26 @@ class _BeuiSharedLayoutBgState extends State<BeuiSharedLayoutBg>
     with SingleTickerProviderStateMixin {
   final GlobalKey _stackKey = GlobalKey();
   late List<GlobalKey> _itemKeys;
-  late final AnimationController _fade =
-      AnimationController(
-        vsync: this,
-        duration: const Duration(milliseconds: 220),
-        reverseDuration: const Duration(milliseconds: 160),
-      )..addStatusListener((status) {
-        if (status == AnimationStatus.dismissed && _rect != null) {
-          setState(() => _rect = null);
-        }
-      });
+  late final AnimationController _fade;
   Rect? _rect;
 
   @override
   void initState() {
     super.initState();
     _itemKeys = List.generate(widget.children.length, (_) => GlobalKey());
+    // Create the ticker while mounted. A `late` field initializer would
+    // first run from dispose when hover never touched the list, and
+    // AnimationController looks up TickerMode on a deactivated context.
+    _fade =
+        AnimationController(
+          vsync: this,
+          duration: const Duration(milliseconds: 220),
+          reverseDuration: const Duration(milliseconds: 160),
+        )..addStatusListener((status) {
+          if (status == AnimationStatus.dismissed && _rect != null && mounted) {
+            setState(() => _rect = null);
+          }
+        });
   }
 
   @override

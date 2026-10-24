@@ -1,0 +1,58 @@
+00:00 +0: loading /Users/codenameakshay/.t3/worktrees/beui/t3-df4b55e2/test/motion/input_test.dart
+00:00 +0: /Users/codenameakshay/.t3/worktrees/beui/t3-df4b55e2/test/motion/input_test.dart: BeuiInput text uncontrolled seeds defaultValue and reports edits
+00:00 +1: /Users/codenameakshay/.t3/worktrees/beui/t3-df4b55e2/test/motion/input_test.dart: BeuiInput text uncontrolled seeds defaultValue and reports edits
+00:00 +2: /Users/codenameakshay/.t3/worktrees/beui/t3-df4b55e2/test/motion/input_test.dart: BeuiInput text uncontrolled seeds defaultValue and reports edits
+00:00 +3: /Users/codenameakshay/.t3/worktrees/beui/t3-df4b55e2/test/motion/input_test.dart: BeuiInput text uncontrolled seeds defaultValue and reports edits
+00:01 +4: /Users/codenameakshay/.t3/worktrees/beui/t3-df4b55e2/test/motion/input_test.dart: BeuiInput text uncontrolled seeds defaultValue and reports edits
+00:01 +5: /Users/codenameakshay/.t3/worktrees/beui/t3-df4b55e2/test/motion/checkbox_test.dart: BeuiCheckbox mark present when checked, absent when unchecked
+00:01 +6: /Users/codenameakshay/.t3/worktrees/beui/t3-df4b55e2/test/motion/input_test.dart: BeuiInput text controlled reflects external value
+00:01 +7: /Users/codenameakshay/.t3/worktrees/beui/t3-df4b55e2/test/motion/input_test.dart: BeuiInput text controlled reflects external value
+00:01 +8: /Users/codenameakshay/.t3/worktrees/beui/t3-df4b55e2/test/motion/checkbox_test.dart: BeuiCheckbox semantics checked reports checked state
+00:01 +9: /Users/codenameakshay/.t3/worktrees/beui/t3-df4b55e2/test/motion/input_test.dart: BeuiInput states focus ring is an outset stroke, never a fill
+00:01 +10: /Users/codenameakshay/.t3/worktrees/beui/t3-df4b55e2/test/motion/checkbox_test.dart: BeuiCheckbox semantics indeterminate reports mixed state
+00:01 +11: /Users/codenameakshay/.t3/worktrees/beui/t3-df4b55e2/test/motion/input_test.dart: BeuiInput states string error renders an alert message
+00:01 +12: /Users/codenameakshay/.t3/worktrees/beui/t3-df4b55e2/test/motion/input_test.dart: BeuiInput states string error renders an alert message
+00:01 +13: /Users/codenameakshay/.t3/worktrees/beui/t3-df4b55e2/test/motion/checkbox_test.dart: BeuiCheckbox motion fidelity mark scales in under normal motion
+00:01 +14: /Users/codenameakshay/.t3/worktrees/beui/t3-df4b55e2/test/motion/input_test.dart: BeuiInput states reserveErrorLine keeps one message line without an error
+00:01 +15: /Users/codenameakshay/.t3/worktrees/beui/t3-df4b55e2/test/motion/input_test.dart: BeuiInput states reserveErrorLine keeps one message line without an error
+00:01 +16: /Users/codenameakshay/.t3/worktrees/beui/t3-df4b55e2/test/motion/checkbox_test.dart: rest-state golden (checked / unchecked / indeterminate / disabled)
+00:01 +17: /Users/codenameakshay/.t3/worktrees/beui/t3-df4b55e2/test/motion/checkbox_test.dart: rest-state golden (checked / unchecked / indeterminate / disabled)
+00:01 +18: /Users/codenameakshay/.t3/worktrees/beui/t3-df4b55e2/test/motion/checkbox_test.dart: rest-state golden (checked / unchecked / indeterminate / disabled)
+00:01 +19: /Users/codenameakshay/.t3/worktrees/beui/t3-df4b55e2/test/motion/checkbox_test.dart: rest-state golden (checked / unchecked / indeterminate / disabled)
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following assertion was thrown while running async test code:
+Golden "goldens/beui_checkbox.png": Pixel test failed, 0.00%, 3px diff detected.
+Failure feedback can be found at
+/Users/codenameakshay/.t3/worktrees/beui/t3-df4b55e2/test/motion/failures
+
+When the exception was thrown, this was the stack:
+#0      LocalFileComparator.compare (package:flutter_test/src/_goldens_io.dart:108:5)
+<asynchronous suspension>
+#1      MatchesGoldenFile.matchAsync.<anonymous closure> (package:flutter_test/src/_matchers_io.dart:124:32)
+<asynchronous suspension>
+<asynchronous suspension>
+#3      _expect.<anonymous closure> (package:matcher/src/expect/expect.dart:153:17)
+<asynchronous suspension>
+<asynchronous suspension>
+#5      expectLater.<anonymous closure> (package:flutter_test/src/widget_tester.dart:508:19)
+<asynchronous suspension>
+#6      main.<anonymous closure> (file:///Users/codenameakshay/.t3/worktrees/beui/t3-df4b55e2/test/motion/checkbox_test.dart:194:7)
+<asynchronous suspension>
+#7      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#8      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided 3 frames from dart:async and package:stack_trace)
+
+The exception was caught asynchronously.
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:01 +19 -1: /Users/codenameakshay/.t3/worktrees/beui/t3-df4b55e2/test/motion/input_test.dart: rest-state golden (idle / success / error / disabled)
+00:01 +19 -1: /Users/codenameakshay/.t3/worktrees/beui/t3-df4b55e2/test/motion/checkbox_test.dart: rest-state golden (checked / unchecked / indeterminate / disabled) [E]
+  Test failed. See exception logs above.
+  The test description was: rest-state golden (checked / unchecked / indeterminate / disabled)
+  
+00:01 +20 -1: Some tests failed.
+
+Failing tests:
+  /Users/codenameakshay/.t3/worktrees/beui/t3-df4b55e2/test/motion/checkbox_test.dart: rest-state golden (checked / unchecked / indeterminate / disabled)

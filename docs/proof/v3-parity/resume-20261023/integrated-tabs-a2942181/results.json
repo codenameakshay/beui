@@ -1,0 +1,39 @@
+[
+  {
+    "id": "after-light-no-preference-pill-end",
+    "url": "http://127.0.0.1:18118/?slug=tabs&theme=light&color=Blue&previewWidth=592&captureProbe=1",
+    "revision": "a2942181a755503a25571ca3150a16acc284d29b",
+    "actualJs": "17b12e0d099f0d80edc1ba1bfdd529b2f156ac8de0ac469c1f85ae0b5e6b4998",
+    "probe": {
+      "disableAnimations": false,
+      "platformDisableAnimations": false,
+      "motionOverride": null,
+      "backgroundArgb": 4294769916,
+      "constraints": {
+        "minWidth": 0,
+        "maxWidth": 592,
+        "minHeight": 0,
+        "maxHeight": null
+      },
+      "rect": {
+        "x": 476.5,
+        "y": 317,
+        "width": 592,
+        "height": 479
+      }
+    },
+    "events": [
+      "move middle",
+      "down",
+      "up",
+      "move outside",
+      "End"
+    ],
+    "expected": "Settings",
+    "selected": [],
+    "buttons": [],
+    "activeBeforeObservation": "<flutter-view flt-view-id=\"0\" tabindex=\"-1\" style=\"position: absolute; inset: 0px; width: 1280px; height: 1000px;\"><flt-glass-pane></flt-glass-pane><flt-text-editing-host></flt-text-editing-host><flt-semantics-host style=\"position: absolute; transform-origin: 0px 0px 0px; transform: scale(1);\"></flt-semantics-host><style id=\"flt-text-editing-stylesheet\">flutter-view flt-scene-host {  font: normal normal 14px sans-serif;}flutter-view flt-semantics input[type=range] {  appearance: none;  -webkit-appearance: none;  width: 100%;  position: absolute;  border: none;  top: 0;  right: 0;  bottom: 0;  left: 0;}flutter-view input::selection {  background-color: transparent;}flutter-view textarea::selection {  background-color: transparent;}flutter-view flt-semantics input,flutter-view flt-semantics textarea,flutter-view flt-semantics [contentEditable=\"true\"] {  caret-color: transparent;}flutter-view .flt-text-editing::placeholder {  opacity: 0;}flutter-view:focus { outline: rgb(0, 0, 0) none 0px;}flutter-view .transparentTextEditing:-webkit-autofill,flutter-view .transparentTextEditing:-webkit-autofill:hover,flutter-view .transparentTextEditing:-webkit-autofill:focus,flutter-view .transparentTextEditing:-webkit-autofill:active {  opacity: 0 !important;}</style></flutter-view>",
+    "screenshot": "integrated-tabs-a2942181/after-light-no-preference-pill-end.png",
+    "observation": "Fresh context. Native input and screenshot before semantics. Semantics enabled only at the final checkpoint to read selection. Tab preparation waits 100ms between presses."
+  }
+]

@@ -123,6 +123,7 @@ class BeuiFluidSlider extends StatefulWidget {
 
 class _BeuiFluidSliderState extends State<BeuiFluidSlider>
     with BeuiSliderStateMixin<BeuiFluidSlider> {
+  final GlobalKey _liveTrack = GlobalKey();
   late final FocusNode _focus = FocusNode(debugLabel: 'beui_fluid_slider');
 
   bool _grabbed = false;
@@ -153,16 +154,22 @@ class _BeuiFluidSliderState extends State<BeuiFluidSlider>
     super.dispose();
   }
 
-  void _onPanStart(DragStartDetails details, double trackWidth) {
+  void _onPanStart(Offset position, double trackWidth) {
     if (!widget.enabled) return;
     _focus.requestFocus();
     setState(() => _grabbed = true);
-    commitValue(sliderValueFromDx(details.localPosition.dx, trackWidth));
+    commitValue(sliderValueFromDx(position.dx, trackWidth));
   }
 
   void _onPanUpdate(DragUpdateDetails details, double trackWidth) {
     if (!widget.enabled || !_grabbed) return;
-    commitValue(sliderValueFromDx(details.localPosition.dx, trackWidth));
+    final box = _liveTrack.currentContext!.findRenderObject()! as RenderBox;
+    commitValue(
+      sliderValueFromDx(
+        box.globalToLocal(details.globalPosition).dx,
+        trackWidth,
+      ),
+    );
   }
 
   void _onPanEnd() {
@@ -312,8 +319,9 @@ class _BeuiFluidSliderState extends State<BeuiFluidSlider>
         }
 
         return GestureDetector(
+          key: _liveTrack,
           behavior: HitTestBehavior.opaque,
-          onPanStart: (d) => _onPanStart(d, trackWidth),
+          onPanDown: (d) => _onPanStart(d.localPosition, trackWidth),
           onPanUpdate: (d) => _onPanUpdate(d, trackWidth),
           onPanEnd: (_) => _onPanEnd(),
           onPanCancel: _onPanEnd,

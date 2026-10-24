@@ -1,0 +1,13 @@
+- group "Capture stage width 752 height 1000 reduced false":
+  - group "Agent task list":
+    - button "1 of 4 tasks completed. Collapse task list Implementation plan 0 /4" [expanded]
+    - group: "Completed: Inspect the current data flow In progress: Update the response schema 25% Pending: Add coverage for edge cases Pending: Run checks and prepare the result"
+  - button "Replay"
+  - text: EMPTY · BEFORE THE AGENT HAS PLANNED
+  - group "Agent task list":
+    - button "0 of 0 tasks completed. Collapse task list Implementation plan 0 /0" [expanded]
+    - text: No tasks yet The agent posts its plan here before it starts work, and ticks tasks off as it goes.
+  - text: CANCELLED AND PENDING ROWS
+  - group "Agent task list":
+    - button "1 of 4 tasks completed. Collapse task list Migration plan 1 /4" [expanded]
+    - group: "Completed: Inspect the current data flow In progress: Update the response schema 40% Pending: Add coverage for edge cases Cancelled: Backfill the legacy rows"

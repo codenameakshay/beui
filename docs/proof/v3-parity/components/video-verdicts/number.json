@@ -1,0 +1,143 @@
+{
+  "id": "components/number",
+  "owner": "blocks worker, coordinate existing text parts",
+  "newBadge": false,
+  "demoChanged": true,
+  "sourceUrl": "https://beui.dev/components/motion/number",
+  "sourceFiles": [
+    {
+      "path": "components/motion/animated-number.tsx",
+      "sha256": "60b86a1d2f9afcf7c7e91df00de4ff62f0500041a4a40b9216e25b2c89363a94"
+    },
+    {
+      "path": "components/motion/number-ticker.tsx",
+      "sha256": "122fe951f13aa06357eef56c4acb6c5f665caa87f8ac37c86b55f61d1f232975"
+    },
+    {
+      "path": "components/motion/digit-swap.tsx",
+      "sha256": "b2ac5b1189576d056691aa3fb83be9f08f726f2265c17de72ccf7a02bd2045be"
+    }
+  ],
+  "sourcePreviews": [
+    "components/previews/motion/number.preview.tsx",
+    "components/previews/motion/digit-swap.preview.tsx",
+    "components/previews/motion/number-ticker.preview.tsx",
+    "components/previews/motion/animated-number.preview.tsx"
+  ],
+  "sourceExamples": [
+    {
+      "slug": "digit-swap",
+      "installSlug": "digit-swap",
+      "preview": "components/previews/motion/digit-swap.preview.tsx"
+    },
+    {
+      "slug": "ticker",
+      "installSlug": "number-ticker",
+      "preview": "components/previews/motion/number-ticker.preview.tsx"
+    },
+    {
+      "slug": "animated",
+      "installSlug": "animated-number",
+      "preview": "components/previews/motion/animated-number.preview.tsx"
+    }
+  ],
+  "widgetParts": [
+    "BeuiAnimatedNumber",
+    "BeuiDigitSwap",
+    "BeuiNumberTicker"
+  ],
+  "states": [
+    "rest",
+    "hover-exit",
+    "keyboard",
+    "reduced-motion",
+    "digit-swap mask reveal repeated Animate",
+    "number-ticker carries sign grouping decimals width changes",
+    "animated-number in-view from to and replay",
+    "example/digit-swap/digit-swap",
+    "example/number-ticker/ticker",
+    "example/animated-number/animated"
+  ],
+  "themes": [
+    "dark",
+    "light"
+  ],
+  "verdict": "Inconclusive",
+  "implementation": "not changed in this repair checkpoint",
+  "missing": "No complete matched-width 60 FPS reference/before/after state set or independent visual verdict.",
+  "captures": [
+    {
+      "id": "candidate-light-number",
+      "slug": "number",
+      "origin": "candidate",
+      "theme": "light",
+      "code": 0,
+      "configPath": "/Users/codenameakshay/.t3/worktrees/beui/t3-48d38279/docs/proof/v3-parity/components/release-recordings-run2/configs/candidate-light-number.json",
+      "runDirectory": "/Users/codenameakshay/.t3/worktrees/beui/t3-48d38279/docs/proof/v3-parity/components/release-recordings-run2/candidate-light-number",
+      "missingTargets": [],
+      "stats": {
+        "originEpochMs": 1792743555663,
+        "backend": "screenshots",
+        "startMs": 5180.516167,
+        "sequenceStartMs": 5181.0629579999995,
+        "stopMs": 8347.011542,
+        "frames": 126,
+        "durationMs": 3150.4688262939453,
+        "measuredFps": 39.676634460479264,
+        "medianIntervalMs": 19.00506019592285,
+        "maxIntervalMs": 74.85651969909668,
+        "reorderedDeliveries": 0,
+        "fastMotionVerdict": "inconclusive; inspect per-event gaps, not nominal frame rate",
+        "errors": [],
+        "video": {
+          "width": 1280,
+          "height": 913,
+          "decodedFrames": 126
+        }
+      },
+      "video": {
+        "path": "release-recordings-run2/candidate-light-number/capture.mp4",
+        "bytes": 716554,
+        "sha256": "5c5c8ae120aa6aed73547f3cee9af800ecb412ab5fd0bc553176ba201adc54a6"
+      }
+    },
+    {
+      "id": "candidate-dark-number",
+      "slug": "number",
+      "origin": "candidate",
+      "theme": "dark",
+      "code": 0,
+      "configPath": "/Users/codenameakshay/.t3/worktrees/beui/t3-48d38279/docs/proof/v3-parity/components/release-recordings-run2/configs/candidate-dark-number.json",
+      "runDirectory": "/Users/codenameakshay/.t3/worktrees/beui/t3-48d38279/docs/proof/v3-parity/components/release-recordings-run2/candidate-dark-number",
+      "missingTargets": [],
+      "stats": {
+        "originEpochMs": 1792743836947,
+        "backend": "screenshots",
+        "startMs": 5175.067916,
+        "sequenceStartMs": 5175.421291000001,
+        "stopMs": 8340.691833,
+        "frames": 145,
+        "durationMs": 3105.4303646087646,
+        "measuredFps": 46.37038448554674,
+        "medianIntervalMs": 17.112016677856445,
+        "maxIntervalMs": 51.784515380859375,
+        "reorderedDeliveries": 0,
+        "fastMotionVerdict": "inconclusive; inspect per-event gaps, not nominal frame rate",
+        "errors": [],
+        "video": {
+          "width": 1280,
+          "height": 913,
+          "decodedFrames": 145
+        }
+      },
+      "video": {
+        "path": "release-recordings-run2/candidate-dark-number/capture.mp4",
+        "bytes": 795787,
+        "sha256": "35013987c451ab3aa3b58a9ba1c924b22ae54222025af34667a04ca2aaebc930"
+      }
+    }
+  ],
+  "changeVideos": [],
+  "knownGaps": null,
+  "coverage": "Default preview recording only. No complete state or example parity certificate."
+}

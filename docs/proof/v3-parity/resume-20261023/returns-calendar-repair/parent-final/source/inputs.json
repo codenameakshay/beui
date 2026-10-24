@@ -1,0 +1,1821 @@
+{
+  "pinnedSource": "a76e57c9bbc2837e96420b2610e9c82a3271bb05",
+  "inputs": [
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/react/cjs/react.production.js",
+      "sha256": "0b5529981841afa1b58c76ba85c29bb681ff5f07cd8cde6a10b967d3915b8e1c"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/react/index.js",
+      "sha256": "60caffdecbdc5db3bc4ec4e83df9488345ccb271d07533b9210bf5750918d97e"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/scheduler/cjs/scheduler.production.js",
+      "sha256": "679adff761d31e9426604f80c0e99be44a3e6f4c6834b0218ecf0312a67c171f"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/scheduler/index.js",
+      "sha256": "145965504d60007bc25486ab930b0367867dcd5d579ccd343c148d69349a7cfb"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/react-dom/cjs/react-dom.production.js",
+      "sha256": "7a05d7f7bb2b02aae84018a88d4815a2181eef48d2cb8172d403eaa2b131eefd"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/react-dom/index.js",
+      "sha256": "ba1a3e33489f868371561777607e3ee5091df0f7ea3f1a10f789d6b86e4c1505"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/react-dom/cjs/react-dom-client.production.js",
+      "sha256": "a319b413b7a19ee34422d9a12a8e7afd003c07846716d278ba1a0898e8cb6251"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/react-dom/client.js",
+      "sha256": "00e348ab3d6bc2eef908345d0bc4e008c95bcfecec060dfda5c4967953761396"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/clsx/dist/clsx.mjs",
+      "sha256": "d949e5cdbfebc76a6642b1901095e900fc3f2262d8dc0373aa44850a9bc75522"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/tailwind-merge/dist/bundle-mjs.mjs",
+      "sha256": "4a952fc10c828632c608dd103b7d8bcab097d9c6f32bfc343a2d9e0822c86116"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-reference-20261023/lib/utils.ts",
+      "sha256": "7c8c3dfc0cdd370d44932828eb067ef771c8fe7996693221d5d4b90af6d54f2d"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/react/cjs/react-jsx-runtime.production.js",
+      "sha256": "1e46f15002696985e80c61d47aaa30dabb03c954270a690f5f7dfbbacfa9002b"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/react/jsx-runtime.js",
+      "sha256": "b392951a77d0a2e6a6bd017e49d768481ae5b63c4109c6c31f622cf7b2433edc"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/framer-motion/dist/es/context/LayoutGroupContext.mjs",
+      "sha256": "ef1c98a09bd1f2143f295ac18d214e9ef016e1bdb31e6c15aaad654bfedac77c"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/framer-motion/dist/es/utils/use-constant.mjs",
+      "sha256": "1b12a12cf441c2161de227f924705ad1e1871ba8b7ec37ff31b01a90783ac439"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/framer-motion/dist/es/utils/is-browser.mjs",
+      "sha256": "f740fc170388dba3abb7a17bf255863c9196622091c2af4309f3d797bbcbb87f"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/framer-motion/dist/es/utils/use-isomorphic-effect.mjs",
+      "sha256": "07065d74682b3899b56bad74ce6cf0a3db5e98a06d43589dfff4685e76c7e23b"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/framer-motion/dist/es/context/PresenceContext.mjs",
+      "sha256": "29b0fbb5bc3343652bbffdee838b86402f941e90ea7885008b6a191c64d84230"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-utils/dist/es/array.mjs",
+      "sha256": "b8e46b51dfade7e911818118b26faa653781ce0cdce51cbed93c0dcfc179466d"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-utils/dist/es/clamp.mjs",
+      "sha256": "7f0c85319f1b66beadcde93626b0228b0e6ad5ba48c0dbb4d08819626acc2342"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-utils/dist/es/format-error-message.mjs",
+      "sha256": "396b3f290c7174bc62b12c2ddc0d3ffc2783050163350eb8855da4538d2877e6"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-utils/dist/es/errors.mjs",
+      "sha256": "6b5790033e6dc0d1a36675bc5cb0f961020cc1c868a4f337ca5000f3b1c5ca94"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-utils/dist/es/global-config.mjs",
+      "sha256": "692ecbabc8f05f1e4ad9f293cc038897259c3f848f814ba1b6978ed7cd0b1818"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-utils/dist/es/is-numerical-string.mjs",
+      "sha256": "94735e5d1bac927fab7be9d402ae5feb59ca3d9f5f94b8504ea20c045623825c"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-utils/dist/es/is-object.mjs",
+      "sha256": "1d30213cdc21c712f5102253d382262ab87a729a8ca0a19a68d4bf62a4d49748"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-utils/dist/es/is-zero-value-string.mjs",
+      "sha256": "a0802f3bcf9de355b50f6f81f1bbee09035f8b55c7e239236ec4e519b499e9e7"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-utils/dist/es/memo.mjs",
+      "sha256": "b1940075d12e5403991754e91ded906916188d89cc215f4183a0b904d14b8fbe"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-utils/dist/es/noop.mjs",
+      "sha256": "7ef7e6828f0409cd50b2c35fe85e552a26eb127453a8d25de9bb99ec537e92d3"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-utils/dist/es/pipe.mjs",
+      "sha256": "34d5e668d14783bbbac40caaae3ca06dc0eebe1918704193476534baa929e0b8"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-utils/dist/es/progress.mjs",
+      "sha256": "a51f40604dd34f42e5bdd01792ef98c86c3bd754414984a7fe7a96ca74d7973c"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-utils/dist/es/subscription-manager.mjs",
+      "sha256": "8929970531825802a1729e366656717661372c29826ea574240bdab6bcc08472"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-utils/dist/es/time-conversion.mjs",
+      "sha256": "b27f742eb3c75def7f869fe2e9b2c57689ef87e865d9e18e8a6869e2a923511b"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-utils/dist/es/velocity-per-second.mjs",
+      "sha256": "0d6e1515c7d0099ec322da1b24d6e7217421651ba90511114032842a52eca964"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-utils/dist/es/warn-once.mjs",
+      "sha256": "817317ac699b98eae6bdfd2b03069d9d7fdcecaffb7a38e10168f3e8ecd31680"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-utils/dist/es/wrap.mjs",
+      "sha256": "651562688c3862d99e7d93018336c0c36489123223caddc7c0e003a26ca3391a"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-utils/dist/es/easing/cubic-bezier.mjs",
+      "sha256": "011bdfba7dc8e0fab92f56b3b812ff8746f74e383f3191705eaa22c5c88dd25c"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-utils/dist/es/easing/modifiers/mirror.mjs",
+      "sha256": "58ccc90ea26a25b64d105062b066aa82a199ccc399eb8868dbf4ae3ce5bf550b"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-utils/dist/es/easing/modifiers/reverse.mjs",
+      "sha256": "21a2d36eb82d59ab3b21e50cb53d6d0c91ef1c4c69ec321832bdcae5c5221866"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-utils/dist/es/easing/back.mjs",
+      "sha256": "af7b371729be140ef2fb2655d4ae35aaa624afd4cdf0b385fb3aca45c25f973e"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-utils/dist/es/easing/anticipate.mjs",
+      "sha256": "987cc29735fedfea7e96f0be5d50e66896ad6fbf5e1bfa945919705333714ac2"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-utils/dist/es/easing/circ.mjs",
+      "sha256": "ec29b2d12813bf9c67ad29d0d73e5d44780f73f2fcd566041a293abfdcd247d6"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-utils/dist/es/easing/ease.mjs",
+      "sha256": "aaaa2741b78315e65c19675dcc26d03a1c1810c4dc147ad57c575866641a6beb"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-utils/dist/es/easing/steps.mjs",
+      "sha256": "02e270ab30867c03e0ad2a174ee71a69aab41c528fa62196d84e58286b2ff898"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-utils/dist/es/easing/utils/is-easing-array.mjs",
+      "sha256": "945fffcabd1d5173cc95a4f620d81401367b30bf98efc8e18fa83a22e1074118"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-utils/dist/es/easing/utils/get-easing-for-segment.mjs",
+      "sha256": "4ad88bab14f34626d690094026b7f2f63feffad8feb585b3972335eadc574f7a"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-utils/dist/es/easing/utils/is-bezier-definition.mjs",
+      "sha256": "90317982dd7f7615cbb0ae71da6428faee89c043bcf90dabb28b60a24728d7ac"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-utils/dist/es/easing/utils/map.mjs",
+      "sha256": "baf18674a879a69b20f0837dd042812b829926119e14444c15fca841b018fdac"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-utils/dist/es/index.mjs",
+      "sha256": "2e2eca0d2e800c9be8b9eebf336c0c43d5ef2fcb4568aedf1f7037598350ebe7"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/frameloop/frame-data.mjs",
+      "sha256": "009a70962a90b298a45666c52fefc31a4dddda387eb6aabb1a1470727726f709"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/frameloop/sync-time.mjs",
+      "sha256": "26bd9ee2cf452395be789044fea85411954a9968ba8708426de7708f3cd75491"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/value/types/utils/sanitize.mjs",
+      "sha256": "92c2dd8f5e2a851498148d50954b12b07c3b16958f3730249901d9a3b891e344"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/animation/utils/is-css-variable.mjs",
+      "sha256": "d5fc53f0fb71757137d9d2a9748d9881cbff1dad80814a08f998097a4fac56e9"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/value/types/numbers/index.mjs",
+      "sha256": "926c3f44dad03fc95aba81115692bc57ad4fbbca262c5de9a0d719230c4b34d0"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/value/types/utils/float-regex.mjs",
+      "sha256": "de761218f9443f418480e6c9882d4962f742cf32eb85219b1f720b532d0194a1"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/value/types/utils/is-nullish.mjs",
+      "sha256": "15bdf9e9816553ad26815353e2e6f11fd002059a86d080f3856c11909bf90a4d"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/value/types/utils/single-color-regex.mjs",
+      "sha256": "38bb8d8049d01bc0044da5abcf35294e4ab26223891e076e3290c599b393bd68"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/value/types/color/utils.mjs",
+      "sha256": "e6626fdc304336f7c6bbf46ffb2ff5f21f5716768ae25692e6ffcf8a59c78f58"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/value/types/color/rgba.mjs",
+      "sha256": "518299d094e33fceb4ffb69d0693a8df89ee264220bd4affc14c4f1faa06129c"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/value/types/color/hex.mjs",
+      "sha256": "f1c746f9402d0cbd7f8b620832c130107cedbd5c7462568eb537cdde397bdaa0"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/value/types/numbers/units.mjs",
+      "sha256": "5044a48bc3a87a4259aa78ef9760eccb5bff9221a882073c77aff0451b3369ee"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/value/types/color/hsla.mjs",
+      "sha256": "bbae7d39e4c2ec15a9981d9b3fbc924f4ac86db6a4e27ec83b358db25b4d7fee"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/value/types/color/index.mjs",
+      "sha256": "3a81b7a7316873db9e2c4338c9505f5cb8d8b0ccefe0d3b141eec2d78d2db481"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/value/types/utils/color-regex.mjs",
+      "sha256": "db6f446011f6ed959bfbd441d179067b22abdb24a876b509fa564c6e0f417820"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/value/types/complex/index.mjs",
+      "sha256": "1dd61df31eff42ba3716f81a77b723dcbb38835b1b9ba2ffabacf5bf8fe86057"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/value/types/color/hsla-to-rgba.mjs",
+      "sha256": "426d15cc0af1e4c6dbeb287d187bf7b624dc87a2440b08fdf567646c1d81e24c"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/utils/mix/immediate.mjs",
+      "sha256": "d80e99557c0a623e1dc515bcc7a9dc56f9f7143bdd0ec5b5d27b760542e67f58"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/utils/mix/number.mjs",
+      "sha256": "91832f232503ba905099b8ebd646afc514caa768fe9499149c74387269aaf077"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/utils/mix/color.mjs",
+      "sha256": "d517b7bb71880e04236c24c7611f0a81b6d28ca2cf037c8083a90fd2dee927f6"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/utils/mix/visibility.mjs",
+      "sha256": "626a3ec4206415f301cc9ab38744410c8d93aad1b18d85a5348e08f83cdbd5fe"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/utils/mix/complex.mjs",
+      "sha256": "ee8a75359798c9dc12901c1bcf5cbd7c3ded71cac201cb5d0c94e20eb1ee9ac4"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/utils/mix/index.mjs",
+      "sha256": "a0ca334d0e7a80159d623c059c77632a70a8ec9a8eeda2a53d683c06a881e603"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/frameloop/order.mjs",
+      "sha256": "312a46162f3b15517ae2036dd3e7758dd12bb213f250a2424fefd0f114ff087b"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/frameloop/render-step.mjs",
+      "sha256": "53a9accb36703713864b2fa3396c523f9c781080874620d4741aa051ae9021b9"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/frameloop/batcher.mjs",
+      "sha256": "79ad0e0552b69713f8483793a977697218f99fff2740acfe2b7aee36eef9e24f"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/frameloop/frame.mjs",
+      "sha256": "bb607090220d5798e600adab195ecb2d631ed556b8012e45bfc7511d0d69b3fd"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/animation/drivers/frame.mjs",
+      "sha256": "ceb2117a176084edae923db7e5b49f565b2b13e1c7ef12e76a26f9959814cac6"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/animation/waapi/utils/linear.mjs",
+      "sha256": "a737e1491cca97893a2ef53f1c74dcc9d381e2e206d7ed028440a1b2c55f5f78"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/animation/generators/utils/calc-duration.mjs",
+      "sha256": "0d0255be257996fc21d9a49005c1538b904a7b67db5ad32a482eb242ed11983e"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/animation/generators/utils/create-generator-easing.mjs",
+      "sha256": "907475080573f1f4a6fbd0d4a59af073cee61409cd30c98af8a8331740ede6b9"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/animation/generators/spring.mjs",
+      "sha256": "d1b80f1b6542ce93a8708a878d192a5069f448fbfc5c22b364f401be7f643f73"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/animation/generators/inertia.mjs",
+      "sha256": "29640c3b81f6c23cf9b8b22f635184c3f4e97b21531ebddc78092114b2e0733a"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/utils/interpolate.mjs",
+      "sha256": "62ea791e9c51a9178ca692950476928f42eb5950be22332016e8b825a7cce179"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/animation/keyframes/offsets/fill.mjs",
+      "sha256": "1d99736385497f215820cc05a3dbb4458918d7d123504cb128a0d7611008b84a"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/animation/keyframes/offsets/default.mjs",
+      "sha256": "02a0ff392878a528d197c61ba8226d649d5969bd06a0f624b0126b53ae0ba9e6"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/animation/keyframes/offsets/time.mjs",
+      "sha256": "95377b9f94126d243e012d5094c2ce4491e562dba0c74c3ae7c80be7a62707cb"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/animation/generators/keyframes.mjs",
+      "sha256": "daff68501f84b127c590fd95a251c780994cdd9ae6766863b0d335b51f132b8c"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/animation/generators/utils/velocity.mjs",
+      "sha256": "47aa506d8f4355ed2f55d1dbd3501c797ece783cc04918fc71db7cb5bfadd63d"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/animation/keyframes/get-final.mjs",
+      "sha256": "dbb972ce719166fb3a19419f5eb373e0572ad25f04bd67ec9c18945e70f29c1b"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/animation/utils/replace-transition-type.mjs",
+      "sha256": "3f41c4be89ffea61b61da52e07ec7e0514b05855fb30f9590515b909433009a8"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/animation/utils/resolve-start-time.mjs",
+      "sha256": "afa32a2fe7bd7bb9f09145cff62ec24ed67fdb1522c5a699dc7653cc7f6bdd73"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/animation/utils/notify-inspector.mjs",
+      "sha256": "cd0f2a6b9bded140635bfb5bb6822bb6aabf4a3e900951fe231f141c12d0f31b"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/animation/utils/WithPromise.mjs",
+      "sha256": "408ecdba407dec5c7183236560ca823fa5d0ff52a0cc355041068468b4601e36"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/animation/JSAnimation.mjs",
+      "sha256": "4a50ded2716176af713b7c4f20ff8efe6f9238571e4fe2a9d6ad907d59c3e817"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/value/types/complex/filter.mjs",
+      "sha256": "b5e4e72bc11bb3a1f107c428bbd2a1089ab4a2ac717310e206735ae83af524ea"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/value/types/complex/mask.mjs",
+      "sha256": "79b2c81bb80846227cca7173db07e500e449beeb1b16e19494ecbd3d59211f34"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/value/types/int.mjs",
+      "sha256": "dee5940a96b4163afb90cc8562e6ef9c1b9e0b4ecd02e0b1226ca8404f8b71c3"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/value/types/maps/transform.mjs",
+      "sha256": "62da7a70476868863522debe529a14a78e296f38db675f59777d6be6bdc7c1d1"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/value/types/maps/number.mjs",
+      "sha256": "064c0861d36316a185c4c1247a42504d638a27806584368b1a1ccbc59b8e9fc6"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/value/types/maps/defaults.mjs",
+      "sha256": "865025303ade4f82c78e12c51811abfd51fd4a06c5073b585432801f5611a2a7"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/value/types/utils/animatable-none.mjs",
+      "sha256": "5dc1efc3216a80091e7cceefb1751e407460a1865b81549c6f4d6e4b6f88ee86"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/animation/keyframes/utils/fill-wildcards.mjs",
+      "sha256": "d5c08f030dddc8dee9b6d509131acf3b5567f6c602e14f0b39e3b2f768c9af8c"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/render/dom/parse-transform.mjs",
+      "sha256": "846e29c2e942f1385533f4cecbe879be077b3faacc0cdb08a81c540659ab844d"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/render/utils/keys-transform.mjs",
+      "sha256": "ec06e5e49002558143a9b8743ff7505fb34d25418ad291dcd51c0ce89a878318"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/animation/keyframes/utils/unit-conversion.mjs",
+      "sha256": "d040efedd6e546264097b2fc647d3b04d0e7ec781139833e43c42ee6ff7b954a"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/animation/keyframes/KeyframesResolver.mjs",
+      "sha256": "aa959dc8f838fa58ca83c8ccf59458d04de355c77c1e2d61939523ca6826e81b"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/render/dom/is-css-var.mjs",
+      "sha256": "dcb88ef8ca9233788701b77febb33698af566e8c736759171482d92d356da192"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/render/dom/style-set.mjs",
+      "sha256": "c8325490cb058471447437579c86f2251d6b48b83a36d9e596112b30c5d22cf1"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/utils/supports/flags.mjs",
+      "sha256": "740e92bed5214ae55b31ab803535fcaaf40c7e30ba38458bc1952f5292b432e2"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/utils/supports/memo.mjs",
+      "sha256": "bb1d1551cf8ed92594aba12de4f2f9ffa08dc07c53bbbf497b92079bc17a1dc0"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/utils/supports/scroll-timeline.mjs",
+      "sha256": "bb3d3b4bdeeefebf5ee742b73e7ba786e908aac0a6c8fc1f99cb539060c89caf"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/utils/supports/linear-easing.mjs",
+      "sha256": "21320fd0bcbd66c369a195c184a73125a71e266a8df5b79dacba3c24dfb4ba1b"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/animation/waapi/easing/cubic-bezier.mjs",
+      "sha256": "15884cefce1e40fcb7019b3421d476ddca1167c7f76de307288e2adc5b529a33"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/animation/waapi/easing/supported.mjs",
+      "sha256": "5597255f8d1449423435e81fd41356099f19537141e5fab1ef09b6337b2c67fe"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/animation/waapi/easing/map-easing.mjs",
+      "sha256": "36f52509fdf959770671b870b907deabf7c6deead275e9da358edfb8ab8776a0"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/animation/waapi/start-waapi-animation.mjs",
+      "sha256": "cbe8ed7e358c93591742ffcfbae7f148f2b4b8bc0c106ddfb0fc404e494acdee"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/animation/generators/utils/is-generator.mjs",
+      "sha256": "6f9c94db9cd6a29a3f36ddc660a5d795adfd68db238f7c9b96e678220522fe0c"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/animation/waapi/utils/apply-generator.mjs",
+      "sha256": "fc3099df1050f9f7508a08e91bf05c135ef6b36e4bba827eaec61a43f2d5a830"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/animation/NativeAnimation.mjs",
+      "sha256": "3153c28fba404803ddcc0ff1df05a7de6d6804b4c3145e38fe439b3f65f20991"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/animation/waapi/utils/unsupported-easing.mjs",
+      "sha256": "447b188a20f89e176bf733f411cb8ccc5358f0af809751f9f4ae86df052f1322"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/animation/NativeAnimationExtended.mjs",
+      "sha256": "23cf4b7b057cdc989366984070d8d831984c37d1cd29ffacc450fa83d30ba0c7"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/animation/utils/is-animatable.mjs",
+      "sha256": "6bea89ffc9bf3c0e3369549e2bd9a13961b611343e3f3150248009d324123aed"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/animation/utils/can-animate.mjs",
+      "sha256": "496ffb0a9a1448c64324d5a7791f81ca6be4cb17e26eb8cdf36f75c0387b88ee"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/animation/utils/make-animation-instant.mjs",
+      "sha256": "8fca1402d11182f6c17de87aed19c312afd827e22b6f9130a6c0153c35c97719"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/animation/waapi/utils/accelerated-values.mjs",
+      "sha256": "86f2128180dacb3ccec78f2d339d597f2a7a70352132875745e12e54098e76d9"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/animation/waapi/utils/is-browser-color.mjs",
+      "sha256": "05ba67300f831f352fde7640bbb58716b644a59303f330b0c5814d85e212ac21"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/animation/waapi/supports/waapi.mjs",
+      "sha256": "2a3aac8a684277fe9fee82eb30bb45bdd48b846d126c6c0f11852487d41fb2cd"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/value/types/utils/get-as-type.mjs",
+      "sha256": "ceed763fc276e1d65af6ca5bc80894e9cc5a7878f3b3cb6b194e3a875d4e706c"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/render/html/utils/build-transform.mjs",
+      "sha256": "5bd680d1c6d73d80ee25b2d21a58c3622c240c35ed613bccc5708b08eda117a9"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/animation/waapi/transforms/groups.mjs",
+      "sha256": "e209f1a1cb9ed06e97ce0c811b7d87882e4b9df46d566f51112eb1518cb47d3c"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/animation/waapi/transforms/TransformAnimation.mjs",
+      "sha256": "0ea5aba1d7c2f76f94f9c456e3e86ad929478b280bb2759e726fb534c7243b41"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/animation/AsyncMotionValueAnimation.mjs",
+      "sha256": "3332fefa55aa24090c69f9a5f675800aa32abd891ff039f5816ce085f4cf6d3b"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/animation/GroupAnimation.mjs",
+      "sha256": "c6b3c36178978c0fc1f37818d71d11e1704d66f8fad01f0949c951a8f57df098"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/animation/GroupAnimationWithThen.mjs",
+      "sha256": "10a922577b5bf682952d016eb40c246d2729d21ed94b170ac934afc8a33bafc1"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/animation/NativeAnimationWrapper.mjs",
+      "sha256": "b36a2c143e34fbca81ccdceed997f2f0c9f2ebcef14a63f429545b79b9ee9275"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/animation/utils/active-animations.mjs",
+      "sha256": "ec54c0f1d37464b9561e8c6a16eab76d0e15f87a094002cb1c9bf442eba4a48a"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/animation/utils/calc-child-stagger.mjs",
+      "sha256": "114c09de342426140975d794e30af14fddaf7b4c0ca74643efcc86568d1cdbf9"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/value/index.mjs",
+      "sha256": "473523c5d439424521df10392e3198064acd5d72c96ac6983f172cf681f05497"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/animation/utils/resolve-transition.mjs",
+      "sha256": "d563e350b3133274fbee635abecbf6ab9cc8ba1151d1a81c8898ec52750aa044"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/animation/utils/get-value-transition.mjs",
+      "sha256": "8726cc1c3c40c481aa981de5e2f4b3e0c0a2c43fb0ae54dddd62546080d824a6"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/animation/utils/default-transitions.mjs",
+      "sha256": "0fcfe3dcdc9e264b1405ee02c398c6454ae16052525f032d47d808189796b36f"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/animation/utils/is-transition-defined.mjs",
+      "sha256": "037bbaba7720bfc503a7de47b9161386b6a5e67995434dda98b83fb600c58fd7"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/animation/interfaces/motion-value.mjs",
+      "sha256": "8feed81a90880b98a571a4d794e57b861abd2c32e977b3af884d7980a9b1fe4d"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/animation/utils/arc.mjs",
+      "sha256": "85f90672461c43356a7b4580233adc7f28439a05bf9fee49f394d84323927798"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/animation/utils/css-variables-conversion.mjs",
+      "sha256": "d7f0b1e7154f212b5176f564a70a3ca1113b52a3fc1214d68d2845913d657cdc"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/render/utils/resolve-variants.mjs",
+      "sha256": "be4c25d2e3e5df58738882c1693f2518bc5308962c032ecb6ac5282c961df286"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/render/utils/resolve-dynamic-variants.mjs",
+      "sha256": "f9febfc62f1fe8408a38bbf516a8c4ce0a0353d6e6fbf39043810443d1e5c6a2"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/render/utils/keys-position.mjs",
+      "sha256": "62b394b7881583cb82989118c319644c5aa789975136a5acc43f3b7fc4ef6808"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/render/utils/is-keyframes-target.mjs",
+      "sha256": "075dab817d73c88258108db9e8807d467a7631e1b36a2b1c509b3e1c8c2491e6"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/render/utils/setters.mjs",
+      "sha256": "47fa1cdd77ba0ee1350fe490c9405075386f7d3b27e497d8f01a086a5677b294"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/value/utils/is-motion-value.mjs",
+      "sha256": "ff2e6b6caa8f37b82a0f973a1442c9a0375c975c43d50f658e126f8b68c06cfa"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/value/will-change/is.mjs",
+      "sha256": "b4b0c868763aeebdbf3d69f571d1369fd34693c274b8b3372e7f795d0f4be44c"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/value/will-change/add-will-change.mjs",
+      "sha256": "a6aa0f0f98264e9abd444cc98bae2744dca7ab80df585eeaa20e0368a2f7fde4"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/animation/optimized-appear/data-id.mjs",
+      "sha256": "491289d9619156f995902bf6d45bcd80919e9675d36c92716e684ca64d2f25fb"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/animation/optimized-appear/get-appear-id.mjs",
+      "sha256": "1c699580ce62d5b8f2a6be7dde53100b015b35696b5c230b1ca1cefd071feab1"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/animation/interfaces/visual-element-target.mjs",
+      "sha256": "ace854314a054dd939a743cfd3c60bee9a692ce9458060ca2d0c4bbda966eea2"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/animation/interfaces/visual-element-variant.mjs",
+      "sha256": "02738716acbf30894a2b47896aafd6f9aca0ef9a7dfdc2108a9df4276edfee24"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/animation/interfaces/visual-element.mjs",
+      "sha256": "95af6ef6d2fbf68215b82085a0d686a61607f4ae3df2e69474bbf91abd47bd5a"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/value/types/auto.mjs",
+      "sha256": "b1a9bb37e293df33f590a36b3a8f69ccdf568ae17ad6a0f9146f968e6f066bb9"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/value/types/test.mjs",
+      "sha256": "5fa9bbd10708872e5fe5e45f9fdb8d0e942d4328ea51e63d2d2400d30c315676"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/value/types/dimensions.mjs",
+      "sha256": "dfee99264bee6d88ebcf83362169ba6c4b9cc9de03fba1fff3d67fec58e78cd6"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/animation/keyframes/utils/is-none.mjs",
+      "sha256": "fcf4f3bea328fa323292ade444bce710b7e9cee6faa527c3d4b5bdcddcb167f4"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/animation/keyframes/utils/make-none-animatable.mjs",
+      "sha256": "68296388ab10483df3b06dc52219c35f689a24a65f31f043b43d1136f6144fc6"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/animation/keyframes/DOMKeyframesResolver.mjs",
+      "sha256": "9fbcdeef397deffe398ad5a99f270e198c60adfce8d058be2cdead968f13478e"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/utils/border-radius.mjs",
+      "sha256": "cbbf84ebe0231a649154a759413b563bee59b36a6b7f7998a0feb88a35e0600a"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/animation/waapi/utils/px-values.mjs",
+      "sha256": "906f9120282f249bc41c5964a2e21d9ab461e06310d377c42777a3b8a1ecb6a0"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/animation/keyframes/utils/apply-px-defaults.mjs",
+      "sha256": "82b3d132850598f5923dcb790dfd642a9e0cad6eff8c8e2d18677cc317d7326b"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/animation/waapi/easing/is-supported.mjs",
+      "sha256": "b45e28e6cb2bb631bee6467e80d56a8aac2a3d7d1090c06c11db79cded63dddd"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/animation/waapi/supports/partial-keyframes.mjs",
+      "sha256": "d28dc3a2759fccd5810d4cf11b4d1ca225f6a2e1934e2135afbf248b767a1547"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/animation/animate/effects.mjs",
+      "sha256": "3bee0152b363163ed30940a8b54762728d4c5b95dedd0a75720cddd65205fb34"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/utils/is-html-element.mjs",
+      "sha256": "6aa1d63718c5aa272d2b959bb3444f497776bb6117286121bfa5017e92f4e45a"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/utils/is-svg-element.mjs",
+      "sha256": "7b04c7321ecaa1375d20c1f5167badd30118e49addca8b0d8fe72d5b5a186342"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/scope/active.mjs",
+      "sha256": "4c0076f71f4893790668e0677f49cfe4969963293691fff7a19719cf3aff802a"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/utils/resolve-elements.mjs",
+      "sha256": "c19b23f0bf4e7389b17e1ace0618c9249ae8c7145294ed3fbb46029d64c73943"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/effects/utils/create-dom-effect.mjs",
+      "sha256": "3cb6440e3b2486dc247b9ec53934205466b5fee6d89e8c0c7b13115b419fb9c5"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/effects/MotionValueState.mjs",
+      "sha256": "6a8f6c322b48b7c6ae0a77bf89aff8a995987fed2a0e678b85de4b5b5513e47b"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/effects/utils/create-effect.mjs",
+      "sha256": "d7ea6a9813004d16ed5c147a0d0e1c75cb8fd643ad212a69c5aabe7025637bdb"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/effects/style/transform.mjs",
+      "sha256": "f439269e22b5bc324fadba12a52499fdc8831ec9de2aab79833f776ad64659fc"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/effects/style/index.mjs",
+      "sha256": "7b6ec50eba0ec935d3ecf98fa0f8152860d6a01d9bb4664dce13dc3cd3e1e6d8"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/render/dom/utils/camel-to-dash.mjs",
+      "sha256": "42ee50658f03ba0e22f83775c3b40c515c41740a477c5d0a9c4e316c89bfd385"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/render/html/utils/build-styles.mjs",
+      "sha256": "7864242f098e663eb0fecb1e967a75615ba3b669eee9e757eb11ee8929afcaeb"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/render/svg/utils/path.mjs",
+      "sha256": "00024baa65935c6b7cd1617abdfd2722a8a2825e14af08a9bf5f7b79aabf044a"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/render/svg/utils/build-attrs.mjs",
+      "sha256": "775f9688635fdd22485fd7c8aefafa1820e8d05c57cef2cb0db4dd51463ac5b0"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/effects/attr/index.mjs",
+      "sha256": "e64b79f7c100d211171e97580341b3d294eac0e66bc1b30e0dbb4e922c130362"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/effects/svg/index.mjs",
+      "sha256": "b9018e3774e47eb510d13c6efbc0338ff3277b128e3c3142455e3c179aecb455"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/projection/geometry/conversion.mjs",
+      "sha256": "b9ce671c3e840430160fa3029d9eb2f3486b2d835b973df86325b520089248fb"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/projection/utils/has-transform.mjs",
+      "sha256": "d1fabc323bc23eefdc320724518811688e6c3c5ed22ecbad96dcfab154972626"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/projection/geometry/delta-apply.mjs",
+      "sha256": "941594a1db6c48e86e31c4e983ce0ae791904c99ce2f085bb2a74399ebd62ac6"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/projection/utils/measure.mjs",
+      "sha256": "dc46070313b04317dcd9505bde587d60984e3fcb30a0959478f796b5ddc788c1"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/animation/animate/element.mjs",
+      "sha256": "82626e65226e3eea08f609105973b4237e1a6312d87782b46ec1a44114c8e0b7"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/effects/prop/index.mjs",
+      "sha256": "4521993349d16523a6ac628097a07949f1fab7afe08347bfe7a290a5c3bcc2fb"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/frameloop/microtask.mjs",
+      "sha256": "c1847defa95ef962f699e8a701ea1f837991c539b5efb527072b5662e875af79"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/frameloop/process-frame.mjs",
+      "sha256": "613986b60b2add51552f4b6e2d06863b7fe48e3a6868e78082ce98d3d87fece0"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/animation/animate/single-value.mjs",
+      "sha256": "419322b5100cb29e61b0f9f33f2da235da454c28a77c1031d2bdd469960d5d12"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/projection/styles/scale-correction.mjs",
+      "sha256": "4a1bb699f93377fed80f12fa8080ab5fa5a48a2328362a2b49c1137a5fee41fc"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/stats/buffer.mjs",
+      "sha256": "0d425ec4cded6dfc63329ced82dc117836699d1b2eeb199624d09c5879a181fd"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/utils/delay.mjs",
+      "sha256": "dd10b4b8a760c708b8d23c54599402f0f296e0a5ad57bd45f0685bb8deb33fd4"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/utils/is-svg-svg-element.mjs",
+      "sha256": "cb4982c010427ae2e5dd2d7c9661c8248692582985d2f7feec7df7e82e154765"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/value/utils/resolve-motion-value.mjs",
+      "sha256": "c941c3c664e42a281339857d9267402efb36fec8566c81dd0fef93ae77291b1e"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/value/utils/as-number.mjs",
+      "sha256": "edb43748c51d3b8f89a2deb271dd342e8c91c701ebfd2ba3034736147feebc18"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/projection/animation/mix-values.mjs",
+      "sha256": "97231ba3f59e29a69f67fcbb37225ed4233364435c00d3153df8c543d11110b7"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/projection/geometry/copy.mjs",
+      "sha256": "f9b6cb7413a11d4f3de210f115210cce543f0134b7efb2a69eabdfab0c7d08bc"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/projection/geometry/delta-calc.mjs",
+      "sha256": "c85d1e9901d05770b65b853764a40f8c70214aaa29d1add5502dff29b859b15a"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/projection/geometry/delta-remove.mjs",
+      "sha256": "b729e7ac158482a5d97ea44279d73e5f21599a874797f93ba90c75a24269d41b"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/projection/geometry/models.mjs",
+      "sha256": "003260b5819cde68577f7228d163954460788d39cf1d8a5f600a20994188a0c3"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/projection/geometry/utils.mjs",
+      "sha256": "a6a0f0a19e54d0069aa22849d11e97dae4802b1153bb4cffafc747b2d2745dc8"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/projection/shared/stack.mjs",
+      "sha256": "1b0a783b9bb6a1fc64cbb9b32a1c78d09be7beb9e6136b867a09762fa166cdd8"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/projection/styles/scale-border-radius.mjs",
+      "sha256": "5e5df0a753c43c475e6409b48ca2ee779ca65ff1c6a9b6b191d4b0079bb0a87e"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/projection/styles/scale-box-shadow.mjs",
+      "sha256": "eec966af20266e1907d5701768d0ca70a77a6ae3801826914db2102347fc866b"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/projection/styles/default-scale-correctors.mjs",
+      "sha256": "2400822bdffaedb42e0f1fb9a46f4f72d7c9bbadee2ef19584005134f60cd3e7"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/projection/styles/transform.mjs",
+      "sha256": "f11b062cb28f15a2ce46c556a7dc04c72735de3b34cee2501536dd42931d883a"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/projection/utils/each-axis.mjs",
+      "sha256": "9aaf973dead18dabe0f61c01d1f161e0bbb4a81268f931305f8dd52f9e0adea3"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/projection/utils/compare-by-depth.mjs",
+      "sha256": "15ba4975e5e8a7a1dfc30135aa35d55018ae20636af64fd4d9c52ba8a71898c0"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/projection/utils/flat-tree.mjs",
+      "sha256": "9713843876cd8072bb472769e1511496e02a15e3aa927291a531fda7e81239c6"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/projection/node/state.mjs",
+      "sha256": "28321307b38902fe1ec023c2a855e67a53146918e50ea1646a183b487a933f10"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/projection/node/create-projection-node.mjs",
+      "sha256": "a1a9d5212e78f061749c227fc51b0dd8a0a26107d342e2f08078b0a952254afa"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/events/add-dom-event.mjs",
+      "sha256": "b38565828e4280d9a3da8488a0a37ea1700230b176534d82a4bef88d46f350c5"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/projection/node/DocumentProjectionNode.mjs",
+      "sha256": "5cca6ec6d1fcc8b10368934c652766f84b44668e94a5430f2e9fa9996e9c3e34"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/projection/node/root.mjs",
+      "sha256": "405784a5e41bfcb07214d6e92355d1543bf728d445d2d613cc71e7b11a43d182"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/projection/node/HTMLProjectionNode.mjs",
+      "sha256": "d892979f34c5921693c2fa3ac11643d3c2b47813bf2609ae61f945520c5d88d9"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/render/store.mjs",
+      "sha256": "4755447cc2e52bd6849fb68cde746db835d848353d48f0a7597dbf344511d92d"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/render/utils/is-animation-controls.mjs",
+      "sha256": "a733c1abe3f72235b4492f1d69d6282a9c4a92d94c9c89df9983b548a0d03454"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/render/utils/is-variant-label.mjs",
+      "sha256": "3c0962a690d9a6bb095ccaa1eea1e49d230f9567dd3f49cbbb0bef30882a5d60"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/render/utils/variant-props.mjs",
+      "sha256": "901557bf161db32d030be580c7214c5882189aceccb620136099706df86ad8a2"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/render/utils/is-controlling-variants.mjs",
+      "sha256": "f77c2586718976b1da7bda5707853afe04e08d60acab295da8903b0459a137b5"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/render/utils/motion-values.mjs",
+      "sha256": "054cfa5895a704fba971dbf09c45ae680932b9038997357fbbb3539d9f532093"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/render/utils/reduced-motion/state.mjs",
+      "sha256": "119d42f091f466fb4204a36bc221dabe850bb74045e99d0069330bc63a82c751"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/render/utils/reduced-motion/index.mjs",
+      "sha256": "c197308d2fb218f22679a6d02dd92e83ea328846011a87c0cb92a59f99c2ca7d"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/render/VisualElement.mjs",
+      "sha256": "b280fd0b86dc374fdee8eb41bdbcf470e057b408fa0cc01d69ef254aa79b34ed"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/render/dom/DOMVisualElement.mjs",
+      "sha256": "41b8245b00a129238ee454b13e42bc010c4b3088566ba3a10b8044faf3c86693"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/render/html/utils/render.mjs",
+      "sha256": "b0bf57c039cadcad26ea342255839e7d03cfa39f4c419eab7ed8408a0e338b93"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/render/utils/is-forced-motion-value.mjs",
+      "sha256": "04e32214cd575b08916b7a403d624bc45db7d65f25f7416cb825fc1b027b1adc"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/render/html/utils/scrape-motion-values.mjs",
+      "sha256": "2e2612169302fcdc1de8583420a2bdfa1075669ab9dd05341a4c3a87454a45b9"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/render/html/HTMLVisualElement.mjs",
+      "sha256": "4bfbd03730a7dea644344b444ffdbd9ae3ee836d974c5dac3c995d563d019000"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/layout/LayoutAnimationBuilder.mjs",
+      "sha256": "570e38e08afcdff977c0ad120c3897887a4429219c2a1b2aa583a2eaafe84486"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/gestures/utils/is-primary-pointer.mjs",
+      "sha256": "87f9b5bd50a517b2918225dfdd556ab90e86d18ca2cc77a703b98d5a728741d4"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/events/event-info.mjs",
+      "sha256": "d500502272efe5d8d48834d789a2fd4873317006253fa40467f127ba4d880584"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/events/add-pointer-event.mjs",
+      "sha256": "e8f5529f5daabbe6e62e41e9904fd00372806b9011514a7e9d73c2b4c3c6dac9"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/resize/handle-element.mjs",
+      "sha256": "27f12910b74c56402634c68af2ed93ceb2e7b0b7e8122955b0fea05590c6dd07"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/resize/handle-window.mjs",
+      "sha256": "530a53beca8a1c8d9352c841fee8dbbcc4201753ffc0ca2a27a8278d82e2b395"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/resize/index.mjs",
+      "sha256": "c80c3201beeb72f42246b95214cf72594f7b82b994cfa12ea0393036203739d1"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/utils/distance.mjs",
+      "sha256": "f16f48ca18ee03f34d288882c27c34b7c0b306e0dcf41f1acdf417a866c3d56f"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/gestures/pan/PanSession.mjs",
+      "sha256": "a501c66ffe6e899d7b7b6882a693c2ad8b4a143d3a8084013279a2f67d826637"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/gestures/press/utils/is-keyboard-accessible.mjs",
+      "sha256": "f0fd980b53f26cae3ae94ae9a73e782700d76d06ae8bf9d6a518eb7cecebad66"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/gestures/drag/state/is-active.mjs",
+      "sha256": "55b4c463cbaf95d3609c579e5bcade3fb82a895ebba03413ea2e09fdfeb14f1a"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/gestures/drag/state/set-active.mjs",
+      "sha256": "69be8c2ab3872369bbcf164815cedcc099d6c9c31be6ea8daf9913d989f75f93"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/gestures/drag/utils/constraints.mjs",
+      "sha256": "5a4eb5a1fc1e8cd685724c85e35cbaf0a2bc3e05e008cd13f67339a8054bdd8e"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/gestures/drag/VisualElementDragControls.mjs",
+      "sha256": "7dbe7341a6c570330a9208f13e7ccbc698ec97330f559c13b3054a31452a77d6"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/gestures/drag/index.mjs",
+      "sha256": "2b9f92a5c8e3f29cbf90fb595f41c0957ea1247ad8cbe0fa78b9a5acc9af8c27"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/gestures/utils/setup.mjs",
+      "sha256": "c6ece8e21ba965bf7905c3eca2dd4cf184dec02929bfef01af95c6166f16c4ef"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/gestures/hover.mjs",
+      "sha256": "4e90a61a1424b55e00f742e336255ec64618e794346b24171b01838b7e27eb00"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/gestures/utils/is-node-or-child.mjs",
+      "sha256": "ac740b7f0ea74127ff8a0aa61408cfbb436c90399ab8a86638bc2ee638f01ccb"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/gestures/press/utils/state.mjs",
+      "sha256": "1577ff6a6e30b09fd050ff0588c7a2b233afa442d67bdef49dbbf4c798e8eb67"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/gestures/press/utils/keyboard.mjs",
+      "sha256": "a9a778e7b8d863ea1ae97af29bc4bcd4209ac97db60c3ed930bc59582f6f7f8b"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/gestures/press/index.mjs",
+      "sha256": "3fe3cf3ca9277296bac4fc6e8fb6408d565824330426e38d0eb630facd8176c3"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/render/dom/style-computed.mjs",
+      "sha256": "0c893c0ec5a600a8f1a7fa496b2d25b10270075366f1fc4251e211ab9ca81aa3"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/scope/media.mjs",
+      "sha256": "963af47af6d5d07f61cceea33f09e14e2a7c945bdb9e86d912d5a98817f062aa"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/scope/index.mjs",
+      "sha256": "0db37753590392fa28c90e0425d78eeb2c30f78cdfa5009b40d7fbbbd8c21fa3"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/stats/index.mjs",
+      "sha256": "f38860f51614eda59e32fd5d8ada38559967ac95ae2427f030161c5e28dd4177"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/utils/stagger.mjs",
+      "sha256": "9e540eb5e23fc4f6b0b6dd00f9ff4d1a3cc629b5cc8e07e8a8675c4a1958a791"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/utils/transform.mjs",
+      "sha256": "6a78a90822feab769910d993cfa0f3ab39e7584ffa90bfd66549b9bb54b83071"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/animation/FollowAnimation.mjs",
+      "sha256": "b796466879982f57b962d03c7193a90d7782081636673dc571ca67a11b90130e"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/value/utils/follow.mjs",
+      "sha256": "74738b85869a89d0d4ecff70d76558062fec2b70b646541d4044e6c53df7aad2"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/value/follow-value.mjs",
+      "sha256": "eb98039b3a6e618bceffea65b922c008460f6e26a31ca1a8312661e0d0a6dc2c"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/value/subscribe-value.mjs",
+      "sha256": "8edc7646f71cb25e2c5ebf1b04d808b5a8b0fe17173ae956ed1bd89bc57ebd8c"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/value/transform-value.mjs",
+      "sha256": "5f8ad30aafb62a8d169489b9ab2a8fef77bd24be26c47e11fec2b25948e0d779"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/value/map-value.mjs",
+      "sha256": "cbc42cef31f7c0f4b7135aae850e9cdea02538fc293de3df98ab4bf9c3a9f19e"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/value/spring-value.mjs",
+      "sha256": "b7e1027d75fe1becce4284bc60814971b7b85c24ad962dbfc23545c8e9b62ede"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/value/types/utils/find.mjs",
+      "sha256": "f25f93ad404830727c62705bceb645ea488560dff0f6db2a09931ba6088372f0"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/view/utils/assign-names.mjs",
+      "sha256": "efe866ddc07561714892e2b9443e2d1261a9a225a78b80106436b0706d75bcf4"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/view/utils/choose-layer-type.mjs",
+      "sha256": "436426def79bb6f34097658965306f766a5baf1d188473aded099bf50b52bc1f"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/view/utils/css.mjs",
+      "sha256": "0d39746881115a493ae9f266d00c259fe2bb8844070d8541e1dc590a214beecd"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/view/utils/get-layer-info.mjs",
+      "sha256": "bb962fc51359ffd17dddd2438d8506ecd5278e334ac049aded10191e79b8812a"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/view/utils/get-view-animations.mjs",
+      "sha256": "f2627b394bc37595f8f05665d16293169846e0d265f1b42ae2582c57c53b4811"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/view/utils/has-target.mjs",
+      "sha256": "b4d1adeb606761e3b2eff209bd621bbb1d33ffe94919eb87fa4bbf0fa3bd3440"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/view/start.mjs",
+      "sha256": "fb157b99019fa8da4377094125bcfc7d1392cf3e9174a8167f30007b65d0f449"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/view/queue.mjs",
+      "sha256": "070b1ff127ccea48982f78b15ea1c1d046ac416d7f3e10b275445ca8059f8486"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/view/index.mjs",
+      "sha256": "7994f25de6206ee7d0efd10db62750837a7b8e0037a1ccca5ece0edf0b1804ff"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/render/Feature.mjs",
+      "sha256": "f5e78905722b2f89e980a7b9dcb1726bf29af03c1aa259b08eb1463407b99c2e"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/render/object/ObjectVisualElement.mjs",
+      "sha256": "1e0e1300613c8972c1a2440c47097d23a481a19572c3b4b7e842f3f56d78cf1a"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/render/svg/utils/camel-case-attrs.mjs",
+      "sha256": "44c7e841b18a509076389a0bf7de6777894d2b2ad5189f03006f370172f3b95a"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/render/svg/utils/is-svg-tag.mjs",
+      "sha256": "9dddf925e3d3cc7815c179f1d290d1217ecd3e0c0ce122af0d8cc263eef0db4e"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/render/svg/utils/render.mjs",
+      "sha256": "c891530794f8c3f0fa73184566908080c19e570a5c5a08c5abd18ce5ad99e705"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/render/svg/utils/scrape-motion-values.mjs",
+      "sha256": "aec7847162c223c72ba072a3319e0f65ab7fbe015ed94a144b5cc98f634162c6"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/render/svg/SVGVisualElement.mjs",
+      "sha256": "2098b33b29060c74964d1103893e603101907b5c107ce4fb7e690fdb37b90714"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/render/utils/shallow-compare.mjs",
+      "sha256": "b92f157a23fdf9c5d79927c2ae6c5ab770aa20ec5ffe77a9f6d19a4cbce410b3"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/render/utils/animation-state.mjs",
+      "sha256": "13cd2e16ca30756aa7df439b0df90ddf45dfc8ffad84028b0ba4e4d8e25fc72f"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/render/utils/get-variant-context.mjs",
+      "sha256": "e14e844896e25a2d9e367ef2104070b4197e18c738309c11b3d5844634b920cf"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/projection/node/group.mjs",
+      "sha256": "e63038b386fdade0d8fb9c4dbdc34e08ca2bbfd77a62e14e13d87243aec30ead"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/layout/animate-layout.mjs",
+      "sha256": "8895952965e77bd7c4b8e53c74a7eff03a6a15cda863eac1ac463a96f4c14e21"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/frameloop/index-legacy.mjs",
+      "sha256": "d9196c7536998f39bcaf41c6b6639f38bf2356aca8265371855befbe55afdf54"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion-dom/dist/es/index.mjs",
+      "sha256": "f64e8bd0e086d321f6b0185de678e08af9cfa1ccd1d7a82e1d11ce72492e136f"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/framer-motion/dist/es/context/MotionConfigContext.mjs",
+      "sha256": "4cb72420fc37889018290c06cc6df6a7f8eb4604a1ea1c26d622ee6c570675d3"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/framer-motion/dist/es/utils/use-composed-ref.mjs",
+      "sha256": "7eca0f14bf6f0ca395496e965cf67ebce62ba3ab7f57f7bb5c9da3651f713fd6"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/framer-motion/dist/es/components/AnimatePresence/PopChild.mjs",
+      "sha256": "825c2e53d96e9e39f359487dbfbe8a44b73c7f1660ef3f2c2f19bf8310437299"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/framer-motion/dist/es/components/AnimatePresence/PresenceChild.mjs",
+      "sha256": "ab041e0a0557f645d679dcf8fe70e7d822939903c9eb7e0b74c440aba8cd5e79"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/framer-motion/dist/es/components/AnimatePresence/use-presence.mjs",
+      "sha256": "c01bc6db31bbd19ee3a8aaf10bd186c631a5a0bf0518eec6f30fcf6ea4aeb4a9"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/framer-motion/dist/es/components/AnimatePresence/utils.mjs",
+      "sha256": "79592a3084615d58492391455002fb3fe57838ae2ad2351c53f19cd1083ba12a"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/framer-motion/dist/es/components/AnimatePresence/index.mjs",
+      "sha256": "c5640dfcfb375df28628d611e117b8eb82d38ada476dea3a3a7e09c75d4b5e1b"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/framer-motion/dist/es/context/DeprecatedLayoutGroupContext.mjs",
+      "sha256": "ac4619c8bc844cbe66bd61d083f556e9ed69d504dfc800b9a655055f4e320e10"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/framer-motion/dist/es/utils/use-is-mounted.mjs",
+      "sha256": "d83f807921714b3e8724935da228f95aae42fc196cf7850a3fe4a263b9988e0a"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/framer-motion/dist/es/utils/use-force-update.mjs",
+      "sha256": "e0ed8df0f642931aa98b3555865c744e60324f76999b43cbcc64febf63c90dd1"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/framer-motion/dist/es/components/LayoutGroup/index.mjs",
+      "sha256": "4af8c332b276804ca9fdd03c25616bbc754c9473cc109c328209c1922b427244"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/framer-motion/dist/es/context/LazyContext.mjs",
+      "sha256": "d2f7e40a01a970e4cda2dd290a669138d6512c7525155c409a616779e11e5232"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/framer-motion/dist/es/motion/features/definitions.mjs",
+      "sha256": "320334dd89e67f4800871bb5b3846ed96c932b89887dfc0ea28441588f275745"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/framer-motion/dist/es/motion/features/load-features.mjs",
+      "sha256": "bf3e43272263fc775f2a5d5abfcb9e3c6018dd1c17771ff5ef297ee60eac5e63"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/framer-motion/dist/es/components/LazyMotion/index.mjs",
+      "sha256": "640c76daab310ef7d579e97d82ae24a72003c5c299d4d4e17e957882223dfd6c"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/framer-motion/dist/es/components/MotionConfig/index.mjs",
+      "sha256": "460cae5b318f7396aa5f70d19cc3d9466f0457f8626126763f0ff585d4c2709f"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/framer-motion/dist/es/context/MotionContext/index.mjs",
+      "sha256": "878a6da7fd54fd1966dda8db1431860d27fb400dd47065788aa000666d6a0377"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/framer-motion/dist/es/context/MotionContext/utils.mjs",
+      "sha256": "8be78491a4c974b63d00f6f54449ec8bf92ad8fbad0add369faa850f8634c5a5"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/framer-motion/dist/es/context/MotionContext/create.mjs",
+      "sha256": "a57c4f1e23e0364ca1397d4abfb1faee0b868441d65e580964e9959a9915e909"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/framer-motion/dist/es/render/html/utils/create-render-state.mjs",
+      "sha256": "a994932bba24db720b9cfdcf493bb007be3464db1bb137f0d763f93771089bdd"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/framer-motion/dist/es/render/html/use-props.mjs",
+      "sha256": "6c4247f1e959bd570eabdcb142468b460962189facd7b00ca9e39760a997430e"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/framer-motion/dist/es/render/svg/utils/create-render-state.mjs",
+      "sha256": "f17d68d9a502ae5adac4f1c5823923a0d4231b0e2517e03e6b16c9c04ddc4a6a"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/framer-motion/dist/es/render/svg/use-props.mjs",
+      "sha256": "fa85738eb0aaf14320e97eaddf4cda4b1fb2dea459d6304283028917f27ef39b"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/framer-motion/dist/es/motion/utils/valid-prop.mjs",
+      "sha256": "46a2491107d1bd5f0481153f27f2f7ab4f300400eb053fbdea6872221582bfb0"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/framer-motion/dist/es/render/dom/utils/filter-props.mjs",
+      "sha256": "52b6082ad45aa63649e1eac6ba9ae34441d21246fe77370f40f4009f7a757d27"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/framer-motion/dist/es/render/svg/lowercase-elements.mjs",
+      "sha256": "e9872300bb91ee05b1b03b7d68dd55deac4547c89943ff68e9efacbcdf6d093c"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/framer-motion/dist/es/render/dom/utils/is-svg-component.mjs",
+      "sha256": "a424bc4c9a3a9e19fb7855a0eec0ea38c74e6a4fe15e21e1116a7e12eb5f2fef"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/framer-motion/dist/es/render/dom/use-render.mjs",
+      "sha256": "77b9293e0f859cbbfce494af585805a753597132d4d11338a47605ac1333b3ee"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/framer-motion/dist/es/motion/utils/use-visual-state.mjs",
+      "sha256": "27cab68653cdfa3d93985fb8ea6fb580e057f0a6721fb1eb36496a2da3d3aad9"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/framer-motion/dist/es/render/html/use-html-visual-state.mjs",
+      "sha256": "e4c6c9e160d516af57b2b824925c41c4d1723d2477195f6f0d9ccf0a4bc9321f"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/framer-motion/dist/es/render/svg/use-svg-visual-state.mjs",
+      "sha256": "74a436ffb181b8ff14f38842abe21844da69a02923c91c79340a63cecde3bd06"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/framer-motion/dist/es/motion/utils/symbol.mjs",
+      "sha256": "7f0678db9ec02ba25386041c5b85dc1f8711ed4752d7e3bd714dea4b73026c8b"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/framer-motion/dist/es/motion/utils/use-motion-ref.mjs",
+      "sha256": "339dd0d2adaa35fe90789cb051f00d23f3440c0824ca3d92ee41dd40772d759e"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/framer-motion/dist/es/context/SwitchLayoutGroupContext.mjs",
+      "sha256": "69c2013de6efa48b2d29cdafea02ceaac187d22d230865acd18a4bb6d7b52027"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/framer-motion/dist/es/utils/is-ref-object.mjs",
+      "sha256": "82e8283f979e1d76859964f0ff6a061721ef1a73f7bbc13ed11895046e8e4bdf"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/framer-motion/dist/es/motion/utils/use-visual-element.mjs",
+      "sha256": "b865567680582e797bd1f3051974cf469e9b37ca4012d88a1d31db44d3fb46c8"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/framer-motion/dist/es/motion/index.mjs",
+      "sha256": "0189670af7e3d1f99dbe7ecd1a3eb0e2d10a50d852fae6856bba9b10dfd9c2fd"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/framer-motion/dist/es/render/components/create-proxy.mjs",
+      "sha256": "150a3788c011e2c4df87c300ed017b3a56047d77c30a1937725f9a3088b9538d"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/framer-motion/dist/es/render/components/m/proxy.mjs",
+      "sha256": "49d03ebe6b1420c1590f7b005b336210985de73c3b94df46fc115b9b7d21186e"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/framer-motion/dist/es/render/dom/create-visual-element.mjs",
+      "sha256": "02129cc0429fb14570c9c4ed026fb7fca8b96a2becddcca553e573688ce58d24"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/framer-motion/dist/es/motion/features/animation/index.mjs",
+      "sha256": "50d213ab1db16de8666247f35d367e14c58140be41016e6bfa8fd19eb0c9ea24"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/framer-motion/dist/es/motion/features/animation/exit.mjs",
+      "sha256": "7f11f1d7688e72412b151e6dc3d0b93875872ca3f185dc2df1464485786bfed8"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/framer-motion/dist/es/motion/features/animations.mjs",
+      "sha256": "162f37bca52b66b81d37474ffb94aa8989a0bf059751d494cd0c5612acfd41aa"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/framer-motion/dist/es/gestures/drag/index.mjs",
+      "sha256": "ad0ca3e12fda6c536d138a8923b5f59eb04bf8ad5b78c0c7c1ebe55ab4af4079"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/framer-motion/dist/es/utils/get-context-window.mjs",
+      "sha256": "c4ac2019438e609e1008325db59a9dadb3e2a15b5d1a89a34524e6a4654cbf64"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/framer-motion/dist/es/gestures/pan/index.mjs",
+      "sha256": "fd6929f3f0b85556ca782a834ee073931b302660159f64820aa4321d3b97ebef"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/framer-motion/dist/es/motion/features/layout/MeasureLayout.mjs",
+      "sha256": "3e236d01c0e2266149429b5cf63dea2e3c5dda79582d7b2c415d8772d6445412"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/framer-motion/dist/es/motion/features/drag.mjs",
+      "sha256": "feda894639427db0501fc201f62b19b1649a60bb6862279e5e37cdbc1a83a63b"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/framer-motion/dist/es/gestures/hover.mjs",
+      "sha256": "d35b8f748b7be47d0c6ab1ece7bc09e1e89fd0262430377bbd9a7c1f8585bbb6"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/framer-motion/dist/es/gestures/focus.mjs",
+      "sha256": "a91c24597f4c7899c87dcdfc347febd035dcb8b2a28fd188fa534ce38f332fb5"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/framer-motion/dist/es/gestures/press.mjs",
+      "sha256": "2b318c0099b210bb575e736b96778fe0e3f47dc84ab3164dd224efe7f4d6aed2"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/framer-motion/dist/es/motion/features/viewport/observers.mjs",
+      "sha256": "9213039e929848bac7795990b6f5f6c5d404dd37be74c7299f622c57da7520af"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/framer-motion/dist/es/motion/features/viewport/index.mjs",
+      "sha256": "ac656eb98b408462e8eee14fabeaab2e7d9ce6587934899c1366f55a0bf075fd"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/framer-motion/dist/es/motion/features/gestures.mjs",
+      "sha256": "33b6cae3cbfe8ea7bdd61a76071d9824c39a97c83b4d70dbc69099004ad54a6c"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/framer-motion/dist/es/motion/features/layout.mjs",
+      "sha256": "7e491fab421049a2982a477ca30a518d03d33daef9e80c73c83a7a0d98d58706"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/framer-motion/dist/es/render/components/motion/feature-bundle.mjs",
+      "sha256": "2cf8c36aa843b2658b830d11118e0772518eb3093c40c564b7371f39e747265f"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/framer-motion/dist/es/render/components/motion/proxy.mjs",
+      "sha256": "69193c0ba7215cdf501795311fe693b7c3e85ed39c2f81d72f2f8c3aa5900661"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/framer-motion/dist/es/utils/use-unmount-effect.mjs",
+      "sha256": "a2c2be2b3543869dc5d30184ddffbf78463b78cbf0d0bf73b3401b3f1e345d09"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/framer-motion/dist/es/render/dom/features-animation.mjs",
+      "sha256": "c999659314277b09eb2810f02384d809a29e8cd372c4fa23403e7a0d1eb0698d"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/framer-motion/dist/es/render/dom/features-max.mjs",
+      "sha256": "600904f10f0bdcfece145f3d5e122e3e6377809d63ae54cbcdca46b00e47230b"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/framer-motion/dist/es/render/dom/features-min.mjs",
+      "sha256": "ac2ef0de34c9e5e8e0a2fcc47f4c45a0de38640ea17df4bf172af7e356aad166"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/framer-motion/dist/es/utils/use-motion-value-event.mjs",
+      "sha256": "cd6f238037daf537958f350a8c98c963f24425977c77ef274114b8cb49904d90"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/framer-motion/dist/es/render/dom/scroll/info.mjs",
+      "sha256": "8f6136b5192176b18005eb4aff8c75e8898e734d8317807cb1bb9277c63e4e43"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/framer-motion/dist/es/render/dom/scroll/offsets/edge.mjs",
+      "sha256": "23cd0252968615088290e962d078bad76cb3e7a5ba7e253ff8c0f5a745ea78cf"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/framer-motion/dist/es/render/dom/scroll/offsets/offset.mjs",
+      "sha256": "477ccbe85b4a2dd17cc74502c78a15852ff7fa2a2f9e79d60c17f4cd053068f9"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/framer-motion/dist/es/render/dom/scroll/offsets/presets.mjs",
+      "sha256": "90df6fdb11adbaf1f40de80ce5bfeadc8b5760fae2b640e36dce380e85deabca"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/framer-motion/dist/es/render/dom/scroll/offsets/index.mjs",
+      "sha256": "2141dc4a0a38e7a8cdd1637d1f81806f14969ba20454c2eca62686262b5f45eb"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/framer-motion/dist/es/render/dom/scroll/offsets/inset.mjs",
+      "sha256": "10d6b75279da70021b353e29acb219d3a3ef5040769ec525dd8440dcb358b14c"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/framer-motion/dist/es/render/dom/scroll/on-scroll-handler.mjs",
+      "sha256": "7d09bb9f854e9bbf2cac6e12b04053acc3d46b0fe4327fd8a7f7e53690f4f7a1"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/framer-motion/dist/es/render/dom/scroll/track.mjs",
+      "sha256": "923ee66f1041613bd31dd2c231c7004ae3ccc1eb8807e3b6df1222a280c992a7"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/framer-motion/dist/es/render/dom/scroll/utils/can-use-native-timeline.mjs",
+      "sha256": "2bd5b6e18dffd2bb290346b9322db746c038e6cf703d8e82186fe514d5f4f6fd"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/framer-motion/dist/es/render/dom/scroll/utils/get-timeline.mjs",
+      "sha256": "a5e9215d755017d98bdad07384e3579619f9650a5f4ca5d5a3ff4d1eea8c169c"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/framer-motion/dist/es/render/dom/scroll/utils/offset-to-range.mjs",
+      "sha256": "44aff0816250d640fc0d90092f6da84dcaafe327ec28995ae3a2a6690246a82e"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/framer-motion/dist/es/render/dom/scroll/attach-animation.mjs",
+      "sha256": "3261473c6406628f07e1e1babc7bf854e0e053e03f81fbee943f9fef4081c4e3"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/framer-motion/dist/es/render/dom/scroll/index.mjs",
+      "sha256": "318e5c774cf24fca6cc1acd98d6c82ecee16d91af69f0dc8a9eb03088e2c7229"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/framer-motion/dist/es/value/use-scroll.mjs",
+      "sha256": "a0fe4f3686896351f7aee4bad7403eba4f7b304d94928f7bc7c39eda1a82bdec"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/framer-motion/dist/es/value/scroll/use-element-scroll.mjs",
+      "sha256": "fba94d29ed415db146468b1e67d6cf8d6a2a60b2e51491e852e21cb5ad9f31c0"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/framer-motion/dist/es/value/scroll/use-viewport-scroll.mjs",
+      "sha256": "64d4d16dbe95a27673551cee71be89c00f6baa3f75bb48bac1a46948fb07ebe6"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/framer-motion/dist/es/value/use-motion-value.mjs",
+      "sha256": "7804c3abdff7f90b8cb3cae8fccb1e12f674f509843d23621bb995f7e8ada051"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/framer-motion/dist/es/value/use-combine-values.mjs",
+      "sha256": "3f8eed9b1c256c9c071f482e9275e0d07640c96fe217091cf600658b27afc228"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/framer-motion/dist/es/value/use-motion-template.mjs",
+      "sha256": "502acba4747689edc31bfe3d101548a85d3460d1a6d585373498a5a41bdbb02d"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/framer-motion/dist/es/value/use-computed.mjs",
+      "sha256": "ec06b01dd46af88b8c60c16a90958a9a24d30d66e1864e9a50f4386c1bb8b90f"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/framer-motion/dist/es/value/use-transform.mjs",
+      "sha256": "d4649fffbd068466148fca282b8d8c3b8936e794535edde08589e0edafe09d29"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/framer-motion/dist/es/value/use-follow-value.mjs",
+      "sha256": "1ff1685933e5850eed4bdb7c999b2d60df8139b12fe28151d3d1e4fb04554078"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/framer-motion/dist/es/value/use-spring.mjs",
+      "sha256": "3d354afa8698f7cb8d5ae33ba65fdc662144148e7cc0d1f59f64fa9ef8694221"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/framer-motion/dist/es/utils/use-animation-frame.mjs",
+      "sha256": "4c2fb929d353c021a470d0b6a3095dab8903d8de74bd5592b3ad056d136a610b"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/framer-motion/dist/es/value/use-time.mjs",
+      "sha256": "11d0276df4827b9d701a58c0c957a32ce36c3151b7393289a9309a81e1ce87b8"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/framer-motion/dist/es/value/use-velocity.mjs",
+      "sha256": "faa4867c618612fffdc9eeaf2521dc902ff106890831ca3f63518a8101d77499"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/framer-motion/dist/es/value/use-will-change/WillChangeMotionValue.mjs",
+      "sha256": "63a2902108eb22b65ef2fa5f27a87978e352c53427945273c2e4549bff048bf1"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/framer-motion/dist/es/value/use-will-change/index.mjs",
+      "sha256": "990780b2ba9db76fb38cce9c9df103a65312e6ca42e72848454f48311e7f0813"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/framer-motion/dist/es/utils/reduced-motion/use-reduced-motion.mjs",
+      "sha256": "a56ff5b76d7821a59eec6324f7cff65a0267d4bdc4b903f394c4e576903d771c"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/framer-motion/dist/es/utils/reduced-motion/use-reduced-motion-config.mjs",
+      "sha256": "730264f4052375b3d59b2149167fa91be4ccbce9dce6d01891ea0c71b65916bc"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/framer-motion/dist/es/animation/hooks/animation-controls.mjs",
+      "sha256": "698f7677763fa75b92dbb861dd6cd125cbb0c39c8d882254387e2a678ebec3d9"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/framer-motion/dist/es/animation/utils/is-dom-keyframes.mjs",
+      "sha256": "88d95614e86711bc69ff8779b0e6edc90a307bf5a11ace5c56ea301298651042"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/framer-motion/dist/es/animation/animate/resolve-subjects.mjs",
+      "sha256": "c5fdfc439787786133223724cdf2ead80c72f53303b5051c3025be507b3a0184"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/framer-motion/dist/es/animation/sequence/utils/calc-repeat-duration.mjs",
+      "sha256": "20bb85fe514f88b4cd920158f0b545ee65a15af4d0c8f089eec25a966166c5ce"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/framer-motion/dist/es/animation/sequence/utils/calc-time.mjs",
+      "sha256": "491cedf3213da11fc32f1754b3531d90b1334b4452824d601b31155d9c1f9855"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/framer-motion/dist/es/animation/sequence/utils/edit.mjs",
+      "sha256": "99b6f89d0d037284c7147701850b421a481c9f5d5048445436f6f312ca5e55a1"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/framer-motion/dist/es/animation/sequence/utils/normalize-times.mjs",
+      "sha256": "ea50576b35d58f2c06390facc6056b8ff6f475dce20014bf89e0167b023906da"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/framer-motion/dist/es/animation/sequence/utils/sort.mjs",
+      "sha256": "5009ba685ce05f2e4292c1550f3c8d434207db79ddfd145bf15e7a46e3b09c3a"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/framer-motion/dist/es/animation/sequence/create.mjs",
+      "sha256": "6153a964217b10ab7cf3e8231c73ecbd1d882d65c047c3d1c791b9ea9684fd16"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/framer-motion/dist/es/animation/animate/subject.mjs",
+      "sha256": "8fe97d7046b32c630be3d9c6d46733ddb4e041bcb55c9c521fcead3061709299"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/framer-motion/dist/es/animation/animate/sequence.mjs",
+      "sha256": "953f148d5a3288fa5f2ee6fdb579ba72acf60e4254dafe879fc010d320b178a1"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/framer-motion/dist/es/animation/animate/index.mjs",
+      "sha256": "01f3aa8c98dc5fdc1707cc9f3f5c3a77469fbe1e2fd2d7d99c50108f0690e424"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/framer-motion/dist/es/animation/hooks/use-animate.mjs",
+      "sha256": "eaf82eddef1dd1570e2ec45a37d72e70680f6dffbebc4ad069ddaaf44cecaa95"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/framer-motion/dist/es/animation/hooks/use-scope-motion.mjs",
+      "sha256": "5078cf95798ac0f16f2f08fb7f57bdc2d8744ea89e041fec9e560893efd663f9"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/framer-motion/dist/es/animation/animators/waapi/animate-elements.mjs",
+      "sha256": "7a9cca49fe694e8debd3c9f6e9c7de6d2c72f340f2febea993c7c5033b1303ac"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/framer-motion/dist/es/animation/animators/waapi/animate-style.mjs",
+      "sha256": "7411e80e7fa54b23947887a4550bd20ba0421350812ad24c261b78b20a83a02b"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/framer-motion/dist/es/animation/hooks/use-animate-style.mjs",
+      "sha256": "3c49f38753f8523e0312bac4b5976a0c2840577ca5d468e0968dcc5c5f9ebf4b"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/framer-motion/dist/es/animation/hooks/use-animation.mjs",
+      "sha256": "8245bf6ac3b10bb19699683fad43c87704e4524c91c170cda4a98d01e389d124"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/framer-motion/dist/es/components/AnimatePresence/use-presence-data.mjs",
+      "sha256": "8741abeb71077cf70a2554105c7bfc12e28dac3cdad64a289da41744a062bb4c"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/framer-motion/dist/es/events/use-dom-event.mjs",
+      "sha256": "00293e3585b283f76c39b605ca93909445c9dde8b64425db36654a07597331c6"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/framer-motion/dist/es/gestures/drag/use-drag-controls.mjs",
+      "sha256": "ea06b07c288d774911a2ceda363a35c294c7c138921ddbd0e33ce26b7ed4db53"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/framer-motion/dist/es/motion/utils/is-motion-component.mjs",
+      "sha256": "37617f584bd079f0379c3dbdee3a28355ba79e02e9fd0ffffcc122543129cf32"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/framer-motion/dist/es/motion/utils/unwrap-motion-component.mjs",
+      "sha256": "8665b054a7ff2695a98d7bd965e3695bcfedacb743ed2b87db89982035ced8c7"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/framer-motion/dist/es/projection/use-instant-layout-transition.mjs",
+      "sha256": "289684d5aa71c49e6d740f39dd3501c5b1daba4fad88f6050e4d4aceb1850860"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/framer-motion/dist/es/projection/use-reset-projection.mjs",
+      "sha256": "cf9df180d744396ea86cc7d0ba63922521648ab6134c0a8f3be2cf852701f397"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/framer-motion/dist/es/utils/use-cycle.mjs",
+      "sha256": "a0982d7de683983abd53d510669f750acad61f49101500df75eb5dbc7e95f2d5"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/framer-motion/dist/es/render/dom/viewport/index.mjs",
+      "sha256": "2769f1497360e7bd292374dfb4ac1d08d23b61eaee768d08d0a94a594bb6bab6"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/framer-motion/dist/es/utils/use-in-view.mjs",
+      "sha256": "4f9ca05ed193ba5e4da3f12e0253bb9b463378a69c6e7d4b840a28d44bd65039"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/framer-motion/dist/es/utils/use-instant-transition.mjs",
+      "sha256": "cf56221c9a384efc1b25c68a64fabdfe431865c513ce838c669a5a38b8bb091d"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/framer-motion/dist/es/utils/use-page-in-view.mjs",
+      "sha256": "fccf2b9ec0402d4b4fa51fa4b581e43113c5d1fefe8f1f646de7879ced12f5fc"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/framer-motion/dist/es/utils/transform-viewbox-point.mjs",
+      "sha256": "0b88402e600ff924274d50c99cef209b71b8b0e9b2010a046d546bd77d70e7f4"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/framer-motion/dist/es/utils/transform-rotated-parent.mjs",
+      "sha256": "95a23ac41b72d6d2e7638bedb8a025bd8af1f9578161be65cbb9c6be2a787119"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/framer-motion/dist/es/animation/optimized-appear/store.mjs",
+      "sha256": "e0d8c3f9fe170716d9c71a1b851255f73d66918b250e17cee95782e4a0cbf185"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/framer-motion/dist/es/animation/optimized-appear/store-id.mjs",
+      "sha256": "f4dadd1deaa818366e50cdd7eeff727a7e24748c8d3428abeaf9040fd3fb4bcd"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/framer-motion/dist/es/animation/optimized-appear/handoff.mjs",
+      "sha256": "f356e8258be843242c84abb9d38f09aa51c820999a845a5ce228d2fa25f6e661"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/framer-motion/dist/es/animation/optimized-appear/start.mjs",
+      "sha256": "bf4e2315c40b762fd536c2ba03d8f827e1f3079febcade3b162c36303c25f81a"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/framer-motion/dist/es/animation/hooks/use-animated-state.mjs",
+      "sha256": "37305bd8c24776ef9ff0e602775328d149cc110517a8a4ef7e337081f651f7f0"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/framer-motion/dist/es/components/AnimateSharedLayout.mjs",
+      "sha256": "84a0e31385f5284e08f6c9f1a4bb903b7a4d4767927735d6e0d26078b7343399"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/framer-motion/dist/es/value/use-inverted-scale.mjs",
+      "sha256": "e76da49b753fa55abae460ea8f060bac739cc521ecdd621c498c155f27b8cf84"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/framer-motion/dist/es/context/ReorderContext.mjs",
+      "sha256": "b5ad8d9eb43567f81413e322b61e9f40be2341178594ff3ffcf7bc7ea63ba22c"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/framer-motion/dist/es/components/Reorder/utils/check-reorder.mjs",
+      "sha256": "8138973ca6174954e5888ad8810504e11273ee8b1d5a174221d47b1f2fa8853f"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/framer-motion/dist/es/components/Reorder/utils/detect-axis.mjs",
+      "sha256": "78829c84a5e849f7451cb36716a857fe506c21816c8070a8184de18ce9630642"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/framer-motion/dist/es/components/Reorder/Group.mjs",
+      "sha256": "f5334975cf7991028017c83872b2a6a0fad5409bf7a2ec473943dff83f9095c8"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/framer-motion/dist/es/components/Reorder/utils/auto-scroll.mjs",
+      "sha256": "48905f93f3be9bd14ec52cc0380ba3fd17daa6b56aab93ca7d6b64d5faca687f"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/framer-motion/dist/es/components/Reorder/Item.mjs",
+      "sha256": "8fc54742b8a3e99eaba198b470c378144539360452b3120c25335680e841c153"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/framer-motion/dist/es/components/Reorder/namespace.mjs",
+      "sha256": "67d888d8f8a56ebf9f0ed978e74c8d2d51ad5fbd30693664d96cbdad4fb21e22"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/framer-motion/dist/es/index.mjs",
+      "sha256": "69a47515ac86fe76da31e4351fc2e26b351d929dff767667103f7a095caaca23"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/motion/dist/es/react.mjs",
+      "sha256": "6f275bd51d1add29dd9359125ac6a1d48c634447a6443833483cce99f7192152"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-reference-20261023/lib/hooks/use-hover-capable.ts",
+      "sha256": "b5b9397bfa03859e04673c8f1817cf13ff55d2a9688955d6e0459ae70db90d06"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-reference-20261023/components/charts/returns-calendar/utils.ts",
+      "sha256": "13200d6ccf5a528b85dc4231c142d5210aced3ebeebb063d2dd29713fbeabfa9"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-reference-20261023/components/charts/returns-calendar/context.ts",
+      "sha256": "478237f8037b39b7b9ec975472610bcb4a42a6c7f6d67b52e98a9f1a13967435"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-reference-20261023/lib/ease.ts",
+      "sha256": "bdfa2814cffaa4d974a5fc8614868ddb89e0310a0ead9e7105f2e8132b219ff3"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-reference-20261023/components/charts/returns-calendar/grid.tsx",
+      "sha256": "e068dfeef4be4abf26ba042151cb96214994fdbaeef34a4c1dfc0519aeedd8cb"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-reference-20261023/components/motion/number-ticker.tsx",
+      "sha256": "122fe951f13aa06357eef56c4acb6c5f665caa87f8ac37c86b55f61d1f232975"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-reference-20261023/components/motion/tooltip-surface.tsx",
+      "sha256": "d082ccbc58b0ad10a4372245a6254f9a70095a55d869595d6bba778b23aba3f8"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-reference-20261023/lib/hooks/use-dismiss.ts",
+      "sha256": "b3243c39f363c9f9b33b528a2e720d5d48370e964b8c6c80747da423a4269a2a"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-reference-20261023/lib/touch.ts",
+      "sha256": "f2a15c243c86c8bd1abb6e2e65a423b3a4c45cc1d797ebd83997f21cd1beadb9"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-reference-20261023/lib/hooks/use-hover-gesture.ts",
+      "sha256": "d381531c81668faf22cada58671451f4e7b53cf8d8718d6768e485139810755d"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-reference-20261023/lib/hooks/use-tap-gesture.ts",
+      "sha256": "b91954bf9f1cdc1771b2a6eac815d2f4e2493cb2cde5f508b2d96509dd71aeee"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-reference-20261023/components/motion/tooltip/grace.ts",
+      "sha256": "a79f94a822560008bd903da1a939a6b76f8a2678daaf4733079afdb47d58f568"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/@floating-ui/utils/dist/floating-ui.utils.mjs",
+      "sha256": "f53b3ea1eec15af77ca9def295b8f40f6d65706acfc5aaac4801ca3ca21ef7bd"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/@floating-ui/core/dist/floating-ui.core.mjs",
+      "sha256": "c6c359d91fbc6636f6143aae9ff47105eeacea869b14afe7d54e120444ab8f37"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/@floating-ui/utils/dist/floating-ui.utils.dom.mjs",
+      "sha256": "b6658b1eac47e2917e6d10ebbeefb9c4ac9a166f0052bed6e08c871ed848b680"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-fixture-runtime-20261023/node_modules/@floating-ui/dom/dist/floating-ui.dom.mjs",
+      "sha256": "a1c916ed18ed8bb2c586079f7946d35797b45bc79eafae1d99ec6f812672ef54"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-reference-20261023/components/motion/tooltip/use-position.ts",
+      "sha256": "219252b6c13d8a9d320fee90155285a051716594aae89020679bc22069bb4ee9"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-reference-20261023/components/motion/tooltip/positioner.tsx",
+      "sha256": "822fdab7bbe3767b3a78485be8351fb59518f53085a9294b2504a2d49e77e3fb"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-reference-20261023/components/motion/tooltip.tsx",
+      "sha256": "05aa29e1cac3ac96d2ea5f1320e48cc65f905b26ccee8044971d6a0318c776b4"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-reference-20261023/components/charts/returns-calendar/tooltip.tsx",
+      "sha256": "99cff276d03ad7b15929727481dc4c3a3fa8a95a27131cbb807f587e78c38d97"
+    },
+    {
+      "path": "../../../../../../private/tmp/beui-charts-reference-20261023/components/charts/returns-calendar.tsx",
+      "sha256": "1e50c58747f0767de89fc848ab92682003526e266ba0ec5bc7d21adbb34d0f4d"
+    },
+    {
+      "path": "docs/proof/v3-parity/resume-20261023/returns-calendar-native/snapshots.json",
+      "sha256": "dbf7279257fdbe6ef26e2dff85efcf240455955c83fac80976b0e12d7f8d5300"
+    },
+    {
+      "path": "docs/proof/v3-parity/resume-20261023/returns-calendar-native/source.tsx",
+      "sha256": "a5b60f26b8d19ba23ebfcbe1deb026471dcb4fa9ebe8550ba7fd371f35a51710"
+    }
+  ]
+}

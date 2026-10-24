@@ -1,0 +1,225 @@
+{
+  "target": "candidate",
+  "reducedMotion": "no-preference",
+  "owner": "accept",
+  "browser": "156.0.8078.48",
+  "scripts": [
+    {
+      "url": "http://127.0.0.1:18170/flutter_bootstrap.js",
+      "sha256": "d9738166ef2e41c3176420f8f200b5d4fe23b2994d78240d5d1e8150588be065",
+      "bytes": 13093
+    },
+    {
+      "url": "http://127.0.0.1:18170/main.dart.js",
+      "sha256": "6117dfcd96a56a9fa58fc591514ef0cfb2957c0c70cfeb0ae006e7b4bd777f2b",
+      "bytes": 2392124
+    },
+    {
+      "url": "https://www.gstatic.com/flutter-canvaskit/5d531788691ec3404cac0cee66ead4007b177363/chromium/canvaskit.js",
+      "sha256": "6018b12bd8ed37e6952eee72d59c1cf7ad707ccdb74a0a45190010f77edd9068",
+      "bytes": 86226
+    },
+    {
+      "url": "https://www.gstatic.com/flutter-canvaskit/5d531788691ec3404cac0cee66ead4007b177363/chromium/canvaskit.wasm",
+      "sha256": "ba4024133403777f41c709b9e76e9f4bdb76c73d33adba8645527a59d815d824",
+      "bytes": 5428553
+    }
+  ],
+  "states": [
+    {
+      "fixture": {
+        "value": [
+          "alpha",
+          "beta",
+          "gamma"
+        ],
+        "calls": [],
+        "query": "",
+        "open": false,
+        "opens": [],
+        "queries": [],
+        "alive": true,
+        "reject": false,
+        "controlled": false,
+        "disableAnimations": false
+      },
+      "reduce": false,
+      "focus": {
+        "tag": "SPAN",
+        "role": null,
+        "label": null
+      },
+      "fields": [
+        {
+          "tag": "INPUT",
+          "value": ""
+        },
+        {
+          "tag": "INPUT",
+          "value": ""
+        }
+      ],
+      "chips": [],
+      "popup": false,
+      "options": [],
+      "name": "rest",
+      "aria": "- text: Supplemental MultiSelect accept owner\n- group \"Alpha Beta Gamma\":\n  - group \"Remove Alpha\":\n    - button\n  - group \"Remove Beta\":\n    - button\n  - group \"Remove Gamma\":\n    - button\n  - textbox\n- textbox \"External field\"\n- button \"Dispose select\"",
+      "screenshot": {
+        "file": "rest.png",
+        "sha256": "ed3710a9366f4f4ba23017853d37dcc19cbebb75eaca3b4ce60ff27331adef78"
+      }
+    },
+    {
+      "fixture": {
+        "value": [
+          "alpha",
+          "beta",
+          "gamma"
+        ],
+        "calls": [],
+        "query": "",
+        "open": false,
+        "opens": [],
+        "queries": [],
+        "alive": true,
+        "reject": false,
+        "controlled": false,
+        "disableAnimations": false
+      },
+      "reduce": false,
+      "focus": {
+        "tag": "SPAN",
+        "role": null,
+        "label": null
+      },
+      "fields": [
+        {
+          "tag": "INPUT",
+          "value": ""
+        },
+        {
+          "tag": "INPUT",
+          "value": ""
+        }
+      ],
+      "chips": [],
+      "popup": false,
+      "options": [],
+      "name": "failure",
+      "aria": "- text: Supplemental MultiSelect accept owner\n- group \"Alpha Beta Gamma\":\n  - group \"Remove Alpha\":\n    - button\n  - group \"Remove Beta\":\n    - button\n  - group \"Remove Gamma\":\n    - button\n  - textbox\n- textbox \"External field\"\n- button \"Dispose select\"",
+      "screenshot": {
+        "file": "failure.png",
+        "sha256": "ed3710a9366f4f4ba23017853d37dcc19cbebb75eaca3b4ce60ff27331adef78"
+      }
+    }
+  ],
+  "checks": [
+    {
+      "name": "sequence completed",
+      "pass": false,
+      "actual": "TimeoutError: locator.boundingBox: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('button', { name: /^Remove Alpha(?: Remove Alpha)?$/ })\u001b[22m\n"
+    },
+    {
+      "name": "trusted input",
+      "pass": true,
+      "actual": [
+        {
+          "type": "click",
+          "isTrusted": false,
+          "x": 0,
+          "y": 0,
+          "time": 438.7000000476837,
+          "tag": "FLT-SEMANTICS-PLACEHOLDER",
+          "label": "Enable accessibility"
+        }
+      ]
+    },
+    {
+      "name": "no page errors",
+      "pass": true,
+      "actual": []
+    },
+    {
+      "name": "video encode",
+      "pass": true,
+      "actual": 0
+    }
+  ],
+  "frames": [
+    {
+      "file": "original-frames/frame_000000.png",
+      "sha256": "2e5532d0a3c15bd346c4c2b9c462c7875e38312162e9bcccd60068e776d4c2aa",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 713,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792781064.241078,
+        "monotonicTimestamp": 597852.883956
+      }
+    },
+    {
+      "file": "original-frames/frame_000001.png",
+      "sha256": "2e5532d0a3c15bd346c4c2b9c462c7875e38312162e9bcccd60068e776d4c2aa",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 713,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792781064.763878,
+        "monotonicTimestamp": 597853.406749
+      }
+    },
+    {
+      "file": "original-frames/frame_000002.png",
+      "sha256": "2e5532d0a3c15bd346c4c2b9c462c7875e38312162e9bcccd60068e776d4c2aa",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 713,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792781095.279764,
+        "monotonicTimestamp": 597883.922195
+      }
+    }
+  ],
+  "inputs": [
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 341.7000000476837,
+      "tag": "FLUTTER-VIEW",
+      "label": null
+    },
+    {
+      "type": "click",
+      "isTrusted": false,
+      "x": 0,
+      "y": 0,
+      "time": 438.7000000476837,
+      "tag": "FLT-SEMANTICS-PLACEHOLDER",
+      "label": "Enable accessibility"
+    },
+    {
+      "type": "focusout",
+      "isTrusted": true,
+      "time": 448.7000000476837,
+      "tag": "FLUTTER-VIEW",
+      "label": null
+    },
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 449.10000002384186,
+      "tag": "SPAN",
+      "label": null
+    }
+  ],
+  "errors": []
+}

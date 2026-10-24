@@ -1,0 +1,83 @@
+Flutter crash report.
+Please report a bug at https://github.com/flutter/flutter/issues.
+
+## command
+
+flutter test --no-pub test/probe_test.dart --reporter expanded
+
+## exception
+
+StateError: Bad state: No element
+
+```
+#0      Iterable.firstWhere (dart:core/iterable.dart:722:5)
+#1      testCompilerBuildNativeAssets (package:flutter_tools/src/isolated/native_assets/test/native_assets.dart:37:8)
+#2      TestCompilerNativeAssetsBuilderImpl.build (package:flutter_tools/src/isolated/native_assets/test/native_assets.dart:22:46)
+#3      TestCommand.runCommand (package:flutter_tools/src/commands/test.dart:504:38)
+<asynchronous suspension>
+#4      FlutterCommand.run.<anonymous closure> (package:flutter_tools/src/runner/flutter_command.dart:1663:27)
+<asynchronous suspension>
+#5      AppContext.run.<anonymous closure> (package:flutter_tools/src/base/context.dart:154:19)
+<asynchronous suspension>
+#6      CommandRunner.runCommand (package:args/command_runner.dart:212:13)
+<asynchronous suspension>
+#7      FlutterCommandRunner.runCommand.<anonymous closure> (package:flutter_tools/src/runner/flutter_command_runner.dart:496:9)
+<asynchronous suspension>
+#8      AppContext.run.<anonymous closure> (package:flutter_tools/src/base/context.dart:154:19)
+<asynchronous suspension>
+#9      FlutterCommandRunner.runCommand (package:flutter_tools/src/runner/flutter_command_runner.dart:431:5)
+<asynchronous suspension>
+#10     FlutterCommandRunner.run.<anonymous closure> (package:flutter_tools/src/runner/flutter_command_runner.dart:307:33)
+<asynchronous suspension>
+#11     run.<anonymous closure>.<anonymous closure> (package:flutter_tools/runner.dart:104:11)
+<asynchronous suspension>
+#12     AppContext.run.<anonymous closure> (package:flutter_tools/src/base/context.dart:154:19)
+<asynchronous suspension>
+#13     main (package:flutter_tools/executable.dart:103:3)
+<asynchronous suspension>
+```
+
+## flutter doctor
+
+```
+[✓] Flutter (Channel stable, 3.47.1, on macOS 27.0.1 26A434 darwin-arm64, locale en-IN) [835ms]
+    • Flutter version 3.47.1 on channel stable at /Users/codenameakshay/fvm/versions/stable
+    • Upstream repository https://github.com/flutter/flutter.git
+    • Framework revision 6655482ec0 (9 weeks ago), 2026-08-19 10:07:23 -0700
+    • Engine revision 5d53178869
+    • Dart version 3.13.1
+    • DevTools version 2.60.0
+    • Feature flags: enable-web, enable-linux-desktop, enable-macos-desktop, enable-windows-desktop, enable-android, enable-ios, cli-animations, enable-native-assets, enable-record-use, enable-swift-package-manager, omit-legacy-version-file, enable-lldb-debugging, enable-uiscene-migration
+
+[!] Android toolchain - develop for Android devices (Android SDK version 37.0.0) [2.2s]
+    • Android SDK at /Users/codenameakshay/Library/Android/sdk
+    • Emulator version 36.4.10.0 (build_id 15004761) (CL:N/A)
+    • Platform android-37.0, build-tools 37.0.0
+    • Java binary at: /Applications/Android Studio.app/Contents/jbr/Contents/Home/bin/java
+      This JDK is specified in your Flutter configuration.
+      To change the current JDK, run: `flutter config --jdk-dir="path/to/jdk"`.
+    • Java version OpenJDK Runtime Environment (build 21.0.9+-14787801-b1163.94)
+    ! Some Android licenses not accepted. To resolve this, run: flutter doctor --android-licenses
+
+[✓] Xcode - develop for iOS and macOS (Xcode 27.1) [1,524ms]
+    • Xcode at /Applications/Xcode-27.1.0.app/Contents/Developer
+    • Build 27A9275
+    • CocoaPods version 1.16.2
+
+[✓] Chrome - develop for the web [17ms]
+    • Chrome at /Applications/Google Chrome.app/Contents/MacOS/Google Chrome
+
+[✓] Connected device (5 available) [10.6s]
+    • Akshay’s iPhone (wireless) (mobile) • 00008120-0016593821D3401E            • ios            • iOS 27.0.1 24A446
+    • iPhone 18 Pro (mobile)              • F051215F-07C5-49E4-B2EC-A0060106A03F • ios            • com.apple.CoreSimulator.SimRuntime.iOS-27-0 (simulator)
+    • Prism QA iPhone 17 Pro (mobile)     • F23C54AF-5CFC-4CB2-99B2-707A193F506C • ios            • com.apple.CoreSimulator.SimRuntime.iOS-27-0 (simulator)
+    • macOS (desktop)                     • macos                                • darwin-arm64   • macOS 27.0.1 26A434 darwin-arm64
+    • Chrome (web)                        • chrome                               • web-javascript • Google Chrome 156.0.8078.48
+    ! Error: Browsing on the local area network for Abhay’s iPhone. Ensure the device is unlocked and attached with a cable or associated with the same local area network as this Mac.
+      The device must be opted into Developer Mode to connect wirelessly. (code -27)
+
+[✓] Network resources [507ms]
+    • All expected network resources are available.
+
+! Doctor found issues in 1 category.
+```

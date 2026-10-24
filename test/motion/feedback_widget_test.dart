@@ -63,6 +63,48 @@ Finder _trigger() => find.byIcon(LucideIcons.message_square);
 
 void main() {
   group('BeuiFeedbackWidget interaction', () {
+    for (final reduce in [false, true]) {
+      for (final closeLabel in ['Cancel', 'Close']) {
+        testWidgets('$closeLabel clears draft before reopen, reduce=$reduce', (
+          tester,
+        ) async {
+          final received = <String>[];
+          await tester.pumpWidget(
+            _app(
+              reduce: reduce,
+              onSubmit: (data) => received.add(data.message),
+            ),
+          );
+          await tester.tap(_trigger());
+          await tester.pumpAndSettle();
+          await tester.enterText(find.byType(TextField), 'Discard this draft');
+          await tester.pump();
+          await tester.tap(
+            closeLabel == 'Close'
+                ? find.bySemanticsLabel('Close')
+                : find.text('Cancel'),
+          );
+          await tester.pumpAndSettle();
+          await tester.tap(_trigger());
+          await tester.pumpAndSettle();
+          expect(
+            tester.widget<TextField>(find.byType(TextField)).controller!.text,
+            '',
+          );
+          expect(
+            tester
+                .widget<BeuiStatefulButton>(find.byType(BeuiStatefulButton))
+                .onPressed,
+            isNull,
+          );
+          await tester.enterText(find.byType(TextField), 'New feedback');
+          await tester.pump();
+          await tester.tap(find.byType(BeuiStatefulButton));
+          await tester.pump();
+          expect(received, ['New feedback']);
+        });
+      }
+    }
     testWidgets('tap trigger morphs into the form', (tester) async {
       await tester.pumpWidget(_app());
       expect(_trigger(), findsOneWidget);
@@ -97,35 +139,49 @@ void main() {
       expect(find.text('Thanks!'), findsOneWidget);
     });
 
-    testWidgets('empty message does not submit, and says why', (tester) async {
-      var called = false;
-      await tester.pumpWidget(_app(onSubmit: (_) => called = true));
+    testWidgets(
+      'empty and whitespace messages disable submit until text exists',
+      (tester) async {
+        final received = <String>[];
+        await tester.pumpWidget(
+          _app(onSubmit: (data) => received.add(data.message)),
+        );
 
-      await tester.tap(_trigger());
-      await tester.pump(const Duration(milliseconds: 500));
-      await tester.tap(find.byType(BeuiStatefulButton), warnIfMissed: false);
-      await tester.pump(const Duration(milliseconds: 300));
+        await tester.tap(_trigger());
+        await tester.pump(const Duration(milliseconds: 500));
+        expect(
+          tester
+              .widget<BeuiStatefulButton>(find.byType(BeuiStatefulButton))
+              .onPressed,
+          isNull,
+        );
+        await tester.enterText(find.byType(TextField), ' \n ');
+        await tester.pump();
+        expect(
+          tester
+              .widget<BeuiStatefulButton>(find.byType(BeuiStatefulButton))
+              .onPressed,
+          isNull,
+        );
+        await tester.tap(find.byType(BeuiStatefulButton), warnIfMissed: false);
+        await tester.pump(const Duration(milliseconds: 300));
 
-      expect(called, isFalse);
-      expect(find.text('Thanks!'), findsNothing);
-      // Submit stays live and explains itself rather than sitting greyed out.
-      expect(
-        find.text('Write a little about what happened first.'),
-        findsOneWidget,
-      );
+        expect(received, isEmpty);
+        expect(find.text('Thanks!'), findsNothing);
+        expect(
+          find.text('Write a little about what happened first.'),
+          findsNothing,
+        );
 
-      // Typing clears the complaint.
-      await tester.enterText(find.byType(TextField), 'ok');
-      await tester.pump();
-      expect(
-        find.text('Write a little about what happened first.'),
-        findsNothing,
-      );
-    });
+        await tester.enterText(find.byType(TextField), 'ok');
+        await tester.pump();
+        await tester.tap(find.byType(BeuiStatefulButton));
+        await tester.pump();
+        expect(received, ['ok']);
+      },
+    );
 
-    testWidgets('closing preserves the draft; a successful submit clears it', (
-      tester,
-    ) async {
+    testWidgets('closing discards the draft before reopening', (tester) async {
       await tester.pumpWidget(_app(onSubmit: (_) {}));
 
       await tester.tap(_trigger());
@@ -133,16 +189,25 @@ void main() {
       await tester.enterText(find.byType(TextField), 'half-written report');
       await tester.pump();
 
-      // A stray tap outside used to destroy this with no confirmation.
       await tester.tapAt(const Offset(10, 10));
       await tester.pump(const Duration(milliseconds: 500));
       expect(find.byType(TextField), findsNothing);
 
       await tester.tap(_trigger());
       await tester.pump(const Duration(milliseconds: 500));
-      expect(find.text('half-written report'), findsOneWidget);
+      expect(
+        tester.widget<TextField>(find.byType(TextField)).controller!.text,
+        '',
+      );
+      expect(
+        tester
+            .widget<BeuiStatefulButton>(find.byType(BeuiStatefulButton))
+            .onPressed,
+        isNull,
+      );
 
-      // Only a submit that actually landed discards it.
+      await tester.enterText(find.byType(TextField), 'new report');
+      await tester.pump();
       await tester.tap(find.byType(BeuiStatefulButton));
       await tester.pump();
       await tester.pump(const Duration(milliseconds: 600));
@@ -153,7 +218,7 @@ void main() {
       expect(find.text('half-written report'), findsNothing);
     });
 
-    testWidgets('Escape closes without destroying the draft', (tester) async {
+    testWidgets('Escape closes and discards the draft', (tester) async {
       await tester.pumpWidget(_app(onSubmit: (_) {}));
       await tester.tap(_trigger());
       await tester.pump(const Duration(milliseconds: 500));
@@ -166,7 +231,16 @@ void main() {
 
       await tester.tap(_trigger());
       await tester.pump(const Duration(milliseconds: 500));
-      expect(find.text('keep me'), findsOneWidget);
+      expect(
+        tester.widget<TextField>(find.byType(TextField)).controller!.text,
+        '',
+      );
+      expect(
+        tester
+            .widget<BeuiStatefulButton>(find.byType(BeuiStatefulButton))
+            .onPressed,
+        isNull,
+      );
     });
 
     testWidgets('the success view holds while a screen reader is active', (
@@ -248,10 +322,15 @@ void main() {
     });
 
     testWidgets('a thrown submit routes to the retry view', (tester) async {
+      final semantics = tester.ensureSemantics();
       Object? reportedError;
+      final messages = <String>[];
       await tester.pumpWidget(
         _app(
-          onSubmit: (_) => throw StateError('nope'),
+          onSubmit: (data) {
+            messages.add(data.message);
+            if (messages.length == 1) throw StateError('nope');
+          },
           onSubmitError: (error, _) => reportedError = error,
         ),
       );
@@ -268,10 +347,29 @@ void main() {
       expect(find.text('Something went wrong'), findsOneWidget);
       expect(find.text('Try again'), findsOneWidget);
       expect(
+        tester.getSemantics(find.bySemanticsLabel('Try again')),
+        matchesSemantics(
+          isButton: true,
+          hasTapAction: true,
+          hasFocusAction: true,
+          isFocusable: true,
+          hasEnabledState: true,
+          isEnabled: true,
+          label: 'Try again',
+        ),
+      );
+      expect(
         reportedError,
         isA<StateError>(),
         reason: 'onSubmitError must be told about the thrown error',
       );
+      await tester.tap(find.bySemanticsLabel('Try again'));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 400));
+      expect(messages, ['Broken', 'Broken']);
+      expect(find.text('Thanks!'), findsOneWidget);
+      await tester.pump(const Duration(seconds: 3));
+      semantics.dispose();
     });
 
     testWidgets(

@@ -186,8 +186,11 @@ export 'src/motion/table/table.dart'
         BeuiTable,
         BeuiTableAlign,
         BeuiTableColumn,
-        BeuiTableInsertPosition;
-export 'src/motion/tabs.dart' show BeuiTab, BeuiTabs, BeuiTabsVariant;
+        BeuiTableInsertPosition,
+        BeuiTableSizing,
+        BeuiTableIntrinsicSample;
+export 'src/motion/tabs.dart'
+    show BeuiTab, BeuiTabs, BeuiTabsIcons, BeuiTabsVariant;
 export 'src/motion/text_cascade.dart' show BeuiTextCascade;
 export 'src/motion/text_reveal.dart' show BeuiTextReveal, BeuiTextRevealSplit;
 export 'src/motion/text_shimmer.dart' show BeuiTextShimmer;
@@ -199,7 +202,8 @@ export 'src/motion/theme_toggle.dart'
         BeuiThemeSwitcherController,
         BeuiThemeToggle;
 export 'src/motion/tilt_card.dart' show BeuiTiltCard;
-export 'src/motion/tooltip.dart' show BeuiTooltip, BeuiTooltipSide;
+export 'src/motion/tooltip.dart'
+    show BeuiTooltip, BeuiTooltipAlign, BeuiTooltipSide;
 export 'src/motion/wallet_card/wallet_card.dart'
     show BeuiWalletAccount, BeuiWalletCard;
 export 'src/motion/wheel_picker.dart'
@@ -387,3 +391,224 @@ export 'src/motion/tool_result.dart'
         BeuiToolResultKind,
         BeuiToolResultOutput,
         BeuiToolResultStatus;
+
+// v3-components exports
+export 'src/motion/adaptive_stepper.dart'
+    show
+        BeuiAdaptiveStepper,
+        BeuiAdaptiveStepperDecrement,
+        BeuiAdaptiveStepperIncrement,
+        BeuiAdaptiveStepperValue;
+export 'src/motion/alert.dart'
+    show
+        BeuiAlert,
+        BeuiAlertAction,
+        BeuiAlertClose,
+        BeuiAlertContent,
+        BeuiAlertDescription,
+        BeuiAlertIcon,
+        BeuiAlertTitle,
+        BeuiAlertVariant;
+export 'src/motion/arc_picker.dart'
+    show BeuiArcPicker, BeuiArcPickerOption, BeuiArcPickerSide;
+export 'src/motion/aspect_ratio.dart'
+    show BeuiAspectRatio, BeuiAspectRatioImage;
+export 'src/motion/breadcrumb.dart'
+    show
+        BeuiBreadcrumb,
+        BeuiBreadcrumbEllipsis,
+        BeuiBreadcrumbItem,
+        BeuiBreadcrumbLink,
+        BeuiBreadcrumbList,
+        BeuiBreadcrumbPage,
+        BeuiBreadcrumbSeparator;
+export 'src/motion/button/metallic.dart' show BeuiMetallicButton;
+export 'src/motion/card.dart'
+    show
+        BeuiCard,
+        BeuiCardAction,
+        BeuiCardContent,
+        BeuiCardDescription,
+        BeuiCardFooter,
+        BeuiCardHeader,
+        BeuiCardSize,
+        BeuiCardTarget,
+        BeuiCardTitle,
+        BeuiCardVariant;
+export 'src/motion/collapsible.dart'
+    show
+        BeuiCollapsible,
+        BeuiCollapsibleContent,
+        BeuiCollapsibleIndicator,
+        BeuiCollapsibleTrigger;
+export 'src/motion/color_picker.dart'
+    show
+        BeuiColorFormat,
+        BeuiColorPicker,
+        BeuiColorPickerAlpha,
+        BeuiColorPickerArea,
+        BeuiColorPickerChannels,
+        BeuiColorPickerContent,
+        BeuiColorPickerEyeDropper,
+        BeuiColorPickerHex,
+        BeuiColorPickerHue,
+        BeuiColorPickerPreset,
+        BeuiColorPickerPresetItem,
+        BeuiColorPickerPresets,
+        BeuiColorPickerSwatch,
+        BeuiColorPickerTrigger,
+        BeuiHsva,
+        beuiColorFromHex,
+        beuiColorToHex;
+export 'src/motion/color_selector.dart'
+    show
+        BeuiColorSelector,
+        BeuiColorSelectorItem,
+        BeuiColorSelectorLabel,
+        BeuiColorSelectorList;
+export 'src/motion/combobox.dart'
+    show
+        BeuiCombobox,
+        BeuiComboboxAlign,
+        BeuiComboboxContent,
+        BeuiComboboxEmpty,
+        BeuiComboboxFilter,
+        BeuiComboboxGroup,
+        BeuiComboboxInput,
+        BeuiComboboxItem,
+        BeuiComboboxLabel,
+        BeuiComboboxList,
+        BeuiComboboxSeparator,
+        BeuiComboboxSide,
+        BeuiComboboxTrigger,
+        BeuiComboboxValue,
+        beuiComboboxSubsequenceFilter;
+export 'src/motion/date_range_picker.dart'
+    show
+        BeuiDateRange,
+        BeuiDateRangePicker,
+        BeuiDateRangePickerAlignment,
+        BeuiDateRangePickerCalendar,
+        BeuiDateRangePickerClear,
+        BeuiDateRangePickerContent,
+        BeuiDateRangePickerDropdown,
+        BeuiDateRangePickerFooter,
+        BeuiDateRangePickerGrid,
+        BeuiDateRangePickerHeader,
+        BeuiDateRangePickerPreset,
+        BeuiDateRangePickerPresets,
+        BeuiDateRangePickerSelection,
+        BeuiDateRangePickerSide,
+        BeuiDateRangePickerSummary,
+        BeuiDateRangePickerTrigger,
+        BeuiDateRangePreset;
+export 'src/motion/digit_swap.dart' show BeuiDigitSwap, BeuiDigitSwapDirection;
+export 'src/motion/expandable_control.dart'
+    show BeuiExpandableButton, BeuiExpandableChip;
+export 'src/motion/file_tree.dart'
+    show BeuiFileTree, BeuiFileTreeFile, BeuiFileTreeFolder;
+export 'src/motion/image_viewer.dart'
+    show
+        BeuiImageViewer,
+        BeuiImageViewerCaption,
+        BeuiImageViewerClose,
+        BeuiImageViewerContent,
+        BeuiImageViewerCounter,
+        BeuiImageViewerGallery,
+        BeuiImageViewerImage,
+        BeuiImageViewerNext,
+        BeuiImageViewerPrevious,
+        BeuiImageViewerThumbnail;
+export 'src/motion/multi_select.dart'
+    show
+        BeuiMultiSelect,
+        BeuiMultiSelectContent,
+        BeuiMultiSelectInput,
+        BeuiMultiSelectItem,
+        BeuiMultiSelectList,
+        BeuiMultiSelectOption,
+        BeuiMultiSelectTrigger,
+        BeuiMultiSelectValue;
+export 'src/motion/range_slider_inline.dart' show BeuiInlineSlider;
+export 'src/motion/sortable_list.dart'
+    show
+        BeuiSortableList,
+        BeuiSortableListContent,
+        BeuiSortableListGroup,
+        BeuiSortableListHandle,
+        BeuiSortableListItem,
+        BeuiSortableListItemContent,
+        BeuiSortableListUndo;
+export 'src/motion/text_scramble.dart'
+    show BeuiTextScramble, beuiTextScrambleGlyphs;
+export 'src/motion/timeline.dart' show BeuiTimeline, BeuiTimelineEvent;
+export 'src/motion/tooltip.dart'
+    show BeuiTooltipContent, BeuiTooltipProvider, BeuiTooltipTrigger;
+
+// v3-blocks exports
+export 'src/motion/card_folder.dart' show BeuiCardFolder;
+export 'src/motion/morphing_search.dart'
+    show BeuiMorphingSearch, BeuiMorphingSearchItem;
+export 'src/motion/morphing_search_chips.dart'
+    show BeuiMorphingSearchChips, BeuiMorphingSearchChipsSide;
+export 'src/motion/morphing_tabs.dart'
+    show BeuiMorphingTabs, BeuiMorphingTabsItem;
+export 'src/motion/prediction_market_card.dart'
+    show
+        BeuiPredictionMarketCard,
+        BeuiPredictionMarketCardOutcome,
+        BeuiPredictionMarketCardSelection,
+        BeuiPredictionMarketCardSide;
+export 'src/motion/project_folder.dart'
+    show BeuiProjectFolder, BeuiProjectFolderPreview;
+export 'src/motion/signup_form.dart'
+    show
+        BeuiSignUpErrors,
+        BeuiSignUpForm,
+        BeuiSignUpStatus,
+        BeuiSignUpValues,
+        beuiPasswordStrength;
+
+// v3-agents exports
+export 'src/motion/voice_orb.dart'
+    show
+        BeuiVoiceAnalyser,
+        BeuiVoiceOrb,
+        kBeuiVoiceOrbColors,
+        kBeuiVoiceOrbSize;
+
+// v3-charts exports
+export 'src/charts/_shared.dart'
+    show
+        BeuiChartFade,
+        BeuiChartFrame,
+        BeuiChartLegend,
+        BeuiChartLegendItem,
+        BeuiChartSpring,
+        BeuiChartSpringRect,
+        BeuiChartSwatch,
+        BeuiChartTicker,
+        BeuiChartTooltip,
+        BeuiChartTooltipCard,
+        BeuiChartTooltipSide,
+        beuiBumpPalette,
+        beuiChartColor,
+        beuiChartFormatNumber,
+        beuiChartPalette,
+        beuiChartPercent,
+        beuiChartSignedPercent,
+        beuiChartToTooltipSide;
+export 'src/charts/treemap.dart';
+export 'src/charts/sankey_chart.dart';
+export 'src/charts/candlestick_chart.dart';
+export 'src/charts/donut_chart.dart';
+export 'src/charts/volume_profile.dart';
+export 'src/charts/status_bar.dart';
+export 'src/charts/composition_chart.dart';
+export 'src/charts/funnel_chart.dart';
+export 'src/charts/liquidity_heatmap.dart';
+export 'src/charts/bump_chart.dart';
+export 'src/charts/order_book.dart';
+export 'src/charts/heat_calendar.dart';
+export 'src/charts/returns_calendar.dart';
+export 'src/charts/price_target_fan.dart';

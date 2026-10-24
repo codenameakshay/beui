@@ -1,0 +1,86 @@
+{
+  "url": "http://127.0.0.1:18116/?slug=composition-chart&previewWidth=752&captureProbe=1",
+  "viewport": {
+    "width": 1000,
+    "height": 1400
+  },
+  "theme": "dark",
+  "reducedMotion": "no-preference",
+  "requireFlutterProbe": true,
+  "loadWaitMs": 6000,
+  "backend": "screenshots",
+  "targets": {
+    "a": {
+      "x": 274.4,
+      "y": 291.5
+    },
+    "b": {
+      "x": 650.4,
+      "y": 419.5
+    },
+    "exit": {
+      "x": 20,
+      "y": 20
+    }
+  },
+  "servedJs": {
+    "url": "http://127.0.0.1:18116/main.dart.js",
+    "sha256": "b6527f0157297703e13efb51b271045c74077ed69fd081e35d0a3306fd20d1e5",
+    "revision": "13ae06ed4c92f7b96f4f675753061ae8c8f86424"
+  },
+  "provenance": {
+    "phase": "final-v8",
+    "pinnedSource": "a76e57c9bbc2837e96420b2610e9c82a3271bb05",
+    "revision": "13ae06ed4c92f7b96f4f675753061ae8c8f86424",
+    "build": "/tmp/beui-round4-composition-funnel-quick-final-20261023",
+    "plot": {
+      "x": 124,
+      "y": 195.5,
+      "width": 752,
+      "height": 320,
+      "top": 195.5,
+      "right": 876,
+      "bottom": 515.5,
+      "left": 124
+    },
+    "sourceWrapper": null,
+    "inputRound": "final-v8",
+    "touchWrapper": {
+      "path": "/Users/codenameakshay/.t3/worktrees/beui/t3-9c42f0c0/test/charts/touch_capture_round3.mjs",
+      "sha256": "0787e5d066115cdb7f36ff77c21d18ff47b724713b1fa546c0aa416c9053e636"
+    }
+  },
+  "events": [
+    {
+      "atMs": 400,
+      "type": "click",
+      "target": "a",
+      "caption": "Trusted touch inspects stage or period A"
+    },
+    {
+      "atMs": 1100,
+      "type": "click",
+      "target": "a",
+      "caption": "Second trusted touch on the same target"
+    },
+    {
+      "atMs": 1800,
+      "type": "click",
+      "target": "a",
+      "caption": "Third trusted touch on the same target"
+    },
+    {
+      "atMs": 2500,
+      "type": "click",
+      "target": "b",
+      "caption": "Trusted touch inspects B"
+    },
+    {
+      "atMs": 2800,
+      "type": "click",
+      "target": "a",
+      "caption": "Trusted touch returns to A"
+    }
+  ],
+  "finalHoldMs": 500
+}

@@ -1,0 +1,25 @@
+- group "Capture stage width 752 height 1000 reduced false":
+  - text: QUESTIONS
+  - group "How focused should the first release be? 1/3 Question 1 of 3":
+    - radio "A focused starter set"
+    - radio "A broader collection"
+    - radio "One flagship experience"
+    - textbox "Describe another scope…"
+    - button "Previous question" [disabled]
+    - button "Next question" [disabled]
+  - button "Replay"
+  - text: REVIEW AND APPROVE
+  - group "Publish the component update? Input required The agent has prepared the release and is waiting for your decision. Release approval-card Checks 4 passed Visibility Public registry":
+    - button "Approve"
+    - button "Request changes"
+    - button "Reject"
+  - button "Replay"
+  - text: HEADER TRIGGER
+  - group "The row is the control. Summary only.":
+    - button "Show details"
+    - button "Approve"
+    - button "Reject"
+  - group "Inert header — only the action is a control Input required No expandedChild, so the row stays plain content. Tapping this header does nothing at all.":
+    - button "Edit"
+    - button "Approve"
+    - button "Reject"

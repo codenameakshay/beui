@@ -1,0 +1,1542 @@
+{
+  "method": "Exact RGB subtraction. No masks, resizing, registration, interpolation, or pixel tolerance.",
+  "statePairing": "Same named interaction state, separate native runs. Not synchronized trajectory equivalence.",
+  "crop": [
+    344,
+    0,
+    936,
+    478
+  ],
+  "results": [
+    {
+      "example": "source-light-reduce-async",
+      "state": "end-reached",
+      "failure": "candidate state absent"
+    },
+    {
+      "example": "source-light-reduce-async",
+      "state": "initial-loaded",
+      "source": "table-final-reduce/source-light-reduce-async/initial-loaded.png",
+      "candidate": "table-final-reduce/after-light-reduce-async/initial-loaded.png",
+      "sourceSha256": "fea55ed0a8d321eab25bcbecc2b952bbb6f4d3745e6ffa4aa71d66ff0a4627e0",
+      "candidateSha256": "4fa3d485e3874e366d1fbcc46a45f238a67e2bc029adb1a9acb8542d2b959ba0",
+      "viewport": {
+        "width": 1280,
+        "height": 1000,
+        "differentPixels": 39225,
+        "totalPixels": 1280000,
+        "absoluteChannelSum": 7263376,
+        "maximumChannelDelta": 252,
+        "differenceBounds": [
+          360,
+          18,
+          920,
+          462
+        ],
+        "exactZero": false,
+        "rawDifference": "pixels-table-reduce/source-light-reduce-async-initial-loaded-viewport.png"
+      },
+      "rawStage": {
+        "width": 592,
+        "height": 478,
+        "differentPixels": 39225,
+        "totalPixels": 282976,
+        "absoluteChannelSum": 7263376,
+        "maximumChannelDelta": 252,
+        "differenceBounds": [
+          16,
+          18,
+          576,
+          462
+        ],
+        "exactZero": false,
+        "rawDifference": "pixels-table-reduce/source-light-reduce-async-initial-loaded-rawStage.png"
+      }
+    },
+    {
+      "example": "source-light-reduce-async",
+      "state": "page-2",
+      "source": "table-final-reduce/source-light-reduce-async/page-2.png",
+      "candidate": "table-final-reduce/after-light-reduce-async/page-2.png",
+      "sourceSha256": "50b9b804960120f839f5dfc882e438e989e158491a7e90658dfa40548afafb61",
+      "candidateSha256": "48c134989408ebf1c7b895af2be8779b0e392764936ee90f773fc25ece3b71cd",
+      "viewport": {
+        "width": 1280,
+        "height": 1000,
+        "differentPixels": 55812,
+        "totalPixels": 1280000,
+        "absoluteChannelSum": 7033048,
+        "maximumChannelDelta": 252,
+        "differenceBounds": [
+          360,
+          18,
+          920,
+          462
+        ],
+        "exactZero": false,
+        "rawDifference": "pixels-table-reduce/source-light-reduce-async-page-2-viewport.png"
+      },
+      "rawStage": {
+        "width": 592,
+        "height": 478,
+        "differentPixels": 55812,
+        "totalPixels": 282976,
+        "absoluteChannelSum": 7033048,
+        "maximumChannelDelta": 252,
+        "differenceBounds": [
+          16,
+          18,
+          576,
+          462
+        ],
+        "exactZero": false,
+        "rawDifference": "pixels-table-reduce/source-light-reduce-async-page-2-rawStage.png"
+      }
+    },
+    {
+      "example": "source-light-reduce-async",
+      "state": "page-3",
+      "source": "table-final-reduce/source-light-reduce-async/page-3.png",
+      "candidate": "table-final-reduce/after-light-reduce-async/page-3.png",
+      "sourceSha256": "75856beb29e224bd7785b2a3d96f50eba15971b30eaa6e8f12a86b17d1b89605",
+      "candidateSha256": "565ce40d77a55a202ef80750f1c2eb085569c83a9840688f03f13baceb8fff64",
+      "viewport": {
+        "width": 1280,
+        "height": 1000,
+        "differentPixels": 56056,
+        "totalPixels": 1280000,
+        "absoluteChannelSum": 7047931,
+        "maximumChannelDelta": 252,
+        "differenceBounds": [
+          360,
+          18,
+          920,
+          462
+        ],
+        "exactZero": false,
+        "rawDifference": "pixels-table-reduce/source-light-reduce-async-page-3-viewport.png"
+      },
+      "rawStage": {
+        "width": 592,
+        "height": 478,
+        "differentPixels": 56056,
+        "totalPixels": 282976,
+        "absoluteChannelSum": 7047931,
+        "maximumChannelDelta": 252,
+        "differenceBounds": [
+          16,
+          18,
+          576,
+          462
+        ],
+        "exactZero": false,
+        "rawDifference": "pixels-table-reduce/source-light-reduce-async-page-3-rawStage.png"
+      }
+    },
+    {
+      "example": "source-light-reduce-async",
+      "state": "page-4",
+      "source": "table-final-reduce/source-light-reduce-async/page-4.png",
+      "candidate": "table-final-reduce/after-light-reduce-async/page-4.png",
+      "sourceSha256": "f56a9c499c2f7f9d25cce683d73c6352ebb105b0f5aeca94c65d4a209d6de453",
+      "candidateSha256": "c94cab6f7a134d27f112abfe8fde4f96defa9dd87034dadb95acea7a583bbb1f",
+      "viewport": {
+        "width": 1280,
+        "height": 1000,
+        "differentPixels": 56063,
+        "totalPixels": 1280000,
+        "absoluteChannelSum": 7056113,
+        "maximumChannelDelta": 252,
+        "differenceBounds": [
+          360,
+          18,
+          920,
+          462
+        ],
+        "exactZero": false,
+        "rawDifference": "pixels-table-reduce/source-light-reduce-async-page-4-viewport.png"
+      },
+      "rawStage": {
+        "width": 592,
+        "height": 478,
+        "differentPixels": 56063,
+        "totalPixels": 282976,
+        "absoluteChannelSum": 7056113,
+        "maximumChannelDelta": 252,
+        "differenceBounds": [
+          16,
+          18,
+          576,
+          462
+        ],
+        "exactZero": false,
+        "rawDifference": "pixels-table-reduce/source-light-reduce-async-page-4-rawStage.png"
+      }
+    },
+    {
+      "example": "source-light-reduce-async",
+      "state": "page-5",
+      "source": "table-final-reduce/source-light-reduce-async/page-5.png",
+      "candidate": "table-final-reduce/after-light-reduce-async/page-5.png",
+      "sourceSha256": "6eca429d9a0a7edc23b0e21d5f82e4b1df7dacf562014cc8fd39916d313f6234",
+      "candidateSha256": "da50b5d546f1371e5869aace51a248101c2f5dc75d8762aa06bebbe018492940",
+      "viewport": {
+        "width": 1280,
+        "height": 1000,
+        "differentPixels": 55968,
+        "totalPixels": 1280000,
+        "absoluteChannelSum": 7052753,
+        "maximumChannelDelta": 252,
+        "differenceBounds": [
+          360,
+          18,
+          920,
+          462
+        ],
+        "exactZero": false,
+        "rawDifference": "pixels-table-reduce/source-light-reduce-async-page-5-viewport.png"
+      },
+      "rawStage": {
+        "width": 592,
+        "height": 478,
+        "differentPixels": 55968,
+        "totalPixels": 282976,
+        "absoluteChannelSum": 7052753,
+        "maximumChannelDelta": 252,
+        "differenceBounds": [
+          16,
+          18,
+          576,
+          462
+        ],
+        "exactZero": false,
+        "rawDifference": "pixels-table-reduce/source-light-reduce-async-page-5-rawStage.png"
+      }
+    },
+    {
+      "example": "source-light-reduce-async",
+      "state": "page-6",
+      "source": "table-final-reduce/source-light-reduce-async/page-6.png",
+      "candidate": "table-final-reduce/after-light-reduce-async/page-6.png",
+      "sourceSha256": "108c1bcab620d4678e2ca0a03e4898b3d3e96cb9c45657853789148003f70169",
+      "candidateSha256": "dcf0114ab30b489e5808217cfdfc25459b3616d615a55cbd4e70f9e52b12f92e",
+      "viewport": {
+        "width": 1280,
+        "height": 1000,
+        "differentPixels": 56386,
+        "totalPixels": 1280000,
+        "absoluteChannelSum": 7192016,
+        "maximumChannelDelta": 252,
+        "differenceBounds": [
+          360,
+          18,
+          920,
+          462
+        ],
+        "exactZero": false,
+        "rawDifference": "pixels-table-reduce/source-light-reduce-async-page-6-viewport.png"
+      },
+      "rawStage": {
+        "width": 592,
+        "height": 478,
+        "differentPixels": 56386,
+        "totalPixels": 282976,
+        "absoluteChannelSum": 7192016,
+        "maximumChannelDelta": 252,
+        "differenceBounds": [
+          16,
+          18,
+          576,
+          462
+        ],
+        "exactZero": false,
+        "rawDifference": "pixels-table-reduce/source-light-reduce-async-page-6-rawStage.png"
+      }
+    },
+    {
+      "example": "source-light-reduce-async",
+      "state": "page-7",
+      "source": "table-final-reduce/source-light-reduce-async/page-7.png",
+      "candidate": "table-final-reduce/after-light-reduce-async/page-7.png",
+      "sourceSha256": "21de0602ec73c6b39463e5adbe98da2446476d8c7c35d21d882ac449a51fd621",
+      "candidateSha256": "63abdd21b9a0543eb518cc2f7a586408776cbcc1697d61d5e86996ee502e6fe3",
+      "viewport": {
+        "width": 1280,
+        "height": 1000,
+        "differentPixels": 56370,
+        "totalPixels": 1280000,
+        "absoluteChannelSum": 7216715,
+        "maximumChannelDelta": 252,
+        "differenceBounds": [
+          360,
+          18,
+          920,
+          462
+        ],
+        "exactZero": false,
+        "rawDifference": "pixels-table-reduce/source-light-reduce-async-page-7-viewport.png"
+      },
+      "rawStage": {
+        "width": 592,
+        "height": 478,
+        "differentPixels": 56370,
+        "totalPixels": 282976,
+        "absoluteChannelSum": 7216715,
+        "maximumChannelDelta": 252,
+        "differenceBounds": [
+          16,
+          18,
+          576,
+          462
+        ],
+        "exactZero": false,
+        "rawDifference": "pixels-table-reduce/source-light-reduce-async-page-7-rawStage.png"
+      }
+    },
+    {
+      "example": "source-light-reduce-async",
+      "state": "page-8",
+      "source": "table-final-reduce/source-light-reduce-async/page-8.png",
+      "candidate": "table-final-reduce/after-light-reduce-async/page-8.png",
+      "sourceSha256": "c41e19fcf73f7e63152e77e03f8f5ee0ab5b0fb4c90eff17023a2ddb29652a3c",
+      "candidateSha256": "529f96e5780657789b4c744d344e9254642880ea59c50cfa8f710e56fee66e6e",
+      "viewport": {
+        "width": 1280,
+        "height": 1000,
+        "differentPixels": 56430,
+        "totalPixels": 1280000,
+        "absoluteChannelSum": 7302590,
+        "maximumChannelDelta": 252,
+        "differenceBounds": [
+          360,
+          18,
+          920,
+          462
+        ],
+        "exactZero": false,
+        "rawDifference": "pixels-table-reduce/source-light-reduce-async-page-8-viewport.png"
+      },
+      "rawStage": {
+        "width": 592,
+        "height": 478,
+        "differentPixels": 56430,
+        "totalPixels": 282976,
+        "absoluteChannelSum": 7302590,
+        "maximumChannelDelta": 252,
+        "differenceBounds": [
+          16,
+          18,
+          576,
+          462
+        ],
+        "exactZero": false,
+        "rawDifference": "pixels-table-reduce/source-light-reduce-async-page-8-rawStage.png"
+      }
+    },
+    {
+      "example": "source-light-reduce-async",
+      "state": "rest",
+      "source": "table-final-reduce/source-light-reduce-async/rest.png",
+      "candidate": "table-final-reduce/after-light-reduce-async/rest.png",
+      "sourceSha256": "4658d24214d5a3077ffdd57e2cf6567ed8db218afecffc07c9b9eceb5152b066",
+      "candidateSha256": "b3544cfc9cf5eb61be3349c7942e8097ccaa053cf373398d620fb2725d433832",
+      "viewport": {
+        "width": 1280,
+        "height": 1000,
+        "differentPixels": 35832,
+        "totalPixels": 1280000,
+        "absoluteChannelSum": 749536,
+        "maximumChannelDelta": 146,
+        "differenceBounds": [
+          360,
+          18,
+          920,
+          462
+        ],
+        "exactZero": false,
+        "rawDifference": "pixels-table-reduce/source-light-reduce-async-rest-viewport.png"
+      },
+      "rawStage": {
+        "width": 592,
+        "height": 478,
+        "differentPixels": 35832,
+        "totalPixels": 282976,
+        "absoluteChannelSum": 749536,
+        "maximumChannelDelta": 146,
+        "differenceBounds": [
+          16,
+          18,
+          576,
+          462
+        ],
+        "exactZero": false,
+        "rawDifference": "pixels-table-reduce/source-light-reduce-async-rest-rawStage.png"
+      }
+    },
+    {
+      "example": "source-light-reduce-data",
+      "state": "reordered",
+      "source": "table-final-reduce/source-light-reduce-data/reordered.png",
+      "candidate": "table-final-reduce/after-light-reduce-data/reordered.png",
+      "sourceSha256": "a30188a6a783fb8948bff4a45b431b2f058d763db28081314c1b9a93c3d743b2",
+      "candidateSha256": "f628bd1bc7aa80bb0179dd862751aebed6bdb755fccdcc322bbf065a77887eb6",
+      "viewport": {
+        "width": 1280,
+        "height": 1000,
+        "differentPixels": 206979,
+        "totalPixels": 1280000,
+        "absoluteChannelSum": 8844610,
+        "maximumChannelDelta": 250,
+        "differenceBounds": [
+          360,
+          18,
+          920,
+          462
+        ],
+        "exactZero": false,
+        "rawDifference": "pixels-table-reduce/source-light-reduce-data-reordered-viewport.png"
+      },
+      "rawStage": {
+        "width": 592,
+        "height": 478,
+        "differentPixels": 206979,
+        "totalPixels": 282976,
+        "absoluteChannelSum": 8844610,
+        "maximumChannelDelta": 250,
+        "differenceBounds": [
+          16,
+          18,
+          576,
+          462
+        ],
+        "exactZero": false,
+        "rawDifference": "pixels-table-reduce/source-light-reduce-data-reordered-rawStage.png"
+      }
+    },
+    {
+      "example": "source-light-reduce-data",
+      "state": "resized",
+      "source": "table-final-reduce/source-light-reduce-data/resized.png",
+      "candidate": "table-final-reduce/after-light-reduce-data/resized.png",
+      "sourceSha256": "1c9d98a8effabedfa68c94e8e4b86fa07b02b63fb56a73ae2d6dcbb8d250bfac",
+      "candidateSha256": "72c78e32b5ff0de16fdbe1c2ccca2d155119f76105d45f05e5582f7562dc1d31",
+      "viewport": {
+        "width": 1280,
+        "height": 1000,
+        "differentPixels": 206945,
+        "totalPixels": 1280000,
+        "absoluteChannelSum": 8844982,
+        "maximumChannelDelta": 250,
+        "differenceBounds": [
+          360,
+          18,
+          920,
+          462
+        ],
+        "exactZero": false,
+        "rawDifference": "pixels-table-reduce/source-light-reduce-data-resized-viewport.png"
+      },
+      "rawStage": {
+        "width": 592,
+        "height": 478,
+        "differentPixels": 206945,
+        "totalPixels": 282976,
+        "absoluteChannelSum": 8844982,
+        "maximumChannelDelta": 250,
+        "differenceBounds": [
+          16,
+          18,
+          576,
+          462
+        ],
+        "exactZero": false,
+        "rawDifference": "pixels-table-reduce/source-light-reduce-data-resized-rawStage.png"
+      }
+    },
+    {
+      "example": "source-light-reduce-data",
+      "state": "rest",
+      "source": "table-final-reduce/source-light-reduce-data/rest.png",
+      "candidate": "table-final-reduce/after-light-reduce-data/rest.png",
+      "sourceSha256": "36d88671f1a1fa265f3127466310b849d2d8c916c942a96a4d0f2d18644c3047",
+      "candidateSha256": "87bff0e71d6df13fc4802c802134df025e853d1a9e2739a86fa69077c8a21bfd",
+      "viewport": {
+        "width": 1280,
+        "height": 1000,
+        "differentPixels": 44505,
+        "totalPixels": 1280000,
+        "absoluteChannelSum": 7513392,
+        "maximumChannelDelta": 252,
+        "differenceBounds": [
+          360,
+          18,
+          920,
+          462
+        ],
+        "exactZero": false,
+        "rawDifference": "pixels-table-reduce/source-light-reduce-data-rest-viewport.png"
+      },
+      "rawStage": {
+        "width": 592,
+        "height": 478,
+        "differentPixels": 44505,
+        "totalPixels": 282976,
+        "absoluteChannelSum": 7513392,
+        "maximumChannelDelta": 252,
+        "differenceBounds": [
+          16,
+          18,
+          576,
+          462
+        ],
+        "exactZero": false,
+        "rawDifference": "pixels-table-reduce/source-light-reduce-data-rest-rawStage.png"
+      }
+    },
+    {
+      "example": "source-light-reduce-data",
+      "state": "selected-all",
+      "source": "table-final-reduce/source-light-reduce-data/selected-all.png",
+      "candidate": "table-final-reduce/after-light-reduce-data/selected-all.png",
+      "sourceSha256": "77464d03b37ff9765543e76bbe0cc61e1542f4611966f4ccec8d66365d2a7f27",
+      "candidateSha256": "c67d5f06b62d014e04b623291eeaea50ea77e88f53747bd29c8698512484f6e9",
+      "viewport": {
+        "width": 1280,
+        "height": 1000,
+        "differentPixels": 208891,
+        "totalPixels": 1280000,
+        "absoluteChannelSum": 10705697,
+        "maximumChannelDelta": 250,
+        "differenceBounds": [
+          360,
+          18,
+          920,
+          462
+        ],
+        "exactZero": false,
+        "rawDifference": "pixels-table-reduce/source-light-reduce-data-selected-all-viewport.png"
+      },
+      "rawStage": {
+        "width": 592,
+        "height": 478,
+        "differentPixels": 208891,
+        "totalPixels": 282976,
+        "absoluteChannelSum": 10705697,
+        "maximumChannelDelta": 250,
+        "differenceBounds": [
+          16,
+          18,
+          576,
+          462
+        ],
+        "exactZero": false,
+        "rawDifference": "pixels-table-reduce/source-light-reduce-data-selected-all-rawStage.png"
+      }
+    },
+    {
+      "example": "source-light-reduce-data",
+      "state": "selected",
+      "source": "table-final-reduce/source-light-reduce-data/selected.png",
+      "candidate": "table-final-reduce/after-light-reduce-data/selected.png",
+      "sourceSha256": "acc8791088cea51fc6216a83e4d47b760234be32a48f8574eac26149ead4a698",
+      "candidateSha256": "21fb82998e3e900b173ab40fe3e4c19c95ab4b7ca75b8d7220863b0abacbd16c",
+      "viewport": {
+        "width": 1280,
+        "height": 1000,
+        "differentPixels": 67169,
+        "totalPixels": 1280000,
+        "absoluteChannelSum": 8034645,
+        "maximumChannelDelta": 252,
+        "differenceBounds": [
+          360,
+          18,
+          920,
+          462
+        ],
+        "exactZero": false,
+        "rawDifference": "pixels-table-reduce/source-light-reduce-data-selected-viewport.png"
+      },
+      "rawStage": {
+        "width": 592,
+        "height": 478,
+        "differentPixels": 67169,
+        "totalPixels": 282976,
+        "absoluteChannelSum": 8034645,
+        "maximumChannelDelta": 252,
+        "differenceBounds": [
+          16,
+          18,
+          576,
+          462
+        ],
+        "exactZero": false,
+        "rawDifference": "pixels-table-reduce/source-light-reduce-data-selected-rawStage.png"
+      }
+    },
+    {
+      "example": "source-light-reduce-data",
+      "state": "sort-keyboard",
+      "source": "table-final-reduce/source-light-reduce-data/sort-keyboard.png",
+      "candidate": "table-final-reduce/after-light-reduce-data/sort-keyboard.png",
+      "sourceSha256": "776aa60b77d54a501e530f23ced1078734b9c00ba1c88cf3cce85c3d6ca2f4e8",
+      "candidateSha256": "edf021c54864c2d4d73e75980c09b73d5756b355d441092fd46324c3f217f169",
+      "viewport": {
+        "width": 1280,
+        "height": 1000,
+        "differentPixels": 44660,
+        "totalPixels": 1280000,
+        "absoluteChannelSum": 7606754,
+        "maximumChannelDelta": 252,
+        "differenceBounds": [
+          360,
+          18,
+          920,
+          462
+        ],
+        "exactZero": false,
+        "rawDifference": "pixels-table-reduce/source-light-reduce-data-sort-keyboard-viewport.png"
+      },
+      "rawStage": {
+        "width": 592,
+        "height": 478,
+        "differentPixels": 44660,
+        "totalPixels": 282976,
+        "absoluteChannelSum": 7606754,
+        "maximumChannelDelta": 252,
+        "differenceBounds": [
+          16,
+          18,
+          576,
+          462
+        ],
+        "exactZero": false,
+        "rawDifference": "pixels-table-reduce/source-light-reduce-data-sort-keyboard-rawStage.png"
+      }
+    },
+    {
+      "example": "source-light-reduce-data",
+      "state": "sort-name",
+      "source": "table-final-reduce/source-light-reduce-data/sort-name.png",
+      "candidate": "table-final-reduce/after-light-reduce-data/sort-name.png",
+      "sourceSha256": "1efd8587be1b8cb2175c1ca5c71fee6d86f6a60b55b3322cd954b9cb8f6edf53",
+      "candidateSha256": "8ef0370997977f5c0f9a09571909da1356b3ef38d97dce61d71dad975639ac02",
+      "viewport": {
+        "width": 1280,
+        "height": 1000,
+        "differentPixels": 43043,
+        "totalPixels": 1280000,
+        "absoluteChannelSum": 7267705,
+        "maximumChannelDelta": 252,
+        "differenceBounds": [
+          360,
+          18,
+          920,
+          462
+        ],
+        "exactZero": false,
+        "rawDifference": "pixels-table-reduce/source-light-reduce-data-sort-name-viewport.png"
+      },
+      "rawStage": {
+        "width": 592,
+        "height": 478,
+        "differentPixels": 43043,
+        "totalPixels": 282976,
+        "absoluteChannelSum": 7267705,
+        "maximumChannelDelta": 252,
+        "differenceBounds": [
+          16,
+          18,
+          576,
+          462
+        ],
+        "exactZero": false,
+        "rawDifference": "pixels-table-reduce/source-light-reduce-data-sort-name-rawStage.png"
+      }
+    },
+    {
+      "example": "source-light-reduce-data",
+      "state": "virtual-scroll-keyboard",
+      "source": "table-final-reduce/source-light-reduce-data/virtual-scroll-keyboard.png",
+      "candidate": "table-final-reduce/after-light-reduce-data/virtual-scroll-keyboard.png",
+      "sourceSha256": "f497f07574f0010dd528fcf13ea0116233ddb1b620e7c5c21bf0592640ca35b5",
+      "candidateSha256": "004c55accc238b3385651f69d7b5d2535567fac01c93d4b0f2fdc7f6fd6308a4",
+      "viewport": {
+        "width": 1280,
+        "height": 1000,
+        "differentPixels": 208097,
+        "totalPixels": 1280000,
+        "absoluteChannelSum": 11612166,
+        "maximumChannelDelta": 250,
+        "differenceBounds": [
+          360,
+          18,
+          920,
+          462
+        ],
+        "exactZero": false,
+        "rawDifference": "pixels-table-reduce/source-light-reduce-data-virtual-scroll-keyboard-viewport.png"
+      },
+      "rawStage": {
+        "width": 592,
+        "height": 478,
+        "differentPixels": 208097,
+        "totalPixels": 282976,
+        "absoluteChannelSum": 11612166,
+        "maximumChannelDelta": 250,
+        "differenceBounds": [
+          16,
+          18,
+          576,
+          462
+        ],
+        "exactZero": false,
+        "rawDifference": "pixels-table-reduce/source-light-reduce-data-virtual-scroll-keyboard-rawStage.png"
+      }
+    },
+    {
+      "example": "source-light-reduce-editable",
+      "state": "cell-edited",
+      "source": "table-final-reduce/source-light-reduce-editable/cell-edited.png",
+      "candidate": "table-final-reduce/after-light-reduce-editable/cell-edited.png",
+      "sourceSha256": "b0a84a9b4a28d18217ad7738705d183b794fe0955a52c83a04d5bddcc776d03a",
+      "candidateSha256": "7bd6fdaedbcafee2817fed50de777f8b8e619ee71277cb53eef921fdf22778bb",
+      "viewport": {
+        "width": 1280,
+        "height": 1000,
+        "differentPixels": 36096,
+        "totalPixels": 1280000,
+        "absoluteChannelSum": 2206269,
+        "maximumChannelDelta": 250,
+        "differenceBounds": [
+          354,
+          62,
+          920,
+          296
+        ],
+        "exactZero": false,
+        "rawDifference": "pixels-table-reduce/source-light-reduce-editable-cell-edited-viewport.png"
+      },
+      "rawStage": {
+        "width": 592,
+        "height": 478,
+        "differentPixels": 36096,
+        "totalPixels": 282976,
+        "absoluteChannelSum": 2206269,
+        "maximumChannelDelta": 250,
+        "differenceBounds": [
+          10,
+          62,
+          576,
+          296
+        ],
+        "exactZero": false,
+        "rawDifference": "pixels-table-reduce/source-light-reduce-editable-cell-edited-rawStage.png"
+      }
+    },
+    {
+      "example": "source-light-reduce-editable",
+      "state": "column-deleted-menu",
+      "source": "table-final-reduce/source-light-reduce-editable/column-deleted-menu.png",
+      "candidate": "table-final-reduce/after-light-reduce-editable/column-deleted-menu.png",
+      "sourceSha256": "7e0152232c75fe04fddb27541b110a7592ce7ca083ca2fa72669ade83c9b3381",
+      "candidateSha256": "ec6cca5a8c5c883ea70351ab81bf4d782cdf09e2ab22be8350294df899094166",
+      "viewport": {
+        "width": 1280,
+        "height": 1000,
+        "differentPixels": 42095,
+        "totalPixels": 1280000,
+        "absoluteChannelSum": 3827682,
+        "maximumChannelDelta": 250,
+        "differenceBounds": [
+          184,
+          62,
+          920,
+          296
+        ],
+        "exactZero": false,
+        "rawDifference": "pixels-table-reduce/source-light-reduce-editable-column-deleted-menu-viewport.png"
+      },
+      "rawStage": {
+        "width": 592,
+        "height": 478,
+        "differentPixels": 24186,
+        "totalPixels": 282976,
+        "absoluteChannelSum": 2853761,
+        "maximumChannelDelta": 250,
+        "differenceBounds": [
+          0,
+          62,
+          576,
+          296
+        ],
+        "exactZero": false,
+        "rawDifference": "pixels-table-reduce/source-light-reduce-editable-column-deleted-menu-rawStage.png"
+      }
+    },
+    {
+      "example": "source-light-reduce-editable",
+      "state": "column-deleted",
+      "source": "table-final-reduce/source-light-reduce-editable/column-deleted.png",
+      "candidate": "table-final-reduce/after-light-reduce-editable/column-deleted.png",
+      "sourceSha256": "188f3ed540e4d8f9416122347297430e52b61a08fdd8fb2a18a78509a29a796f",
+      "candidateSha256": "2a3f5801a004bc93992d1d9f6d973c918c3be89494278f1f88591c6aafe995e8",
+      "viewport": {
+        "width": 1280,
+        "height": 1000,
+        "differentPixels": 11897,
+        "totalPixels": 1280000,
+        "absoluteChannelSum": 1878721,
+        "maximumChannelDelta": 241,
+        "differenceBounds": [
+          360,
+          62,
+          920,
+          296
+        ],
+        "exactZero": false,
+        "rawDifference": "pixels-table-reduce/source-light-reduce-editable-column-deleted-viewport.png"
+      },
+      "rawStage": {
+        "width": 592,
+        "height": 478,
+        "differentPixels": 11897,
+        "totalPixels": 282976,
+        "absoluteChannelSum": 1878721,
+        "maximumChannelDelta": 241,
+        "differenceBounds": [
+          16,
+          62,
+          576,
+          296
+        ],
+        "exactZero": false,
+        "rawDifference": "pixels-table-reduce/source-light-reduce-editable-column-deleted-rawStage.png"
+      }
+    },
+    {
+      "example": "source-light-reduce-editable",
+      "state": "column-inserted-menu",
+      "source": "table-final-reduce/source-light-reduce-editable/column-inserted-menu.png",
+      "candidate": "table-final-reduce/after-light-reduce-editable/column-inserted-menu.png",
+      "sourceSha256": "8d3167deb76af891ff0f529e8b99d70da9a217e509c1f51baf8c1d1c78505255",
+      "candidateSha256": "8c7320e3b06ca201a8ae059230929545bf5c200e5301d1ddd1572b6411b7b42f",
+      "viewport": {
+        "width": 1280,
+        "height": 1000,
+        "differentPixels": 34351,
+        "totalPixels": 1280000,
+        "absoluteChannelSum": 2544374,
+        "maximumChannelDelta": 250,
+        "differenceBounds": [
+          251,
+          62,
+          920,
+          296
+        ],
+        "exactZero": false,
+        "rawDifference": "pixels-table-reduce/source-light-reduce-editable-column-inserted-menu-viewport.png"
+      },
+      "rawStage": {
+        "width": 592,
+        "height": 478,
+        "differentPixels": 24732,
+        "totalPixels": 282976,
+        "absoluteChannelSum": 2182570,
+        "maximumChannelDelta": 250,
+        "differenceBounds": [
+          0,
+          62,
+          576,
+          296
+        ],
+        "exactZero": false,
+        "rawDifference": "pixels-table-reduce/source-light-reduce-editable-column-inserted-menu-rawStage.png"
+      }
+    },
+    {
+      "example": "source-light-reduce-editable",
+      "state": "column-inserted",
+      "source": "table-final-reduce/source-light-reduce-editable/column-inserted.png",
+      "candidate": "table-final-reduce/after-light-reduce-editable/column-inserted.png",
+      "sourceSha256": "576945b529e8c6775db4cdaa93c4788c50659252ebcc26be5a9aa777b895efc4",
+      "candidateSha256": "2b504c6830f06bf7f41fbfc6d42ad7d87ae50465fa9ef6a14441cfe74d84d305",
+      "viewport": {
+        "width": 1280,
+        "height": 1000,
+        "differentPixels": 14699,
+        "totalPixels": 1280000,
+        "absoluteChannelSum": 2599687,
+        "maximumChannelDelta": 250,
+        "differenceBounds": [
+          360,
+          62,
+          920,
+          296
+        ],
+        "exactZero": false,
+        "rawDifference": "pixels-table-reduce/source-light-reduce-editable-column-inserted-viewport.png"
+      },
+      "rawStage": {
+        "width": 592,
+        "height": 478,
+        "differentPixels": 14699,
+        "totalPixels": 282976,
+        "absoluteChannelSum": 2599687,
+        "maximumChannelDelta": 250,
+        "differenceBounds": [
+          16,
+          62,
+          576,
+          296
+        ],
+        "exactZero": false,
+        "rawDifference": "pixels-table-reduce/source-light-reduce-editable-column-inserted-rawStage.png"
+      }
+    },
+    {
+      "example": "source-light-reduce-editable",
+      "state": "column-renamed",
+      "source": "table-final-reduce/source-light-reduce-editable/column-renamed.png",
+      "candidate": "table-final-reduce/after-light-reduce-editable/column-renamed.png",
+      "sourceSha256": "4c9e8cd4e1234a3b707f2782ad6896fb195191fbe557af36baa094d53d2dbea7",
+      "candidateSha256": "97693a5c039a12925f31db55ae551ed0aec299f424a584513d083659272fe052",
+      "viewport": {
+        "width": 1280,
+        "height": 1000,
+        "differentPixels": 12741,
+        "totalPixels": 1280000,
+        "absoluteChannelSum": 2012306,
+        "maximumChannelDelta": 250,
+        "differenceBounds": [
+          360,
+          62,
+          920,
+          296
+        ],
+        "exactZero": false,
+        "rawDifference": "pixels-table-reduce/source-light-reduce-editable-column-renamed-viewport.png"
+      },
+      "rawStage": {
+        "width": 592,
+        "height": 478,
+        "differentPixels": 12741,
+        "totalPixels": 282976,
+        "absoluteChannelSum": 2012306,
+        "maximumChannelDelta": 250,
+        "differenceBounds": [
+          16,
+          62,
+          576,
+          296
+        ],
+        "exactZero": false,
+        "rawDifference": "pixels-table-reduce/source-light-reduce-editable-column-renamed-rawStage.png"
+      }
+    },
+    {
+      "example": "source-light-reduce-editable",
+      "state": "delete-to-empty-0-menu",
+      "source": "table-final-reduce/source-light-reduce-editable/delete-to-empty-0-menu.png",
+      "candidate": "table-final-reduce/after-light-reduce-editable/delete-to-empty-0-menu.png",
+      "sourceSha256": "24d303449736da425568e21ceaea690e82cb2cf30abe6423609497743e8495d7",
+      "candidateSha256": "998c116ddf8af4ed529a28561142630174929d89892f0c566cd373046cc5b66f",
+      "viewport": {
+        "width": 1280,
+        "height": 1000,
+        "differentPixels": 31609,
+        "totalPixels": 1280000,
+        "absoluteChannelSum": 2535795,
+        "maximumChannelDelta": 250,
+        "differenceBounds": [
+          144,
+          62,
+          920,
+          340
+        ],
+        "exactZero": false,
+        "rawDifference": "pixels-table-reduce/source-light-reduce-editable-delete-to-empty-0-menu-viewport.png"
+      },
+      "rawStage": {
+        "width": 592,
+        "height": 478,
+        "differentPixels": 17026,
+        "totalPixels": 282976,
+        "absoluteChannelSum": 1969527,
+        "maximumChannelDelta": 250,
+        "differenceBounds": [
+          0,
+          62,
+          576,
+          339
+        ],
+        "exactZero": false,
+        "rawDifference": "pixels-table-reduce/source-light-reduce-editable-delete-to-empty-0-menu-rawStage.png"
+      }
+    },
+    {
+      "example": "source-light-reduce-editable",
+      "state": "delete-to-empty-0",
+      "source": "table-final-reduce/source-light-reduce-editable/delete-to-empty-0.png",
+      "candidate": "table-final-reduce/after-light-reduce-editable/delete-to-empty-0.png",
+      "sourceSha256": "6a575540ad95c1f0be9f3880ebcaae3dd02a35834e53106f6c5e24dbc153af69",
+      "candidateSha256": "b39e59f84d25e6452c47f384a9afb39f1d7298953ab5580026510346a4559fd9",
+      "viewport": {
+        "width": 1280,
+        "height": 1000,
+        "differentPixels": 9643,
+        "totalPixels": 1280000,
+        "absoluteChannelSum": 1439419,
+        "maximumChannelDelta": 250,
+        "differenceBounds": [
+          354,
+          86,
+          920,
+          272
+        ],
+        "exactZero": false,
+        "rawDifference": "pixels-table-reduce/source-light-reduce-editable-delete-to-empty-0-viewport.png"
+      },
+      "rawStage": {
+        "width": 592,
+        "height": 478,
+        "differentPixels": 9643,
+        "totalPixels": 282976,
+        "absoluteChannelSum": 1439419,
+        "maximumChannelDelta": 250,
+        "differenceBounds": [
+          10,
+          86,
+          576,
+          272
+        ],
+        "exactZero": false,
+        "rawDifference": "pixels-table-reduce/source-light-reduce-editable-delete-to-empty-0-rawStage.png"
+      }
+    },
+    {
+      "example": "source-light-reduce-editable",
+      "state": "delete-to-empty-1-menu",
+      "source": "table-final-reduce/source-light-reduce-editable/delete-to-empty-1-menu.png",
+      "candidate": "table-final-reduce/after-light-reduce-editable/delete-to-empty-1-menu.png",
+      "sourceSha256": "706e1b4e056bc506d557ce43a57e3ee77d66757721573e776b1338e28c5fb677",
+      "candidateSha256": "8d687885764a99d9bba4b8c5cd74aa4e13ec65b1ba367f4483f60ca0ebb2b2f0",
+      "viewport": {
+        "width": 1280,
+        "height": 1000,
+        "differentPixels": 29203,
+        "totalPixels": 1280000,
+        "absoluteChannelSum": 2024085,
+        "maximumChannelDelta": 250,
+        "differenceBounds": [
+          144,
+          86,
+          920,
+          364
+        ],
+        "exactZero": false,
+        "rawDifference": "pixels-table-reduce/source-light-reduce-editable-delete-to-empty-1-menu-viewport.png"
+      },
+      "rawStage": {
+        "width": 592,
+        "height": 478,
+        "differentPixels": 14620,
+        "totalPixels": 282976,
+        "absoluteChannelSum": 1457817,
+        "maximumChannelDelta": 250,
+        "differenceBounds": [
+          0,
+          86,
+          576,
+          363
+        ],
+        "exactZero": false,
+        "rawDifference": "pixels-table-reduce/source-light-reduce-editable-delete-to-empty-1-menu-rawStage.png"
+      }
+    },
+    {
+      "example": "source-light-reduce-editable",
+      "state": "delete-to-empty-1",
+      "source": "table-final-reduce/source-light-reduce-editable/delete-to-empty-1.png",
+      "candidate": "table-final-reduce/after-light-reduce-editable/delete-to-empty-1.png",
+      "sourceSha256": "712289c1cb466e4ba9300f30695d18ac6042092243dae837d04198ad64c8d34e",
+      "candidateSha256": "6b59e4c6818a2c347d308c1eeff6569569f67c1e00a1b3dfdf9ff1396d662217",
+      "viewport": {
+        "width": 1280,
+        "height": 1000,
+        "differentPixels": 7195,
+        "totalPixels": 1280000,
+        "absoluteChannelSum": 981892,
+        "maximumChannelDelta": 250,
+        "differenceBounds": [
+          354,
+          110,
+          920,
+          248
+        ],
+        "exactZero": false,
+        "rawDifference": "pixels-table-reduce/source-light-reduce-editable-delete-to-empty-1-viewport.png"
+      },
+      "rawStage": {
+        "width": 592,
+        "height": 478,
+        "differentPixels": 7195,
+        "totalPixels": 282976,
+        "absoluteChannelSum": 981892,
+        "maximumChannelDelta": 250,
+        "differenceBounds": [
+          10,
+          110,
+          576,
+          248
+        ],
+        "exactZero": false,
+        "rawDifference": "pixels-table-reduce/source-light-reduce-editable-delete-to-empty-1-rawStage.png"
+      }
+    },
+    {
+      "example": "source-light-reduce-editable",
+      "state": "delete-to-empty-2-menu",
+      "source": "table-final-reduce/source-light-reduce-editable/delete-to-empty-2-menu.png",
+      "candidate": "table-final-reduce/after-light-reduce-editable/delete-to-empty-2-menu.png",
+      "sourceSha256": "8c7e9e25ca6f914c1ce78da92f4991d1d15be81a83647712f986c04bafa15bce",
+      "candidateSha256": "ea0a8488f431c7a7eda08af1e4d6e8d572b7e2c83c18df48608b549ef9e2b80e",
+      "viewport": {
+        "width": 1280,
+        "height": 1000,
+        "differentPixels": 26996,
+        "totalPixels": 1280000,
+        "absoluteChannelSum": 1569723,
+        "maximumChannelDelta": 250,
+        "differenceBounds": [
+          144,
+          110,
+          920,
+          388
+        ],
+        "exactZero": false,
+        "rawDifference": "pixels-table-reduce/source-light-reduce-editable-delete-to-empty-2-menu-viewport.png"
+      },
+      "rawStage": {
+        "width": 592,
+        "height": 478,
+        "differentPixels": 12413,
+        "totalPixels": 282976,
+        "absoluteChannelSum": 1003455,
+        "maximumChannelDelta": 250,
+        "differenceBounds": [
+          0,
+          110,
+          576,
+          387
+        ],
+        "exactZero": false,
+        "rawDifference": "pixels-table-reduce/source-light-reduce-editable-delete-to-empty-2-menu-rawStage.png"
+      }
+    },
+    {
+      "example": "source-light-reduce-editable",
+      "state": "delete-to-empty-2",
+      "source": "table-final-reduce/source-light-reduce-editable/delete-to-empty-2.png",
+      "candidate": "table-final-reduce/after-light-reduce-editable/delete-to-empty-2.png",
+      "sourceSha256": "33d3528e62c62acc6ce2a5ccf5963daf576f8d25a6f13b831b5d39c0b38bb2ce",
+      "candidateSha256": "9375a1530a263dc39acaf09680fca22b842b0fe0b51b1673ed63e2ac9eb28898",
+      "viewport": {
+        "width": 1280,
+        "height": 1000,
+        "differentPixels": 4607,
+        "totalPixels": 1280000,
+        "absoluteChannelSum": 456773,
+        "maximumChannelDelta": 250,
+        "differenceBounds": [
+          354,
+          134,
+          920,
+          241
+        ],
+        "exactZero": false,
+        "rawDifference": "pixels-table-reduce/source-light-reduce-editable-delete-to-empty-2-viewport.png"
+      },
+      "rawStage": {
+        "width": 592,
+        "height": 478,
+        "differentPixels": 4607,
+        "totalPixels": 282976,
+        "absoluteChannelSum": 456773,
+        "maximumChannelDelta": 250,
+        "differenceBounds": [
+          10,
+          134,
+          576,
+          241
+        ],
+        "exactZero": false,
+        "rawDifference": "pixels-table-reduce/source-light-reduce-editable-delete-to-empty-2-rawStage.png"
+      }
+    },
+    {
+      "example": "source-light-reduce-editable",
+      "state": "delete-to-empty-3-menu",
+      "failure": "candidate state absent"
+    },
+    {
+      "example": "source-light-reduce-editable",
+      "state": "escape",
+      "source": "table-final-reduce/source-light-reduce-editable/escape.png",
+      "candidate": "table-final-reduce/after-light-reduce-editable/escape.png",
+      "sourceSha256": "b0a84a9b4a28d18217ad7738705d183b794fe0955a52c83a04d5bddcc776d03a",
+      "candidateSha256": "7bd6fdaedbcafee2817fed50de777f8b8e619ee71277cb53eef921fdf22778bb",
+      "viewport": {
+        "width": 1280,
+        "height": 1000,
+        "differentPixels": 36096,
+        "totalPixels": 1280000,
+        "absoluteChannelSum": 2206269,
+        "maximumChannelDelta": 250,
+        "differenceBounds": [
+          354,
+          62,
+          920,
+          296
+        ],
+        "exactZero": false,
+        "rawDifference": "pixels-table-reduce/source-light-reduce-editable-escape-viewport.png"
+      },
+      "rawStage": {
+        "width": 592,
+        "height": 478,
+        "differentPixels": 36096,
+        "totalPixels": 282976,
+        "absoluteChannelSum": 2206269,
+        "maximumChannelDelta": 250,
+        "differenceBounds": [
+          10,
+          62,
+          576,
+          296
+        ],
+        "exactZero": false,
+        "rawDifference": "pixels-table-reduce/source-light-reduce-editable-escape-rawStage.png"
+      }
+    },
+    {
+      "example": "source-light-reduce-editable",
+      "state": "keyboard-dismiss-menu",
+      "source": "table-final-reduce/source-light-reduce-editable/keyboard-dismiss-menu.png",
+      "candidate": "table-final-reduce/after-light-reduce-editable/keyboard-dismiss-menu.png",
+      "sourceSha256": "8d3167deb76af891ff0f529e8b99d70da9a217e509c1f51baf8c1d1c78505255",
+      "candidateSha256": "8c7320e3b06ca201a8ae059230929545bf5c200e5301d1ddd1572b6411b7b42f",
+      "viewport": {
+        "width": 1280,
+        "height": 1000,
+        "differentPixels": 34351,
+        "totalPixels": 1280000,
+        "absoluteChannelSum": 2544374,
+        "maximumChannelDelta": 250,
+        "differenceBounds": [
+          251,
+          62,
+          920,
+          296
+        ],
+        "exactZero": false,
+        "rawDifference": "pixels-table-reduce/source-light-reduce-editable-keyboard-dismiss-menu-viewport.png"
+      },
+      "rawStage": {
+        "width": 592,
+        "height": 478,
+        "differentPixels": 24732,
+        "totalPixels": 282976,
+        "absoluteChannelSum": 2182570,
+        "maximumChannelDelta": 250,
+        "differenceBounds": [
+          0,
+          62,
+          576,
+          296
+        ],
+        "exactZero": false,
+        "rawDifference": "pixels-table-reduce/source-light-reduce-editable-keyboard-dismiss-menu-rawStage.png"
+      }
+    },
+    {
+      "example": "source-light-reduce-editable",
+      "state": "keyboard-dismiss",
+      "source": "table-final-reduce/source-light-reduce-editable/keyboard-dismiss.png",
+      "candidate": "table-final-reduce/after-light-reduce-editable/keyboard-dismiss.png",
+      "sourceSha256": "787978b520171ec34840c466c900b1155d80c7410218d37634e121b3ad9218a3",
+      "candidateSha256": "164a1e26792754e3416d81cd16bc2eeab5017b8584b393c2a4ed32f39bc582a8",
+      "viewport": {
+        "width": 1280,
+        "height": 1000,
+        "differentPixels": 12501,
+        "totalPixels": 1280000,
+        "absoluteChannelSum": 1951269,
+        "maximumChannelDelta": 253,
+        "differenceBounds": [
+          360,
+          62,
+          920,
+          296
+        ],
+        "exactZero": false,
+        "rawDifference": "pixels-table-reduce/source-light-reduce-editable-keyboard-dismiss-viewport.png"
+      },
+      "rawStage": {
+        "width": 592,
+        "height": 478,
+        "differentPixels": 12501,
+        "totalPixels": 282976,
+        "absoluteChannelSum": 1951269,
+        "maximumChannelDelta": 253,
+        "differenceBounds": [
+          16,
+          62,
+          576,
+          296
+        ],
+        "exactZero": false,
+        "rawDifference": "pixels-table-reduce/source-light-reduce-editable-keyboard-dismiss-rawStage.png"
+      }
+    },
+    {
+      "example": "source-light-reduce-editable",
+      "state": "read-only",
+      "source": "table-final-reduce/source-light-reduce-editable/read-only.png",
+      "candidate": "table-final-reduce/after-light-reduce-editable/read-only.png",
+      "sourceSha256": "08a8abec28c35857db103f9f7ce125324199bf1f4a51296f3927e52889d7f2ec",
+      "candidateSha256": "4ac1fe216f57d5d914e611ea857997f78b48635a1ac1f21b6e71021d997756a3",
+      "viewport": {
+        "width": 1280,
+        "height": 1000,
+        "differentPixels": 8853,
+        "totalPixels": 1280000,
+        "absoluteChannelSum": 980170,
+        "maximumChannelDelta": 241,
+        "differenceBounds": [
+          361,
+          62,
+          920,
+          296
+        ],
+        "exactZero": false,
+        "rawDifference": "pixels-table-reduce/source-light-reduce-editable-read-only-viewport.png"
+      },
+      "rawStage": {
+        "width": 592,
+        "height": 478,
+        "differentPixels": 8853,
+        "totalPixels": 282976,
+        "absoluteChannelSum": 980170,
+        "maximumChannelDelta": 241,
+        "differenceBounds": [
+          17,
+          62,
+          576,
+          296
+        ],
+        "exactZero": false,
+        "rawDifference": "pixels-table-reduce/source-light-reduce-editable-read-only-rawStage.png"
+      }
+    },
+    {
+      "example": "source-light-reduce-editable",
+      "state": "rest",
+      "source": "table-final-reduce/source-light-reduce-editable/rest.png",
+      "candidate": "table-final-reduce/after-light-reduce-editable/rest.png",
+      "sourceSha256": "eb33227f85d00d05e016e9c257dee7fa5aa76c33707ff94c18074c439699ad2f",
+      "candidateSha256": "0dd53f2bac02bef901b5e1914dcc8c5a4bb4fb13849b4fce69e2786de79eb8b1",
+      "viewport": {
+        "width": 1280,
+        "height": 1000,
+        "differentPixels": 11727,
+        "totalPixels": 1280000,
+        "absoluteChannelSum": 1820707,
+        "maximumChannelDelta": 241,
+        "differenceBounds": [
+          360,
+          62,
+          920,
+          296
+        ],
+        "exactZero": false,
+        "rawDifference": "pixels-table-reduce/source-light-reduce-editable-rest-viewport.png"
+      },
+      "rawStage": {
+        "width": 592,
+        "height": 478,
+        "differentPixels": 11727,
+        "totalPixels": 282976,
+        "absoluteChannelSum": 1820707,
+        "maximumChannelDelta": 241,
+        "differenceBounds": [
+          16,
+          62,
+          576,
+          296
+        ],
+        "exactZero": false,
+        "rawDifference": "pixels-table-reduce/source-light-reduce-editable-rest-rawStage.png"
+      }
+    },
+    {
+      "example": "source-light-reduce-editable",
+      "state": "row-deleted-menu",
+      "source": "table-final-reduce/source-light-reduce-editable/row-deleted-menu.png",
+      "candidate": "table-final-reduce/after-light-reduce-editable/row-deleted-menu.png",
+      "sourceSha256": "7bc18d210748f469c5690c6f7ea92384ecfe7cd445e4dc53599337d60a5b233b",
+      "candidateSha256": "288f4d276402fc32e476d16368f829ee7ccf5db8c5f1e9bb17f0b222019e3f80",
+      "viewport": {
+        "width": 1280,
+        "height": 1000,
+        "differentPixels": 33803,
+        "totalPixels": 1280000,
+        "absoluteChannelSum": 2668593,
+        "maximumChannelDelta": 250,
+        "differenceBounds": [
+          144,
+          38,
+          920,
+          320
+        ],
+        "exactZero": false,
+        "rawDifference": "pixels-table-reduce/source-light-reduce-editable-row-deleted-menu-viewport.png"
+      },
+      "rawStage": {
+        "width": 592,
+        "height": 478,
+        "differentPixels": 19220,
+        "totalPixels": 282976,
+        "absoluteChannelSum": 2102325,
+        "maximumChannelDelta": 250,
+        "differenceBounds": [
+          0,
+          38,
+          576,
+          320
+        ],
+        "exactZero": false,
+        "rawDifference": "pixels-table-reduce/source-light-reduce-editable-row-deleted-menu-rawStage.png"
+      }
+    },
+    {
+      "example": "source-light-reduce-editable",
+      "state": "row-deleted",
+      "source": "table-final-reduce/source-light-reduce-editable/row-deleted.png",
+      "candidate": "table-final-reduce/after-light-reduce-editable/row-deleted.png",
+      "sourceSha256": "7a743d220c229d34a8066c72a88f1eb61a37f15c83fb3bc77ece2b93ef9063fa",
+      "candidateSha256": "2a3f5801a004bc93992d1d9f6d973c918c3be89494278f1f88591c6aafe995e8",
+      "viewport": {
+        "width": 1280,
+        "height": 1000,
+        "differentPixels": 12263,
+        "totalPixels": 1280000,
+        "absoluteChannelSum": 1953997,
+        "maximumChannelDelta": 250,
+        "differenceBounds": [
+          354,
+          62,
+          920,
+          296
+        ],
+        "exactZero": false,
+        "rawDifference": "pixels-table-reduce/source-light-reduce-editable-row-deleted-viewport.png"
+      },
+      "rawStage": {
+        "width": 592,
+        "height": 478,
+        "differentPixels": 12263,
+        "totalPixels": 282976,
+        "absoluteChannelSum": 1953997,
+        "maximumChannelDelta": 250,
+        "differenceBounds": [
+          10,
+          62,
+          576,
+          296
+        ],
+        "exactZero": false,
+        "rawDifference": "pixels-table-reduce/source-light-reduce-editable-row-deleted-rawStage.png"
+      }
+    },
+    {
+      "example": "source-light-reduce-editable",
+      "state": "row-inserted-menu",
+      "source": "table-final-reduce/source-light-reduce-editable/row-inserted-menu.png",
+      "candidate": "table-final-reduce/after-light-reduce-editable/row-inserted-menu.png",
+      "sourceSha256": "24d303449736da425568e21ceaea690e82cb2cf30abe6423609497743e8495d7",
+      "candidateSha256": "998c116ddf8af4ed529a28561142630174929d89892f0c566cd373046cc5b66f",
+      "viewport": {
+        "width": 1280,
+        "height": 1000,
+        "differentPixels": 31609,
+        "totalPixels": 1280000,
+        "absoluteChannelSum": 2535795,
+        "maximumChannelDelta": 250,
+        "differenceBounds": [
+          144,
+          62,
+          920,
+          340
+        ],
+        "exactZero": false,
+        "rawDifference": "pixels-table-reduce/source-light-reduce-editable-row-inserted-menu-viewport.png"
+      },
+      "rawStage": {
+        "width": 592,
+        "height": 478,
+        "differentPixels": 17026,
+        "totalPixels": 282976,
+        "absoluteChannelSum": 1969527,
+        "maximumChannelDelta": 250,
+        "differenceBounds": [
+          0,
+          62,
+          576,
+          339
+        ],
+        "exactZero": false,
+        "rawDifference": "pixels-table-reduce/source-light-reduce-editable-row-inserted-menu-rawStage.png"
+      }
+    },
+    {
+      "example": "source-light-reduce-editable",
+      "state": "row-inserted",
+      "source": "table-final-reduce/source-light-reduce-editable/row-inserted.png",
+      "candidate": "table-final-reduce/after-light-reduce-editable/row-inserted.png",
+      "sourceSha256": "5351c9c63fa7b67209189b596d17166240deebb1b7539ba33a27cf6785907cd2",
+      "candidateSha256": "e9fb473c9d62a09dd9bdcaabde13f7a4a5f70ebd077952e65541d8b8faaa28b4",
+      "viewport": {
+        "width": 1280,
+        "height": 1000,
+        "differentPixels": 14539,
+        "totalPixels": 1280000,
+        "absoluteChannelSum": 2060780,
+        "maximumChannelDelta": 250,
+        "differenceBounds": [
+          354,
+          38,
+          920,
+          320
+        ],
+        "exactZero": false,
+        "rawDifference": "pixels-table-reduce/source-light-reduce-editable-row-inserted-viewport.png"
+      },
+      "rawStage": {
+        "width": 592,
+        "height": 478,
+        "differentPixels": 14539,
+        "totalPixels": 282976,
+        "absoluteChannelSum": 2060780,
+        "maximumChannelDelta": 250,
+        "differenceBounds": [
+          10,
+          38,
+          576,
+          320
+        ],
+        "exactZero": false,
+        "rawDifference": "pixels-table-reduce/source-light-reduce-editable-row-inserted-rawStage.png"
+      }
+    }
+  ]
+}

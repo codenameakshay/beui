@@ -132,16 +132,7 @@ const _rose400 = Color(0xFFFF637E);
 const _emerald500 = Color(0xFF00BC7D);
 const _rose500 = Color(0xFFFF2056);
 
-/// Row tint alpha for a changed line.
-///
-/// 0.14, not 0.07. At 0.07 the added and removed washes measured **1.04:1
-/// against each other** — the two states a diff exists to distinguish were
-/// visually identical, and the whole signal rested on one 12px glyph.
-const double _rowTintAlpha = 0.14;
-
-/// Width of the leading colour bar on a changed row, in logical pixels.
-/// Reserved (transparent) on context rows so nothing shifts between them.
-const double _rowBarWidth = 2;
+const double _rowTintAlpha = 0.07;
 
 // Unicode minus (source `−`), not ASCII hyphen.
 const _minus = '−';
@@ -160,8 +151,8 @@ const _minus = '−';
 /// [BeuiCodeBlock] uses. It previously carried its own forked copy, which had
 /// drifted far enough to paint added lines in the *deletion* red.
 ///
-/// **Wide lines.** One row per line with horizontal scroll by default, wrapping
-/// on narrow viewports — see [wrap]. The widget used to ellipsise instead, which
+/// **Wide lines.** One row per line with horizontal scroll by default. Wrapping
+/// and adaptive wrapping are opt-in through [wrap]. The widget used to ellipsise instead, which
 /// hid the end of exactly the lines a reviewer needs to see.
 ///
 /// **Motion.** Chevron rotates on [beuiSpringSwap]; presses scale to 0.97 on
@@ -193,7 +184,7 @@ class BeuiFileDiff extends StatefulWidget {
     this.collapseOnComplete = true,
     this.maxHeight = 220,
     this.language = BeuiCodeLanguage.typescript,
-    this.wrap = BeuiFileDiffWrap.adaptive,
+    this.wrap = BeuiFileDiffWrap.scroll,
     this.wrapBreakpoint = 480,
     this.copyText,
     this.copyable = true,
@@ -239,12 +230,8 @@ class BeuiFileDiff extends StatefulWidget {
   /// When true (default), auto-collapses on streaming → complete and re-opens
   /// when status returns to streaming (source `collapseOnComplete`).
   ///
-  /// **This hides the finished diff at the moment it becomes reviewable.** The
-  /// source does it, so it stays the default and stays faithful; the copy
-  /// control has been moved into the header precisely so it survives the
-  /// collapse. If your surface is a review step rather than a progress log,
-  /// pass `false` — a reviewer who has to re-open the panel to see what
-  /// changed is one who will approve without looking.
+  /// The copy control belongs to the disclosed body. Pass `false` to keep
+  /// both the finished rows and their copy control visible after completion.
   final bool collapseOnComplete;
 
   /// Max viewport height in logical pixels (source `maxHeight`, default 220).
@@ -254,7 +241,7 @@ class BeuiFileDiff extends StatefulWidget {
   final BeuiCodeLanguage language;
 
   /// How lines wider than the viewport are handled. Defaults to
-  /// [BeuiFileDiffWrap.adaptive].
+  /// [BeuiFileDiffWrap.scroll], matching the source's single-line rows.
   ///
   /// Matches [BeuiCodeBlock.wrap] semantics: wrapping keeps everything on
   /// screen, scrolling keeps one line per row.
@@ -530,10 +517,7 @@ class _BeuiFileDiffState extends State<BeuiFileDiff>
     final showChangeNav =
         changes.length > 1 && contentHeight > widget.maxHeight;
 
-    final surface = Color.alphaBlend(
-      colors.muted.withValues(alpha: 0.8),
-      colors.background,
-    );
+    final surface = Color.lerp(colors.background, colors.muted, 0.8)!;
 
     return Semantics(
       container: true,
@@ -555,12 +539,6 @@ class _BeuiFileDiffState extends State<BeuiFileDiff>
             reduce: reduce,
             spin: _spin,
             onToggle: _toggle,
-            // The copy control lives in the header so `collapseOnComplete`
-            // cannot take it away at the exact moment the diff is finished and
-            // the reader wants it.
-            canCopy: _canCopy,
-            copied: _copied,
-            onCopy: _handleCopy,
             showChangeNav: showChangeNav,
             changeCount: changes.length,
             changeCursor: _changeCursor,
@@ -574,15 +552,20 @@ class _BeuiFileDiffState extends State<BeuiFileDiff>
               padding: const EdgeInsets.only(left: 24, top: 6), // pl-6 pt-1.5
               child: DecoratedBox(
                 decoration: BoxDecoration(
-                  color: colors.muted.withValues(alpha: 0.8),
+                  color: surface,
                   borderRadius: BorderRadius.circular(12), // rounded-xl
                 ),
-                child: _isEmpty
-                    ? _EmptyDiff(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    if (_isEmpty)
+                      _EmptyDiff(
                         colors: colors,
                         placeholder: widget.emptyPlaceholder,
                       )
-                    : ConstrainedBox(
+                    else
+                      ConstrainedBox(
                         constraints: BoxConstraints(
                           maxHeight: widget.maxHeight,
                         ),
@@ -655,6 +638,26 @@ class _BeuiFileDiffState extends State<BeuiFileDiff>
                           ],
                         ),
                       ),
+                    if (_canCopy)
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(8, 4, 8, 6),
+                        child: Align(
+                          alignment: Alignment.centerRight,
+                          child: _HeaderAction(
+                            icon: _copied
+                                ? BeuiAgentTheme.of(context).icons.copied
+                                : BeuiAgentTheme.of(context).icons.copy,
+                            label: _copied
+                                ? BeuiAgentTheme.of(context).strings.copied
+                                : BeuiAgentTheme.of(context).strings.copyDiff,
+                            liveRegion: _copied,
+                            colors: colors,
+                            onTap: () => unawaited(_handleCopy()),
+                          ),
+                        ),
+                      ),
+                  ],
+                ),
               ),
             ),
           ),
@@ -811,9 +814,6 @@ class _Header extends StatefulWidget {
     required this.reduce,
     required this.spin,
     required this.onToggle,
-    required this.canCopy,
-    required this.copied,
-    required this.onCopy,
     required this.showChangeNav,
     required this.changeCount,
     required this.changeCursor,
@@ -832,9 +832,6 @@ class _Header extends StatefulWidget {
   final bool reduce;
   final AnimationController spin;
   final VoidCallback onToggle;
-  final bool canCopy;
-  final bool copied;
-  final Future<void> Function() onCopy;
   final bool showChangeNav;
   final int changeCount;
   final int changeCursor;
@@ -889,10 +886,7 @@ class _HeaderState extends State<_Header> {
             borderRadius: BorderRadius.circular(6),
             child: Container(
               constraints: const BoxConstraints(minHeight: 36), // min-h-9
-              // 6 + 2: the geometry the old always-present transparent 2px
-              // border used to contribute, preserved now that the ring has
-              // moved out of the box model.
-              padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 2),
+              padding: const EdgeInsets.symmetric(vertical: 4),
               child: Row(
                 children: [
                   ExcludeSemantics(
@@ -912,6 +906,7 @@ class _HeaderState extends State<_Header> {
                         style: TextStyle(
                           fontFamily: 'monospace',
                           fontSize: 12,
+                          height: 16 / 12,
                           letterSpacing: 0, // tracking-normal
                           fontFeatures: const [FontFeature.tabularFigures()],
                           color: widget.addColor,
@@ -925,6 +920,7 @@ class _HeaderState extends State<_Header> {
                         style: TextStyle(
                           fontFamily: 'monospace',
                           fontSize: 12,
+                          height: 16 / 12,
                           letterSpacing: 0, // tracking-normal
                           fontFeatures: const [FontFeature.tabularFigures()],
                           color: widget.delColor,
@@ -987,20 +983,6 @@ class _HeaderState extends State<_Header> {
             onTap: widget.onNextChange,
           ),
         ],
-        if (widget.canCopy)
-          _HeaderAction(
-            icon: widget.copied
-                ? BeuiAgentTheme.of(context).icons.copied
-                : BeuiAgentTheme.of(context).icons.copy,
-            label: widget.copied
-                ? BeuiAgentTheme.of(context).strings.copied
-                : BeuiAgentTheme.of(context).strings.copyDiff,
-            // Live only while the confirmation is up, so it is announced
-            // rather than silently relabelled.
-            liveRegion: widget.copied,
-            colors: colors,
-            onTap: () => unawaited(widget.onCopy()),
-          ),
       ],
     );
   }
@@ -1088,7 +1070,7 @@ class _HeaderActionState extends State<_HeaderAction> {
                     alignment: Alignment.center,
                     decoration: BoxDecoration(
                       color: _hovered
-                          ? colors.muted.withValues(alpha: 0.8)
+                          ? colors.background.withValues(alpha: 0.7)
                           : Colors.transparent,
                       borderRadius: BorderRadius.circular(6),
                     ),
@@ -1176,9 +1158,7 @@ class _DiffLines extends StatelessWidget {
       color: palette.base,
     );
     final gutterStyle = baseStyle.copyWith(
-      // 0.75, not 0.4: at 0.4 the dual gutters measured 1.78:1, and the gutter
-      // is how a reviewer maps "line 19" onto the row in front of them.
-      color: colors.mutedForeground.withValues(alpha: 0.75),
+      color: colors.mutedForeground.withValues(alpha: 0.4),
       fontFeatures: const [FontFeature.tabularFigures()],
     );
 
@@ -1279,8 +1259,7 @@ class _HunkSeparatorState extends State<_HunkSeparator> {
         child: Row(
           children: [
             SizedBox(
-              width:
-                  _DiffLines._gutterW * 2 + _DiffLines._markerW + _rowBarWidth,
+              width: _DiffLines._gutterW * 2 + _DiffLines._markerW,
               child: Text(
                 '⋯',
                 textAlign: TextAlign.center,
@@ -1384,13 +1363,6 @@ class _DiffLineRow extends StatelessWidget {
       BeuiFileDiffLineType.removed => _rose500.withValues(alpha: _rowTintAlpha),
       BeuiFileDiffLineType.context => null,
     };
-    // The redundant channel the tints alone could not carry. Reserved as a
-    // transparent strip on context rows so the code column never shifts.
-    final bar = switch (type) {
-      BeuiFileDiffLineType.added => addColor,
-      BeuiFileDiffLineType.removed => delColor,
-      BeuiFileDiffLineType.context => Colors.transparent,
-    };
     final marker = switch (type) {
       BeuiFileDiffLineType.added => '+',
       BeuiFileDiffLineType.removed => _minus,
@@ -1432,10 +1404,6 @@ class _DiffLineRow extends StatelessWidget {
       mainAxisSize: wrap ? MainAxisSize.max : MainAxisSize.min,
       children: [
         SizedBox(
-          width: _rowBarWidth,
-          child: ColoredBox(color: bar),
-        ),
-        SizedBox(
           width: _DiffLines._gutterW,
           child: Padding(
             padding: const EdgeInsets.only(right: 8),
@@ -1469,9 +1437,7 @@ class _DiffLineRow extends StatelessWidget {
       ],
     );
 
-    // IntrinsicHeight so the leading bar spans a wrapped row's full height.
-    final sized = wrap ? IntrinsicHeight(child: row) : row;
-    if (bg == null) return sized;
-    return ColoredBox(color: bg, child: sized);
+    if (bg == null) return row;
+    return ColoredBox(color: bg, child: row);
   }
 }

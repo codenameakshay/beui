@@ -1,0 +1,362 @@
+{
+  "id": "components/alert",
+  "owner": "components",
+  "newBadge": true,
+  "demoChanged": true,
+  "sourceUrl": "https://beui.dev/components/motion/alert",
+  "sourceFiles": [
+    {
+      "path": "components/motion/alert.tsx",
+      "sha256": "debf16a3862e112ce970ecf97a22e7e53a530c938616a849fc53069aaeceefe2"
+    }
+  ],
+  "sourcePreviews": [
+    "components/previews/motion/alert.preview.tsx"
+  ],
+  "sourceExamples": [],
+  "widgetParts": [
+    "BeuiAlert",
+    "BeuiAlertIcon",
+    "BeuiAlertContent",
+    "BeuiAlertTitle",
+    "BeuiAlertDescription",
+    "BeuiAlertAction",
+    "BeuiAlertClose"
+  ],
+  "states": [
+    "rest",
+    "hover-exit",
+    "keyboard",
+    "reduced-motion",
+    "every status icon title description action and close part",
+    "controlled closed open close reopen",
+    "mid-entry mid-exit icon and height transition"
+  ],
+  "themes": [
+    "dark",
+    "light"
+  ],
+  "verdict": "Known mismatch or failed visual gate",
+  "implementation": "repaired subset, see CHANGE_MANIFEST.md",
+  "missing": "No complete matched-width 60 FPS reference/before/after state set or independent visual verdict.",
+  "captures": [
+    {
+      "id": "reference-light-alert",
+      "slug": "alert",
+      "origin": "reference",
+      "theme": "light",
+      "code": 0,
+      "configPath": "/Users/codenameakshay/.t3/worktrees/beui/t3-48d38279/docs/proof/v3-parity/components/release-recordings-run2/configs/reference-light-alert.json",
+      "runDirectory": "/Users/codenameakshay/.t3/worktrees/beui/t3-48d38279/docs/proof/v3-parity/components/release-recordings-run2/reference-light-alert",
+      "missingTargets": [],
+      "stats": {
+        "originEpochMs": 1792743184763,
+        "backend": "screenshots",
+        "startMs": 2403.868833,
+        "sequenceStartMs": 2404.086042,
+        "stopMs": 7120.713333000001,
+        "frames": 71,
+        "durationMs": 4678.0760288238525,
+        "measuredFps": 14.963416491886127,
+        "medianIntervalMs": 66.64681434631348,
+        "maxIntervalMs": 90.09170532226562,
+        "reorderedDeliveries": 0,
+        "fastMotionVerdict": "inconclusive; inspect per-event gaps, not nominal frame rate",
+        "errors": [],
+        "video": {
+          "width": 1280,
+          "height": 913,
+          "decodedFrames": 71
+        }
+      },
+      "video": {
+        "path": "release-recordings-run2/reference-light-alert/capture.mp4",
+        "bytes": 1239933,
+        "sha256": "bc1ca7cc14abb97240f3e06bb96ebbb4d59e310a046d046a9fb2d9f562d366ee"
+      }
+    },
+    {
+      "id": "reference-dark-alert",
+      "slug": "alert",
+      "origin": "reference",
+      "theme": "dark",
+      "code": 0,
+      "configPath": "/Users/codenameakshay/.t3/worktrees/beui/t3-48d38279/docs/proof/v3-parity/components/release-recordings-run2/configs/reference-dark-alert.json",
+      "runDirectory": "/Users/codenameakshay/.t3/worktrees/beui/t3-48d38279/docs/proof/v3-parity/components/release-recordings-run2/reference-dark-alert",
+      "missingTargets": [],
+      "stats": {
+        "originEpochMs": 1792743249931,
+        "backend": "screenshots",
+        "startMs": 2315.4518749999997,
+        "sequenceStartMs": 2315.550083,
+        "stopMs": 7021.439625,
+        "frames": 95,
+        "durationMs": 4700.805902481079,
+        "measuredFps": 19.996571215668983,
+        "medianIntervalMs": 49.99589920043945,
+        "maxIntervalMs": 59.44705009460449,
+        "reorderedDeliveries": 0,
+        "fastMotionVerdict": "inconclusive; inspect per-event gaps, not nominal frame rate",
+        "errors": [],
+        "video": {
+          "width": 1280,
+          "height": 913,
+          "decodedFrames": 95
+        }
+      },
+      "video": {
+        "path": "release-recordings-run2/reference-dark-alert/capture.mp4",
+        "bytes": 1481508,
+        "sha256": "da15b40944d76e0378b231b3ce19a5b5996f70322f9dc119716b14bb35ea1b6a"
+      }
+    },
+    {
+      "id": "candidate-light-alert",
+      "slug": "alert",
+      "origin": "candidate",
+      "theme": "light",
+      "code": 0,
+      "configPath": "/Users/codenameakshay/.t3/worktrees/beui/t3-48d38279/docs/proof/v3-parity/components/release-recordings-run2/configs/candidate-light-alert.json",
+      "runDirectory": "/Users/codenameakshay/.t3/worktrees/beui/t3-48d38279/docs/proof/v3-parity/components/release-recordings-run2/candidate-light-alert",
+      "missingTargets": [],
+      "stats": {
+        "originEpochMs": 1792743321582,
+        "backend": "screenshots",
+        "startMs": 5154.308583,
+        "sequenceStartMs": 5154.427583,
+        "stopMs": 9858.692166,
+        "frames": 260,
+        "durationMs": 4697.871208190918,
+        "measuredFps": 55.131353866922446,
+        "medianIntervalMs": 16.71147346496582,
+        "maxIntervalMs": 37.73140907287598,
+        "reorderedDeliveries": 0,
+        "fastMotionVerdict": "inconclusive; inspect per-event gaps, not nominal frame rate",
+        "errors": [],
+        "video": {
+          "width": 1280,
+          "height": 913,
+          "decodedFrames": 260
+        }
+      },
+      "video": {
+        "path": "release-recordings-run2/candidate-light-alert/capture.mp4",
+        "bytes": 1544912,
+        "sha256": "28089d43da123e83868d7c35a73d900695d502bdaf1eab1750edfeb909bce42b"
+      }
+    },
+    {
+      "id": "candidate-dark-alert",
+      "slug": "alert",
+      "origin": "candidate",
+      "theme": "dark",
+      "code": 0,
+      "configPath": "/Users/codenameakshay/.t3/worktrees/beui/t3-48d38279/docs/proof/v3-parity/components/release-recordings-run2/configs/candidate-dark-alert.json",
+      "runDirectory": "/Users/codenameakshay/.t3/worktrees/beui/t3-48d38279/docs/proof/v3-parity/components/release-recordings-run2/candidate-dark-alert",
+      "missingTargets": [],
+      "stats": {
+        "originEpochMs": 1792743606763,
+        "backend": "screenshots",
+        "startMs": 5319.364125,
+        "sequenceStartMs": 5319.7275,
+        "stopMs": 10027.710958,
+        "frames": 135,
+        "durationMs": 4692.48366355896,
+        "measuredFps": 28.5563061285906,
+        "medianIntervalMs": 33.435821533203125,
+        "maxIntervalMs": 52.81877517700195,
+        "reorderedDeliveries": 0,
+        "fastMotionVerdict": "inconclusive; inspect per-event gaps, not nominal frame rate",
+        "errors": [],
+        "video": {
+          "width": 1280,
+          "height": 913,
+          "decodedFrames": 135
+        }
+      },
+      "video": {
+        "path": "release-recordings-run2/candidate-dark-alert/capture.mp4",
+        "bytes": 812817,
+        "sha256": "7802fb75154e3fcbb250dc0cfb5e35a974f52979d307a1849f4d05014f30a905"
+      }
+    }
+  ],
+  "changeVideos": [
+    {
+      "slug": "alert",
+      "theme": "light",
+      "before": "/Users/codenameakshay/.t3/worktrees/beui/t3-48d38279/docs/proof/v3-parity/components/before-interactions/candidate/light/alert/recording.webm",
+      "after": "/Users/codenameakshay/.t3/worktrees/beui/t3-48d38279/docs/proof/v3-parity/components/release-recordings-run2/candidate-light-alert/capture.mp4",
+      "video": "/Users/codenameakshay/.t3/worktrees/beui/t3-48d38279/docs/proof/v3-parity/components/change-videos/alert-light-before-after.mp4",
+      "change": "Use four source variants, upward entry/exit without scale, settled initial mount, and retained exiting icons.",
+      "frameProof": [
+        {
+          "phase": "BEFORE",
+          "original": {
+            "programs": [],
+            "stream_groups": [],
+            "streams": [
+              {
+                "width": 1440,
+                "height": 1000,
+                "nb_read_frames": "232"
+              }
+            ],
+            "format": {
+              "duration": "9.280000"
+            }
+          },
+          "presentation": {
+            "programs": [],
+            "stream_groups": [],
+            "streams": [
+              {
+                "width": 1440,
+                "height": 1120,
+                "nb_read_frames": "232"
+              }
+            ],
+            "format": {
+              "duration": "9.280000"
+            }
+          }
+        },
+        {
+          "phase": "AFTER",
+          "original": {
+            "programs": [],
+            "stream_groups": [],
+            "streams": [
+              {
+                "width": 1280,
+                "height": 913,
+                "nb_read_frames": "260"
+              }
+            ],
+            "format": {
+              "duration": "4.697876"
+            }
+          },
+          "presentation": {
+            "programs": [],
+            "stream_groups": [],
+            "streams": [
+              {
+                "width": 1440,
+                "height": 1120,
+                "nb_read_frames": "260"
+              }
+            ],
+            "format": {
+              "duration": "4.721383"
+            }
+          }
+        }
+      ],
+      "decoded": {
+        "programs": [],
+        "stream_groups": [],
+        "streams": [
+          {
+            "width": 1440,
+            "height": 1120,
+            "nb_read_frames": "492"
+          }
+        ],
+        "format": {
+          "duration": "14.001383"
+        }
+      },
+      "comparison": "Presentation only. Different original viewport widths are labeled. No rescaling or interpolation."
+    },
+    {
+      "slug": "alert",
+      "theme": "dark",
+      "before": "/Users/codenameakshay/.t3/worktrees/beui/t3-48d38279/docs/proof/v3-parity/components/before-interactions/candidate/dark/alert/recording.webm",
+      "after": "/Users/codenameakshay/.t3/worktrees/beui/t3-48d38279/docs/proof/v3-parity/components/release-recordings-run2/candidate-dark-alert/capture.mp4",
+      "video": "/Users/codenameakshay/.t3/worktrees/beui/t3-48d38279/docs/proof/v3-parity/components/change-videos/alert-dark-before-after.mp4",
+      "change": "Use four source variants, upward entry/exit without scale, settled initial mount, and retained exiting icons.",
+      "frameProof": [
+        {
+          "phase": "BEFORE",
+          "original": {
+            "programs": [],
+            "stream_groups": [],
+            "streams": [
+              {
+                "width": 1440,
+                "height": 1000,
+                "nb_read_frames": "169"
+              }
+            ],
+            "format": {
+              "duration": "6.760000"
+            }
+          },
+          "presentation": {
+            "programs": [],
+            "stream_groups": [],
+            "streams": [
+              {
+                "width": 1440,
+                "height": 1120,
+                "nb_read_frames": "169"
+              }
+            ],
+            "format": {
+              "duration": "6.760000"
+            }
+          }
+        },
+        {
+          "phase": "AFTER",
+          "original": {
+            "programs": [],
+            "stream_groups": [],
+            "streams": [
+              {
+                "width": 1280,
+                "height": 913,
+                "nb_read_frames": "135"
+              }
+            ],
+            "format": {
+              "duration": "4.692483"
+            }
+          },
+          "presentation": {
+            "programs": [],
+            "stream_groups": [],
+            "streams": [
+              {
+                "width": 1440,
+                "height": 1120,
+                "nb_read_frames": "135"
+              }
+            ],
+            "format": {
+              "duration": "4.727242"
+            }
+          }
+        }
+      ],
+      "decoded": {
+        "programs": [],
+        "stream_groups": [],
+        "streams": [
+          {
+            "width": 1440,
+            "height": 1120,
+            "nb_read_frames": "304"
+          }
+        ],
+        "format": {
+          "duration": "11.487242"
+        }
+      },
+      "comparison": "Presentation only. Different original viewport widths are labeled. No rescaling or interpolation."
+    }
+  ],
+  "knownGaps": "Tone colors and height trajectory remain unmatched. Existing golden comparison fails.",
+  "coverage": "Default preview recording only. No complete state or example parity certificate."
+}

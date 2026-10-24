@@ -1,0 +1,8 @@
+{ target: 'combobox', reducedMotion: 'no-preference', failures: [] }
+FAIL combobox reduce initial-type retained {"tag":"INPUT","role":null,"label":null,"text":"","value":"roduct","node":4}
+FAIL combobox reduce retained initial query {"tag":"INPUT","role":null,"label":null,"text":"","value":"roduct","node":4}
+{
+  target: 'combobox',
+  reducedMotion: 'reduce',
+  failures: [ 'initial-type retained', 'retained initial query' ]
+}

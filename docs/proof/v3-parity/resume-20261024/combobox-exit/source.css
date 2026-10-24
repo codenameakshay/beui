@@ -1,0 +1,22 @@
+@import '/tmp/beui-charts-fixture-runtime-20261023/node_modules/tailwindcss';
+@custom-variant dark (&:where(.dark, .dark *));
+@theme inline {
+  --font-mono: 'Geist Mono';
+  --font-sans: 'Geist';
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-border: var(--border);
+  --color-ring: var(--ring);
+}
+@font-face {font-family:'Geist';src:url('Geist-Regular.ttf');font-weight:400}
+@font-face {font-family:'Geist';src:url('Geist-Medium.ttf');font-weight:500}
+@font-face {font-family:'Geist Mono';src:url('GeistMono-Regular.ttf');font-weight:400}
+@font-face {font-family:'Geist Mono';src:url('GeistMono-Medium.ttf');font-weight:500}
+:root {--background:oklch(99% 0 0);--foreground:oklch(15% 0 0);--muted:oklch(97% 0 0);--muted-foreground:oklch(50% 0 0);--border:oklch(15% 0 0 / .06);--ring:oklch(15% 0 0 / .12);color-scheme:light}
+.dark {--background:#151515;--foreground:oklch(96% 0 0);--muted:#1c1c1c;--muted-foreground:oklch(62% 0 0);--border:rgb(255 255 255 / .05);--ring:rgb(255 255 255 / .1);color-scheme:dark}
+body {margin:0;background:var(--background);color:var(--foreground);font:14px/20px 'Geist'}
+#root {height:100vh;display:flex;align-items:center;justify-content:center}
+@source '/tmp/beui-charts-reference-20261023/components/motion/combobox';
+@source '/tmp/beui-charts-reference-20261023/components/motion/combobox.tsx';

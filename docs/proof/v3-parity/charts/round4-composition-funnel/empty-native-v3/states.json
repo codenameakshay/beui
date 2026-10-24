@@ -1,0 +1,194 @@
+{
+  "revision": "13ae06ed4c92f7b96f4f675753061ae8c8f86424",
+  "pinnedSource": "a76e57c9bbc2837e96420b2610e9c82a3271bb05",
+  "expected": {
+    "source": "6801e8109c7be5f0afa556be8172ff479967f4faf124502776c4648b1d98e76b",
+    "candidate": "82cbb43b96f83e79b3dd5e69279173d41f61d0952192f686e6a4035489650ec0"
+  },
+  "fixtureSha256": "20987d796eac082269fa23d1ade19697c4a7118e67dd34b7fd39b59711bf3a0f",
+  "rows": [
+    {
+      "dataCase": "composition",
+      "height": 256,
+      "source": {
+        "file": "composition-source",
+        "rect": {
+          "x": 124,
+          "y": 272,
+          "width": 752,
+          "height": 256
+        },
+        "motion": {
+          "browser": true,
+          "flutter": null
+        },
+        "scripts": [
+          {
+            "url": "http://127.0.0.1:18116/empty-source/empty.js",
+            "sha256": "6801e8109c7be5f0afa556be8172ff479967f4faf124502776c4648b1d98e76b"
+          }
+        ]
+      },
+      "candidate": {
+        "file": "composition-candidate",
+        "rect": {
+          "x": 124,
+          "y": 272,
+          "width": 752,
+          "height": 256
+        },
+        "motion": {
+          "browser": true,
+          "flutter": {
+            "disableAnimations": true,
+            "platformDisableAnimations": true,
+            "motionOverride": null,
+            "backgroundArgb": 4279571733,
+            "constraints": {
+              "minWidth": 752,
+              "maxWidth": 752,
+              "minHeight": 0,
+              "maxHeight": null
+            },
+            "rect": {
+              "x": 124,
+              "y": 272,
+              "width": 752,
+              "height": 256
+            }
+          }
+        },
+        "scripts": [
+          {
+            "url": "http://127.0.0.1:18116/empty-candidate/main.dart.js",
+            "sha256": "82cbb43b96f83e79b3dd5e69279173d41f61d0952192f686e6a4035489650ec0"
+          }
+        ]
+      },
+      "changedPixels": 745,
+      "meanAbsoluteChannelError": 0.05738343583776596
+    },
+    {
+      "dataCase": "funnel",
+      "height": 148,
+      "source": {
+        "file": "funnel-source",
+        "rect": {
+          "x": 124,
+          "y": 326,
+          "width": 752,
+          "height": 148
+        },
+        "motion": {
+          "browser": true,
+          "flutter": null
+        },
+        "scripts": [
+          {
+            "url": "http://127.0.0.1:18116/empty-source/empty.js",
+            "sha256": "6801e8109c7be5f0afa556be8172ff479967f4faf124502776c4648b1d98e76b"
+          }
+        ]
+      },
+      "candidate": {
+        "file": "funnel-candidate",
+        "rect": {
+          "x": 124,
+          "y": 326,
+          "width": 752,
+          "height": 148
+        },
+        "motion": {
+          "browser": true,
+          "flutter": {
+            "disableAnimations": true,
+            "platformDisableAnimations": true,
+            "motionOverride": null,
+            "backgroundArgb": 4279571733,
+            "constraints": {
+              "minWidth": 752,
+              "maxWidth": 752,
+              "minHeight": 0,
+              "maxHeight": null
+            },
+            "rect": {
+              "x": 124,
+              "y": 326,
+              "width": 752,
+              "height": 148
+            }
+          }
+        },
+        "scripts": [
+          {
+            "url": "http://127.0.0.1:18116/empty-candidate/main.dart.js",
+            "sha256": "82cbb43b96f83e79b3dd5e69279173d41f61d0952192f686e6a4035489650ec0"
+          }
+        ]
+      },
+      "changedPixels": 544,
+      "meanAbsoluteChannelError": 0.06771132834962622
+    },
+    {
+      "dataCase": "invalid",
+      "height": 148,
+      "source": {
+        "file": "invalid-source",
+        "rect": {
+          "x": 124,
+          "y": 326,
+          "width": 752,
+          "height": 148
+        },
+        "motion": {
+          "browser": true,
+          "flutter": null
+        },
+        "scripts": [
+          {
+            "url": "http://127.0.0.1:18116/empty-source/empty.js",
+            "sha256": "6801e8109c7be5f0afa556be8172ff479967f4faf124502776c4648b1d98e76b"
+          }
+        ]
+      },
+      "candidate": {
+        "file": "invalid-candidate",
+        "rect": {
+          "x": 124,
+          "y": 326,
+          "width": 752,
+          "height": 148
+        },
+        "motion": {
+          "browser": true,
+          "flutter": {
+            "disableAnimations": true,
+            "platformDisableAnimations": true,
+            "motionOverride": null,
+            "backgroundArgb": 4279571733,
+            "constraints": {
+              "minWidth": 752,
+              "maxWidth": 752,
+              "minHeight": 0,
+              "maxHeight": null
+            },
+            "rect": {
+              "x": 124,
+              "y": 326,
+              "width": 752,
+              "height": 148
+            }
+          }
+        },
+        "scripts": [
+          {
+            "url": "http://127.0.0.1:18116/empty-candidate/main.dart.js",
+            "sha256": "82cbb43b96f83e79b3dd5e69279173d41f61d0952192f686e6a4035489650ec0"
+          }
+        ]
+      },
+      "changedPixels": 544,
+      "meanAbsoluteChannelError": 0.06771132834962622
+    }
+  ]
+}

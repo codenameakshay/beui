@@ -1,0 +1,340 @@
+beUI Native is free — Pro mobile blocks and screens are in presale from $99
+
+Reserve
+beUI Pro for mobile
+beUI
+Components
+Blocks
+Agents
+Charts
+Playground
+Sponsors
+Light theme
+Light theme
+Dark theme
+Dark theme
+System theme
+System theme
+1.9k
+Get Pro
+All
+Agents
+Components
+Blocks
+
+INTRO
+
+Home
+Changelog
+
+GUIDES
+
+Motion Guides
+Agent Guide
+OpenUI
+React Native Setup
+AI AGENTS
+18
+Voice Orb
+Message Bubble
+Message
+Message Scroller
+Prompt Input
+Todo List
+Code Block
+Approval Card
+File Diff
+Tool Result
+Streaming Response
+Image Generation
+Tool Approval
+Citations
+Agent Activity
+Agent Loading States
+AI Sidebar
+Chat App
+COMPONENTS
+54
+Timeline
+NEW
+Animated Alert
+Animated Collapsible
+Aspect Ratio
+Arc Picker
+Sortable List
+Image Viewer
+Date Range Picker
+Card
+Color Picker
+Animated Color Selector
+Animated Breadcrumb
+Tilt Card
+Button
+Animated CTA Buttons
+Expandable Control
+Adaptive Stepper
+Marquee
+Tabs
+Switch
+Input
+Select
+Combobox
+Multi Select
+Checkbox
+Radio Group
+Bottom Sheet
+Pull to Refresh
+Shared Layout Background
+Bounce Sidebar
+Animated Sidebar
+File Tree
+Preview Rail
+Dock
+Tooltip
+Animated Context Menu
+Popover
+Morphing Modal
+Center Morph Modal
+Text Animation
+Number Animation
+Animated Badge
+Action Swap
+Animated Toast Stack
+Theme Toggle
+Bouncy Accordion
+Drawer
+Scroll Animation
+Range Slider
+Wheel Picker
+Table
+Shader Background
+Cylinder Carousel
+Loader
+BLOCKS
+23
+Infinite Masonry
+Notification Stack
+Project Folder
+Card Folder
+Fixtures
+Availability Scheduler
+Multi-chain Swap
+Dynamic Island
+Command Palette
+Morphing Search
+Expandable Action Bar
+Overflow Actions
+Expandable Tabs
+Morphing Tabs
+Swipeable List
+File Upload
+Prediction Market
+Wallet Card
+OTP Input
+Sign Up Form
+Bloom Menu
+Feedback Widget
+404 / Not Found
+Blocks
+Card Folder
+Card Folder
+Copy Page
+
+A landscape card tucked into a stitched purse pocket that lifts forward as the purse compresses into its bottom seam, with controlled open and card-detail visibility plus a separate overflow action.
+
+Preview
+Preview
+Preview
+Usage
+Usage
+Code
+Code
+SAURABH CHAUHAN
+•••• •••• •••• 0806
+•
+•
+•
+•
+•
+•
+•
+•
+•
+•
+•
+•
+0
+8
+0
+6
+beUI
+EXPIRY
+08/29
+CVV
+•••
+•
+•
+•
+EXPIRY
+08/29
+CVV
+•••
+•
+•
+•
+Saurabh Chauhan
+•••• •••• •••• 0806
+•
+•
+•
+•
+•
+•
+•
+•
+•
+•
+•
+•
+0
+8
+0
+6
+Install
+
+Add it with the shadcn CLI, or copy the source manually.
+
+CLI
+CLI
+Manual
+Manual
+bun
+bun
+npm
+npm
+pnpm
+pnpm
+yarn
+yarn
+$ bunx --bun shadcn add @beui/
+card-folder
+card-folder
+API Reference
+title
+string
+—
+cardNumber
+string
+—
+expiry
+string
+—
+cvv
+string
+—
+card
+ReactNode
+—
+open?
+boolean
+—
+defaultOpen?
+boolean
+false
+onOpenChange?
+((open: boolean) => void)
+—
+detailsVisible?
+boolean
+—
+defaultDetailsVisible?
+boolean
+false
+onDetailsVisibleChange?
+((visible: boolean) => void)
+—
+onClick?
+(() => void)
+—
+onAction?
+(() => void)
+—
+ariaLabel?
+string
+—
+actionLabel?
+string
+—
+disabled?
+boolean
+false
+className?
+string
+—
+cardClassName?
+string
+—
+Related components
+Project Folder
+
+An interactive project folder that opens its file fan on hover or focus, expands into a focus-managed overlay, then retraces the complete path when closed.
+
+Wallet Card
+
+Wallet overview card with an account switcher and search that morph open from their triggers, a cascading balance with a live change pill and privacy toggle, copy-address, and Send / Deposit / Swap / Buy actions.
+
+Expandable Action Bar
+
+Compact icon actions that expand into labeled controls on hover or focus with shared layout motion.
+
+About Card Folder
+
+Card Folder is a React payment card component that shows a landscape card tucked into a stitched purse pocket. Pressing it lifts the card forward while the purse compresses into its bottom seam, and a separate eye button reveals the full card number and CVV with a rolling digit swap. The open state and the detail visibility are each controlled or uncontrolled, and an optional overflow action button sits beside the card. It is built with Framer Motion and Tailwind CSS.
+
+When to use it
+A fintech or banking app shows a virtual card that users can lift out to view.
+A wallet screen hides card numbers by default and reveals them only on request.
+A card management page needs a per-card actions button for tasks like freezing or replacing a card.
+Accessibility
+
+The card is a button with aria-expanded and a default label that reads the title, the last four digits and the expiry, such as "Open Travel card, card ending in 4242, expires 08/29"; ariaLabel replaces it. The detail toggle is a separate button named "Show card details" or "Hide card details" with aria-pressed, and while the card is lifted the purse layer is inert and hidden from assistive technology. With reduced motion enabled, the purse fades instead of compressing and the card does not lift.
+
+FAQ
+How do I build an animated credit card component in React?
+Render CardFolder with title, cardNumber, expiry and cvv, and pass your card artwork as the card prop. cardClassName styles the card surface.
+How do I hide the card number by default?
+Details start hidden, showing only the last four digits and a masked CVV. Use defaultDetailsVisible for uncontrolled use, or detailsVisible with onDetailsVisibleChange to control it.
+Can I add a menu button to the card?
+Yes. Pass onAction to render an overflow button next to the card, and actionLabel to name it (it defaults to "Open actions for" followed by the title).
+Keep in mind
+
+Some components on this site are inspired by or recreated from existing work across the web. I'm not here to take credit; just to learn, experiment, and sometimes push things a bit further. If something looks familiar and I forgot to mention you, reach out and I'll fix that right away.
+
+Updated Oct 18, 2026
+
+Web
+Web
+React Native
+React Native
+beUI
+Pro
+Limited Offer
+
+300+ blocks and premium motion components for React and Next.js.
+
+$179 lifetime access
+
+Explore beUI Pro
+Sponsors
+
+DIAMOND
+
+Tracwell
+
+Visitor insights for growth
+
+Illos
+
+Animated illustrations for product sites
+
+Become a sponsor

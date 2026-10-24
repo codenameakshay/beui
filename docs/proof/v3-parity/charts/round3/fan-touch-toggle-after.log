@@ -1,0 +1,18 @@
+00:00 +0: loading /Users/codenameakshay/.t3/worktrees/beui/t3-b46210a7/test/charts/chart_interaction_review_test.dart
+lib/src/charts/price_target_fan.dart:683:47: Error: The getter 'PointerDeviceKind' isn't defined for the type 'BeuiPriceTargetTargets'.
+ - 'BeuiPriceTargetTargets' is from 'package:beui/src/charts/price_target_fan.dart' ('lib/src/charts/price_target_fan.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'PointerDeviceKind'.
+                            if (event.kind == PointerDeviceKind.touch) {
+                                              ^^^^^^^^^^^^^^^^^
+00:00 +0 -1: loading /Users/codenameakshay/.t3/worktrees/beui/t3-b46210a7/test/charts/chart_interaction_review_test.dart [E]
+  Failed to load "/Users/codenameakshay/.t3/worktrees/beui/t3-b46210a7/test/charts/chart_interaction_review_test.dart":
+  Compilation failed for testPath=/Users/codenameakshay/.t3/worktrees/beui/t3-b46210a7/test/charts/chart_interaction_review_test.dart: lib/src/charts/price_target_fan.dart:683:47: Error: The getter 'PointerDeviceKind' isn't defined for the type 'BeuiPriceTargetTargets'.
+   - 'BeuiPriceTargetTargets' is from 'package:beui/src/charts/price_target_fan.dart' ('lib/src/charts/price_target_fan.dart').
+  Try correcting the name to the name of an existing getter, or defining a getter or field named 'PointerDeviceKind'.
+                              if (event.kind == PointerDeviceKind.touch) {
+                                                ^^^^^^^^^^^^^^^^^
+  .
+00:00 +0 -1: Some tests failed.
+
+Failing tests:
+  /Users/codenameakshay/.t3/worktrees/beui/t3-b46210a7/test/charts/chart_interaction_review_test.dart: loading /Users/codenameakshay/.t3/worktrees/beui/t3-b46210a7/test/charts/chart_interaction_review_test.dart

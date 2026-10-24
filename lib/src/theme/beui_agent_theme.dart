@@ -526,7 +526,7 @@ class BeuiAgentIcons {
     this.spinner = LucideIcons.loader_circle,
     this.search = LucideIcons.search,
     this.web = LucideIcons.earth,
-    this.file = LucideIcons.file_code,
+    this.file = LucideIcons.file_code_corner,
     this.todo = LucideIcons.list_todo,
     this.citations = LucideIcons.book_open_text,
     this.externalLink = LucideIcons.external_link,

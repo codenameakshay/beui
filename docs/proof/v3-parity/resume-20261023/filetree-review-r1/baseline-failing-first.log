@@ -1,0 +1,28 @@
+00:00 +0: loading /private/tmp/filetree-independent-review-0tzj9rqy/test/motion/file_tree_test.dart
+00:00 +0: row actions expose selection and disabled state without losing focus
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following StateError was thrown running a test:
+Bad state: No element
+
+When the exception was thrown, this was the stack:
+#0      ListBase.singleWhere (dart:collection/list.dart:167:5)
+#1      main.<anonymous closure> (file:///private/tmp/filetree-independent-review-0tzj9rqy/test/motion/file_tree_test.dart:302:30)
+<asynchronous suspension>
+#2      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#3      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1952:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+The test description was:
+  row actions expose selection and disabled state without losing focus
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:00 +0 -1: row actions expose selection and disabled state without losing focus [E]
+  Test failed. See exception logs above.
+  The test description was: row actions expose selection and disabled state without losing focus
+  
+00:00 +0 -1: Some tests failed.
+
+Failing tests:
+  /private/tmp/filetree-independent-review-0tzj9rqy/test/motion/file_tree_test.dart: row actions expose selection and disabled state without losing focus

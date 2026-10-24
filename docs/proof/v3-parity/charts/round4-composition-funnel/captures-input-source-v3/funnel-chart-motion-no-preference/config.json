@@ -1,0 +1,120 @@
+{
+  "url": "http://127.0.0.1:18116/source/?slug=funnel-chart",
+  "viewport": {
+    "width": 1000,
+    "height": 1400
+  },
+  "theme": "dark",
+  "reducedMotion": "no-preference",
+  "requireFlutterProbe": false,
+  "loadWaitMs": 6000,
+  "backend": "screenshots",
+  "targets": {
+    "a": {
+      "x": 274.4,
+      "y": 619.5
+    },
+    "b": {
+      "x": 650.4,
+      "y": 763.5
+    },
+    "exit": {
+      "x": 20,
+      "y": 20
+    },
+    "Next cohort": {
+      "x": 838.40625,
+      "y": 411.5
+    },
+    "Horizontal": {
+      "x": 237.609375,
+      "y": 471.5
+    },
+    "Vertical": {
+      "x": 160.8515625,
+      "y": 471.5
+    }
+  },
+  "servedJs": {
+    "url": "http://127.0.0.1:18116/source/source.js",
+    "sha256": "fbc0fa78ac7409c433013c88958375228109735296615de9344047e6cb670d81",
+    "revision": "a76e57c9bbc2837e96420b2610e9c82a3271bb05"
+  },
+  "provenance": {
+    "phase": "source-v3",
+    "pinnedSource": "a76e57c9bbc2837e96420b2610e9c82a3271bb05",
+    "revision": "a76e57c9bbc2837e96420b2610e9c82a3271bb05",
+    "build": "/tmp/beui-round4-composition-funnel-source-v3-20261023",
+    "plot": {
+      "x": 124,
+      "y": 511.5,
+      "width": 752,
+      "height": 360,
+      "top": 511.5,
+      "right": 876,
+      "bottom": 871.5,
+      "left": 124
+    },
+    "sourceWrapper": "Untouched charts; consumer wrapper controls replace shared demo buttons.",
+    "inputRound": "source-v3",
+    "observedControls": {
+      "Next cohort": {
+        "x": 800.8125,
+        "y": 401.5,
+        "width": 75.1875,
+        "height": 20
+      },
+      "Horizontal": {
+        "x": 197.703125,
+        "y": 459.5,
+        "width": 79.8125,
+        "height": 24
+      },
+      "Vertical": {
+        "x": 128,
+        "y": 459.5,
+        "width": 65.703125,
+        "height": 24
+      }
+    }
+  },
+  "events": [
+    {
+      "atMs": 0,
+      "type": "move",
+      "target": "exit",
+      "caption": "Settled canonical funnel"
+    },
+    {
+      "atMs": 400,
+      "type": "click",
+      "target": "Next cohort",
+      "caption": "Native cohort replacement starts the 280ms path tween"
+    },
+    {
+      "atMs": 500,
+      "type": "click",
+      "target": "Next cohort",
+      "caption": "Second cohort interrupts the displayed path"
+    },
+    {
+      "atMs": 1300,
+      "type": "click",
+      "target": "Horizontal",
+      "caption": "Native direction change preserves stage identities"
+    },
+    {
+      "atMs": 2100,
+      "type": "click",
+      "target": "Vertical",
+      "caption": "Return to vertical geometry"
+    },
+    {
+      "atMs": 2800,
+      "type": "click",
+      "target": "Next cohort",
+      "caption": "Return to canonical cohort"
+    }
+  ],
+  "finalHoldMs": 500
+}

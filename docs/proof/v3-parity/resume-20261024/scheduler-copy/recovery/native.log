@@ -1,0 +1,56 @@
+{
+  target: 'source',
+  reducedMotion: 'no-preference',
+  owner: 'accept',
+  failures: []
+}
+{
+  target: 'source',
+  reducedMotion: 'no-preference',
+  owner: 'reject',
+  failures: []
+}
+{
+  target: 'source',
+  reducedMotion: 'reduce',
+  owner: 'accept',
+  failures: []
+}
+{
+  target: 'source',
+  reducedMotion: 'reduce',
+  owner: 'reject',
+  failures: []
+}
+FAIL candidate no-preference accept focus continuation Monday {"tag":"FLT-SEMANTICS","role":"button","switchIndex":-1,"label":null,"text":"Add time\nAdd time range to Friday"}
+FAIL candidate no-preference accept everyday focus continuation Monday {"tag":"FLT-SEMANTICS","role":"switch","switchIndex":4,"label":null,"text":""}
+{
+  target: 'candidate',
+  reducedMotion: 'no-preference',
+  owner: 'accept',
+  failures: [ 'focus continuation Monday', 'everyday focus continuation Monday' ]
+}
+FAIL candidate no-preference reject focus continuation Monday {"tag":"FLT-SEMANTICS","role":"button","switchIndex":-1,"label":null,"text":"Add time\nAdd time range to Friday"}
+FAIL candidate no-preference reject everyday focus continuation Monday {"tag":"FLT-SEMANTICS","role":"button","switchIndex":-1,"label":null,"text":"Remove\nRemove time range"}
+{
+  target: 'candidate',
+  reducedMotion: 'no-preference',
+  owner: 'reject',
+  failures: [ 'focus continuation Monday', 'everyday focus continuation Monday' ]
+}
+FAIL candidate reduce accept focus continuation Monday {"tag":"FLT-SEMANTICS","role":"button","switchIndex":-1,"label":null,"text":"Add time\nAdd time range to Friday"}
+FAIL candidate reduce accept everyday focus continuation Monday {"tag":"FLT-SEMANTICS","role":"switch","switchIndex":4,"label":null,"text":""}
+{
+  target: 'candidate',
+  reducedMotion: 'reduce',
+  owner: 'accept',
+  failures: [ 'focus continuation Monday', 'everyday focus continuation Monday' ]
+}
+FAIL candidate reduce reject focus continuation Monday {"tag":"FLT-SEMANTICS","role":"button","switchIndex":-1,"label":null,"text":"Add time\nAdd time range to Friday"}
+FAIL candidate reduce reject everyday focus continuation Monday {"tag":"FLT-SEMANTICS","role":"button","switchIndex":-1,"label":null,"text":"Remove\nRemove time range"}
+{
+  target: 'candidate',
+  reducedMotion: 'reduce',
+  owner: 'reject',
+  failures: [ 'focus continuation Monday', 'everyday focus continuation Monday' ]
+}

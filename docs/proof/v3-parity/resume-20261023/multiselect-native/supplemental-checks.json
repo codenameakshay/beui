@@ -1,0 +1,966 @@
+{
+  "checks": [
+    {
+      "run": "candidate-no-preference-accept",
+      "name": "disabled pointer preserves value",
+      "pass_": true,
+      "actual": [
+        "alpha",
+        "beta"
+      ]
+    },
+    {
+      "run": "candidate-no-preference-accept",
+      "name": "disabled pointer preserves calls",
+      "pass_": true,
+      "actual": [
+        [
+          "alpha",
+          "beta"
+        ]
+      ]
+    },
+    {
+      "run": "candidate-no-preference-accept",
+      "name": "disabled pointer preserves query",
+      "pass_": true,
+      "actual": ""
+    },
+    {
+      "run": "candidate-no-preference-accept",
+      "name": "disabled pointer preserves chips",
+      "pass_": true,
+      "actual": [
+        "Remove Alpha",
+        "Remove Beta"
+      ]
+    },
+    {
+      "run": "candidate-no-preference-accept",
+      "name": "disabled pointer popup remains open",
+      "pass_": true,
+      "actual": "- text: Supplemental MultiSelect accept owner\n- group \"Alpha Beta\":\n  - button \"Remove Alpha\"\n  - button \"Remove Beta\"\n  - textbox\n  - group \"Options\":\n    - group:\n      - button \"Alpha Alpha\"\n      - button \"Disabled Disabled\" [disabled]\n      - button \"Beta Beta\"\n      - button \"Gamma Gamma\"\n      - button \"Delta Delta\"\n  - button"
+    },
+    {
+      "run": "candidate-no-preference-accept",
+      "name": "disabled pointer actual empty query",
+      "pass_": true,
+      "actual": [
+        {
+          "tag": "INPUT",
+          "value": ""
+        }
+      ]
+    },
+    {
+      "run": "candidate-no-preference-accept",
+      "name": "disabled pointer native focus observation",
+      "pass_": true,
+      "actual": {
+        "tag": "FLT-SEMANTICS",
+        "role": null,
+        "label": null
+      }
+    },
+    {
+      "run": "candidate-no-preference-accept",
+      "name": "closed pointer exact callback",
+      "pass_": true,
+      "actual": [
+        [
+          "alpha",
+          "beta"
+        ],
+        [
+          "alpha"
+        ],
+        []
+      ]
+    },
+    {
+      "run": "candidate-no-preference-accept",
+      "name": "closed pointer owner result",
+      "pass_": true,
+      "actual": []
+    },
+    {
+      "run": "candidate-no-preference-accept",
+      "name": "closed pointer rendered chips",
+      "pass_": true,
+      "actual": []
+    },
+    {
+      "run": "candidate-no-preference-accept",
+      "name": "closed pointer actual query",
+      "pass_": true,
+      "actual": [
+        {
+          "tag": "INPUT",
+          "value": ""
+        }
+      ]
+    },
+    {
+      "run": "candidate-no-preference-accept",
+      "name": "closed pointer source focus expectation",
+      "pass_": false,
+      "actual": {
+        "tag": "FLUTTER-VIEW",
+        "role": null,
+        "label": null
+      }
+    },
+    {
+      "run": "candidate-no-preference-accept",
+      "name": "closed pointer source popup expectation",
+      "pass_": false,
+      "actual": false
+    },
+    {
+      "run": "candidate-no-preference-reject",
+      "name": "disabled pointer preserves value",
+      "pass_": true,
+      "actual": [
+        "alpha",
+        "beta",
+        "gamma"
+      ]
+    },
+    {
+      "run": "candidate-no-preference-reject",
+      "name": "disabled pointer preserves calls",
+      "pass_": true,
+      "actual": [
+        [
+          "alpha",
+          "beta"
+        ]
+      ]
+    },
+    {
+      "run": "candidate-no-preference-reject",
+      "name": "disabled pointer preserves query",
+      "pass_": true,
+      "actual": ""
+    },
+    {
+      "run": "candidate-no-preference-reject",
+      "name": "disabled pointer preserves chips",
+      "pass_": true,
+      "actual": [
+        "Remove Alpha",
+        "Remove Beta",
+        "Remove Gamma"
+      ]
+    },
+    {
+      "run": "candidate-no-preference-reject",
+      "name": "disabled pointer popup remains open",
+      "pass_": true,
+      "actual": "- text: Supplemental MultiSelect reject owner\n- group \"Alpha Beta Gamma\":\n  - button \"Remove Alpha\"\n  - button \"Remove Beta\"\n  - button \"Remove Gamma\"\n  - textbox\n  - group \"Options\":\n    - group:\n      - button \"Alpha Alpha\"\n      - button \"Disabled Disabled\" [disabled]\n      - button \"Beta Beta\"\n      - button \"Gamma Gamma\"\n      - button \"Delta Delta\"\n  - button"
+    },
+    {
+      "run": "candidate-no-preference-reject",
+      "name": "disabled pointer actual empty query",
+      "pass_": true,
+      "actual": [
+        {
+          "tag": "INPUT",
+          "value": ""
+        }
+      ]
+    },
+    {
+      "run": "candidate-no-preference-reject",
+      "name": "disabled pointer native focus observation",
+      "pass_": true,
+      "actual": {
+        "tag": "FLT-SEMANTICS",
+        "role": null,
+        "label": null
+      }
+    },
+    {
+      "run": "candidate-no-preference-reject",
+      "name": "closed pointer exact callback",
+      "pass_": true,
+      "actual": [
+        [
+          "alpha",
+          "beta"
+        ],
+        [
+          "alpha",
+          "gamma"
+        ],
+        [
+          "beta",
+          "gamma"
+        ]
+      ]
+    },
+    {
+      "run": "candidate-no-preference-reject",
+      "name": "closed pointer owner result",
+      "pass_": true,
+      "actual": [
+        "alpha",
+        "beta",
+        "gamma"
+      ]
+    },
+    {
+      "run": "candidate-no-preference-reject",
+      "name": "closed pointer rendered chips",
+      "pass_": true,
+      "actual": [
+        "Remove Alpha",
+        "Remove Beta",
+        "Remove Gamma"
+      ]
+    },
+    {
+      "run": "candidate-no-preference-reject",
+      "name": "closed pointer actual query",
+      "pass_": true,
+      "actual": [
+        {
+          "tag": "INPUT",
+          "value": ""
+        }
+      ]
+    },
+    {
+      "run": "candidate-no-preference-reject",
+      "name": "closed pointer source focus expectation",
+      "pass_": false,
+      "actual": {
+        "tag": "FLUTTER-VIEW",
+        "role": null,
+        "label": null
+      }
+    },
+    {
+      "run": "candidate-no-preference-reject",
+      "name": "closed pointer source popup expectation",
+      "pass_": false,
+      "actual": false
+    },
+    {
+      "run": "candidate-reduce-accept",
+      "name": "disabled pointer preserves value",
+      "pass_": true,
+      "actual": [
+        "alpha",
+        "beta"
+      ]
+    },
+    {
+      "run": "candidate-reduce-accept",
+      "name": "disabled pointer preserves calls",
+      "pass_": true,
+      "actual": [
+        [
+          "alpha",
+          "beta"
+        ]
+      ]
+    },
+    {
+      "run": "candidate-reduce-accept",
+      "name": "disabled pointer preserves query",
+      "pass_": true,
+      "actual": ""
+    },
+    {
+      "run": "candidate-reduce-accept",
+      "name": "disabled pointer preserves chips",
+      "pass_": true,
+      "actual": [
+        "Remove Alpha",
+        "Remove Beta"
+      ]
+    },
+    {
+      "run": "candidate-reduce-accept",
+      "name": "disabled pointer popup remains open",
+      "pass_": true,
+      "actual": "- text: Supplemental MultiSelect accept owner\n- group \"Alpha Beta\":\n  - button \"Remove Alpha\"\n  - button \"Remove Beta\"\n  - textbox\n  - group \"Options\":\n    - group:\n      - button \"Alpha Alpha\"\n      - button \"Disabled Disabled\" [disabled]\n      - button \"Beta Beta\"\n      - button \"Gamma Gamma\"\n      - button \"Delta Delta\"\n  - button"
+    },
+    {
+      "run": "candidate-reduce-accept",
+      "name": "disabled pointer actual empty query",
+      "pass_": true,
+      "actual": [
+        {
+          "tag": "INPUT",
+          "value": ""
+        }
+      ]
+    },
+    {
+      "run": "candidate-reduce-accept",
+      "name": "disabled pointer native focus observation",
+      "pass_": true,
+      "actual": {
+        "tag": "FLT-SEMANTICS",
+        "role": null,
+        "label": null
+      }
+    },
+    {
+      "run": "candidate-reduce-accept",
+      "name": "closed pointer exact callback",
+      "pass_": true,
+      "actual": [
+        [
+          "alpha",
+          "beta"
+        ],
+        [
+          "alpha"
+        ],
+        []
+      ]
+    },
+    {
+      "run": "candidate-reduce-accept",
+      "name": "closed pointer owner result",
+      "pass_": true,
+      "actual": []
+    },
+    {
+      "run": "candidate-reduce-accept",
+      "name": "closed pointer rendered chips",
+      "pass_": true,
+      "actual": []
+    },
+    {
+      "run": "candidate-reduce-accept",
+      "name": "closed pointer actual query",
+      "pass_": true,
+      "actual": [
+        {
+          "tag": "INPUT",
+          "value": ""
+        }
+      ]
+    },
+    {
+      "run": "candidate-reduce-accept",
+      "name": "closed pointer source focus expectation",
+      "pass_": false,
+      "actual": {
+        "tag": "FLUTTER-VIEW",
+        "role": null,
+        "label": null
+      }
+    },
+    {
+      "run": "candidate-reduce-accept",
+      "name": "closed pointer source popup expectation",
+      "pass_": false,
+      "actual": false
+    },
+    {
+      "run": "candidate-reduce-reject",
+      "name": "disabled pointer preserves value",
+      "pass_": true,
+      "actual": [
+        "alpha",
+        "beta",
+        "gamma"
+      ]
+    },
+    {
+      "run": "candidate-reduce-reject",
+      "name": "disabled pointer preserves calls",
+      "pass_": true,
+      "actual": [
+        [
+          "alpha",
+          "beta"
+        ]
+      ]
+    },
+    {
+      "run": "candidate-reduce-reject",
+      "name": "disabled pointer preserves query",
+      "pass_": true,
+      "actual": ""
+    },
+    {
+      "run": "candidate-reduce-reject",
+      "name": "disabled pointer preserves chips",
+      "pass_": true,
+      "actual": [
+        "Remove Alpha",
+        "Remove Beta",
+        "Remove Gamma"
+      ]
+    },
+    {
+      "run": "candidate-reduce-reject",
+      "name": "disabled pointer popup remains open",
+      "pass_": true,
+      "actual": "- text: Supplemental MultiSelect reject owner\n- group \"Alpha Beta Gamma\":\n  - button \"Remove Alpha\"\n  - button \"Remove Beta\"\n  - button \"Remove Gamma\"\n  - textbox\n  - group \"Options\":\n    - group:\n      - button \"Alpha Alpha\"\n      - button \"Disabled Disabled\" [disabled]\n      - button \"Beta Beta\"\n      - button \"Gamma Gamma\"\n      - button \"Delta Delta\"\n  - button"
+    },
+    {
+      "run": "candidate-reduce-reject",
+      "name": "disabled pointer actual empty query",
+      "pass_": true,
+      "actual": [
+        {
+          "tag": "INPUT",
+          "value": ""
+        }
+      ]
+    },
+    {
+      "run": "candidate-reduce-reject",
+      "name": "disabled pointer native focus observation",
+      "pass_": true,
+      "actual": {
+        "tag": "FLT-SEMANTICS",
+        "role": null,
+        "label": null
+      }
+    },
+    {
+      "run": "candidate-reduce-reject",
+      "name": "closed pointer exact callback",
+      "pass_": true,
+      "actual": [
+        [
+          "alpha",
+          "beta"
+        ],
+        [
+          "alpha",
+          "gamma"
+        ],
+        [
+          "beta",
+          "gamma"
+        ]
+      ]
+    },
+    {
+      "run": "candidate-reduce-reject",
+      "name": "closed pointer owner result",
+      "pass_": true,
+      "actual": [
+        "alpha",
+        "beta",
+        "gamma"
+      ]
+    },
+    {
+      "run": "candidate-reduce-reject",
+      "name": "closed pointer rendered chips",
+      "pass_": true,
+      "actual": [
+        "Remove Alpha",
+        "Remove Beta",
+        "Remove Gamma"
+      ]
+    },
+    {
+      "run": "candidate-reduce-reject",
+      "name": "closed pointer actual query",
+      "pass_": true,
+      "actual": [
+        {
+          "tag": "INPUT",
+          "value": ""
+        }
+      ]
+    },
+    {
+      "run": "candidate-reduce-reject",
+      "name": "closed pointer source focus expectation",
+      "pass_": false,
+      "actual": {
+        "tag": "FLT-SEMANTICS",
+        "role": "button",
+        "label": null
+      }
+    },
+    {
+      "run": "candidate-reduce-reject",
+      "name": "closed pointer source popup expectation",
+      "pass_": false,
+      "actual": false
+    },
+    {
+      "run": "source-no-preference-accept",
+      "name": "disabled pointer preserves value",
+      "pass_": true,
+      "actual": [
+        "beta"
+      ]
+    },
+    {
+      "run": "source-no-preference-accept",
+      "name": "disabled pointer preserves calls",
+      "pass_": true,
+      "actual": [
+        [
+          "alpha",
+          "beta"
+        ],
+        [
+          "beta"
+        ]
+      ]
+    },
+    {
+      "run": "source-no-preference-accept",
+      "name": "disabled pointer preserves query",
+      "pass_": true,
+      "actual": ""
+    },
+    {
+      "run": "source-no-preference-accept",
+      "name": "disabled pointer preserves chips",
+      "pass_": true,
+      "actual": [
+        "Remove Beta"
+      ]
+    },
+    {
+      "run": "source-no-preference-accept",
+      "name": "disabled pointer popup remains open",
+      "pass_": true,
+      "actual": "- paragraph: Supplemental MultiSelect accept owner\n- text: Beta\n- button \"Remove Beta\"\n- combobox \"Search options\" [expanded]\n- listbox \"Options\":\n  - option \"Alpha\"\n  - option \"Disabled\" [disabled]\n  - option \"Beta\" [selected]\n  - option \"Gamma\"\n  - option \"Delta\""
+    },
+    {
+      "run": "source-no-preference-accept",
+      "name": "disabled pointer actual empty query",
+      "pass_": true,
+      "actual": [
+        {
+          "tag": "INPUT",
+          "value": ""
+        }
+      ]
+    },
+    {
+      "run": "source-no-preference-accept",
+      "name": "disabled pointer native focus observation",
+      "pass_": true,
+      "actual": {
+        "tag": "BODY",
+        "role": null,
+        "label": null
+      }
+    },
+    {
+      "run": "source-no-preference-reject",
+      "name": "disabled pointer preserves value",
+      "pass_": true,
+      "actual": [
+        "alpha",
+        "beta",
+        "gamma"
+      ]
+    },
+    {
+      "run": "source-no-preference-reject",
+      "name": "disabled pointer preserves calls",
+      "pass_": true,
+      "actual": [
+        [
+          "alpha",
+          "beta"
+        ],
+        [
+          "beta",
+          "gamma"
+        ]
+      ]
+    },
+    {
+      "run": "source-no-preference-reject",
+      "name": "disabled pointer preserves query",
+      "pass_": true,
+      "actual": ""
+    },
+    {
+      "run": "source-no-preference-reject",
+      "name": "disabled pointer preserves chips",
+      "pass_": true,
+      "actual": [
+        "Remove Alpha",
+        "Remove Beta",
+        "Remove Gamma"
+      ]
+    },
+    {
+      "run": "source-no-preference-reject",
+      "name": "disabled pointer popup remains open",
+      "pass_": true,
+      "actual": "- paragraph: Supplemental MultiSelect reject owner\n- text: Alpha\n- button \"Remove Alpha\"\n- text: Beta\n- button \"Remove Beta\"\n- text: Gamma\n- button \"Remove Gamma\"\n- combobox \"Search options\" [expanded]\n- listbox \"Options\":\n  - option \"Alpha\" [selected]\n  - option \"Disabled\" [disabled]\n  - option \"Beta\" [selected]\n  - option \"Gamma\" [selected]\n  - option \"Delta\""
+    },
+    {
+      "run": "source-no-preference-reject",
+      "name": "disabled pointer actual empty query",
+      "pass_": true,
+      "actual": [
+        {
+          "tag": "INPUT",
+          "value": ""
+        }
+      ]
+    },
+    {
+      "run": "source-no-preference-reject",
+      "name": "disabled pointer native focus observation",
+      "pass_": true,
+      "actual": {
+        "tag": "BODY",
+        "role": null,
+        "label": null
+      }
+    },
+    {
+      "run": "source-no-preference-reject",
+      "name": "closed pointer exact callback",
+      "pass_": true,
+      "actual": [
+        [
+          "alpha",
+          "beta"
+        ],
+        [
+          "beta",
+          "gamma"
+        ],
+        [
+          "alpha",
+          "gamma"
+        ],
+        [
+          "beta",
+          "gamma"
+        ]
+      ]
+    },
+    {
+      "run": "source-no-preference-reject",
+      "name": "closed pointer owner result",
+      "pass_": true,
+      "actual": [
+        "alpha",
+        "beta",
+        "gamma"
+      ]
+    },
+    {
+      "run": "source-no-preference-reject",
+      "name": "closed pointer rendered chips",
+      "pass_": true,
+      "actual": [
+        "Remove Alpha",
+        "Remove Beta",
+        "Remove Gamma"
+      ]
+    },
+    {
+      "run": "source-no-preference-reject",
+      "name": "closed pointer actual query",
+      "pass_": true,
+      "actual": [
+        {
+          "tag": "INPUT",
+          "value": ""
+        }
+      ]
+    },
+    {
+      "run": "source-no-preference-reject",
+      "name": "closed pointer source focus expectation",
+      "pass_": true,
+      "actual": {
+        "tag": "INPUT",
+        "role": "combobox",
+        "label": "Search options",
+        "value": ""
+      }
+    },
+    {
+      "run": "source-no-preference-reject",
+      "name": "closed pointer source popup expectation",
+      "pass_": true,
+      "actual": true
+    },
+    {
+      "run": "source-reduce-accept",
+      "name": "disabled pointer preserves value",
+      "pass_": true,
+      "actual": [
+        "beta"
+      ]
+    },
+    {
+      "run": "source-reduce-accept",
+      "name": "disabled pointer preserves calls",
+      "pass_": true,
+      "actual": [
+        [
+          "alpha",
+          "beta"
+        ],
+        [
+          "beta"
+        ]
+      ]
+    },
+    {
+      "run": "source-reduce-accept",
+      "name": "disabled pointer preserves query",
+      "pass_": true,
+      "actual": ""
+    },
+    {
+      "run": "source-reduce-accept",
+      "name": "disabled pointer preserves chips",
+      "pass_": true,
+      "actual": [
+        "Remove Beta"
+      ]
+    },
+    {
+      "run": "source-reduce-accept",
+      "name": "disabled pointer popup remains open",
+      "pass_": true,
+      "actual": "- paragraph: Supplemental MultiSelect accept owner\n- text: Beta\n- button \"Remove Beta\"\n- combobox \"Search options\" [expanded]\n- listbox \"Options\":\n  - option \"Alpha\"\n  - option \"Disabled\" [disabled]\n  - option \"Beta\" [selected]\n  - option \"Gamma\"\n  - option \"Delta\""
+    },
+    {
+      "run": "source-reduce-accept",
+      "name": "disabled pointer actual empty query",
+      "pass_": true,
+      "actual": [
+        {
+          "tag": "INPUT",
+          "value": ""
+        }
+      ]
+    },
+    {
+      "run": "source-reduce-accept",
+      "name": "disabled pointer native focus observation",
+      "pass_": true,
+      "actual": {
+        "tag": "BODY",
+        "role": null,
+        "label": null
+      }
+    },
+    {
+      "run": "source-reduce-reject",
+      "name": "disabled pointer preserves value",
+      "pass_": true,
+      "actual": [
+        "alpha",
+        "beta",
+        "gamma"
+      ]
+    },
+    {
+      "run": "source-reduce-reject",
+      "name": "disabled pointer preserves calls",
+      "pass_": true,
+      "actual": [
+        [
+          "alpha",
+          "beta"
+        ],
+        [
+          "beta",
+          "gamma"
+        ]
+      ]
+    },
+    {
+      "run": "source-reduce-reject",
+      "name": "disabled pointer preserves query",
+      "pass_": true,
+      "actual": ""
+    },
+    {
+      "run": "source-reduce-reject",
+      "name": "disabled pointer preserves chips",
+      "pass_": true,
+      "actual": [
+        "Remove Alpha",
+        "Remove Beta",
+        "Remove Gamma"
+      ]
+    },
+    {
+      "run": "source-reduce-reject",
+      "name": "disabled pointer popup remains open",
+      "pass_": true,
+      "actual": "- paragraph: Supplemental MultiSelect reject owner\n- text: Alpha\n- button \"Remove Alpha\"\n- text: Beta\n- button \"Remove Beta\"\n- text: Gamma\n- button \"Remove Gamma\"\n- combobox \"Search options\" [expanded]\n- listbox \"Options\":\n  - option \"Alpha\" [selected]\n  - option \"Disabled\" [disabled]\n  - option \"Beta\" [selected]\n  - option \"Gamma\" [selected]\n  - option \"Delta\""
+    },
+    {
+      "run": "source-reduce-reject",
+      "name": "disabled pointer actual empty query",
+      "pass_": true,
+      "actual": [
+        {
+          "tag": "INPUT",
+          "value": ""
+        }
+      ]
+    },
+    {
+      "run": "source-reduce-reject",
+      "name": "disabled pointer native focus observation",
+      "pass_": true,
+      "actual": {
+        "tag": "BODY",
+        "role": null,
+        "label": null
+      }
+    },
+    {
+      "run": "source-reduce-reject",
+      "name": "closed pointer exact callback",
+      "pass_": true,
+      "actual": [
+        [
+          "alpha",
+          "beta"
+        ],
+        [
+          "beta",
+          "gamma"
+        ],
+        [
+          "alpha",
+          "gamma"
+        ],
+        [
+          "beta",
+          "gamma"
+        ]
+      ]
+    },
+    {
+      "run": "source-reduce-reject",
+      "name": "closed pointer owner result",
+      "pass_": true,
+      "actual": [
+        "alpha",
+        "beta",
+        "gamma"
+      ]
+    },
+    {
+      "run": "source-reduce-reject",
+      "name": "closed pointer rendered chips",
+      "pass_": true,
+      "actual": [
+        "Remove Alpha",
+        "Remove Beta",
+        "Remove Gamma"
+      ]
+    },
+    {
+      "run": "source-reduce-reject",
+      "name": "closed pointer actual query",
+      "pass_": true,
+      "actual": [
+        {
+          "tag": "INPUT",
+          "value": ""
+        }
+      ]
+    },
+    {
+      "run": "source-reduce-reject",
+      "name": "closed pointer source focus expectation",
+      "pass_": true,
+      "actual": {
+        "tag": "INPUT",
+        "role": "combobox",
+        "label": "Search options",
+        "value": ""
+      }
+    },
+    {
+      "run": "source-reduce-reject",
+      "name": "closed pointer source popup expectation",
+      "pass_": true,
+      "actual": true
+    }
+  ],
+  "failures": [
+    {
+      "run": "candidate-no-preference-accept",
+      "name": "closed pointer source focus expectation",
+      "pass_": false,
+      "actual": {
+        "tag": "FLUTTER-VIEW",
+        "role": null,
+        "label": null
+      }
+    },
+    {
+      "run": "candidate-no-preference-accept",
+      "name": "closed pointer source popup expectation",
+      "pass_": false,
+      "actual": false
+    },
+    {
+      "run": "candidate-no-preference-reject",
+      "name": "closed pointer source focus expectation",
+      "pass_": false,
+      "actual": {
+        "tag": "FLUTTER-VIEW",
+        "role": null,
+        "label": null
+      }
+    },
+    {
+      "run": "candidate-no-preference-reject",
+      "name": "closed pointer source popup expectation",
+      "pass_": false,
+      "actual": false
+    },
+    {
+      "run": "candidate-reduce-accept",
+      "name": "closed pointer source focus expectation",
+      "pass_": false,
+      "actual": {
+        "tag": "FLUTTER-VIEW",
+        "role": null,
+        "label": null
+      }
+    },
+    {
+      "run": "candidate-reduce-accept",
+      "name": "closed pointer source popup expectation",
+      "pass_": false,
+      "actual": false
+    },
+    {
+      "run": "candidate-reduce-reject",
+      "name": "closed pointer source focus expectation",
+      "pass_": false,
+      "actual": {
+        "tag": "FLT-SEMANTICS",
+        "role": "button",
+        "label": null
+      }
+    },
+    {
+      "run": "candidate-reduce-reject",
+      "name": "closed pointer source popup expectation",
+      "pass_": false,
+      "actual": false
+    }
+  ]
+}

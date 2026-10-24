@@ -9,10 +9,10 @@ import '../explorer/widgets.dart';
 /// source append with inline markers, then a Replay control. A second section
 /// shows [BeuiCitationStack] and [BeuiCitationList], the compact forms
 /// [BeuiCitations] composes internally.
-Widget citationsDemo(BuildContext context) => const Column(
-  mainAxisSize: MainAxisSize.min,
-  children: [_CitationsDemo(), SizedBox(height: 56), _CompactCitationsDemo()],
-);
+Widget citationsDemo(BuildContext context) =>
+    Uri.base.queryParameters['example'] == 'api-specimens'
+    ? const _CompactCitationsDemo()
+    : const _CitationsDemo();
 
 const _items = <BeuiCitationItem>[
   BeuiCitationItem(

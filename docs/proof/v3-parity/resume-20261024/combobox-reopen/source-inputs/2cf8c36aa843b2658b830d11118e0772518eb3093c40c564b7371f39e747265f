@@ -1,0 +1,9 @@
+import { animations } from '../../../motion/features/animations.mjs';
+import { drag } from '../../../motion/features/drag.mjs';
+import { gestureAnimations } from '../../../motion/features/gestures.mjs';
+import { layout } from '../../../motion/features/layout.mjs';
+
+const featureBundle = /* @__PURE__ */ Object.assign({}, animations, gestureAnimations, drag, layout);
+
+export { featureBundle };
+//# sourceMappingURL=feature-bundle.mjs.map

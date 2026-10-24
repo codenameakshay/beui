@@ -1,0 +1,25 @@
+Resolving dependencies...
+Downloading packages...
+  equatable 2.1.0 (3.0.0 available)
+  material_color_utilities 0.13.0 (0.13.1 available)
+  test_api 0.7.12 (0.7.15 available)
+  xml 7.0.1 (7.1.0 available)
+Got dependencies!
+4 packages have newer versions incompatible with dependency constraints.
+Try `flutter pub outdated` for more information.
+Resolving dependencies in `./example`...
+Downloading packages...
+Got dependencies in `./example`.
+00:00 +0: loading /Users/codenameakshay/.t3/worktrees/beui/t3-df4b55e2/test/charts/returns_calendar_native_regression_test.dart
+00:00 +0: reverse without grid replacement
+00:00 +1: whole calendar teardown
+00:01 +2: grid replacement does not delete live registration
+00:01 +3: global keyed calendar reparent preserves focus
+00:01 +4: duplicate years render
+00:01 +5: outside focus is not stolen on row replacement
+00:02 +6: year identity and missing months, reduce=false
+00:02 +7: empty calendar does not restore fixture focus history, reduce=false
+00:02 +8: year identity and missing months, reduce=true
+00:02 +9: empty calendar does not restore fixture focus history, reduce=true
+00:02 +10: reordering preserves month and annual focus identities and index selection
+00:03 +11: All tests passed!

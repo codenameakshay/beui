@@ -1,0 +1,1630 @@
+{
+  "phase": "after",
+  "slug": "file-diff",
+  "theme": "dark",
+  "motion": "reduced",
+  "sourceRevision": "a76e57c9bbc2837e96420b2610e9c82a3271bb05",
+  "liveRevision": "unknown",
+  "expectedJs": "b5bff09760d5e8da3cb1a1c1cda0b03db51eec49a16aa5a08cadf010ead34311",
+  "captureScriptSha256": "bde449fa2d9d78a79e549478a2d161b18ea31521609e5290d3a216eca45752e2",
+  "loaded": [
+    {
+      "url": "http://127.0.0.1:18117/agents-round3-after/flutter_bootstrap.js",
+      "sha256": "b28952634dcf5a5a4467bfb7f193dcc500332191d0ab531ccc6033f1f2d2170a"
+    },
+    {
+      "url": "https://www.gstatic.com/flutter-canvaskit/5d531788691ec3404cac0cee66ead4007b177363/chromium/canvaskit.js",
+      "sha256": "6018b12bd8ed37e6952eee72d59c1cf7ad707ccdb74a0a45190010f77edd9068"
+    },
+    {
+      "url": "http://127.0.0.1:18117/agents-round3-after/main.dart.js",
+      "sha256": "b5bff09760d5e8da3cb1a1c1cda0b03db51eec49a16aa5a08cadf010ead34311"
+    }
+  ],
+  "errors": [],
+  "snapshots": [
+    {
+      "state": "complete-collapsed",
+      "stage": {
+        "x": 464,
+        "y": 350,
+        "width": 512,
+        "height": 300
+      },
+      "aria": "- group \"Capture stage width 752 height 1000 reduced true palette source-default-a76e57c9\":\n  - button \"File changes 2 additions, 1 deletions. Expand file diff src/runner.ts +2 −1 Changes applied\"\n  - button \"Replay\"",
+      "controls": [
+        {
+          "tag": "FLT-SEMANTICS",
+          "role": "button",
+          "label": "File changes\n2 additions, 1 deletions. Expand file diff\nsrc/runner.ts\n+2\n−1\nChanges applied",
+          "checked": null,
+          "disabled": null,
+          "bounds": {
+            "x": 464,
+            "y": 350,
+            "width": 512,
+            "height": 36,
+            "top": 350,
+            "right": 976,
+            "bottom": 386,
+            "left": 464
+          },
+          "font": "16px Times",
+          "background": "rgba(0, 0, 0, 0)",
+          "color": "rgba(0, 0, 0, 0)",
+          "focused": true
+        },
+        {
+          "tag": "FLT-SEMANTICS",
+          "role": "button",
+          "label": "Replay",
+          "checked": null,
+          "disabled": null,
+          "bounds": {
+            "x": 464,
+            "y": 633,
+            "width": 74.46875,
+            "height": 17,
+            "top": 633,
+            "right": 538.46875,
+            "bottom": 650,
+            "left": 464
+          },
+          "font": "16px Times",
+          "background": "rgba(0, 0, 0, 0)",
+          "color": "rgba(0, 0, 0, 0)",
+          "focused": false
+        }
+      ],
+      "requestedMs": 18.42133399999966,
+      "receivedMs": 53.51795899999979,
+      "sha256": "df4daf2ed1f0a0a6c8627642b070806d707a24e2cca2e3a1e081c8b1d9b5dd45",
+      "file": "complete-collapsed.png"
+    },
+    {
+      "state": "complete-expanded",
+      "stage": {
+        "x": 464,
+        "y": 350,
+        "width": 512,
+        "height": 300
+      },
+      "aria": "- group \"Capture stage width 752 height 1000 reduced true palette source-default-a76e57c9\":\n  - button \"File changes 2 additions, 1 deletions. Collapse file diff src/runner.ts +2 −1 Changes applied\" [expanded]:\n    - group:\n      - group: \"18 18 export async function runTask() { 19 − return execute(task); 19 + const result = await execute(task); 20 + return normalize(result); 20 21 }\"\n    - button \"Copy diff\"\n  - button \"Replay\"",
+      "controls": [
+        {
+          "tag": "FLT-SEMANTICS",
+          "role": "button",
+          "label": "File changes\n2 additions, 1 deletions. Collapse file diff\nsrc/runner.ts\n+2\n−1\nChanges applied",
+          "checked": null,
+          "disabled": null,
+          "bounds": {
+            "x": 464,
+            "y": 350,
+            "width": 512,
+            "height": 180,
+            "top": 350,
+            "right": 976,
+            "bottom": 530,
+            "left": 464
+          },
+          "font": "16px Times",
+          "background": "rgba(0, 0, 0, 0)",
+          "color": "rgba(0, 0, 0, 0)",
+          "focused": true
+        },
+        {
+          "tag": "FLT-SEMANTICS",
+          "role": "button",
+          "label": "Copy diff",
+          "checked": null,
+          "disabled": null,
+          "bounds": {
+            "x": 940,
+            "y": 496,
+            "width": 28,
+            "height": 28,
+            "top": 496,
+            "right": 968,
+            "bottom": 524,
+            "left": 940
+          },
+          "font": "16px Times",
+          "background": "rgba(0, 0, 0, 0)",
+          "color": "rgba(0, 0, 0, 0)",
+          "focused": false
+        },
+        {
+          "tag": "FLT-SEMANTICS",
+          "role": "button",
+          "label": "Replay",
+          "checked": null,
+          "disabled": null,
+          "bounds": {
+            "x": 464,
+            "y": 633,
+            "width": 74.46875,
+            "height": 17,
+            "top": 633,
+            "right": 538.46875,
+            "bottom": 650,
+            "left": 464
+          },
+          "font": "16px Times",
+          "background": "rgba(0, 0, 0, 0)",
+          "color": "rgba(0, 0, 0, 0)",
+          "focused": false
+        }
+      ],
+      "requestedMs": 454.7054589999998,
+      "receivedMs": 487.7156249999998,
+      "sha256": "fae8de4d39d67413d818ad97fe78dcba45914b33c8027938f40cf2e1e5e3f10e",
+      "file": "complete-expanded.png"
+    },
+    {
+      "state": "copied",
+      "stage": {
+        "x": 464,
+        "y": 350,
+        "width": 512,
+        "height": 300
+      },
+      "aria": "- text: Copied\n- group \"Capture stage width 752 height 1000 reduced true palette source-default-a76e57c9\":\n  - button \"File changes 2 additions, 1 deletions. Collapse file diff src/runner.ts +2 −1 Changes applied\" [expanded]:\n    - group:\n      - group: \"18 18 export async function runTask() { 19 − return execute(task); 19 + const result = await execute(task); 20 + return normalize(result); 20 21 }\"\n    - button \"Copied\"\n  - button \"Replay\"",
+      "controls": [
+        {
+          "tag": "FLT-SEMANTICS",
+          "role": "button",
+          "label": "File changes\n2 additions, 1 deletions. Collapse file diff\nsrc/runner.ts\n+2\n−1\nChanges applied",
+          "checked": null,
+          "disabled": null,
+          "bounds": {
+            "x": 464,
+            "y": 350,
+            "width": 512,
+            "height": 180,
+            "top": 350,
+            "right": 976,
+            "bottom": 530,
+            "left": 464
+          },
+          "font": "16px Times",
+          "background": "rgba(0, 0, 0, 0)",
+          "color": "rgba(0, 0, 0, 0)",
+          "focused": false
+        },
+        {
+          "tag": "FLT-SEMANTICS",
+          "role": "button",
+          "label": "Copied",
+          "checked": null,
+          "disabled": null,
+          "bounds": {
+            "x": 940,
+            "y": 496,
+            "width": 28,
+            "height": 28,
+            "top": 496,
+            "right": 968,
+            "bottom": 524,
+            "left": 940
+          },
+          "font": "16px Times",
+          "background": "rgba(0, 0, 0, 0)",
+          "color": "rgba(0, 0, 0, 0)",
+          "focused": true
+        },
+        {
+          "tag": "FLT-SEMANTICS",
+          "role": "button",
+          "label": "Replay",
+          "checked": null,
+          "disabled": null,
+          "bounds": {
+            "x": 464,
+            "y": 633,
+            "width": 74.46875,
+            "height": 17,
+            "top": 633,
+            "right": 538.46875,
+            "bottom": 650,
+            "left": 464
+          },
+          "font": "16px Times",
+          "background": "rgba(0, 0, 0, 0)",
+          "color": "rgba(0, 0, 0, 0)",
+          "focused": false
+        }
+      ],
+      "requestedMs": 616.9998340000002,
+      "receivedMs": 654.427917,
+      "sha256": "94d9358111a01704a6c931eca4ea490092f3717647bbaa16bb7628f450e09199",
+      "file": "copied.png"
+    },
+    {
+      "state": "row-1",
+      "stage": {
+        "x": 464,
+        "y": 350,
+        "width": 512,
+        "height": 300
+      },
+      "aria": "- group \"Capture stage width 752 height 1000 reduced true palette source-default-a76e57c9\":\n  - button \"File changes 0 additions, 0 deletions. Collapse file diff src/runner.ts Applying changes\" [expanded]:\n    - group:\n      - group: \"18 18 export async function runTask() {\"\n    - button \"Copy diff\"\n  - button \"Replay\"",
+      "controls": [
+        {
+          "tag": "FLT-SEMANTICS",
+          "role": "button",
+          "label": "File changes\n0 additions, 0 deletions. Collapse file diff\nsrc/runner.ts\nApplying changes",
+          "checked": null,
+          "disabled": null,
+          "bounds": {
+            "x": 464,
+            "y": 350,
+            "width": 512,
+            "height": 100,
+            "top": 350,
+            "right": 976,
+            "bottom": 450,
+            "left": 464
+          },
+          "font": "16px Times",
+          "background": "rgba(0, 0, 0, 0)",
+          "color": "rgba(0, 0, 0, 0)",
+          "focused": false
+        },
+        {
+          "tag": "FLT-SEMANTICS",
+          "role": "button",
+          "label": "Copy diff",
+          "checked": null,
+          "disabled": null,
+          "bounds": {
+            "x": 940,
+            "y": 416,
+            "width": 28,
+            "height": 28,
+            "top": 416,
+            "right": 968,
+            "bottom": 444,
+            "left": 940
+          },
+          "font": "16px Times",
+          "background": "rgba(0, 0, 0, 0)",
+          "color": "rgba(0, 0, 0, 0)",
+          "focused": false
+        },
+        {
+          "tag": "FLT-SEMANTICS",
+          "role": "button",
+          "label": "Replay",
+          "checked": null,
+          "disabled": null,
+          "bounds": {
+            "x": 464,
+            "y": 633,
+            "width": 74.46875,
+            "height": 17,
+            "top": 633,
+            "right": 538.46875,
+            "bottom": 650,
+            "left": 464
+          },
+          "font": "16px Times",
+          "background": "rgba(0, 0, 0, 0)",
+          "color": "rgba(0, 0, 0, 0)",
+          "focused": true
+        }
+      ],
+      "requestedMs": 1010.8576670000002,
+      "receivedMs": 1048.055209,
+      "sha256": "09af837e608b257dc15fe4b213f87cc588c2162f67c951f31d308e34306cbfb3",
+      "file": "row-1.png"
+    },
+    {
+      "state": "row-2",
+      "stage": {
+        "x": 464,
+        "y": 350,
+        "width": 512,
+        "height": 300
+      },
+      "aria": "- text: File changes 0 additions, 1 deletions. Collapse file diff src/runner.ts −1 Applying changes\n- group \"Capture stage width 752 height 1000 reduced true palette source-default-a76e57c9\":\n  - button \"File changes 0 additions, 1 deletions. Collapse file diff src/runner.ts −1 Applying changes\" [expanded]:\n    - group:\n      - group: \"18 18 export async function runTask() { 19 − return execute(task);\"\n    - button \"Copy diff\"\n  - button \"Replay\"",
+      "controls": [
+        {
+          "tag": "FLT-SEMANTICS",
+          "role": "button",
+          "label": "File changes\n0 additions, 1 deletions. Collapse file diff\nsrc/runner.ts\n−1\nApplying changes",
+          "checked": null,
+          "disabled": null,
+          "bounds": {
+            "x": 464,
+            "y": 350,
+            "width": 512,
+            "height": 120,
+            "top": 350,
+            "right": 976,
+            "bottom": 470,
+            "left": 464
+          },
+          "font": "16px Times",
+          "background": "rgba(0, 0, 0, 0)",
+          "color": "rgba(0, 0, 0, 0)",
+          "focused": false
+        },
+        {
+          "tag": "FLT-SEMANTICS",
+          "role": "button",
+          "label": "Copy diff",
+          "checked": null,
+          "disabled": null,
+          "bounds": {
+            "x": 940,
+            "y": 436,
+            "width": 28,
+            "height": 28,
+            "top": 436,
+            "right": 968,
+            "bottom": 464,
+            "left": 940
+          },
+          "font": "16px Times",
+          "background": "rgba(0, 0, 0, 0)",
+          "color": "rgba(0, 0, 0, 0)",
+          "focused": false
+        },
+        {
+          "tag": "FLT-SEMANTICS",
+          "role": "button",
+          "label": "Replay",
+          "checked": null,
+          "disabled": null,
+          "bounds": {
+            "x": 464,
+            "y": 633,
+            "width": 74.46875,
+            "height": 17,
+            "top": 633,
+            "right": 538.46875,
+            "bottom": 650,
+            "left": 464
+          },
+          "font": "16px Times",
+          "background": "rgba(0, 0, 0, 0)",
+          "color": "rgba(0, 0, 0, 0)",
+          "focused": true
+        }
+      ],
+      "requestedMs": 1361.1327919999994,
+      "receivedMs": 1398.3226669999995,
+      "sha256": "58590745b95073e190ca2b749a2e9240823899e14ea0a753fd288de4be156a57",
+      "file": "row-2.png"
+    },
+    {
+      "state": "row-3",
+      "stage": {
+        "x": 464,
+        "y": 350,
+        "width": 512,
+        "height": 300
+      },
+      "aria": "- text: File changes 1 additions, 1 deletions. Collapse file diff src/runner.ts +1 −1 Applying changes\n- group \"Capture stage width 752 height 1000 reduced true palette source-default-a76e57c9\":\n  - button \"File changes 1 additions, 1 deletions. Collapse file diff src/runner.ts +1 −1 Applying changes\" [expanded]:\n    - group:\n      - group: \"18 18 export async function runTask() { 19 − return execute(task); 19 + const result = await execute(task);\"\n    - button \"Copy diff\"\n  - button \"Replay\"",
+      "controls": [
+        {
+          "tag": "FLT-SEMANTICS",
+          "role": "button",
+          "label": "File changes\n1 additions, 1 deletions. Collapse file diff\nsrc/runner.ts\n+1\n−1\nApplying changes",
+          "checked": null,
+          "disabled": null,
+          "bounds": {
+            "x": 464,
+            "y": 350,
+            "width": 512,
+            "height": 140,
+            "top": 350,
+            "right": 976,
+            "bottom": 490,
+            "left": 464
+          },
+          "font": "16px Times",
+          "background": "rgba(0, 0, 0, 0)",
+          "color": "rgba(0, 0, 0, 0)",
+          "focused": false
+        },
+        {
+          "tag": "FLT-SEMANTICS",
+          "role": "button",
+          "label": "Copy diff",
+          "checked": null,
+          "disabled": null,
+          "bounds": {
+            "x": 940,
+            "y": 456,
+            "width": 28,
+            "height": 28,
+            "top": 456,
+            "right": 968,
+            "bottom": 484,
+            "left": 940
+          },
+          "font": "16px Times",
+          "background": "rgba(0, 0, 0, 0)",
+          "color": "rgba(0, 0, 0, 0)",
+          "focused": false
+        },
+        {
+          "tag": "FLT-SEMANTICS",
+          "role": "button",
+          "label": "Replay",
+          "checked": null,
+          "disabled": null,
+          "bounds": {
+            "x": 464,
+            "y": 633,
+            "width": 74.46875,
+            "height": 17,
+            "top": 633,
+            "right": 538.46875,
+            "bottom": 650,
+            "left": 464
+          },
+          "font": "16px Times",
+          "background": "rgba(0, 0, 0, 0)",
+          "color": "rgba(0, 0, 0, 0)",
+          "focused": true
+        }
+      ],
+      "requestedMs": 1725.222667,
+      "receivedMs": 1748.6219169999995,
+      "sha256": "6eb3f2598cd607995ad409349b6b807327166ebfa9031f5dff6fe38a606c6cb5",
+      "file": "row-3.png"
+    },
+    {
+      "state": "row-4",
+      "stage": {
+        "x": 464,
+        "y": 350,
+        "width": 512,
+        "height": 300
+      },
+      "aria": "- text: File changes 2 additions, 1 deletions. Collapse file diff src/runner.ts +2 −1 Applying changes\n- group \"Capture stage width 752 height 1000 reduced true palette source-default-a76e57c9\":\n  - button \"File changes 2 additions, 1 deletions. Collapse file diff src/runner.ts +2 −1 Applying changes\" [expanded]:\n    - group:\n      - group: \"18 18 export async function runTask() { 19 − return execute(task); 19 + const result = await execute(task); 20 + return normalize(result);\"\n    - button \"Copy diff\"\n  - button \"Replay\"",
+      "controls": [
+        {
+          "tag": "FLT-SEMANTICS",
+          "role": "button",
+          "label": "File changes\n2 additions, 1 deletions. Collapse file diff\nsrc/runner.ts\n+2\n−1\nApplying changes",
+          "checked": null,
+          "disabled": null,
+          "bounds": {
+            "x": 464,
+            "y": 350,
+            "width": 512,
+            "height": 160,
+            "top": 350,
+            "right": 976,
+            "bottom": 510,
+            "left": 464
+          },
+          "font": "16px Times",
+          "background": "rgba(0, 0, 0, 0)",
+          "color": "rgba(0, 0, 0, 0)",
+          "focused": false
+        },
+        {
+          "tag": "FLT-SEMANTICS",
+          "role": "button",
+          "label": "Copy diff",
+          "checked": null,
+          "disabled": null,
+          "bounds": {
+            "x": 940,
+            "y": 476,
+            "width": 28,
+            "height": 28,
+            "top": 476,
+            "right": 968,
+            "bottom": 504,
+            "left": 940
+          },
+          "font": "16px Times",
+          "background": "rgba(0, 0, 0, 0)",
+          "color": "rgba(0, 0, 0, 0)",
+          "focused": false
+        },
+        {
+          "tag": "FLT-SEMANTICS",
+          "role": "button",
+          "label": "Replay",
+          "checked": null,
+          "disabled": null,
+          "bounds": {
+            "x": 464,
+            "y": 633,
+            "width": 74.46875,
+            "height": 17,
+            "top": 633,
+            "right": 538.46875,
+            "bottom": 650,
+            "left": 464
+          },
+          "font": "16px Times",
+          "background": "rgba(0, 0, 0, 0)",
+          "color": "rgba(0, 0, 0, 0)",
+          "focused": true
+        }
+      ],
+      "requestedMs": 2091.8927089999997,
+      "receivedMs": 2115.934292,
+      "sha256": "aca358bd58e4ecc33ebbf61e7425b3fcefce4fc2f1f647c2f9b19a70d7b45589",
+      "file": "row-4.png"
+    },
+    {
+      "state": "row-5",
+      "stage": {
+        "x": 464,
+        "y": 350,
+        "width": 512,
+        "height": 300
+      },
+      "aria": "- group \"Capture stage width 752 height 1000 reduced true palette source-default-a76e57c9\":\n  - button \"File changes 2 additions, 1 deletions. Collapse file diff src/runner.ts +2 −1 Applying changes\" [expanded]:\n    - group:\n      - group: \"18 18 export async function runTask() { 19 − return execute(task); 19 + const result = await execute(task); 20 + return normalize(result); 20 21 }\"\n    - button \"Copy diff\"\n  - button \"Replay\"",
+      "controls": [
+        {
+          "tag": "FLT-SEMANTICS",
+          "role": "button",
+          "label": "File changes\n2 additions, 1 deletions. Collapse file diff\nsrc/runner.ts\n+2\n−1\nApplying changes",
+          "checked": null,
+          "disabled": null,
+          "bounds": {
+            "x": 464,
+            "y": 350,
+            "width": 512,
+            "height": 180,
+            "top": 350,
+            "right": 976,
+            "bottom": 530,
+            "left": 464
+          },
+          "font": "16px Times",
+          "background": "rgba(0, 0, 0, 0)",
+          "color": "rgba(0, 0, 0, 0)",
+          "focused": false
+        },
+        {
+          "tag": "FLT-SEMANTICS",
+          "role": "button",
+          "label": "Copy diff",
+          "checked": null,
+          "disabled": null,
+          "bounds": {
+            "x": 940,
+            "y": 496,
+            "width": 28,
+            "height": 28,
+            "top": 496,
+            "right": 968,
+            "bottom": 524,
+            "left": 940
+          },
+          "font": "16px Times",
+          "background": "rgba(0, 0, 0, 0)",
+          "color": "rgba(0, 0, 0, 0)",
+          "focused": false
+        },
+        {
+          "tag": "FLT-SEMANTICS",
+          "role": "button",
+          "label": "Replay",
+          "checked": null,
+          "disabled": null,
+          "bounds": {
+            "x": 464,
+            "y": 633,
+            "width": 74.46875,
+            "height": 17,
+            "top": 633,
+            "right": 538.46875,
+            "bottom": 650,
+            "left": 464
+          },
+          "font": "16px Times",
+          "background": "rgba(0, 0, 0, 0)",
+          "color": "rgba(0, 0, 0, 0)",
+          "focused": true
+        }
+      ],
+      "requestedMs": 2442.3846249999997,
+      "receivedMs": 2465.950834,
+      "sha256": "e0034f665544abea54b0b43abbfa7b18e72184957d1e9f44707677d665a01b71",
+      "file": "row-5.png"
+    },
+    {
+      "state": "stream-complete",
+      "stage": {
+        "x": 464,
+        "y": 350,
+        "width": 512,
+        "height": 300
+      },
+      "aria": "- group \"Capture stage width 752 height 1000 reduced true palette source-default-a76e57c9\":\n  - button \"File changes 2 additions, 1 deletions. Expand file diff src/runner.ts +2 −1 Changes applied\"\n  - button \"Replay\"",
+      "controls": [
+        {
+          "tag": "FLT-SEMANTICS",
+          "role": "button",
+          "label": "File changes\n2 additions, 1 deletions. Expand file diff\nsrc/runner.ts\n+2\n−1\nChanges applied",
+          "checked": null,
+          "disabled": null,
+          "bounds": {
+            "x": 464,
+            "y": 350,
+            "width": 512,
+            "height": 36,
+            "top": 350,
+            "right": 976,
+            "bottom": 386,
+            "left": 464
+          },
+          "font": "16px Times",
+          "background": "rgba(0, 0, 0, 0)",
+          "color": "rgba(0, 0, 0, 0)",
+          "focused": false
+        },
+        {
+          "tag": "FLT-SEMANTICS",
+          "role": "button",
+          "label": "Replay",
+          "checked": null,
+          "disabled": null,
+          "bounds": {
+            "x": 464,
+            "y": 633,
+            "width": 74.46875,
+            "height": 17,
+            "top": 633,
+            "right": 538.46875,
+            "bottom": 650,
+            "left": 464
+          },
+          "font": "16px Times",
+          "background": "rgba(0, 0, 0, 0)",
+          "color": "rgba(0, 0, 0, 0)",
+          "focused": true
+        }
+      ],
+      "requestedMs": 3307.8120839999992,
+      "receivedMs": 3331.8446669999994,
+      "sha256": "df4daf2ed1f0a0a6c8627642b070806d707a24e2cca2e3a1e081c8b1d9b5dd45",
+      "file": "stream-complete.png"
+    }
+  ],
+  "frames": [
+    {
+      "file": "frames/000000.png",
+      "requestedMs": 0.006083999999646039,
+      "receivedMs": 17.046166999999514,
+      "sha256": "df4daf2ed1f0a0a6c8627642b070806d707a24e2cca2e3a1e081c8b1d9b5dd45"
+    },
+    {
+      "file": "frames/000001.png",
+      "requestedMs": 17.691749999999956,
+      "receivedMs": 47.958834000000024,
+      "sha256": "df4daf2ed1f0a0a6c8627642b070806d707a24e2cca2e3a1e081c8b1d9b5dd45"
+    },
+    {
+      "file": "frames/000002.png",
+      "requestedMs": 48.396708999999646,
+      "receivedMs": 81.85854199999994,
+      "sha256": "df4daf2ed1f0a0a6c8627642b070806d707a24e2cca2e3a1e081c8b1d9b5dd45"
+    },
+    {
+      "file": "frames/000003.png",
+      "requestedMs": 82.44758399999955,
+      "receivedMs": 118.3003749999998,
+      "sha256": "20eb74d78f41048331fc3d571ff1268bca4184a0876a3314d60b06e9e059ba0f"
+    },
+    {
+      "file": "frames/000004.png",
+      "requestedMs": 118.8008749999999,
+      "receivedMs": 152.38158399999975,
+      "sha256": "8edc60b06b940fb0b84595adb33121e977c7ad73b40a5b60af4768db90f732b0"
+    },
+    {
+      "file": "frames/000005.png",
+      "requestedMs": 152.67391700000007,
+      "receivedMs": 181.32245899999998,
+      "sha256": "3522503054838e790ddca627069c5f39bc6ffd88a191e86d07c82251c7da1000"
+    },
+    {
+      "file": "frames/000006.png",
+      "requestedMs": 181.78912499999933,
+      "receivedMs": 215.60916699999962,
+      "sha256": "a4590c17a027932c1925be3d315f9d5a74f4475543999ae4ccccc6463e1febfd"
+    },
+    {
+      "file": "frames/000007.png",
+      "requestedMs": 216.06966699999975,
+      "receivedMs": 248.3451669999995,
+      "sha256": "b4bf4b13a26902db595d3028bbba0313627a5058984b16462cf5b68d5b25eaa5"
+    },
+    {
+      "file": "frames/000008.png",
+      "requestedMs": 248.66287499999999,
+      "receivedMs": 281.43424999999934,
+      "sha256": "b4bf4b13a26902db595d3028bbba0313627a5058984b16462cf5b68d5b25eaa5"
+    },
+    {
+      "file": "frames/000009.png",
+      "requestedMs": 281.73395900000014,
+      "receivedMs": 314.010542,
+      "sha256": "b4bf4b13a26902db595d3028bbba0313627a5058984b16462cf5b68d5b25eaa5"
+    },
+    {
+      "file": "frames/000010.png",
+      "requestedMs": 314.2887499999997,
+      "receivedMs": 347.5487499999999,
+      "sha256": "b4bf4b13a26902db595d3028bbba0313627a5058984b16462cf5b68d5b25eaa5"
+    },
+    {
+      "file": "frames/000011.png",
+      "requestedMs": 347.8583749999998,
+      "receivedMs": 380.75158399999964,
+      "sha256": "b4bf4b13a26902db595d3028bbba0313627a5058984b16462cf5b68d5b25eaa5"
+    },
+    {
+      "file": "frames/000012.png",
+      "requestedMs": 381.3290419999994,
+      "receivedMs": 414.6799999999994,
+      "sha256": "b4bf4b13a26902db595d3028bbba0313627a5058984b16462cf5b68d5b25eaa5"
+    },
+    {
+      "file": "frames/000013.png",
+      "requestedMs": 415.1794169999994,
+      "receivedMs": 447.9887499999995,
+      "sha256": "b4bf4b13a26902db595d3028bbba0313627a5058984b16462cf5b68d5b25eaa5"
+    },
+    {
+      "file": "frames/000014.png",
+      "requestedMs": 448.1965,
+      "receivedMs": 480.9895839999999,
+      "sha256": "fae8de4d39d67413d818ad97fe78dcba45914b33c8027938f40cf2e1e5e3f10e"
+    },
+    {
+      "file": "frames/000015.png",
+      "requestedMs": 481.2511249999998,
+      "receivedMs": 516.4122499999994,
+      "sha256": "fae8de4d39d67413d818ad97fe78dcba45914b33c8027938f40cf2e1e5e3f10e"
+    },
+    {
+      "file": "frames/000016.png",
+      "requestedMs": 516.7017919999998,
+      "receivedMs": 551.5866249999999,
+      "sha256": "e0e79df7073107e1e9501443256ef86e22771cc5006a6967273968d7124ccc3f"
+    },
+    {
+      "file": "frames/000017.png",
+      "requestedMs": 552.0839589999996,
+      "receivedMs": 581.2354999999998,
+      "sha256": "938fd578ec38254150f7658ad57d7a8ac786f25c39ed91c4ff923a06217c6cee"
+    },
+    {
+      "file": "frames/000018.png",
+      "requestedMs": 581.5155420000001,
+      "receivedMs": 614.2929589999994,
+      "sha256": "938fd578ec38254150f7658ad57d7a8ac786f25c39ed91c4ff923a06217c6cee"
+    },
+    {
+      "file": "frames/000019.png",
+      "requestedMs": 614.5618749999994,
+      "receivedMs": 647.8568749999995,
+      "sha256": "94d9358111a01704a6c931eca4ea490092f3717647bbaa16bb7628f450e09199"
+    },
+    {
+      "file": "frames/000020.png",
+      "requestedMs": 648.0672500000001,
+      "receivedMs": 681.0094170000002,
+      "sha256": "94d9358111a01704a6c931eca4ea490092f3717647bbaa16bb7628f450e09199"
+    },
+    {
+      "file": "frames/000021.png",
+      "requestedMs": 681.2344169999997,
+      "receivedMs": 720.8926249999995,
+      "sha256": "dd747d577e5e4101ba1452fc1760e2d81c83abb7ddda9fc06fdf483116a8ac31"
+    },
+    {
+      "file": "frames/000022.png",
+      "requestedMs": 721.2329169999994,
+      "receivedMs": 748.5706249999994,
+      "sha256": "949ed07fc6c224a92030d8a0d235fe2d0dd990a806f7b6074b023221184f0891"
+    },
+    {
+      "file": "frames/000023.png",
+      "requestedMs": 748.7621669999999,
+      "receivedMs": 780.7701669999997,
+      "sha256": "949ed07fc6c224a92030d8a0d235fe2d0dd990a806f7b6074b023221184f0891"
+    },
+    {
+      "file": "frames/000024.png",
+      "requestedMs": 781.0154999999995,
+      "receivedMs": 814.6556249999994,
+      "sha256": "949ed07fc6c224a92030d8a0d235fe2d0dd990a806f7b6074b023221184f0891"
+    },
+    {
+      "file": "frames/000025.png",
+      "requestedMs": 814.8682920000001,
+      "receivedMs": 847.9785839999995,
+      "sha256": "949ed07fc6c224a92030d8a0d235fe2d0dd990a806f7b6074b023221184f0891"
+    },
+    {
+      "file": "frames/000026.png",
+      "requestedMs": 848.1961670000001,
+      "receivedMs": 881.2381249999999,
+      "sha256": "949ed07fc6c224a92030d8a0d235fe2d0dd990a806f7b6074b023221184f0891"
+    },
+    {
+      "file": "frames/000027.png",
+      "requestedMs": 881.4966669999994,
+      "receivedMs": 915.3555839999999,
+      "sha256": "0398597d62e9bbcdbb9dd2c030fb68322c65483dc7d6eddaed083a5e908137a3"
+    },
+    {
+      "file": "frames/000028.png",
+      "requestedMs": 915.5772499999994,
+      "receivedMs": 948.7693339999996,
+      "sha256": "0398597d62e9bbcdbb9dd2c030fb68322c65483dc7d6eddaed083a5e908137a3"
+    },
+    {
+      "file": "frames/000029.png",
+      "requestedMs": 949.0103749999998,
+      "receivedMs": 982.3545839999997,
+      "sha256": "0398597d62e9bbcdbb9dd2c030fb68322c65483dc7d6eddaed083a5e908137a3"
+    },
+    {
+      "file": "frames/000030.png",
+      "requestedMs": 982.6893749999999,
+      "receivedMs": 1017.050542,
+      "sha256": "0398597d62e9bbcdbb9dd2c030fb68322c65483dc7d6eddaed083a5e908137a3"
+    },
+    {
+      "file": "frames/000031.png",
+      "requestedMs": 1017.3829999999998,
+      "receivedMs": 1054.2514169999995,
+      "sha256": "09af837e608b257dc15fe4b213f87cc588c2162f67c951f31d308e34306cbfb3"
+    },
+    {
+      "file": "frames/000032.png",
+      "requestedMs": 1054.5977089999997,
+      "receivedMs": 1081.9514589999999,
+      "sha256": "09af837e608b257dc15fe4b213f87cc588c2162f67c951f31d308e34306cbfb3"
+    },
+    {
+      "file": "frames/000033.png",
+      "requestedMs": 1082.243042,
+      "receivedMs": 1115.2627919999995,
+      "sha256": "09af837e608b257dc15fe4b213f87cc588c2162f67c951f31d308e34306cbfb3"
+    },
+    {
+      "file": "frames/000034.png",
+      "requestedMs": 1115.5601669999996,
+      "receivedMs": 1148.1534169999995,
+      "sha256": "09af837e608b257dc15fe4b213f87cc588c2162f67c951f31d308e34306cbfb3"
+    },
+    {
+      "file": "frames/000035.png",
+      "requestedMs": 1148.4304999999995,
+      "receivedMs": 1181.619834,
+      "sha256": "09af837e608b257dc15fe4b213f87cc588c2162f67c951f31d308e34306cbfb3"
+    },
+    {
+      "file": "frames/000036.png",
+      "requestedMs": 1181.8467089999995,
+      "receivedMs": 1214.9759589999994,
+      "sha256": "09af837e608b257dc15fe4b213f87cc588c2162f67c951f31d308e34306cbfb3"
+    },
+    {
+      "file": "frames/000037.png",
+      "requestedMs": 1215.21875,
+      "receivedMs": 1252.2834999999995,
+      "sha256": "58590745b95073e190ca2b749a2e9240823899e14ea0a753fd288de4be156a57"
+    },
+    {
+      "file": "frames/000038.png",
+      "requestedMs": 1252.5247920000002,
+      "receivedMs": 1281.3332919999993,
+      "sha256": "58590745b95073e190ca2b749a2e9240823899e14ea0a753fd288de4be156a57"
+    },
+    {
+      "file": "frames/000039.png",
+      "requestedMs": 1281.627625,
+      "receivedMs": 1315.8349170000001,
+      "sha256": "58590745b95073e190ca2b749a2e9240823899e14ea0a753fd288de4be156a57"
+    },
+    {
+      "file": "frames/000040.png",
+      "requestedMs": 1316.4073749999998,
+      "receivedMs": 1350.6098339999999,
+      "sha256": "58590745b95073e190ca2b749a2e9240823899e14ea0a753fd288de4be156a57"
+    },
+    {
+      "file": "frames/000041.png",
+      "requestedMs": 1351.0917089999994,
+      "receivedMs": 1381.6549999999997,
+      "sha256": "58590745b95073e190ca2b749a2e9240823899e14ea0a753fd288de4be156a57"
+    },
+    {
+      "file": "frames/000042.png",
+      "requestedMs": 1381.9433339999996,
+      "receivedMs": 1415.9682919999996,
+      "sha256": "58590745b95073e190ca2b749a2e9240823899e14ea0a753fd288de4be156a57"
+    },
+    {
+      "file": "frames/000043.png",
+      "requestedMs": 1416.456542,
+      "receivedMs": 1448.9095419999994,
+      "sha256": "58590745b95073e190ca2b749a2e9240823899e14ea0a753fd288de4be156a57"
+    },
+    {
+      "file": "frames/000044.png",
+      "requestedMs": 1449.2079589999994,
+      "receivedMs": 1482.6750419999998,
+      "sha256": "58590745b95073e190ca2b749a2e9240823899e14ea0a753fd288de4be156a57"
+    },
+    {
+      "file": "frames/000045.png",
+      "requestedMs": 1483.1180839999997,
+      "receivedMs": 1515.870167,
+      "sha256": "58590745b95073e190ca2b749a2e9240823899e14ea0a753fd288de4be156a57"
+    },
+    {
+      "file": "frames/000046.png",
+      "requestedMs": 1516.231417,
+      "receivedMs": 1549.534334,
+      "sha256": "58590745b95073e190ca2b749a2e9240823899e14ea0a753fd288de4be156a57"
+    },
+    {
+      "file": "frames/000047.png",
+      "requestedMs": 1549.8654999999999,
+      "receivedMs": 1581.8472499999998,
+      "sha256": "58590745b95073e190ca2b749a2e9240823899e14ea0a753fd288de4be156a57"
+    },
+    {
+      "file": "frames/000048.png",
+      "requestedMs": 1582.0675839999994,
+      "receivedMs": 1621.850125,
+      "sha256": "6eb3f2598cd607995ad409349b6b807327166ebfa9031f5dff6fe38a606c6cb5"
+    },
+    {
+      "file": "frames/000049.png",
+      "requestedMs": 1622.2476669999996,
+      "receivedMs": 1649.8252089999996,
+      "sha256": "6eb3f2598cd607995ad409349b6b807327166ebfa9031f5dff6fe38a606c6cb5"
+    },
+    {
+      "file": "frames/000050.png",
+      "requestedMs": 1650.0244999999995,
+      "receivedMs": 1666.3929589999998,
+      "sha256": "6eb3f2598cd607995ad409349b6b807327166ebfa9031f5dff6fe38a606c6cb5"
+    },
+    {
+      "file": "frames/000051.png",
+      "requestedMs": 1666.7012089999998,
+      "receivedMs": 1683.3321669999996,
+      "sha256": "6eb3f2598cd607995ad409349b6b807327166ebfa9031f5dff6fe38a606c6cb5"
+    },
+    {
+      "file": "frames/000052.png",
+      "requestedMs": 1683.6833339999994,
+      "receivedMs": 1700.3394170000001,
+      "sha256": "6eb3f2598cd607995ad409349b6b807327166ebfa9031f5dff6fe38a606c6cb5"
+    },
+    {
+      "file": "frames/000053.png",
+      "requestedMs": 1700.6738340000002,
+      "receivedMs": 1716.562417,
+      "sha256": "6eb3f2598cd607995ad409349b6b807327166ebfa9031f5dff6fe38a606c6cb5"
+    },
+    {
+      "file": "frames/000054.png",
+      "requestedMs": 1716.7937089999996,
+      "receivedMs": 1732.9702499999994,
+      "sha256": "6eb3f2598cd607995ad409349b6b807327166ebfa9031f5dff6fe38a606c6cb5"
+    },
+    {
+      "file": "frames/000055.png",
+      "requestedMs": 1733.2429169999996,
+      "receivedMs": 1755.7239169999993,
+      "sha256": "6eb3f2598cd607995ad409349b6b807327166ebfa9031f5dff6fe38a606c6cb5"
+    },
+    {
+      "file": "frames/000056.png",
+      "requestedMs": 1756.0568750000002,
+      "receivedMs": 1781.8837919999996,
+      "sha256": "6eb3f2598cd607995ad409349b6b807327166ebfa9031f5dff6fe38a606c6cb5"
+    },
+    {
+      "file": "frames/000057.png",
+      "requestedMs": 1782.1729999999998,
+      "receivedMs": 1799.1657500000001,
+      "sha256": "6eb3f2598cd607995ad409349b6b807327166ebfa9031f5dff6fe38a606c6cb5"
+    },
+    {
+      "file": "frames/000058.png",
+      "requestedMs": 1799.448875,
+      "receivedMs": 1816.0078749999993,
+      "sha256": "6eb3f2598cd607995ad409349b6b807327166ebfa9031f5dff6fe38a606c6cb5"
+    },
+    {
+      "file": "frames/000059.png",
+      "requestedMs": 1816.4315419999994,
+      "receivedMs": 1833.2839999999997,
+      "sha256": "6eb3f2598cd607995ad409349b6b807327166ebfa9031f5dff6fe38a606c6cb5"
+    },
+    {
+      "file": "frames/000060.png",
+      "requestedMs": 1833.5536249999996,
+      "receivedMs": 1848.6909589999996,
+      "sha256": "6eb3f2598cd607995ad409349b6b807327166ebfa9031f5dff6fe38a606c6cb5"
+    },
+    {
+      "file": "frames/000061.png",
+      "requestedMs": 1848.894542,
+      "receivedMs": 1865.5423339999998,
+      "sha256": "6eb3f2598cd607995ad409349b6b807327166ebfa9031f5dff6fe38a606c6cb5"
+    },
+    {
+      "file": "frames/000062.png",
+      "requestedMs": 1865.9249169999994,
+      "receivedMs": 1882.2192089999999,
+      "sha256": "6eb3f2598cd607995ad409349b6b807327166ebfa9031f5dff6fe38a606c6cb5"
+    },
+    {
+      "file": "frames/000063.png",
+      "requestedMs": 1882.5109590000002,
+      "receivedMs": 1899.1192919999994,
+      "sha256": "6eb3f2598cd607995ad409349b6b807327166ebfa9031f5dff6fe38a606c6cb5"
+    },
+    {
+      "file": "frames/000064.png",
+      "requestedMs": 1899.3206249999994,
+      "receivedMs": 1914.9881249999999,
+      "sha256": "6eb3f2598cd607995ad409349b6b807327166ebfa9031f5dff6fe38a606c6cb5"
+    },
+    {
+      "file": "frames/000065.png",
+      "requestedMs": 1915.1987089999993,
+      "receivedMs": 1932.211042,
+      "sha256": "6eb3f2598cd607995ad409349b6b807327166ebfa9031f5dff6fe38a606c6cb5"
+    },
+    {
+      "file": "frames/000066.png",
+      "requestedMs": 1932.4330839999993,
+      "receivedMs": 1948.227084,
+      "sha256": "6eb3f2598cd607995ad409349b6b807327166ebfa9031f5dff6fe38a606c6cb5"
+    },
+    {
+      "file": "frames/000067.png",
+      "requestedMs": 1948.4477499999994,
+      "receivedMs": 1969.6295,
+      "sha256": "aca358bd58e4ecc33ebbf61e7425b3fcefce4fc2f1f647c2f9b19a70d7b45589"
+    },
+    {
+      "file": "frames/000068.png",
+      "requestedMs": 1969.947709,
+      "receivedMs": 1982.751292,
+      "sha256": "aca358bd58e4ecc33ebbf61e7425b3fcefce4fc2f1f647c2f9b19a70d7b45589"
+    },
+    {
+      "file": "frames/000069.png",
+      "requestedMs": 1983.1996250000002,
+      "receivedMs": 1999.2830839999997,
+      "sha256": "aca358bd58e4ecc33ebbf61e7425b3fcefce4fc2f1f647c2f9b19a70d7b45589"
+    },
+    {
+      "file": "frames/000070.png",
+      "requestedMs": 1999.6374999999998,
+      "receivedMs": 2016.2081669999998,
+      "sha256": "aca358bd58e4ecc33ebbf61e7425b3fcefce4fc2f1f647c2f9b19a70d7b45589"
+    },
+    {
+      "file": "frames/000071.png",
+      "requestedMs": 2016.4609999999993,
+      "receivedMs": 2031.5114999999996,
+      "sha256": "aca358bd58e4ecc33ebbf61e7425b3fcefce4fc2f1f647c2f9b19a70d7b45589"
+    },
+    {
+      "file": "frames/000072.png",
+      "requestedMs": 2031.736417,
+      "receivedMs": 2048.7527919999993,
+      "sha256": "aca358bd58e4ecc33ebbf61e7425b3fcefce4fc2f1f647c2f9b19a70d7b45589"
+    },
+    {
+      "file": "frames/000073.png",
+      "requestedMs": 2049.0657919999994,
+      "receivedMs": 2065.2330839999995,
+      "sha256": "aca358bd58e4ecc33ebbf61e7425b3fcefce4fc2f1f647c2f9b19a70d7b45589"
+    },
+    {
+      "file": "frames/000074.png",
+      "requestedMs": 2065.56275,
+      "receivedMs": 2082.5387499999997,
+      "sha256": "aca358bd58e4ecc33ebbf61e7425b3fcefce4fc2f1f647c2f9b19a70d7b45589"
+    },
+    {
+      "file": "frames/000075.png",
+      "requestedMs": 2082.8125839999993,
+      "receivedMs": 2098.8475,
+      "sha256": "aca358bd58e4ecc33ebbf61e7425b3fcefce4fc2f1f647c2f9b19a70d7b45589"
+    },
+    {
+      "file": "frames/000076.png",
+      "requestedMs": 2099.187167,
+      "receivedMs": 2122.5540419999998,
+      "sha256": "aca358bd58e4ecc33ebbf61e7425b3fcefce4fc2f1f647c2f9b19a70d7b45589"
+    },
+    {
+      "file": "frames/000077.png",
+      "requestedMs": 2122.9591249999994,
+      "receivedMs": 2148.9442089999993,
+      "sha256": "aca358bd58e4ecc33ebbf61e7425b3fcefce4fc2f1f647c2f9b19a70d7b45589"
+    },
+    {
+      "file": "frames/000078.png",
+      "requestedMs": 2149.215625,
+      "receivedMs": 2165.8099999999995,
+      "sha256": "aca358bd58e4ecc33ebbf61e7425b3fcefce4fc2f1f647c2f9b19a70d7b45589"
+    },
+    {
+      "file": "frames/000079.png",
+      "requestedMs": 2166.1023749999995,
+      "receivedMs": 2182.5933749999995,
+      "sha256": "aca358bd58e4ecc33ebbf61e7425b3fcefce4fc2f1f647c2f9b19a70d7b45589"
+    },
+    {
+      "file": "frames/000080.png",
+      "requestedMs": 2182.986084,
+      "receivedMs": 2200.7914169999995,
+      "sha256": "aca358bd58e4ecc33ebbf61e7425b3fcefce4fc2f1f647c2f9b19a70d7b45589"
+    },
+    {
+      "file": "frames/000081.png",
+      "requestedMs": 2201.2065839999996,
+      "receivedMs": 2215.6550419999994,
+      "sha256": "aca358bd58e4ecc33ebbf61e7425b3fcefce4fc2f1f647c2f9b19a70d7b45589"
+    },
+    {
+      "file": "frames/000082.png",
+      "requestedMs": 2215.866792,
+      "receivedMs": 2232.2659169999997,
+      "sha256": "aca358bd58e4ecc33ebbf61e7425b3fcefce4fc2f1f647c2f9b19a70d7b45589"
+    },
+    {
+      "file": "frames/000083.png",
+      "requestedMs": 2232.4629589999995,
+      "receivedMs": 2248.8266669999994,
+      "sha256": "aca358bd58e4ecc33ebbf61e7425b3fcefce4fc2f1f647c2f9b19a70d7b45589"
+    },
+    {
+      "file": "frames/000084.png",
+      "requestedMs": 2249.0516669999997,
+      "receivedMs": 2265.720792,
+      "sha256": "aca358bd58e4ecc33ebbf61e7425b3fcefce4fc2f1f647c2f9b19a70d7b45589"
+    },
+    {
+      "file": "frames/000085.png",
+      "requestedMs": 2266.003084,
+      "receivedMs": 2282.390542,
+      "sha256": "aca358bd58e4ecc33ebbf61e7425b3fcefce4fc2f1f647c2f9b19a70d7b45589"
+    },
+    {
+      "file": "frames/000086.png",
+      "requestedMs": 2282.6577499999994,
+      "receivedMs": 2298.892334,
+      "sha256": "aca358bd58e4ecc33ebbf61e7425b3fcefce4fc2f1f647c2f9b19a70d7b45589"
+    },
+    {
+      "file": "frames/000087.png",
+      "requestedMs": 2299.1460419999994,
+      "receivedMs": 2317.767667,
+      "sha256": "aca358bd58e4ecc33ebbf61e7425b3fcefce4fc2f1f647c2f9b19a70d7b45589"
+    },
+    {
+      "file": "frames/000088.png",
+      "requestedMs": 2318.01775,
+      "receivedMs": 2336.9026669999994,
+      "sha256": "e0034f665544abea54b0b43abbfa7b18e72184957d1e9f44707677d665a01b71"
+    },
+    {
+      "file": "frames/000089.png",
+      "requestedMs": 2337.124917,
+      "receivedMs": 2349.511584,
+      "sha256": "e0034f665544abea54b0b43abbfa7b18e72184957d1e9f44707677d665a01b71"
+    },
+    {
+      "file": "frames/000090.png",
+      "requestedMs": 2349.8046249999998,
+      "receivedMs": 2366.3167089999997,
+      "sha256": "e0034f665544abea54b0b43abbfa7b18e72184957d1e9f44707677d665a01b71"
+    },
+    {
+      "file": "frames/000091.png",
+      "requestedMs": 2366.576542,
+      "receivedMs": 2382.348459,
+      "sha256": "e0034f665544abea54b0b43abbfa7b18e72184957d1e9f44707677d665a01b71"
+    },
+    {
+      "file": "frames/000092.png",
+      "requestedMs": 2382.6340419999997,
+      "receivedMs": 2399.3898339999996,
+      "sha256": "e0034f665544abea54b0b43abbfa7b18e72184957d1e9f44707677d665a01b71"
+    },
+    {
+      "file": "frames/000093.png",
+      "requestedMs": 2399.6180839999997,
+      "receivedMs": 2415.7111669999995,
+      "sha256": "e0034f665544abea54b0b43abbfa7b18e72184957d1e9f44707677d665a01b71"
+    },
+    {
+      "file": "frames/000094.png",
+      "requestedMs": 2416.00425,
+      "receivedMs": 2432.9357499999996,
+      "sha256": "e0034f665544abea54b0b43abbfa7b18e72184957d1e9f44707677d665a01b71"
+    },
+    {
+      "file": "frames/000095.png",
+      "requestedMs": 2433.223167,
+      "receivedMs": 2449.649125,
+      "sha256": "e0034f665544abea54b0b43abbfa7b18e72184957d1e9f44707677d665a01b71"
+    },
+    {
+      "file": "frames/000096.png",
+      "requestedMs": 2449.88,
+      "receivedMs": 2472.557584,
+      "sha256": "e0034f665544abea54b0b43abbfa7b18e72184957d1e9f44707677d665a01b71"
+    },
+    {
+      "file": "frames/000097.png",
+      "requestedMs": 2472.777167,
+      "receivedMs": 2500.0567499999997,
+      "sha256": "e0034f665544abea54b0b43abbfa7b18e72184957d1e9f44707677d665a01b71"
+    },
+    {
+      "file": "frames/000098.png",
+      "requestedMs": 2500.471334,
+      "receivedMs": 2515.4444999999996,
+      "sha256": "e0034f665544abea54b0b43abbfa7b18e72184957d1e9f44707677d665a01b71"
+    },
+    {
+      "file": "frames/000099.png",
+      "requestedMs": 2515.786959,
+      "receivedMs": 2532.925042,
+      "sha256": "e0034f665544abea54b0b43abbfa7b18e72184957d1e9f44707677d665a01b71"
+    },
+    {
+      "file": "frames/000100.png",
+      "requestedMs": 2533.1777919999995,
+      "receivedMs": 2548.3430419999995,
+      "sha256": "e0034f665544abea54b0b43abbfa7b18e72184957d1e9f44707677d665a01b71"
+    },
+    {
+      "file": "frames/000101.png",
+      "requestedMs": 2548.58575,
+      "receivedMs": 2565.767834,
+      "sha256": "e0034f665544abea54b0b43abbfa7b18e72184957d1e9f44707677d665a01b71"
+    },
+    {
+      "file": "frames/000102.png",
+      "requestedMs": 2566.0911669999996,
+      "receivedMs": 2582.431042,
+      "sha256": "e0034f665544abea54b0b43abbfa7b18e72184957d1e9f44707677d665a01b71"
+    },
+    {
+      "file": "frames/000103.png",
+      "requestedMs": 2582.6922919999997,
+      "receivedMs": 2598.868209,
+      "sha256": "e0034f665544abea54b0b43abbfa7b18e72184957d1e9f44707677d665a01b71"
+    },
+    {
+      "file": "frames/000104.png",
+      "requestedMs": 2599.1471249999995,
+      "receivedMs": 2615.8220839999994,
+      "sha256": "e0034f665544abea54b0b43abbfa7b18e72184957d1e9f44707677d665a01b71"
+    },
+    {
+      "file": "frames/000105.png",
+      "requestedMs": 2616.1597089999996,
+      "receivedMs": 2632.324625,
+      "sha256": "e0034f665544abea54b0b43abbfa7b18e72184957d1e9f44707677d665a01b71"
+    },
+    {
+      "file": "frames/000106.png",
+      "requestedMs": 2632.6317499999996,
+      "receivedMs": 2649.4335419999998,
+      "sha256": "e0034f665544abea54b0b43abbfa7b18e72184957d1e9f44707677d665a01b71"
+    },
+    {
+      "file": "frames/000107.png",
+      "requestedMs": 2649.7138749999995,
+      "receivedMs": 2665.7281249999996,
+      "sha256": "e0034f665544abea54b0b43abbfa7b18e72184957d1e9f44707677d665a01b71"
+    },
+    {
+      "file": "frames/000108.png",
+      "requestedMs": 2666.187084,
+      "receivedMs": 2681.9372089999997,
+      "sha256": "e0034f665544abea54b0b43abbfa7b18e72184957d1e9f44707677d665a01b71"
+    },
+    {
+      "file": "frames/000109.png",
+      "requestedMs": 2682.15975,
+      "receivedMs": 2698.926917,
+      "sha256": "e0034f665544abea54b0b43abbfa7b18e72184957d1e9f44707677d665a01b71"
+    },
+    {
+      "file": "frames/000110.png",
+      "requestedMs": 2699.107792,
+      "receivedMs": 2715.498834,
+      "sha256": "e0034f665544abea54b0b43abbfa7b18e72184957d1e9f44707677d665a01b71"
+    },
+    {
+      "file": "frames/000111.png",
+      "requestedMs": 2715.7193749999997,
+      "receivedMs": 2732.3279999999995,
+      "sha256": "e0034f665544abea54b0b43abbfa7b18e72184957d1e9f44707677d665a01b71"
+    },
+    {
+      "file": "frames/000112.png",
+      "requestedMs": 2732.525625,
+      "receivedMs": 2749.22725,
+      "sha256": "e0034f665544abea54b0b43abbfa7b18e72184957d1e9f44707677d665a01b71"
+    },
+    {
+      "file": "frames/000113.png",
+      "requestedMs": 2749.488625,
+      "receivedMs": 2765.8745,
+      "sha256": "e0034f665544abea54b0b43abbfa7b18e72184957d1e9f44707677d665a01b71"
+    },
+    {
+      "file": "frames/000114.png",
+      "requestedMs": 2766.180875,
+      "receivedMs": 2783.5567089999995,
+      "sha256": "e0034f665544abea54b0b43abbfa7b18e72184957d1e9f44707677d665a01b71"
+    },
+    {
+      "file": "frames/000115.png",
+      "requestedMs": 2783.8032089999997,
+      "receivedMs": 2798.8502499999995,
+      "sha256": "e0034f665544abea54b0b43abbfa7b18e72184957d1e9f44707677d665a01b71"
+    },
+    {
+      "file": "frames/000116.png",
+      "requestedMs": 2799.0937919999997,
+      "receivedMs": 2815.9576669999997,
+      "sha256": "e0034f665544abea54b0b43abbfa7b18e72184957d1e9f44707677d665a01b71"
+    },
+    {
+      "file": "frames/000117.png",
+      "requestedMs": 2816.296542,
+      "receivedMs": 2832.3277499999995,
+      "sha256": "e0034f665544abea54b0b43abbfa7b18e72184957d1e9f44707677d665a01b71"
+    },
+    {
+      "file": "frames/000118.png",
+      "requestedMs": 2832.55325,
+      "receivedMs": 2848.746875,
+      "sha256": "e0034f665544abea54b0b43abbfa7b18e72184957d1e9f44707677d665a01b71"
+    },
+    {
+      "file": "frames/000119.png",
+      "requestedMs": 2848.952542,
+      "receivedMs": 2865.3192089999993,
+      "sha256": "e0034f665544abea54b0b43abbfa7b18e72184957d1e9f44707677d665a01b71"
+    },
+    {
+      "file": "frames/000120.png",
+      "requestedMs": 2865.551917,
+      "receivedMs": 2881.9609169999994,
+      "sha256": "e0034f665544abea54b0b43abbfa7b18e72184957d1e9f44707677d665a01b71"
+    },
+    {
+      "file": "frames/000121.png",
+      "requestedMs": 2882.3004169999995,
+      "receivedMs": 2898.095625,
+      "sha256": "e0034f665544abea54b0b43abbfa7b18e72184957d1e9f44707677d665a01b71"
+    },
+    {
+      "file": "frames/000122.png",
+      "requestedMs": 2898.395625,
+      "receivedMs": 2915.3347919999997,
+      "sha256": "e0034f665544abea54b0b43abbfa7b18e72184957d1e9f44707677d665a01b71"
+    },
+    {
+      "file": "frames/000123.png",
+      "requestedMs": 2915.537375,
+      "receivedMs": 2931.255042,
+      "sha256": "e0034f665544abea54b0b43abbfa7b18e72184957d1e9f44707677d665a01b71"
+    },
+    {
+      "file": "frames/000124.png",
+      "requestedMs": 2931.4878339999996,
+      "receivedMs": 2948.6952919999994,
+      "sha256": "e0034f665544abea54b0b43abbfa7b18e72184957d1e9f44707677d665a01b71"
+    },
+    {
+      "file": "frames/000125.png",
+      "requestedMs": 2948.907042,
+      "receivedMs": 2965.895584,
+      "sha256": "e0034f665544abea54b0b43abbfa7b18e72184957d1e9f44707677d665a01b71"
+    },
+    {
+      "file": "frames/000126.png",
+      "requestedMs": 2966.225875,
+      "receivedMs": 2981.8854169999995,
+      "sha256": "e0034f665544abea54b0b43abbfa7b18e72184957d1e9f44707677d665a01b71"
+    },
+    {
+      "file": "frames/000127.png",
+      "requestedMs": 2982.1025,
+      "receivedMs": 3001.6255419999998,
+      "sha256": "eb01153e1170721c95b982ff4ffe6e83cf36eaf18b9f3eaf13b3fbc43679f723"
+    },
+    {
+      "file": "frames/000128.png",
+      "requestedMs": 3001.8794589999998,
+      "receivedMs": 3021.542125,
+      "sha256": "b1e80adb39d087c05e107cafb04e716de5b6420524564f697fcc5d411ee5ad58"
+    },
+    {
+      "file": "frames/000129.png",
+      "requestedMs": 3021.823209,
+      "receivedMs": 3049.4315419999994,
+      "sha256": "09b5fb920bd184fc7d75b851c31170738385ef98cda0c69ceba38824b6c61873"
+    },
+    {
+      "file": "frames/000130.png",
+      "requestedMs": 3049.7578749999993,
+      "receivedMs": 3065.4979999999996,
+      "sha256": "67d8de55b96e9ccc22b71af601bd7246ad106bbb051f2115762daff0d1ee7df3"
+    },
+    {
+      "file": "frames/000131.png",
+      "requestedMs": 3065.8697089999996,
+      "receivedMs": 3082.578875,
+      "sha256": "df4daf2ed1f0a0a6c8627642b070806d707a24e2cca2e3a1e081c8b1d9b5dd45"
+    },
+    {
+      "file": "frames/000132.png",
+      "requestedMs": 3082.8663339999994,
+      "receivedMs": 3098.575167,
+      "sha256": "df4daf2ed1f0a0a6c8627642b070806d707a24e2cca2e3a1e081c8b1d9b5dd45"
+    },
+    {
+      "file": "frames/000133.png",
+      "requestedMs": 3098.839459,
+      "receivedMs": 3115.0802920000006,
+      "sha256": "df4daf2ed1f0a0a6c8627642b070806d707a24e2cca2e3a1e081c8b1d9b5dd45"
+    },
+    {
+      "file": "frames/000134.png",
+      "requestedMs": 3115.334584,
+      "receivedMs": 3131.5066669999997,
+      "sha256": "df4daf2ed1f0a0a6c8627642b070806d707a24e2cca2e3a1e081c8b1d9b5dd45"
+    },
+    {
+      "file": "frames/000135.png",
+      "requestedMs": 3131.7181249999994,
+      "receivedMs": 3147.3485419999997,
+      "sha256": "df4daf2ed1f0a0a6c8627642b070806d707a24e2cca2e3a1e081c8b1d9b5dd45"
+    },
+    {
+      "file": "frames/000136.png",
+      "requestedMs": 3147.5544169999994,
+      "receivedMs": 3164.113374999999,
+      "sha256": "df4daf2ed1f0a0a6c8627642b070806d707a24e2cca2e3a1e081c8b1d9b5dd45"
+    },
+    {
+      "file": "frames/000137.png",
+      "requestedMs": 3164.376291999999,
+      "receivedMs": 3180.608791999999,
+      "sha256": "df4daf2ed1f0a0a6c8627642b070806d707a24e2cca2e3a1e081c8b1d9b5dd45"
+    },
+    {
+      "file": "frames/000138.png",
+      "requestedMs": 3180.8035839999993,
+      "receivedMs": 3197.2934999999998,
+      "sha256": "df4daf2ed1f0a0a6c8627642b070806d707a24e2cca2e3a1e081c8b1d9b5dd45"
+    },
+    {
+      "file": "frames/000139.png",
+      "requestedMs": 3197.5623749999995,
+      "receivedMs": 3214.0941249999996,
+      "sha256": "df4daf2ed1f0a0a6c8627642b070806d707a24e2cca2e3a1e081c8b1d9b5dd45"
+    },
+    {
+      "file": "frames/000140.png",
+      "requestedMs": 3214.27175,
+      "receivedMs": 3230.1253749999996,
+      "sha256": "df4daf2ed1f0a0a6c8627642b070806d707a24e2cca2e3a1e081c8b1d9b5dd45"
+    },
+    {
+      "file": "frames/000141.png",
+      "requestedMs": 3230.5015000000003,
+      "receivedMs": 3247.220374999999,
+      "sha256": "df4daf2ed1f0a0a6c8627642b070806d707a24e2cca2e3a1e081c8b1d9b5dd45"
+    },
+    {
+      "file": "frames/000142.png",
+      "requestedMs": 3247.4099590000005,
+      "receivedMs": 3262.974458999999,
+      "sha256": "df4daf2ed1f0a0a6c8627642b070806d707a24e2cca2e3a1e081c8b1d9b5dd45"
+    },
+    {
+      "file": "frames/000143.png",
+      "requestedMs": 3263.200666999999,
+      "receivedMs": 3280.349375,
+      "sha256": "df4daf2ed1f0a0a6c8627642b070806d707a24e2cca2e3a1e081c8b1d9b5dd45"
+    },
+    {
+      "file": "frames/000144.png",
+      "requestedMs": 3280.5721250000006,
+      "receivedMs": 3297.939291999999,
+      "sha256": "df4daf2ed1f0a0a6c8627642b070806d707a24e2cca2e3a1e081c8b1d9b5dd45"
+    },
+    {
+      "file": "frames/000145.png",
+      "requestedMs": 3298.2177919999995,
+      "receivedMs": 3313.6859590000004,
+      "sha256": "df4daf2ed1f0a0a6c8627642b070806d707a24e2cca2e3a1e081c8b1d9b5dd45"
+    },
+    {
+      "file": "frames/000146.png",
+      "requestedMs": 3313.8819590000003,
+      "receivedMs": 3337.751791999999,
+      "sha256": "df4daf2ed1f0a0a6c8627642b070806d707a24e2cca2e3a1e081c8b1d9b5dd45"
+    }
+  ],
+  "url": "http://127.0.0.1:18117/agents-round3-after/?slug=file-diff&theme=dark&previewWidth=752&captureProbe=1&palette=source-default-a76e57c9",
+  "environment": {
+    "viewport": {
+      "width": 1440,
+      "height": 1000,
+      "dpr": 1
+    },
+    "browserReducedMotion": true,
+    "probe": {
+      "disableAnimations": true,
+      "platformDisableAnimations": true,
+      "motionOverride": null,
+      "backgroundArgb": 4279571733,
+      "constraints": {
+        "minWidth": 752,
+        "maxWidth": 752,
+        "minHeight": 0,
+        "maxHeight": 1000
+      },
+      "rect": {
+        "x": 344,
+        "y": 0,
+        "width": 752,
+        "height": 1000
+      }
+    },
+    "fonts": [],
+    "colors": {
+      "background": "",
+      "foreground": "",
+      "muted": "",
+      "muted-foreground": "",
+      "primary": "",
+      "primary-foreground": ""
+    },
+    "htmlClass": "",
+    "dataTheme": null,
+    "browser": "155.0.8059.86"
+  },
+  "clipboard": "export async function runTask() {\n  return execute(task);\n  const result = await execute(task);\n  return normalize(result);\n}",
+  "cadence": {
+    "samples": 147,
+    "decodedFrames": 147,
+    "width": 1440,
+    "height": 913,
+    "measuredFps": 43.966559065289026,
+    "maxGapMs": 40.00287500000013,
+    "interpolated": false,
+    "temporalEquivalence": false
+  }
+}

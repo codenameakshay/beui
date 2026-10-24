@@ -181,11 +181,11 @@ Brightness (light/dark) and `colorTheme` are **independent, runtime-combinable**
 
 **Do not bundle fonts in the published package.** Expose family names via `BeuiTextTheme` and let consumers wire fonts themselves (pubspec `fonts:` or `google_fonts`), falling back to the platform monospace when the mono family is absent.
 
-- Sans: **Inter**.
-- Mono: **JetBrains Mono** (OFL, loaded via `next/font/google` in source) — *not* Geist Mono.
+- Sans: **Geist**.
+- Mono: **Geist Mono** (OFL, loaded via `next/font/google` in source).
 - The pixel font (`--font-pixel`) is **docs-site chrome only**; **no portable library component uses it**, so it is not part of the port.
 
-The published package ships **no bundled fonts**; only the `example/` gallery may bundle Inter/JetBrains Mono for visual parity.
+The published package ships **no bundled fonts**; only the `example/` gallery may bundle Geist/Geist Mono for visual parity. The [font audit](proof/v3-parity/fonts/README.md) records pinned-source and live rendered-font evidence.
 
 ### Agent semantics (`BeuiAgentTheme`)
 

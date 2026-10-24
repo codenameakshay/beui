@@ -1,0 +1,899 @@
+{
+  "id": "after-dark",
+  "url": "http://127.0.0.1:8112/?slug=tabs&theme=dark&color=Blue&previewWidth=592&captureProbe=1",
+  "theme": "dark",
+  "phase": "after",
+  "initial": {
+    "scroll": {
+      "x": 0,
+      "y": 0
+    },
+    "dpr": 1,
+    "probe": {
+      "disableAnimations": false,
+      "platformDisableAnimations": false,
+      "motionOverride": null,
+      "backgroundArgb": 4279571733,
+      "constraints": {
+        "minWidth": 0,
+        "maxWidth": 592,
+        "minHeight": 0,
+        "maxHeight": 904
+      },
+      "rect": {
+        "x": 344,
+        "y": 48,
+        "width": 592,
+        "height": 904
+      }
+    },
+    "active": {
+      "tag": "SPAN",
+      "text": "PILL"
+    },
+    "buttons": [
+      {
+        "name": "All",
+        "rect": {
+          "x": 416,
+          "y": 695.5,
+          "width": 41.09375,
+          "height": 44,
+          "top": 695.5,
+          "right": 457.09375,
+          "bottom": 739.5,
+          "left": 416
+        },
+        "selected": "true",
+        "focused": false,
+        "style": null
+      },
+      {
+        "name": "Open",
+        "rect": {
+          "x": 461.09393310546875,
+          "y": 695.5,
+          "width": 59.078125,
+          "height": 44,
+          "top": 695.5,
+          "right": 520.1720581054688,
+          "bottom": 739.5,
+          "left": 461.09393310546875
+        },
+        "selected": "false",
+        "focused": false,
+        "style": null
+      },
+      {
+        "name": "Closed",
+        "rect": {
+          "x": 524.1777954101562,
+          "y": 695.5,
+          "width": 69.578125,
+          "height": 44,
+          "top": 695.5,
+          "right": 593.7559204101562,
+          "bottom": 739.5,
+          "left": 524.1777954101562
+        },
+        "selected": "false",
+        "focused": false,
+        "style": null
+      }
+    ],
+    "indicatorColor": null
+  },
+  "states": [
+    {
+      "name": "default",
+      "scroll": {
+        "x": 0,
+        "y": 0
+      },
+      "dpr": 1,
+      "probe": {
+        "disableAnimations": false,
+        "platformDisableAnimations": false,
+        "motionOverride": null,
+        "backgroundArgb": 4279571733,
+        "constraints": {
+          "minWidth": 0,
+          "maxWidth": 592,
+          "minHeight": 0,
+          "maxHeight": 904
+        },
+        "rect": {
+          "x": 344,
+          "y": 48,
+          "width": 592,
+          "height": 904
+        }
+      },
+      "active": {
+        "tag": "SPAN",
+        "text": "PILL"
+      },
+      "buttons": [
+        {
+          "name": "All",
+          "rect": {
+            "x": 416,
+            "y": 695.5,
+            "width": 41.09375,
+            "height": 44,
+            "top": 695.5,
+            "right": 457.09375,
+            "bottom": 739.5,
+            "left": 416
+          },
+          "selected": "true",
+          "focused": false,
+          "style": null
+        },
+        {
+          "name": "Open",
+          "rect": {
+            "x": 461.09393310546875,
+            "y": 695.5,
+            "width": 59.078125,
+            "height": 44,
+            "top": 695.5,
+            "right": 520.1720581054688,
+            "bottom": 739.5,
+            "left": 461.09393310546875
+          },
+          "selected": "false",
+          "focused": false,
+          "style": null
+        },
+        {
+          "name": "Closed",
+          "rect": {
+            "x": 524.1777954101562,
+            "y": 695.5,
+            "width": 69.578125,
+            "height": 44,
+            "top": 695.5,
+            "right": 593.7559204101562,
+            "bottom": 739.5,
+            "left": 524.1777954101562
+          },
+          "selected": "false",
+          "focused": false,
+          "style": null
+        }
+      ],
+      "indicatorColor": null
+    },
+    {
+      "name": "hover",
+      "scroll": {
+        "x": 0,
+        "y": 0
+      },
+      "dpr": 1,
+      "probe": {
+        "disableAnimations": false,
+        "platformDisableAnimations": false,
+        "motionOverride": null,
+        "backgroundArgb": 4279571733,
+        "constraints": {
+          "minWidth": 0,
+          "maxWidth": 592,
+          "minHeight": 0,
+          "maxHeight": 904
+        },
+        "rect": {
+          "x": 344,
+          "y": 48,
+          "width": 592,
+          "height": 904
+        }
+      },
+      "active": {
+        "tag": "SPAN",
+        "text": "PILL"
+      },
+      "buttons": [
+        {
+          "name": "All",
+          "rect": {
+            "x": 416,
+            "y": 695.5,
+            "width": 41.09375,
+            "height": 44,
+            "top": 695.5,
+            "right": 457.09375,
+            "bottom": 739.5,
+            "left": 416
+          },
+          "selected": "true",
+          "focused": false,
+          "style": null
+        },
+        {
+          "name": "Open",
+          "rect": {
+            "x": 461.09393310546875,
+            "y": 695.5,
+            "width": 59.078125,
+            "height": 44,
+            "top": 695.5,
+            "right": 520.1720581054688,
+            "bottom": 739.5,
+            "left": 461.09393310546875
+          },
+          "selected": "false",
+          "focused": false,
+          "style": null
+        },
+        {
+          "name": "Closed",
+          "rect": {
+            "x": 524.1777954101562,
+            "y": 695.5,
+            "width": 69.578125,
+            "height": 44,
+            "top": 695.5,
+            "right": 593.7559204101562,
+            "bottom": 739.5,
+            "left": 524.1777954101562
+          },
+          "selected": "false",
+          "focused": false,
+          "style": null
+        }
+      ],
+      "indicatorColor": null
+    },
+    {
+      "name": "down",
+      "scroll": {
+        "x": 0,
+        "y": 0
+      },
+      "dpr": 1,
+      "probe": {
+        "disableAnimations": false,
+        "platformDisableAnimations": false,
+        "motionOverride": null,
+        "backgroundArgb": 4279571733,
+        "constraints": {
+          "minWidth": 0,
+          "maxWidth": 592,
+          "minHeight": 0,
+          "maxHeight": 904
+        },
+        "rect": {
+          "x": 344,
+          "y": 48,
+          "width": 592,
+          "height": 904
+        }
+      },
+      "active": {
+        "tag": "FLT-SEMANTICS",
+        "text": "Open"
+      },
+      "buttons": [
+        {
+          "name": "All",
+          "rect": {
+            "x": 416,
+            "y": 695.5,
+            "width": 41.09375,
+            "height": 44,
+            "top": 695.5,
+            "right": 457.09375,
+            "bottom": 739.5,
+            "left": 416
+          },
+          "selected": "true",
+          "focused": false,
+          "style": null
+        },
+        {
+          "name": "Open",
+          "rect": {
+            "x": 461.09393310546875,
+            "y": 695.5,
+            "width": 59.078125,
+            "height": 44,
+            "top": 695.5,
+            "right": 520.1720581054688,
+            "bottom": 739.5,
+            "left": 461.09393310546875
+          },
+          "selected": "false",
+          "focused": true,
+          "style": null
+        },
+        {
+          "name": "Closed",
+          "rect": {
+            "x": 524.1777954101562,
+            "y": 695.5,
+            "width": 69.578125,
+            "height": 44,
+            "top": 695.5,
+            "right": 593.7559204101562,
+            "bottom": 739.5,
+            "left": 524.1777954101562
+          },
+          "selected": "false",
+          "focused": false,
+          "style": null
+        }
+      ],
+      "indicatorColor": null
+    },
+    {
+      "name": "selected",
+      "scroll": {
+        "x": 0,
+        "y": 0
+      },
+      "dpr": 1,
+      "probe": {
+        "disableAnimations": false,
+        "platformDisableAnimations": false,
+        "motionOverride": null,
+        "backgroundArgb": 4279571733,
+        "constraints": {
+          "minWidth": 0,
+          "maxWidth": 592,
+          "minHeight": 0,
+          "maxHeight": 904
+        },
+        "rect": {
+          "x": 344,
+          "y": 48,
+          "width": 592,
+          "height": 904
+        }
+      },
+      "active": {
+        "tag": "FLT-SEMANTICS",
+        "text": "Open"
+      },
+      "buttons": [
+        {
+          "name": "All",
+          "rect": {
+            "x": 416,
+            "y": 695.5,
+            "width": 41.09375,
+            "height": 44,
+            "top": 695.5,
+            "right": 457.09375,
+            "bottom": 739.5,
+            "left": 416
+          },
+          "selected": "false",
+          "focused": false,
+          "style": null
+        },
+        {
+          "name": "Open",
+          "rect": {
+            "x": 461.09393310546875,
+            "y": 695.5,
+            "width": 59.078125,
+            "height": 44,
+            "top": 695.5,
+            "right": 520.1720581054688,
+            "bottom": 739.5,
+            "left": 461.09393310546875
+          },
+          "selected": "true",
+          "focused": true,
+          "style": null
+        },
+        {
+          "name": "Closed",
+          "rect": {
+            "x": 524.1777954101562,
+            "y": 695.5,
+            "width": 69.578125,
+            "height": 44,
+            "top": 695.5,
+            "right": 593.7559204101562,
+            "bottom": 739.5,
+            "left": 524.1777954101562
+          },
+          "selected": "false",
+          "focused": false,
+          "style": null
+        }
+      ],
+      "indicatorColor": null
+    },
+    {
+      "name": "pointer-end",
+      "scroll": {
+        "x": 0,
+        "y": 0
+      },
+      "dpr": 1,
+      "probe": {
+        "disableAnimations": false,
+        "platformDisableAnimations": false,
+        "motionOverride": null,
+        "backgroundArgb": 4279571733,
+        "constraints": {
+          "minWidth": 0,
+          "maxWidth": 592,
+          "minHeight": 0,
+          "maxHeight": 904
+        },
+        "rect": {
+          "x": 344,
+          "y": 48,
+          "width": 592,
+          "height": 904
+        }
+      },
+      "active": {
+        "tag": "FLT-SEMANTICS",
+        "text": "Closed"
+      },
+      "buttons": [
+        {
+          "name": "All",
+          "rect": {
+            "x": 416,
+            "y": 695.5,
+            "width": 41.09375,
+            "height": 44,
+            "top": 695.5,
+            "right": 457.09375,
+            "bottom": 739.5,
+            "left": 416
+          },
+          "selected": "false",
+          "focused": false,
+          "style": null
+        },
+        {
+          "name": "Open",
+          "rect": {
+            "x": 461.09393310546875,
+            "y": 695.5,
+            "width": 59.078125,
+            "height": 44,
+            "top": 695.5,
+            "right": 520.1720581054688,
+            "bottom": 739.5,
+            "left": 461.09393310546875
+          },
+          "selected": "false",
+          "focused": false,
+          "style": null
+        },
+        {
+          "name": "Closed",
+          "rect": {
+            "x": 524.1777954101562,
+            "y": 695.5,
+            "width": 69.578125,
+            "height": 44,
+            "top": 695.5,
+            "right": 593.7559204101562,
+            "bottom": 739.5,
+            "left": 524.1777954101562
+          },
+          "selected": "true",
+          "focused": true,
+          "style": null
+        }
+      ],
+      "indicatorColor": null
+    },
+    {
+      "name": "pointer-left",
+      "scroll": {
+        "x": 0,
+        "y": 0
+      },
+      "dpr": 1,
+      "probe": {
+        "disableAnimations": false,
+        "platformDisableAnimations": false,
+        "motionOverride": null,
+        "backgroundArgb": 4279571733,
+        "constraints": {
+          "minWidth": 0,
+          "maxWidth": 592,
+          "minHeight": 0,
+          "maxHeight": 904
+        },
+        "rect": {
+          "x": 344,
+          "y": 48,
+          "width": 592,
+          "height": 904
+        }
+      },
+      "active": {
+        "tag": "FLT-SEMANTICS",
+        "text": "Open"
+      },
+      "buttons": [
+        {
+          "name": "All",
+          "rect": {
+            "x": 416,
+            "y": 695.5,
+            "width": 41.09375,
+            "height": 44,
+            "top": 695.5,
+            "right": 457.09375,
+            "bottom": 739.5,
+            "left": 416
+          },
+          "selected": "false",
+          "focused": false,
+          "style": null
+        },
+        {
+          "name": "Open",
+          "rect": {
+            "x": 461.09393310546875,
+            "y": 695.5,
+            "width": 59.078125,
+            "height": 44,
+            "top": 695.5,
+            "right": 520.1720581054688,
+            "bottom": 739.5,
+            "left": 461.09393310546875
+          },
+          "selected": "true",
+          "focused": true,
+          "style": null
+        },
+        {
+          "name": "Closed",
+          "rect": {
+            "x": 524.1777954101562,
+            "y": 695.5,
+            "width": 69.578125,
+            "height": 44,
+            "top": 695.5,
+            "right": 593.7559204101562,
+            "bottom": 739.5,
+            "left": 524.1777954101562
+          },
+          "selected": "false",
+          "focused": false,
+          "style": null
+        }
+      ],
+      "indicatorColor": null
+    },
+    {
+      "name": "keyboard-focus",
+      "scroll": {
+        "x": 0,
+        "y": 0
+      },
+      "dpr": 1,
+      "probe": {
+        "disableAnimations": false,
+        "platformDisableAnimations": false,
+        "motionOverride": null,
+        "backgroundArgb": 4279571733,
+        "constraints": {
+          "minWidth": 0,
+          "maxWidth": 592,
+          "minHeight": 0,
+          "maxHeight": 904
+        },
+        "rect": {
+          "x": 344,
+          "y": 48,
+          "width": 592,
+          "height": 904
+        }
+      },
+      "active": {
+        "tag": "FLT-SEMANTICS",
+        "text": "All"
+      },
+      "buttons": [
+        {
+          "name": "All",
+          "rect": {
+            "x": 416,
+            "y": 695.5,
+            "width": 41.09375,
+            "height": 44,
+            "top": 695.5,
+            "right": 457.09375,
+            "bottom": 739.5,
+            "left": 416
+          },
+          "selected": "false",
+          "focused": true,
+          "style": null
+        },
+        {
+          "name": "Open",
+          "rect": {
+            "x": 461.09393310546875,
+            "y": 695.5,
+            "width": 59.078125,
+            "height": 44,
+            "top": 695.5,
+            "right": 520.1720581054688,
+            "bottom": 739.5,
+            "left": 461.09393310546875
+          },
+          "selected": "true",
+          "focused": false,
+          "style": null
+        },
+        {
+          "name": "Closed",
+          "rect": {
+            "x": 524.1777954101562,
+            "y": 695.5,
+            "width": 69.578125,
+            "height": 44,
+            "top": 695.5,
+            "right": 593.7559204101562,
+            "bottom": 739.5,
+            "left": 524.1777954101562
+          },
+          "selected": "false",
+          "focused": false,
+          "style": null
+        }
+      ],
+      "indicatorColor": null
+    },
+    {
+      "name": "home",
+      "scroll": {
+        "x": 0,
+        "y": 0
+      },
+      "dpr": 1,
+      "probe": {
+        "disableAnimations": false,
+        "platformDisableAnimations": false,
+        "motionOverride": null,
+        "backgroundArgb": 4279571733,
+        "constraints": {
+          "minWidth": 0,
+          "maxWidth": 592,
+          "minHeight": 0,
+          "maxHeight": 904
+        },
+        "rect": {
+          "x": 344,
+          "y": 48,
+          "width": 592,
+          "height": 904
+        }
+      },
+      "active": {
+        "tag": "FLT-SEMANTICS",
+        "text": "All"
+      },
+      "buttons": [
+        {
+          "name": "All",
+          "rect": {
+            "x": 416,
+            "y": 695.5,
+            "width": 41.09375,
+            "height": 44,
+            "top": 695.5,
+            "right": 457.09375,
+            "bottom": 739.5,
+            "left": 416
+          },
+          "selected": "true",
+          "focused": true,
+          "style": null
+        },
+        {
+          "name": "Open",
+          "rect": {
+            "x": 461.09393310546875,
+            "y": 695.5,
+            "width": 59.078125,
+            "height": 44,
+            "top": 695.5,
+            "right": 520.1720581054688,
+            "bottom": 739.5,
+            "left": 461.09393310546875
+          },
+          "selected": "false",
+          "focused": false,
+          "style": null
+        },
+        {
+          "name": "Closed",
+          "rect": {
+            "x": 524.1777954101562,
+            "y": 695.5,
+            "width": 69.578125,
+            "height": 44,
+            "top": 695.5,
+            "right": 593.7559204101562,
+            "bottom": 739.5,
+            "left": 524.1777954101562
+          },
+          "selected": "false",
+          "focused": false,
+          "style": null
+        }
+      ],
+      "indicatorColor": null
+    },
+    {
+      "name": "end",
+      "scroll": {
+        "x": 0,
+        "y": 0
+      },
+      "dpr": 1,
+      "probe": {
+        "disableAnimations": false,
+        "platformDisableAnimations": false,
+        "motionOverride": null,
+        "backgroundArgb": 4279571733,
+        "constraints": {
+          "minWidth": 0,
+          "maxWidth": 592,
+          "minHeight": 0,
+          "maxHeight": 904
+        },
+        "rect": {
+          "x": 344,
+          "y": 48,
+          "width": 592,
+          "height": 904
+        }
+      },
+      "active": {
+        "tag": "FLT-SEMANTICS",
+        "text": "Closed"
+      },
+      "buttons": [
+        {
+          "name": "All",
+          "rect": {
+            "x": 416,
+            "y": 695.5,
+            "width": 41.09375,
+            "height": 44,
+            "top": 695.5,
+            "right": 457.09375,
+            "bottom": 739.5,
+            "left": 416
+          },
+          "selected": "false",
+          "focused": false,
+          "style": null
+        },
+        {
+          "name": "Open",
+          "rect": {
+            "x": 461.09393310546875,
+            "y": 695.5,
+            "width": 59.078125,
+            "height": 44,
+            "top": 695.5,
+            "right": 520.1720581054688,
+            "bottom": 739.5,
+            "left": 461.09393310546875
+          },
+          "selected": "false",
+          "focused": false,
+          "style": null
+        },
+        {
+          "name": "Closed",
+          "rect": {
+            "x": 524.1777954101562,
+            "y": 695.5,
+            "width": 69.578125,
+            "height": 44,
+            "top": 695.5,
+            "right": 593.7559204101562,
+            "bottom": 739.5,
+            "left": 524.1777954101562
+          },
+          "selected": "true",
+          "focused": true,
+          "style": null
+        }
+      ],
+      "indicatorColor": null
+    },
+    {
+      "name": "left",
+      "scroll": {
+        "x": 0,
+        "y": 0
+      },
+      "dpr": 1,
+      "probe": {
+        "disableAnimations": false,
+        "platformDisableAnimations": false,
+        "motionOverride": null,
+        "backgroundArgb": 4279571733,
+        "constraints": {
+          "minWidth": 0,
+          "maxWidth": 592,
+          "minHeight": 0,
+          "maxHeight": 904
+        },
+        "rect": {
+          "x": 344,
+          "y": 48,
+          "width": 592,
+          "height": 904
+        }
+      },
+      "active": {
+        "tag": "FLT-SEMANTICS",
+        "text": "Open"
+      },
+      "buttons": [
+        {
+          "name": "All",
+          "rect": {
+            "x": 416,
+            "y": 695.5,
+            "width": 41.09375,
+            "height": 44,
+            "top": 695.5,
+            "right": 457.09375,
+            "bottom": 739.5,
+            "left": 416
+          },
+          "selected": "false",
+          "focused": false,
+          "style": null
+        },
+        {
+          "name": "Open",
+          "rect": {
+            "x": 461.09393310546875,
+            "y": 695.5,
+            "width": 59.078125,
+            "height": 44,
+            "top": 695.5,
+            "right": 520.1720581054688,
+            "bottom": 739.5,
+            "left": 461.09393310546875
+          },
+          "selected": "true",
+          "focused": true,
+          "style": null
+        },
+        {
+          "name": "Closed",
+          "rect": {
+            "x": 524.1777954101562,
+            "y": 695.5,
+            "width": 69.578125,
+            "height": 44,
+            "top": 695.5,
+            "right": 593.7559204101562,
+            "bottom": 739.5,
+            "left": 524.1777954101562
+          },
+          "selected": "false",
+          "focused": false,
+          "style": null
+        }
+      ],
+      "indicatorColor": null
+    }
+  ],
+  "observerSetup": "Flutter semantics enabled by placeholder click for DOM observation only."
+}

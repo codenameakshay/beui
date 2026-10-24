@@ -1,0 +1,994 @@
+{
+  "implementation": "1214692666e297c5734bfdeb13a39e8b67554c49",
+  "candidateJs": "9060bcdad8840e849340956361c6acd047b4eaed968a0ee1baa7d12a919cdc3b",
+  "pinnedSource": "a76e57c9bbc2837e96420b2610e9c82a3271bb05",
+  "liveDeployment": "unknown",
+  "checks": [
+    {
+      "kind": "keyboard and trusted touch",
+      "source": "interactions-source-v3/states.json",
+      "candidate": "interactions-after-v12b/states.json",
+      "sourceStates": 38,
+      "candidateStates": 38
+    },
+    {
+      "kind": "mouse and keyboard handoff",
+      "source": "mouse-source-v1/states.json",
+      "candidate": "mouse-after-v12/states.json",
+      "sourceStates": 16,
+      "candidateStates": 16
+    },
+    {
+      "kind": "narrow keyboard and touch pan",
+      "source": "narrow-source-v1/states.json",
+      "candidate": "narrow-after-v12/states.json",
+      "sourceStates": 4,
+      "candidateStates": 4
+    }
+  ],
+  "staticDiff": {
+    "reference": "docs/proof/v3-parity/charts/round4-bump/static-source-v1",
+    "candidate": "docs/proof/v3-parity/charts/round4-bump/static-after-v12",
+    "noResize": true,
+    "noRegistration": true,
+    "thresholdForPass": 0,
+    "results": [
+      {
+        "name": "dark-default.png",
+        "width": 800,
+        "height": 600,
+        "exactMismatchedPixels": 9706,
+        "pixelsAbove8": 4760,
+        "percent": 2.0220833333333332,
+        "meanAbsoluteChannelError": 0.37437777777777775,
+        "rootMeanSquareChannelError": 4.958329411763155,
+        "bounds": {
+          "minX": 112,
+          "minY": 99,
+          "maxX": 687,
+          "maxY": 416
+        },
+        "regions": {
+          "plot": 7906,
+          "legend": 1800
+        },
+        "verdict": "not exact parity"
+      },
+      {
+        "name": "dark-composed.png",
+        "width": 800,
+        "height": 600,
+        "exactMismatchedPixels": 9706,
+        "pixelsAbove8": 4760,
+        "percent": 2.0220833333333332,
+        "meanAbsoluteChannelError": 0.37437777777777775,
+        "rootMeanSquareChannelError": 4.958329411763155,
+        "bounds": {
+          "minX": 112,
+          "minY": 99,
+          "maxX": 687,
+          "maxY": 416
+        },
+        "regions": {
+          "plot": 7906,
+          "legend": 1800
+        },
+        "verdict": "not exact parity"
+      },
+      {
+        "name": "dark-narrow.png",
+        "width": 390,
+        "height": 600,
+        "exactMismatchedPixels": 6086,
+        "pixelsAbove8": 2996,
+        "percent": 2.600854700854701,
+        "meanAbsoluteChannelError": 0.5736752136752137,
+        "rootMeanSquareChannelError": 6.420268164558495,
+        "bounds": {
+          "minX": 43,
+          "minY": 98,
+          "maxX": 354,
+          "maxY": 442
+        },
+        "regions": {
+          "plot": 4270,
+          "legend": 1816
+        },
+        "verdict": "not exact parity"
+      },
+      {
+        "name": "dark-empty.png",
+        "width": 800,
+        "height": 600,
+        "exactMismatchedPixels": 554,
+        "pixelsAbove8": 196,
+        "percent": 0.11541666666666667,
+        "meanAbsoluteChannelError": 0.010825694444444445,
+        "rootMeanSquareChannelError": 0.4548954397563369,
+        "bounds": {
+          "minX": 351,
+          "minY": 148,
+          "maxX": 449,
+          "maxY": 161
+        },
+        "regions": {
+          "plot": 554,
+          "legend": 0
+        },
+        "verdict": "not exact parity"
+      },
+      {
+        "name": "dark-missing.png",
+        "width": 800,
+        "height": 600,
+        "exactMismatchedPixels": 1853,
+        "pixelsAbove8": 1236,
+        "percent": 0.38604166666666667,
+        "meanAbsoluteChannelError": 0.11475833333333334,
+        "rootMeanSquareChannelError": 2.5140068726150204,
+        "bounds": {
+          "minX": 112,
+          "minY": 148,
+          "maxX": 687,
+          "maxY": 310
+        },
+        "regions": {
+          "plot": 554,
+          "legend": 1299
+        },
+        "verdict": "not exact parity"
+      },
+      {
+        "name": "dark-update.png",
+        "width": 800,
+        "height": 600,
+        "exactMismatchedPixels": 9429,
+        "pixelsAbove8": 4619,
+        "percent": 1.964375,
+        "meanAbsoluteChannelError": 0.3754208333333333,
+        "rootMeanSquareChannelError": 5.045818125493184,
+        "bounds": {
+          "minX": 112,
+          "minY": 99,
+          "maxX": 687,
+          "maxY": 416
+        },
+        "regions": {
+          "plot": 7630,
+          "legend": 1799
+        },
+        "verdict": "not exact parity"
+      },
+      {
+        "name": "light-default.png",
+        "width": 800,
+        "height": 600,
+        "exactMismatchedPixels": 10676,
+        "pixelsAbove8": 4606,
+        "percent": 2.2241666666666666,
+        "meanAbsoluteChannelError": 0.35356180555555555,
+        "rootMeanSquareChannelError": 4.901541070021867,
+        "bounds": {
+          "minX": 112,
+          "minY": 99,
+          "maxX": 687,
+          "maxY": 416
+        },
+        "regions": {
+          "plot": 8889,
+          "legend": 1787
+        },
+        "verdict": "not exact parity"
+      },
+      {
+        "name": "light-composed.png",
+        "width": 800,
+        "height": 600,
+        "exactMismatchedPixels": 10676,
+        "pixelsAbove8": 4606,
+        "percent": 2.2241666666666666,
+        "meanAbsoluteChannelError": 0.35356180555555555,
+        "rootMeanSquareChannelError": 4.901541070021867,
+        "bounds": {
+          "minX": 112,
+          "minY": 99,
+          "maxX": 687,
+          "maxY": 416
+        },
+        "regions": {
+          "plot": 8889,
+          "legend": 1787
+        },
+        "verdict": "not exact parity"
+      },
+      {
+        "name": "light-narrow.png",
+        "width": 390,
+        "height": 600,
+        "exactMismatchedPixels": 6016,
+        "pixelsAbove8": 2860,
+        "percent": 2.570940170940171,
+        "meanAbsoluteChannelError": 0.5107991452991453,
+        "rootMeanSquareChannelError": 6.182454380360777,
+        "bounds": {
+          "minX": 43,
+          "minY": 98,
+          "maxX": 354,
+          "maxY": 442
+        },
+        "regions": {
+          "plot": 4201,
+          "legend": 1815
+        },
+        "verdict": "not exact parity"
+      },
+      {
+        "name": "light-empty.png",
+        "width": 800,
+        "height": 600,
+        "exactMismatchedPixels": 515,
+        "pixelsAbove8": 222,
+        "percent": 0.10729166666666666,
+        "meanAbsoluteChannelError": 0.012064583333333333,
+        "rootMeanSquareChannelError": 0.5637615482926566,
+        "bounds": {
+          "minX": 351,
+          "minY": 148,
+          "maxX": 449,
+          "maxY": 161
+        },
+        "regions": {
+          "plot": 515,
+          "legend": 0
+        },
+        "verdict": "not exact parity"
+      },
+      {
+        "name": "light-missing.png",
+        "width": 800,
+        "height": 600,
+        "exactMismatchedPixels": 1781,
+        "pixelsAbove8": 1107,
+        "percent": 0.37104166666666666,
+        "meanAbsoluteChannelError": 0.08218680555555556,
+        "rootMeanSquareChannelError": 1.9989884594742189,
+        "bounds": {
+          "minX": 112,
+          "minY": 148,
+          "maxX": 687,
+          "maxY": 310
+        },
+        "regions": {
+          "plot": 515,
+          "legend": 1266
+        },
+        "verdict": "not exact parity"
+      },
+      {
+        "name": "light-update.png",
+        "width": 800,
+        "height": 600,
+        "exactMismatchedPixels": 10722,
+        "pixelsAbove8": 4529,
+        "percent": 2.23375,
+        "meanAbsoluteChannelError": 0.3434576388888889,
+        "rootMeanSquareChannelError": 4.815287071746952,
+        "bounds": {
+          "minX": 112,
+          "minY": 99,
+          "maxX": 687,
+          "maxY": 416
+        },
+        "regions": {
+          "plot": 8934,
+          "legend": 1788
+        },
+        "verdict": "not exact parity"
+      }
+    ]
+  },
+  "interactionDiff": {
+    "reference": "docs/proof/v3-parity/charts/round4-bump/interactions-source-v3",
+    "candidate": "docs/proof/v3-parity/charts/round4-bump/interactions-after-v12b",
+    "noResize": true,
+    "noRegistration": true,
+    "thresholdForPass": 0,
+    "results": [
+      {
+        "name": "no-preference-keyboard-3.png",
+        "width": 800,
+        "height": 600,
+        "exactMismatchedPixels": 14633,
+        "pixelsAbove8": 4903,
+        "percent": 3.0485416666666665,
+        "meanAbsoluteChannelError": 0.35493819444444447,
+        "rootMeanSquareChannelError": 4.960787137922547,
+        "bounds": {
+          "minX": 112,
+          "minY": 95,
+          "maxX": 687,
+          "maxY": 416
+        },
+        "regions": {
+          "plot": 12806,
+          "legend": 1827
+        },
+        "verdict": "not exact parity"
+      },
+      {
+        "name": "no-preference-keyboard-8.png",
+        "width": 800,
+        "height": 600,
+        "exactMismatchedPixels": 15005,
+        "pixelsAbove8": 4900,
+        "percent": 3.1260416666666666,
+        "meanAbsoluteChannelError": 0.3550520833333333,
+        "rootMeanSquareChannelError": 4.953409249642558,
+        "bounds": {
+          "minX": 104,
+          "minY": 95,
+          "maxX": 687,
+          "maxY": 416
+        },
+        "regions": {
+          "plot": 12806,
+          "legend": 2199
+        },
+        "verdict": "not exact parity"
+      },
+      {
+        "name": "no-preference-keyboard-14.png",
+        "width": 800,
+        "height": 600,
+        "exactMismatchedPixels": 13237,
+        "pixelsAbove8": 3585,
+        "percent": 2.7577083333333334,
+        "meanAbsoluteChannelError": 0.18982152777777778,
+        "rootMeanSquareChannelError": 2.6584627711434208,
+        "bounds": {
+          "minX": 100,
+          "minY": 95,
+          "maxX": 687,
+          "maxY": 416
+        },
+        "regions": {
+          "plot": 10232,
+          "legend": 3005
+        },
+        "verdict": "not exact parity"
+      },
+      {
+        "name": "no-preference-touch-17.png",
+        "width": 800,
+        "height": 600,
+        "exactMismatchedPixels": 15155,
+        "pixelsAbove8": 4560,
+        "percent": 3.1572916666666666,
+        "meanAbsoluteChannelError": 0.2669486111111111,
+        "rootMeanSquareChannelError": 3.5337983184606836,
+        "bounds": {
+          "minX": 56,
+          "minY": 95,
+          "maxX": 687,
+          "maxY": 416
+        },
+        "regions": {
+          "plot": 12956,
+          "legend": 2199
+        },
+        "verdict": "not exact parity"
+      },
+      {
+        "name": "reduce-keyboard-22.png",
+        "width": 800,
+        "height": 600,
+        "exactMismatchedPixels": 14705,
+        "pixelsAbove8": 4893,
+        "percent": 3.0635416666666666,
+        "meanAbsoluteChannelError": 0.35492986111111113,
+        "rootMeanSquareChannelError": 4.960464737972307,
+        "bounds": {
+          "minX": 112,
+          "minY": 95,
+          "maxX": 687,
+          "maxY": 416
+        },
+        "regions": {
+          "plot": 12878,
+          "legend": 1827
+        },
+        "verdict": "not exact parity"
+      },
+      {
+        "name": "reduce-keyboard-27.png",
+        "width": 800,
+        "height": 600,
+        "exactMismatchedPixels": 15077,
+        "pixelsAbove8": 4890,
+        "percent": 3.1410416666666667,
+        "meanAbsoluteChannelError": 0.35504375,
+        "rootMeanSquareChannelError": 4.953086369460292,
+        "bounds": {
+          "minX": 104,
+          "minY": 95,
+          "maxX": 687,
+          "maxY": 416
+        },
+        "regions": {
+          "plot": 12878,
+          "legend": 2199
+        },
+        "verdict": "not exact parity"
+      },
+      {
+        "name": "reduce-keyboard-33.png",
+        "width": 800,
+        "height": 600,
+        "exactMismatchedPixels": 13303,
+        "pixelsAbove8": 3576,
+        "percent": 2.7714583333333334,
+        "meanAbsoluteChannelError": 0.18980902777777778,
+        "rootMeanSquareChannelError": 2.657880969870547,
+        "bounds": {
+          "minX": 100,
+          "minY": 95,
+          "maxX": 687,
+          "maxY": 416
+        },
+        "regions": {
+          "plot": 10298,
+          "legend": 3005
+        },
+        "verdict": "not exact parity"
+      },
+      {
+        "name": "reduce-touch-36.png",
+        "width": 800,
+        "height": 600,
+        "exactMismatchedPixels": 14641,
+        "pixelsAbove8": 4542,
+        "percent": 3.0502083333333334,
+        "meanAbsoluteChannelError": 0.2655652777777778,
+        "rootMeanSquareChannelError": 3.532309993317247,
+        "bounds": {
+          "minX": 56,
+          "minY": 95,
+          "maxX": 687,
+          "maxY": 416
+        },
+        "regions": {
+          "plot": 12442,
+          "legend": 2199
+        },
+        "verdict": "not exact parity"
+      }
+    ]
+  },
+  "baselineDiff": {
+    "reference": "docs/proof/v3-parity/charts/round4-bump/static-source-v1",
+    "candidate": "docs/proof/v3-parity/charts/round4-bump/static-before-v1",
+    "noResize": true,
+    "noRegistration": true,
+    "thresholdForPass": 0,
+    "results": [
+      {
+        "name": "dark-default.png",
+        "width": 800,
+        "height": 600,
+        "exactMismatchedPixels": 12559,
+        "pixelsAbove8": 9084,
+        "percent": 2.6164583333333336,
+        "meanAbsoluteChannelError": 1.2860944444444444,
+        "rootMeanSquareChannelError": 12.923098774846705,
+        "bounds": {
+          "minX": 104,
+          "minY": 99,
+          "maxX": 687,
+          "maxY": 416
+        },
+        "regions": {
+          "plot": 9460,
+          "legend": 3099
+        },
+        "verdict": "not exact parity"
+      },
+      {
+        "name": "dark-composed.png",
+        "width": 800,
+        "height": 600,
+        "exactMismatchedPixels": 12471,
+        "pixelsAbove8": 9003,
+        "percent": 2.598125,
+        "meanAbsoluteChannelError": 1.2601125,
+        "rootMeanSquareChannelError": 12.730776357577987,
+        "bounds": {
+          "minX": 104,
+          "minY": 99,
+          "maxX": 687,
+          "maxY": 416
+        },
+        "regions": {
+          "plot": 9460,
+          "legend": 3011
+        },
+        "verdict": "not exact parity"
+      },
+      {
+        "name": "dark-narrow.png",
+        "width": 390,
+        "height": 600,
+        "exactMismatchedPixels": 8142,
+        "pixelsAbove8": 6096,
+        "percent": 3.4794871794871796,
+        "meanAbsoluteChannelError": 2.1434586894586896,
+        "rootMeanSquareChannelError": 17.434795905375786,
+        "bounds": {
+          "minX": 35,
+          "minY": 98,
+          "maxX": 354,
+          "maxY": 442
+        },
+        "regions": {
+          "plot": 5056,
+          "legend": 3086
+        },
+        "verdict": "not exact parity"
+      },
+      {
+        "name": "dark-empty.png",
+        "width": 800,
+        "height": 600,
+        "exactMismatchedPixels": 1135,
+        "pixelsAbove8": 1051,
+        "percent": 0.23645833333333333,
+        "meanAbsoluteChannelError": 0.246325,
+        "rootMeanSquareChannelError": 5.938869374253356,
+        "bounds": {
+          "minX": 350,
+          "minY": 116,
+          "maxX": 450,
+          "maxY": 161
+        },
+        "regions": {
+          "plot": 1135,
+          "legend": 0
+        },
+        "verdict": "not exact parity"
+      },
+      {
+        "name": "dark-missing.png",
+        "width": 800,
+        "height": 600,
+        "exactMismatchedPixels": 3724,
+        "pixelsAbove8": 3492,
+        "percent": 0.7758333333333334,
+        "meanAbsoluteChannelError": 0.8088604166666666,
+        "rootMeanSquareChannelError": 11.129982935246977,
+        "bounds": {
+          "minX": 104,
+          "minY": 149,
+          "maxX": 687,
+          "maxY": 310
+        },
+        "regions": {
+          "plot": 2321,
+          "legend": 1403
+        },
+        "verdict": "not exact parity"
+      },
+      {
+        "name": "dark-update.png",
+        "width": 800,
+        "height": 600,
+        "exactMismatchedPixels": 20414,
+        "pixelsAbove8": 17592,
+        "percent": 4.252916666666667,
+        "meanAbsoluteChannelError": 1.8856847222222222,
+        "rootMeanSquareChannelError": 14.405578828665265,
+        "bounds": {
+          "minX": 104,
+          "minY": 95,
+          "maxX": 687,
+          "maxY": 416
+        },
+        "regions": {
+          "plot": 17314,
+          "legend": 3100
+        },
+        "verdict": "not exact parity"
+      },
+      {
+        "name": "light-default.png",
+        "width": 800,
+        "height": 600,
+        "exactMismatchedPixels": 13673,
+        "pixelsAbove8": 9026,
+        "percent": 2.8485416666666667,
+        "meanAbsoluteChannelError": 1.2316631944444445,
+        "rootMeanSquareChannelError": 12.522132323077674,
+        "bounds": {
+          "minX": 104,
+          "minY": 99,
+          "maxX": 687,
+          "maxY": 416
+        },
+        "regions": {
+          "plot": 10571,
+          "legend": 3102
+        },
+        "verdict": "not exact parity"
+      },
+      {
+        "name": "light-composed.png",
+        "width": 800,
+        "height": 600,
+        "exactMismatchedPixels": 13584,
+        "pixelsAbove8": 8949,
+        "percent": 2.83,
+        "meanAbsoluteChannelError": 1.2080743055555556,
+        "rootMeanSquareChannelError": 12.353421225402387,
+        "bounds": {
+          "minX": 104,
+          "minY": 99,
+          "maxX": 687,
+          "maxY": 416
+        },
+        "regions": {
+          "plot": 10571,
+          "legend": 3013
+        },
+        "verdict": "not exact parity"
+      },
+      {
+        "name": "light-narrow.png",
+        "width": 390,
+        "height": 600,
+        "exactMismatchedPixels": 8097,
+        "pixelsAbove8": 6047,
+        "percent": 3.4602564102564104,
+        "meanAbsoluteChannelError": 2.00955698005698,
+        "rootMeanSquareChannelError": 16.732642875733575,
+        "bounds": {
+          "minX": 35,
+          "minY": 98,
+          "maxX": 354,
+          "maxY": 442
+        },
+        "regions": {
+          "plot": 5008,
+          "legend": 3089
+        },
+        "verdict": "not exact parity"
+      },
+      {
+        "name": "light-empty.png",
+        "width": 800,
+        "height": 600,
+        "exactMismatchedPixels": 1141,
+        "pixelsAbove8": 1031,
+        "percent": 0.23770833333333333,
+        "meanAbsoluteChannelError": 0.2070298611111111,
+        "rootMeanSquareChannelError": 5.050294339607016,
+        "bounds": {
+          "minX": 350,
+          "minY": 116,
+          "maxX": 450,
+          "maxY": 161
+        },
+        "regions": {
+          "plot": 1141,
+          "legend": 0
+        },
+        "verdict": "not exact parity"
+      },
+      {
+        "name": "light-missing.png",
+        "width": 800,
+        "height": 600,
+        "exactMismatchedPixels": 3733,
+        "pixelsAbove8": 3452,
+        "percent": 0.7777083333333333,
+        "meanAbsoluteChannelError": 0.7658104166666667,
+        "rootMeanSquareChannelError": 10.735931912404148,
+        "bounds": {
+          "minX": 104,
+          "minY": 149,
+          "maxX": 687,
+          "maxY": 310
+        },
+        "regions": {
+          "plot": 2330,
+          "legend": 1403
+        },
+        "verdict": "not exact parity"
+      },
+      {
+        "name": "light-update.png",
+        "width": 800,
+        "height": 600,
+        "exactMismatchedPixels": 20510,
+        "pixelsAbove8": 17976,
+        "percent": 4.272916666666666,
+        "meanAbsoluteChannelError": 1.8842680555555555,
+        "rootMeanSquareChannelError": 14.368638930748528,
+        "bounds": {
+          "minX": 104,
+          "minY": 95,
+          "maxX": 687,
+          "maxY": 416
+        },
+        "regions": {
+          "plot": 17383,
+          "legend": 3127
+        },
+        "verdict": "not exact parity"
+      }
+    ]
+  },
+  "recordings": [
+    {
+      "directory": "captures/source-no-preference-v3",
+      "frames": 132,
+      "stats": {
+        "originEpochMs": 1792756521146,
+        "backend": "screenshots",
+        "startMs": 2791.130667,
+        "sequenceStartMs": 2791.3465,
+        "stopMs": 6412.442,
+        "frames": 132,
+        "durationMs": 3632.5247287750244,
+        "measuredFps": 36.06307176996876,
+        "medianIntervalMs": 30.30848503112793,
+        "maxIntervalMs": 72.97086715698242,
+        "reorderedDeliveries": 0,
+        "fastMotionVerdict": "inconclusive; inspect per-event gaps, not nominal frame rate",
+        "errors": [],
+        "video": {
+          "width": 800,
+          "height": 513,
+          "decodedFrames": 132
+        }
+      },
+      "servedJs": "bf1b0cfeebefd63c437afc0fed0346c8e0ea87faa06b5781036831b7383f7aab"
+    },
+    {
+      "directory": "captures/source-no-preference-touch-v3",
+      "frames": 129,
+      "stats": {
+        "originEpochMs": 1792756646199,
+        "backend": "screenshots",
+        "startMs": 2806.5630840000003,
+        "sequenceStartMs": 2806.6756669999995,
+        "stopMs": 5223.457709,
+        "frames": 129,
+        "durationMs": 2417.0310497283936,
+        "measuredFps": 52.95753234712628,
+        "medianIntervalMs": 16.798973083496094,
+        "maxIntervalMs": 72.89671897888184,
+        "reorderedDeliveries": 0,
+        "fastMotionVerdict": "inconclusive; inspect per-event gaps, not nominal frame rate",
+        "errors": [],
+        "video": {
+          "width": 800,
+          "height": 513,
+          "decodedFrames": 129
+        }
+      },
+      "servedJs": "bf1b0cfeebefd63c437afc0fed0346c8e0ea87faa06b5781036831b7383f7aab"
+    },
+    {
+      "directory": "captures/source-reduce-v3",
+      "frames": 187,
+      "stats": {
+        "originEpochMs": 1792756626757,
+        "backend": "screenshots",
+        "startMs": 2708.0295,
+        "sequenceStartMs": 2708.11625,
+        "stopMs": 6319.251,
+        "frames": 187,
+        "durationMs": 3614.4165992736816,
+        "measuredFps": 51.46058703841078,
+        "medianIntervalMs": 16.788959503173828,
+        "maxIntervalMs": 49.0109920501709,
+        "reorderedDeliveries": 0,
+        "fastMotionVerdict": "inconclusive; inspect per-event gaps, not nominal frame rate",
+        "errors": [],
+        "video": {
+          "width": 800,
+          "height": 513,
+          "decodedFrames": 187
+        }
+      },
+      "servedJs": "bf1b0cfeebefd63c437afc0fed0346c8e0ea87faa06b5781036831b7383f7aab"
+    },
+    {
+      "directory": "captures/source-reduce-touch-v3",
+      "frames": 72,
+      "stats": {
+        "originEpochMs": 1792756689885,
+        "backend": "screenshots",
+        "startMs": 2728.3530419999997,
+        "sequenceStartMs": 2728.7569999999996,
+        "stopMs": 5142.231083000001,
+        "frames": 72,
+        "durationMs": 2412.7256870269775,
+        "measuredFps": 29.427298918298508,
+        "medianIntervalMs": 33.211469650268555,
+        "maxIntervalMs": 90.362548828125,
+        "reorderedDeliveries": 0,
+        "fastMotionVerdict": "inconclusive; inspect per-event gaps, not nominal frame rate",
+        "errors": [],
+        "video": {
+          "width": 800,
+          "height": 513,
+          "decodedFrames": 72
+        }
+      },
+      "servedJs": "bf1b0cfeebefd63c437afc0fed0346c8e0ea87faa06b5781036831b7383f7aab"
+    },
+    {
+      "directory": "captures/after-no-preference-v12",
+      "frames": 172,
+      "stats": {
+        "originEpochMs": 1792756680328,
+        "backend": "screenshots",
+        "startMs": 2684.047667,
+        "sequenceStartMs": 2684.2058340000003,
+        "stopMs": 6289.727584,
+        "frames": 172,
+        "durationMs": 3605.5123805999756,
+        "measuredFps": 47.42737839983363,
+        "medianIntervalMs": 16.997337341308594,
+        "maxIntervalMs": 59.377431869506836,
+        "reorderedDeliveries": 0,
+        "fastMotionVerdict": "inconclusive; inspect per-event gaps, not nominal frame rate",
+        "errors": [],
+        "video": {
+          "width": 800,
+          "height": 513,
+          "decodedFrames": 172
+        }
+      },
+      "servedJs": "9060bcdad8840e849340956361c6acd047b4eaed968a0ee1baa7d12a919cdc3b"
+    },
+    {
+      "directory": "captures/after-no-preference-touch-v12",
+      "frames": 106,
+      "stats": {
+        "originEpochMs": 1792756713777,
+        "backend": "screenshots",
+        "startMs": 2724.787083,
+        "sequenceStartMs": 2724.9367500000003,
+        "stopMs": 5146.281083,
+        "frames": 106,
+        "durationMs": 2414.5684242248535,
+        "measuredFps": 43.48603209855527,
+        "medianIntervalMs": 17.087697982788086,
+        "maxIntervalMs": 172.09744453430176,
+        "reorderedDeliveries": 0,
+        "fastMotionVerdict": "inconclusive; inspect per-event gaps, not nominal frame rate",
+        "errors": [],
+        "video": {
+          "width": 800,
+          "height": 513,
+          "decodedFrames": 106
+        }
+      },
+      "servedJs": "9060bcdad8840e849340956361c6acd047b4eaed968a0ee1baa7d12a919cdc3b"
+    },
+    {
+      "directory": "captures/after-reduce-v12",
+      "frames": 124,
+      "stats": {
+        "originEpochMs": 1792756704884,
+        "backend": "screenshots",
+        "startMs": 2681.4868749999996,
+        "sequenceStartMs": 2681.565834,
+        "stopMs": 6295.769459,
+        "frames": 124,
+        "durationMs": 3615.8275604248047,
+        "measuredFps": 34.017108931364355,
+        "medianIntervalMs": 33.04028511047363,
+        "maxIntervalMs": 49.89361763000488,
+        "reorderedDeliveries": 0,
+        "fastMotionVerdict": "inconclusive; inspect per-event gaps, not nominal frame rate",
+        "errors": [],
+        "video": {
+          "width": 800,
+          "height": 513,
+          "decodedFrames": 124
+        }
+      },
+      "servedJs": "9060bcdad8840e849340956361c6acd047b4eaed968a0ee1baa7d12a919cdc3b"
+    },
+    {
+      "directory": "captures/after-reduce-touch-v12",
+      "frames": 44,
+      "stats": {
+        "originEpochMs": 1792756744097,
+        "backend": "screenshots",
+        "startMs": 4524.226166,
+        "sequenceStartMs": 4527.549832999999,
+        "stopMs": 6979.835416,
+        "frames": 44,
+        "durationMs": 2331.1145305633545,
+        "measuredFps": 18.44611212200213,
+        "medianIntervalMs": 39.25442695617676,
+        "maxIntervalMs": 367.581844329834,
+        "reorderedDeliveries": 0,
+        "fastMotionVerdict": "inconclusive; inspect per-event gaps, not nominal frame rate",
+        "errors": [],
+        "video": {
+          "width": 800,
+          "height": 513,
+          "decodedFrames": 44
+        }
+      },
+      "servedJs": "9060bcdad8840e849340956361c6acd047b4eaed968a0ee1baa7d12a919cdc3b"
+    }
+  ],
+  "sourceComputedBorders": [
+    {
+      "dpr": 1,
+      "border": "1px",
+      "width": "20px",
+      "height": "20px",
+      "font": "\"Geist Mono\", ui-monospace, monospace",
+      "fontWeight": "500",
+      "rect": {
+        "x": 127.82856750488281,
+        "y": 239.13540649414062,
+        "width": 20,
+        "height": 20,
+        "top": 239.13540649414062,
+        "right": 147.8285675048828,
+        "bottom": 259.1354064941406,
+        "left": 127.82856750488281
+      }
+    },
+    {
+      "dpr": 1.25,
+      "border": "1px",
+      "width": "20px",
+      "height": "20px",
+      "font": "\"Geist Mono\", ui-monospace, monospace",
+      "fontWeight": "500",
+      "rect": {
+        "x": 127.82856750488281,
+        "y": 239.13540649414062,
+        "width": 20,
+        "height": 20,
+        "top": 239.13540649414062,
+        "right": 147.8285675048828,
+        "bottom": 259.1354064941406,
+        "left": 127.82856750488281
+      }
+    },
+    {
+      "dpr": 2,
+      "border": "1px",
+      "width": "20px",
+      "height": "20px",
+      "font": "\"Geist Mono\", ui-monospace, monospace",
+      "fontWeight": "500",
+      "rect": {
+        "x": 127.82856750488281,
+        "y": 239.13540649414062,
+        "width": 20,
+        "height": 20,
+        "top": 239.13540649414062,
+        "right": 147.8285675048828,
+        "bottom": 259.1354064941406,
+        "left": 127.82856750488281
+      }
+    }
+  ],
+  "unresolved": [
+    "Every static and interaction comparison has nonzero exact RGBA differences.",
+    "Flutter button selection exposes aria-current, not the source aria-pressed.",
+    "Rapid unpaced 28-Tab burst lost focus in interactions-after-v12. Paced 60ms source and candidate checks do not waive it.",
+    "Shared Tooltip surface, arrow, collision and warm-delay behavior remain parent-owned.",
+    "Native recording cadence cannot certify short-spring trajectories.",
+    "The unchanged bump widget golden still fails."
+  ]
+}

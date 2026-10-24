@@ -1,0 +1,90 @@
+{
+  "name": "candidate-card-folder-dark-reduce",
+  "url": "http://127.0.0.1:8108/?slug=card-folder&theme=dark&previewWidth=592&captureProbe=1",
+  "checks": [
+    {
+      "label": "rest",
+      "checkedAt": "2026-10-23T08:59:30.054Z"
+    },
+    {
+      "label": "revealed",
+      "checkedAt": "2026-10-23T08:59:30.771Z"
+    },
+    {
+      "label": "masked",
+      "checkedAt": "2026-10-23T08:59:31.468Z"
+    },
+    {
+      "label": "opened",
+      "checkedAt": "2026-10-23T08:59:32.166Z"
+    },
+    {
+      "label": "keyboard-closed",
+      "checkedAt": "2026-10-23T08:59:32.852Z"
+    }
+  ],
+  "targets": {
+    "privacy": {
+      "x": 619.7000122070312,
+      "y": 500,
+      "measuredBounds": {
+        "x": 599.7000122070312,
+        "y": 480,
+        "width": 40,
+        "height": 40
+      }
+    },
+    "folder": {
+      "x": 772.5,
+      "y": 463.99249267578125,
+      "measuredBounds": {
+        "x": 580.5,
+        "y": 353.53936767578125,
+        "width": 384,
+        "height": 220.90625
+      }
+    }
+  },
+  "events": [
+    {
+      "atMs": 600,
+      "type": "click",
+      "target": "privacy"
+    },
+    {
+      "atMs": 1500,
+      "type": "click",
+      "target": "privacy"
+    },
+    {
+      "atMs": 2400,
+      "type": "click",
+      "target": "folder"
+    },
+    {
+      "atMs": 3300,
+      "type": "key",
+      "key": "Enter"
+    }
+  ],
+  "flutterCapture": {
+    "disableAnimations": true,
+    "platformDisableAnimations": true,
+    "motionOverride": null,
+    "backgroundArgb": 4279571733,
+    "constraints": {
+      "minWidth": 0,
+      "maxWidth": 592,
+      "minHeight": 0,
+      "maxHeight": null
+    },
+    "rect": {
+      "x": 476.5,
+      "y": 317.5393586005831,
+      "width": 592,
+      "height": 292.92128279883383
+    }
+  },
+  "browserReducedMotion": true,
+  "pass": true
+}

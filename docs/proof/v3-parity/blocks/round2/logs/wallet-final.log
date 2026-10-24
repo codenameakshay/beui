@@ -1,0 +1,47 @@
+00:00 +0: loading /Users/codenameakshay/.t3/worktrees/beui/t3-5c0570f2/test/motion/wallet_card_test.dart
+00:00 +0: BeuiWalletCard account switcher account panel grows from its trigger when opening
+00:01 +1: BeuiWalletCard account switcher trigger morphs open, revealing the account list
+00:01 +2: BeuiWalletCard account switcher trigger morphs open, revealing the account list (reduced motion)
+00:01 +3: BeuiWalletCard account switcher selecting an account fires onAccountChange and closes
+00:01 +4: BeuiWalletCard search bar recent searches remain tappable across the leftward morph
+00:02 +5: BeuiWalletCard search bar icon morphs into a bar exposing recent searches
+00:02 +6: BeuiWalletCard balance eye toggle masks the balance
+00:02 +7: BeuiWalletCard balance shows the balance and an initial delta pill
+00:02 +8: BeuiWalletCard actions tapping Send invokes the callback
+00:02 +9: rest-state golden
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following assertion was thrown while running async test code:
+Golden "goldens/beui_wallet_card.png": Pixel test failed, 0.06%, 304px diff detected.
+Failure feedback can be found at
+/Users/codenameakshay/.t3/worktrees/beui/t3-5c0570f2/test/motion/failures
+
+When the exception was thrown, this was the stack:
+#0      LocalFileComparator.compare (package:flutter_test/src/_goldens_io.dart:108:5)
+<asynchronous suspension>
+#1      MatchesGoldenFile.matchAsync.<anonymous closure> (package:flutter_test/src/_matchers_io.dart:124:32)
+<asynchronous suspension>
+<asynchronous suspension>
+#3      _expect.<anonymous closure> (package:matcher/src/expect/expect.dart:153:17)
+<asynchronous suspension>
+<asynchronous suspension>
+#5      expectLater.<anonymous closure> (package:flutter_test/src/widget_tester.dart:508:19)
+<asynchronous suspension>
+#6      main.<anonymous closure> (file:///Users/codenameakshay/.t3/worktrees/beui/t3-5c0570f2/test/motion/wallet_card_test.dart:186:5)
+<asynchronous suspension>
+#7      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#8      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided 3 frames from dart:async and package:stack_trace)
+
+The exception was caught asynchronously.
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:02 +9 -1: rest-state golden [E]
+  Test failed. See exception logs above.
+  The test description was: rest-state golden
+  
+00:02 +9 -1: Some tests failed.
+
+Failing tests:
+  /Users/codenameakshay/.t3/worktrees/beui/t3-5c0570f2/test/motion/wallet_card_test.dart: rest-state golden

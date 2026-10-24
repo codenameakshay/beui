@@ -1,0 +1,4319 @@
+{
+  "example": {
+    "key": "base",
+    "id": "example/button-base/base",
+    "preview": "button-base",
+    "family": "button",
+    "seed": "4 variants, 4 sizes, Ripple, Tap me",
+    "flows": [
+      "variants",
+      "sizes",
+      "hover",
+      "hold",
+      "release",
+      "ripple",
+      "keyboard",
+      "reduced-motion"
+    ]
+  },
+  "origin": "after",
+  "theme": "light",
+  "motion": "no-preference",
+  "checks": [
+    {
+      "name": "exact preview control count",
+      "actual": 10,
+      "expected": 10,
+      "pass": true
+    }
+  ],
+  "observations": [
+    {
+      "label": "rest",
+      "atMs": 7.9870000000009895,
+      "observed": {
+        "url": "http://127.0.0.1:18120/after/?example=base&theme=light&captureProbe=1",
+        "reduce": false,
+        "active": {
+          "tag": "FLUTTER-VIEW",
+          "role": null,
+          "name": "ContinueDownloadOutlineGhostSmallMediumLargeDeleteRippleTap meflutter-view flt-scene-host {  font: normal normal 14px sans-serif;}flutter-view flt-semantics input[type=range] {  appearance: none;  -webkit-appearance: none;  width: 100%;  position: absolute;  border: none;  top: 0;  right: 0;  bottom: 0;  left: 0;}flutter-view input::selection {  background-color: transparent;}flutter-view textarea::selection {  background-color: transparent;}flutter-view flt-semantics input,flutter-view flt-semantics textarea,flutter-view flt-semantics [contentEditable=\"true\"] {  caret-color: transparent;}flutter-view .flt-text-editing::placeholder {  opacity: 0;}flutter-view:focus { outline: rgb(0, 0, 0) none 0px;}flutter-view .transparentTextEditing:-webkit-autofill,flutter-view .transparentTextEditing:-webkit-autofill:hover,flutter-view .transparentTextEditing:-webkit-autofill:focus,flutter-view .transparentTextEditing:-webkit-autofill:active {  opacity: 0 !important;}"
+        },
+        "probe": {
+          "disableAnimations": false,
+          "platformDisableAnimations": false,
+          "motionOverride": null,
+          "backgroundArgb": 4294769916,
+          "constraints": {
+            "minWidth": 0,
+            "maxWidth": 592,
+            "minHeight": 0,
+            "maxHeight": null
+          },
+          "rect": {
+            "x": 344,
+            "y": 92,
+            "width": 592,
+            "height": 176
+          }
+        },
+        "stage": null,
+        "controls": [
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": null,
+            "name": "Continue\nDownload\nOutline\nGhost\nSmall\nMedium\nLarge\nDelete\nRipple\nTap me",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1000,
+              "top": 0,
+              "right": 1280,
+              "bottom": 1000,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": null,
+            "name": "Continue\nDownload\nOutline\nGhost\nSmall\nMedium\nLarge\nDelete\nRipple\nTap me",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1000,
+              "top": 0,
+              "right": 1280,
+              "bottom": 1000,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": null,
+            "name": "Continue\nDownload\nOutline\nGhost\nSmall\nMedium\nLarge\nDelete\nRipple\nTap me",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1000,
+              "top": 0,
+              "right": 1280,
+              "bottom": 1000,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": null,
+            "name": "Continue\nDownload\nOutline\nGhost\nSmall\nMedium\nLarge\nDelete\nRipple\nTap me",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1000,
+              "top": 0,
+              "right": 1280,
+              "bottom": 1000,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "group",
+            "name": "Continue\nDownload\nOutline\nGhost\nSmall\nMedium\nLarge\nDelete\nRipple\nTap me",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 360,
+              "top": 0,
+              "right": 1280,
+              "bottom": 360,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "button",
+            "name": "Continue",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 410.2164306640625,
+              "y": 92,
+              "width": 123.109375,
+              "height": 40,
+              "top": 92,
+              "right": 533.3258056640625,
+              "bottom": 132,
+              "left": 410.2164306640625
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "button",
+            "name": "Download",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 545.3381958007812,
+              "y": 92,
+              "width": 131.640625,
+              "height": 40,
+              "top": 92,
+              "right": 676.9788208007812,
+              "bottom": 132,
+              "left": 545.3381958007812
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "button",
+            "name": "Outline",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 688.98388671875,
+              "y": 92,
+              "width": 89.765625,
+              "height": 40,
+              "top": 92,
+              "right": 778.74951171875,
+              "bottom": 132,
+              "left": 688.98388671875
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "button",
+            "name": "Ghost",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 790.751708984375,
+              "y": 92,
+              "width": 79.03125,
+              "height": 40,
+              "top": 92,
+              "right": 869.782958984375,
+              "bottom": 132,
+              "left": 790.751708984375
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "button",
+            "name": "Small",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 486.5939636230469,
+              "y": 164,
+              "width": 55.640655517578125,
+              "height": 32,
+              "top": 164,
+              "right": 542.234619140625,
+              "bottom": 196,
+              "left": 486.5939636230469
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "button",
+            "name": "Medium",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 554.2381591796875,
+              "y": 160,
+              "width": 92.40625,
+              "height": 40,
+              "top": 160,
+              "right": 646.6444091796875,
+              "bottom": 200,
+              "left": 554.2381591796875
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "button",
+            "name": "Large",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 658.6539306640625,
+              "y": 156,
+              "width": 90.75,
+              "height": 48,
+              "top": 156,
+              "right": 749.4039306640625,
+              "bottom": 204,
+              "left": 658.6539306640625
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "button",
+            "name": "Delete",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 761.406005859375,
+              "y": 164,
+              "width": 32,
+              "height": 32,
+              "top": 164,
+              "right": 793.406005859375,
+              "bottom": 196,
+              "left": 761.406005859375
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "button",
+            "name": "Ripple",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 548.522216796875,
+              "y": 228,
+              "width": 81.90625,
+              "height": 40,
+              "top": 228,
+              "right": 630.428466796875,
+              "bottom": 268,
+              "left": 548.522216796875
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "button",
+            "name": "Tap me",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 642.43798828125,
+              "y": 228,
+              "width": 89.03125,
+              "height": 40,
+              "top": 228,
+              "right": 731.46923828125,
+              "bottom": 268,
+              "left": 642.43798828125
+            }
+          }
+        ]
+      }
+    },
+    {
+      "label": "control-0-held",
+      "atMs": 447.30687500000204,
+      "observed": {
+        "url": "http://127.0.0.1:18120/after/?example=base&theme=light&captureProbe=1",
+        "reduce": false,
+        "active": {
+          "tag": "FLT-SEMANTICS",
+          "role": "button",
+          "name": "Continue"
+        },
+        "probe": {
+          "disableAnimations": false,
+          "platformDisableAnimations": false,
+          "motionOverride": null,
+          "backgroundArgb": 4294769916,
+          "constraints": {
+            "minWidth": 0,
+            "maxWidth": 592,
+            "minHeight": 0,
+            "maxHeight": null
+          },
+          "rect": {
+            "x": 344,
+            "y": 92,
+            "width": 592,
+            "height": 176
+          }
+        },
+        "stage": null,
+        "controls": [
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": null,
+            "name": "Continue\nDownload\nOutline\nGhost\nSmall\nMedium\nLarge\nDelete\nRipple\nTap me",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1000,
+              "top": 0,
+              "right": 1280,
+              "bottom": 1000,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": null,
+            "name": "Continue\nDownload\nOutline\nGhost\nSmall\nMedium\nLarge\nDelete\nRipple\nTap me",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1000,
+              "top": 0,
+              "right": 1280,
+              "bottom": 1000,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": null,
+            "name": "Continue\nDownload\nOutline\nGhost\nSmall\nMedium\nLarge\nDelete\nRipple\nTap me",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1000,
+              "top": 0,
+              "right": 1280,
+              "bottom": 1000,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": null,
+            "name": "Continue\nDownload\nOutline\nGhost\nSmall\nMedium\nLarge\nDelete\nRipple\nTap me",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1000,
+              "top": 0,
+              "right": 1280,
+              "bottom": 1000,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "group",
+            "name": "Continue\nDownload\nOutline\nGhost\nSmall\nMedium\nLarge\nDelete\nRipple\nTap me",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 360,
+              "top": 0,
+              "right": 1280,
+              "bottom": 360,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "button",
+            "name": "Continue",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 410.2164306640625,
+              "y": 92,
+              "width": 123.109375,
+              "height": 40,
+              "top": 92,
+              "right": 533.3258056640625,
+              "bottom": 132,
+              "left": 410.2164306640625
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "button",
+            "name": "Download",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 545.3381958007812,
+              "y": 92,
+              "width": 131.640625,
+              "height": 40,
+              "top": 92,
+              "right": 676.9788208007812,
+              "bottom": 132,
+              "left": 545.3381958007812
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "button",
+            "name": "Outline",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 688.98388671875,
+              "y": 92,
+              "width": 89.765625,
+              "height": 40,
+              "top": 92,
+              "right": 778.74951171875,
+              "bottom": 132,
+              "left": 688.98388671875
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "button",
+            "name": "Ghost",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 790.751708984375,
+              "y": 92,
+              "width": 79.03125,
+              "height": 40,
+              "top": 92,
+              "right": 869.782958984375,
+              "bottom": 132,
+              "left": 790.751708984375
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "button",
+            "name": "Small",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 486.5939636230469,
+              "y": 164,
+              "width": 55.640655517578125,
+              "height": 32,
+              "top": 164,
+              "right": 542.234619140625,
+              "bottom": 196,
+              "left": 486.5939636230469
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "button",
+            "name": "Medium",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 554.2381591796875,
+              "y": 160,
+              "width": 92.40625,
+              "height": 40,
+              "top": 160,
+              "right": 646.6444091796875,
+              "bottom": 200,
+              "left": 554.2381591796875
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "button",
+            "name": "Large",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 658.6539306640625,
+              "y": 156,
+              "width": 90.75,
+              "height": 48,
+              "top": 156,
+              "right": 749.4039306640625,
+              "bottom": 204,
+              "left": 658.6539306640625
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "button",
+            "name": "Delete",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 761.406005859375,
+              "y": 164,
+              "width": 32,
+              "height": 32,
+              "top": 164,
+              "right": 793.406005859375,
+              "bottom": 196,
+              "left": 761.406005859375
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "button",
+            "name": "Ripple",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 548.522216796875,
+              "y": 228,
+              "width": 81.90625,
+              "height": 40,
+              "top": 228,
+              "right": 630.428466796875,
+              "bottom": 268,
+              "left": 548.522216796875
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "button",
+            "name": "Tap me",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 642.43798828125,
+              "y": 228,
+              "width": 89.03125,
+              "height": 40,
+              "top": 228,
+              "right": 731.46923828125,
+              "bottom": 268,
+              "left": 642.43798828125
+            }
+          }
+        ]
+      }
+    },
+    {
+      "label": "control-0-semantics-geometry",
+      "rect": {
+        "x": 410.2164306640625,
+        "y": 92,
+        "width": 123.109375,
+        "height": 40,
+        "top": 92,
+        "right": 533.3258056640625,
+        "bottom": 132,
+        "left": 410.2164306640625
+      },
+      "note": "Semantics bounds are not painted transform bounds. Compare native PNGs instead."
+    },
+    {
+      "label": "control-1-held",
+      "atMs": 1030.7015000000029,
+      "observed": {
+        "url": "http://127.0.0.1:18120/after/?example=base&theme=light&captureProbe=1",
+        "reduce": false,
+        "active": {
+          "tag": "FLT-SEMANTICS",
+          "role": "button",
+          "name": "Download"
+        },
+        "probe": {
+          "disableAnimations": false,
+          "platformDisableAnimations": false,
+          "motionOverride": null,
+          "backgroundArgb": 4294769916,
+          "constraints": {
+            "minWidth": 0,
+            "maxWidth": 592,
+            "minHeight": 0,
+            "maxHeight": null
+          },
+          "rect": {
+            "x": 344,
+            "y": 92,
+            "width": 592,
+            "height": 176
+          }
+        },
+        "stage": null,
+        "controls": [
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": null,
+            "name": "Continue\nDownload\nOutline\nGhost\nSmall\nMedium\nLarge\nDelete\nRipple\nTap me",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1000,
+              "top": 0,
+              "right": 1280,
+              "bottom": 1000,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": null,
+            "name": "Continue\nDownload\nOutline\nGhost\nSmall\nMedium\nLarge\nDelete\nRipple\nTap me",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1000,
+              "top": 0,
+              "right": 1280,
+              "bottom": 1000,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": null,
+            "name": "Continue\nDownload\nOutline\nGhost\nSmall\nMedium\nLarge\nDelete\nRipple\nTap me",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1000,
+              "top": 0,
+              "right": 1280,
+              "bottom": 1000,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": null,
+            "name": "Continue\nDownload\nOutline\nGhost\nSmall\nMedium\nLarge\nDelete\nRipple\nTap me",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1000,
+              "top": 0,
+              "right": 1280,
+              "bottom": 1000,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "group",
+            "name": "Continue\nDownload\nOutline\nGhost\nSmall\nMedium\nLarge\nDelete\nRipple\nTap me",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 360,
+              "top": 0,
+              "right": 1280,
+              "bottom": 360,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "button",
+            "name": "Continue",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 410.2164306640625,
+              "y": 92,
+              "width": 123.109375,
+              "height": 40,
+              "top": 92,
+              "right": 533.3258056640625,
+              "bottom": 132,
+              "left": 410.2164306640625
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "button",
+            "name": "Download",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 545.3381958007812,
+              "y": 92,
+              "width": 131.640625,
+              "height": 40,
+              "top": 92,
+              "right": 676.9788208007812,
+              "bottom": 132,
+              "left": 545.3381958007812
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "button",
+            "name": "Outline",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 688.98388671875,
+              "y": 92,
+              "width": 89.765625,
+              "height": 40,
+              "top": 92,
+              "right": 778.74951171875,
+              "bottom": 132,
+              "left": 688.98388671875
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "button",
+            "name": "Ghost",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 790.751708984375,
+              "y": 92,
+              "width": 79.03125,
+              "height": 40,
+              "top": 92,
+              "right": 869.782958984375,
+              "bottom": 132,
+              "left": 790.751708984375
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "button",
+            "name": "Small",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 486.5939636230469,
+              "y": 164,
+              "width": 55.640655517578125,
+              "height": 32,
+              "top": 164,
+              "right": 542.234619140625,
+              "bottom": 196,
+              "left": 486.5939636230469
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "button",
+            "name": "Medium",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 554.2381591796875,
+              "y": 160,
+              "width": 92.40625,
+              "height": 40,
+              "top": 160,
+              "right": 646.6444091796875,
+              "bottom": 200,
+              "left": 554.2381591796875
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "button",
+            "name": "Large",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 658.6539306640625,
+              "y": 156,
+              "width": 90.75,
+              "height": 48,
+              "top": 156,
+              "right": 749.4039306640625,
+              "bottom": 204,
+              "left": 658.6539306640625
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "button",
+            "name": "Delete",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 761.406005859375,
+              "y": 164,
+              "width": 32,
+              "height": 32,
+              "top": 164,
+              "right": 793.406005859375,
+              "bottom": 196,
+              "left": 761.406005859375
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "button",
+            "name": "Ripple",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 548.522216796875,
+              "y": 228,
+              "width": 81.90625,
+              "height": 40,
+              "top": 228,
+              "right": 630.428466796875,
+              "bottom": 268,
+              "left": 548.522216796875
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "button",
+            "name": "Tap me",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 642.43798828125,
+              "y": 228,
+              "width": 89.03125,
+              "height": 40,
+              "top": 228,
+              "right": 731.46923828125,
+              "bottom": 268,
+              "left": 642.43798828125
+            }
+          }
+        ]
+      }
+    },
+    {
+      "label": "control-1-semantics-geometry",
+      "rect": {
+        "x": 545.3381958007812,
+        "y": 92,
+        "width": 131.640625,
+        "height": 40,
+        "top": 92,
+        "right": 676.9788208007812,
+        "bottom": 132,
+        "left": 545.3381958007812
+      },
+      "note": "Semantics bounds are not painted transform bounds. Compare native PNGs instead."
+    },
+    {
+      "label": "control-2-held",
+      "atMs": 1629.7031659999993,
+      "observed": {
+        "url": "http://127.0.0.1:18120/after/?example=base&theme=light&captureProbe=1",
+        "reduce": false,
+        "active": {
+          "tag": "FLT-SEMANTICS",
+          "role": "button",
+          "name": "Outline"
+        },
+        "probe": {
+          "disableAnimations": false,
+          "platformDisableAnimations": false,
+          "motionOverride": null,
+          "backgroundArgb": 4294769916,
+          "constraints": {
+            "minWidth": 0,
+            "maxWidth": 592,
+            "minHeight": 0,
+            "maxHeight": null
+          },
+          "rect": {
+            "x": 344,
+            "y": 92,
+            "width": 592,
+            "height": 176
+          }
+        },
+        "stage": null,
+        "controls": [
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": null,
+            "name": "Continue\nDownload\nOutline\nGhost\nSmall\nMedium\nLarge\nDelete\nRipple\nTap me",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1000,
+              "top": 0,
+              "right": 1280,
+              "bottom": 1000,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": null,
+            "name": "Continue\nDownload\nOutline\nGhost\nSmall\nMedium\nLarge\nDelete\nRipple\nTap me",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1000,
+              "top": 0,
+              "right": 1280,
+              "bottom": 1000,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": null,
+            "name": "Continue\nDownload\nOutline\nGhost\nSmall\nMedium\nLarge\nDelete\nRipple\nTap me",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1000,
+              "top": 0,
+              "right": 1280,
+              "bottom": 1000,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": null,
+            "name": "Continue\nDownload\nOutline\nGhost\nSmall\nMedium\nLarge\nDelete\nRipple\nTap me",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1000,
+              "top": 0,
+              "right": 1280,
+              "bottom": 1000,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "group",
+            "name": "Continue\nDownload\nOutline\nGhost\nSmall\nMedium\nLarge\nDelete\nRipple\nTap me",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 360,
+              "top": 0,
+              "right": 1280,
+              "bottom": 360,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "button",
+            "name": "Continue",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 410.2164306640625,
+              "y": 92,
+              "width": 123.109375,
+              "height": 40,
+              "top": 92,
+              "right": 533.3258056640625,
+              "bottom": 132,
+              "left": 410.2164306640625
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "button",
+            "name": "Download",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 545.3381958007812,
+              "y": 92,
+              "width": 131.640625,
+              "height": 40,
+              "top": 92,
+              "right": 676.9788208007812,
+              "bottom": 132,
+              "left": 545.3381958007812
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "button",
+            "name": "Outline",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 688.98388671875,
+              "y": 92,
+              "width": 89.765625,
+              "height": 40,
+              "top": 92,
+              "right": 778.74951171875,
+              "bottom": 132,
+              "left": 688.98388671875
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "button",
+            "name": "Ghost",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 790.751708984375,
+              "y": 92,
+              "width": 79.03125,
+              "height": 40,
+              "top": 92,
+              "right": 869.782958984375,
+              "bottom": 132,
+              "left": 790.751708984375
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "button",
+            "name": "Small",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 486.5939636230469,
+              "y": 164,
+              "width": 55.640655517578125,
+              "height": 32,
+              "top": 164,
+              "right": 542.234619140625,
+              "bottom": 196,
+              "left": 486.5939636230469
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "button",
+            "name": "Medium",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 554.2381591796875,
+              "y": 160,
+              "width": 92.40625,
+              "height": 40,
+              "top": 160,
+              "right": 646.6444091796875,
+              "bottom": 200,
+              "left": 554.2381591796875
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "button",
+            "name": "Large",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 658.6539306640625,
+              "y": 156,
+              "width": 90.75,
+              "height": 48,
+              "top": 156,
+              "right": 749.4039306640625,
+              "bottom": 204,
+              "left": 658.6539306640625
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "button",
+            "name": "Delete",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 761.406005859375,
+              "y": 164,
+              "width": 32,
+              "height": 32,
+              "top": 164,
+              "right": 793.406005859375,
+              "bottom": 196,
+              "left": 761.406005859375
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "button",
+            "name": "Ripple",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 548.522216796875,
+              "y": 228,
+              "width": 81.90625,
+              "height": 40,
+              "top": 228,
+              "right": 630.428466796875,
+              "bottom": 268,
+              "left": 548.522216796875
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "button",
+            "name": "Tap me",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 642.43798828125,
+              "y": 228,
+              "width": 89.03125,
+              "height": 40,
+              "top": 228,
+              "right": 731.46923828125,
+              "bottom": 268,
+              "left": 642.43798828125
+            }
+          }
+        ]
+      }
+    },
+    {
+      "label": "control-2-semantics-geometry",
+      "rect": {
+        "x": 688.98388671875,
+        "y": 92,
+        "width": 89.765625,
+        "height": 40,
+        "top": 92,
+        "right": 778.74951171875,
+        "bottom": 132,
+        "left": 688.98388671875
+      },
+      "note": "Semantics bounds are not painted transform bounds. Compare native PNGs instead."
+    },
+    {
+      "label": "control-3-held",
+      "atMs": 2297.7442910000027,
+      "observed": {
+        "url": "http://127.0.0.1:18120/after/?example=base&theme=light&captureProbe=1",
+        "reduce": false,
+        "active": {
+          "tag": "FLT-SEMANTICS",
+          "role": "button",
+          "name": "Ghost"
+        },
+        "probe": {
+          "disableAnimations": false,
+          "platformDisableAnimations": false,
+          "motionOverride": null,
+          "backgroundArgb": 4294769916,
+          "constraints": {
+            "minWidth": 0,
+            "maxWidth": 592,
+            "minHeight": 0,
+            "maxHeight": null
+          },
+          "rect": {
+            "x": 344,
+            "y": 92,
+            "width": 592,
+            "height": 176
+          }
+        },
+        "stage": null,
+        "controls": [
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": null,
+            "name": "Continue\nDownload\nOutline\nGhost\nSmall\nMedium\nLarge\nDelete\nRipple\nTap me",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1000,
+              "top": 0,
+              "right": 1280,
+              "bottom": 1000,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": null,
+            "name": "Continue\nDownload\nOutline\nGhost\nSmall\nMedium\nLarge\nDelete\nRipple\nTap me",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1000,
+              "top": 0,
+              "right": 1280,
+              "bottom": 1000,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": null,
+            "name": "Continue\nDownload\nOutline\nGhost\nSmall\nMedium\nLarge\nDelete\nRipple\nTap me",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1000,
+              "top": 0,
+              "right": 1280,
+              "bottom": 1000,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": null,
+            "name": "Continue\nDownload\nOutline\nGhost\nSmall\nMedium\nLarge\nDelete\nRipple\nTap me",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1000,
+              "top": 0,
+              "right": 1280,
+              "bottom": 1000,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "group",
+            "name": "Continue\nDownload\nOutline\nGhost\nSmall\nMedium\nLarge\nDelete\nRipple\nTap me",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 360,
+              "top": 0,
+              "right": 1280,
+              "bottom": 360,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "button",
+            "name": "Continue",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 410.2164306640625,
+              "y": 92,
+              "width": 123.109375,
+              "height": 40,
+              "top": 92,
+              "right": 533.3258056640625,
+              "bottom": 132,
+              "left": 410.2164306640625
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "button",
+            "name": "Download",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 545.3381958007812,
+              "y": 92,
+              "width": 131.640625,
+              "height": 40,
+              "top": 92,
+              "right": 676.9788208007812,
+              "bottom": 132,
+              "left": 545.3381958007812
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "button",
+            "name": "Outline",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 688.98388671875,
+              "y": 92,
+              "width": 89.765625,
+              "height": 40,
+              "top": 92,
+              "right": 778.74951171875,
+              "bottom": 132,
+              "left": 688.98388671875
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "button",
+            "name": "Ghost",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 790.751708984375,
+              "y": 92,
+              "width": 79.03125,
+              "height": 40,
+              "top": 92,
+              "right": 869.782958984375,
+              "bottom": 132,
+              "left": 790.751708984375
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "button",
+            "name": "Small",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 486.5939636230469,
+              "y": 164,
+              "width": 55.640655517578125,
+              "height": 32,
+              "top": 164,
+              "right": 542.234619140625,
+              "bottom": 196,
+              "left": 486.5939636230469
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "button",
+            "name": "Medium",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 554.2381591796875,
+              "y": 160,
+              "width": 92.40625,
+              "height": 40,
+              "top": 160,
+              "right": 646.6444091796875,
+              "bottom": 200,
+              "left": 554.2381591796875
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "button",
+            "name": "Large",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 658.6539306640625,
+              "y": 156,
+              "width": 90.75,
+              "height": 48,
+              "top": 156,
+              "right": 749.4039306640625,
+              "bottom": 204,
+              "left": 658.6539306640625
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "button",
+            "name": "Delete",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 761.406005859375,
+              "y": 164,
+              "width": 32,
+              "height": 32,
+              "top": 164,
+              "right": 793.406005859375,
+              "bottom": 196,
+              "left": 761.406005859375
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "button",
+            "name": "Ripple",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 548.522216796875,
+              "y": 228,
+              "width": 81.90625,
+              "height": 40,
+              "top": 228,
+              "right": 630.428466796875,
+              "bottom": 268,
+              "left": 548.522216796875
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "button",
+            "name": "Tap me",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 642.43798828125,
+              "y": 228,
+              "width": 89.03125,
+              "height": 40,
+              "top": 228,
+              "right": 731.46923828125,
+              "bottom": 268,
+              "left": 642.43798828125
+            }
+          }
+        ]
+      }
+    },
+    {
+      "label": "control-3-semantics-geometry",
+      "rect": {
+        "x": 790.751708984375,
+        "y": 92,
+        "width": 79.03125,
+        "height": 40,
+        "top": 92,
+        "right": 869.782958984375,
+        "bottom": 132,
+        "left": 790.751708984375
+      },
+      "note": "Semantics bounds are not painted transform bounds. Compare native PNGs instead."
+    },
+    {
+      "label": "control-4-held",
+      "atMs": 2881.222625000002,
+      "observed": {
+        "url": "http://127.0.0.1:18120/after/?example=base&theme=light&captureProbe=1",
+        "reduce": false,
+        "active": {
+          "tag": "FLT-SEMANTICS",
+          "role": "button",
+          "name": "Small"
+        },
+        "probe": {
+          "disableAnimations": false,
+          "platformDisableAnimations": false,
+          "motionOverride": null,
+          "backgroundArgb": 4294769916,
+          "constraints": {
+            "minWidth": 0,
+            "maxWidth": 592,
+            "minHeight": 0,
+            "maxHeight": null
+          },
+          "rect": {
+            "x": 344,
+            "y": 92,
+            "width": 592,
+            "height": 176
+          }
+        },
+        "stage": null,
+        "controls": [
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": null,
+            "name": "Continue\nDownload\nOutline\nGhost\nSmall\nMedium\nLarge\nDelete\nRipple\nTap me",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1000,
+              "top": 0,
+              "right": 1280,
+              "bottom": 1000,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": null,
+            "name": "Continue\nDownload\nOutline\nGhost\nSmall\nMedium\nLarge\nDelete\nRipple\nTap me",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1000,
+              "top": 0,
+              "right": 1280,
+              "bottom": 1000,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": null,
+            "name": "Continue\nDownload\nOutline\nGhost\nSmall\nMedium\nLarge\nDelete\nRipple\nTap me",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1000,
+              "top": 0,
+              "right": 1280,
+              "bottom": 1000,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": null,
+            "name": "Continue\nDownload\nOutline\nGhost\nSmall\nMedium\nLarge\nDelete\nRipple\nTap me",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1000,
+              "top": 0,
+              "right": 1280,
+              "bottom": 1000,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "group",
+            "name": "Continue\nDownload\nOutline\nGhost\nSmall\nMedium\nLarge\nDelete\nRipple\nTap me",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 360,
+              "top": 0,
+              "right": 1280,
+              "bottom": 360,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "button",
+            "name": "Continue",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 410.2164306640625,
+              "y": 92,
+              "width": 123.109375,
+              "height": 40,
+              "top": 92,
+              "right": 533.3258056640625,
+              "bottom": 132,
+              "left": 410.2164306640625
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "button",
+            "name": "Download",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 545.3381958007812,
+              "y": 92,
+              "width": 131.640625,
+              "height": 40,
+              "top": 92,
+              "right": 676.9788208007812,
+              "bottom": 132,
+              "left": 545.3381958007812
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "button",
+            "name": "Outline",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 688.98388671875,
+              "y": 92,
+              "width": 89.765625,
+              "height": 40,
+              "top": 92,
+              "right": 778.74951171875,
+              "bottom": 132,
+              "left": 688.98388671875
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "button",
+            "name": "Ghost",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 790.751708984375,
+              "y": 92,
+              "width": 79.03125,
+              "height": 40,
+              "top": 92,
+              "right": 869.782958984375,
+              "bottom": 132,
+              "left": 790.751708984375
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "button",
+            "name": "Small",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 486.5939636230469,
+              "y": 164,
+              "width": 55.640655517578125,
+              "height": 32,
+              "top": 164,
+              "right": 542.234619140625,
+              "bottom": 196,
+              "left": 486.5939636230469
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "button",
+            "name": "Medium",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 554.2381591796875,
+              "y": 160,
+              "width": 92.40625,
+              "height": 40,
+              "top": 160,
+              "right": 646.6444091796875,
+              "bottom": 200,
+              "left": 554.2381591796875
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "button",
+            "name": "Large",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 658.6539306640625,
+              "y": 156,
+              "width": 90.75,
+              "height": 48,
+              "top": 156,
+              "right": 749.4039306640625,
+              "bottom": 204,
+              "left": 658.6539306640625
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "button",
+            "name": "Delete",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 761.406005859375,
+              "y": 164,
+              "width": 32,
+              "height": 32,
+              "top": 164,
+              "right": 793.406005859375,
+              "bottom": 196,
+              "left": 761.406005859375
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "button",
+            "name": "Ripple",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 548.522216796875,
+              "y": 228,
+              "width": 81.90625,
+              "height": 40,
+              "top": 228,
+              "right": 630.428466796875,
+              "bottom": 268,
+              "left": 548.522216796875
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "button",
+            "name": "Tap me",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 642.43798828125,
+              "y": 228,
+              "width": 89.03125,
+              "height": 40,
+              "top": 228,
+              "right": 731.46923828125,
+              "bottom": 268,
+              "left": 642.43798828125
+            }
+          }
+        ]
+      }
+    },
+    {
+      "label": "control-4-semantics-geometry",
+      "rect": {
+        "x": 486.5939636230469,
+        "y": 164,
+        "width": 55.640655517578125,
+        "height": 32,
+        "top": 164,
+        "right": 542.234619140625,
+        "bottom": 196,
+        "left": 486.5939636230469
+      },
+      "note": "Semantics bounds are not painted transform bounds. Compare native PNGs instead."
+    },
+    {
+      "label": "control-5-held",
+      "atMs": 3430.8192500000005,
+      "observed": {
+        "url": "http://127.0.0.1:18120/after/?example=base&theme=light&captureProbe=1",
+        "reduce": false,
+        "active": {
+          "tag": "FLT-SEMANTICS",
+          "role": "button",
+          "name": "Medium"
+        },
+        "probe": {
+          "disableAnimations": false,
+          "platformDisableAnimations": false,
+          "motionOverride": null,
+          "backgroundArgb": 4294769916,
+          "constraints": {
+            "minWidth": 0,
+            "maxWidth": 592,
+            "minHeight": 0,
+            "maxHeight": null
+          },
+          "rect": {
+            "x": 344,
+            "y": 92,
+            "width": 592,
+            "height": 176
+          }
+        },
+        "stage": null,
+        "controls": [
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": null,
+            "name": "Continue\nDownload\nOutline\nGhost\nSmall\nMedium\nLarge\nDelete\nRipple\nTap me",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1000,
+              "top": 0,
+              "right": 1280,
+              "bottom": 1000,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": null,
+            "name": "Continue\nDownload\nOutline\nGhost\nSmall\nMedium\nLarge\nDelete\nRipple\nTap me",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1000,
+              "top": 0,
+              "right": 1280,
+              "bottom": 1000,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": null,
+            "name": "Continue\nDownload\nOutline\nGhost\nSmall\nMedium\nLarge\nDelete\nRipple\nTap me",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1000,
+              "top": 0,
+              "right": 1280,
+              "bottom": 1000,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": null,
+            "name": "Continue\nDownload\nOutline\nGhost\nSmall\nMedium\nLarge\nDelete\nRipple\nTap me",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1000,
+              "top": 0,
+              "right": 1280,
+              "bottom": 1000,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "group",
+            "name": "Continue\nDownload\nOutline\nGhost\nSmall\nMedium\nLarge\nDelete\nRipple\nTap me",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 360,
+              "top": 0,
+              "right": 1280,
+              "bottom": 360,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "button",
+            "name": "Continue",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 410.2164306640625,
+              "y": 92,
+              "width": 123.109375,
+              "height": 40,
+              "top": 92,
+              "right": 533.3258056640625,
+              "bottom": 132,
+              "left": 410.2164306640625
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "button",
+            "name": "Download",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 545.3381958007812,
+              "y": 92,
+              "width": 131.640625,
+              "height": 40,
+              "top": 92,
+              "right": 676.9788208007812,
+              "bottom": 132,
+              "left": 545.3381958007812
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "button",
+            "name": "Outline",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 688.98388671875,
+              "y": 92,
+              "width": 89.765625,
+              "height": 40,
+              "top": 92,
+              "right": 778.74951171875,
+              "bottom": 132,
+              "left": 688.98388671875
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "button",
+            "name": "Ghost",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 790.751708984375,
+              "y": 92,
+              "width": 79.03125,
+              "height": 40,
+              "top": 92,
+              "right": 869.782958984375,
+              "bottom": 132,
+              "left": 790.751708984375
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "button",
+            "name": "Small",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 486.5939636230469,
+              "y": 164,
+              "width": 55.640655517578125,
+              "height": 32,
+              "top": 164,
+              "right": 542.234619140625,
+              "bottom": 196,
+              "left": 486.5939636230469
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "button",
+            "name": "Medium",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 554.2381591796875,
+              "y": 160,
+              "width": 92.40625,
+              "height": 40,
+              "top": 160,
+              "right": 646.6444091796875,
+              "bottom": 200,
+              "left": 554.2381591796875
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "button",
+            "name": "Large",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 658.6539306640625,
+              "y": 156,
+              "width": 90.75,
+              "height": 48,
+              "top": 156,
+              "right": 749.4039306640625,
+              "bottom": 204,
+              "left": 658.6539306640625
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "button",
+            "name": "Delete",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 761.406005859375,
+              "y": 164,
+              "width": 32,
+              "height": 32,
+              "top": 164,
+              "right": 793.406005859375,
+              "bottom": 196,
+              "left": 761.406005859375
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "button",
+            "name": "Ripple",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 548.522216796875,
+              "y": 228,
+              "width": 81.90625,
+              "height": 40,
+              "top": 228,
+              "right": 630.428466796875,
+              "bottom": 268,
+              "left": 548.522216796875
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "button",
+            "name": "Tap me",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 642.43798828125,
+              "y": 228,
+              "width": 89.03125,
+              "height": 40,
+              "top": 228,
+              "right": 731.46923828125,
+              "bottom": 268,
+              "left": 642.43798828125
+            }
+          }
+        ]
+      }
+    },
+    {
+      "label": "control-5-semantics-geometry",
+      "rect": {
+        "x": 554.2381591796875,
+        "y": 160,
+        "width": 92.40625,
+        "height": 40,
+        "top": 160,
+        "right": 646.6444091796875,
+        "bottom": 200,
+        "left": 554.2381591796875
+      },
+      "note": "Semantics bounds are not painted transform bounds. Compare native PNGs instead."
+    },
+    {
+      "label": "control-6-held",
+      "atMs": 3985.7868329999983,
+      "observed": {
+        "url": "http://127.0.0.1:18120/after/?example=base&theme=light&captureProbe=1",
+        "reduce": false,
+        "active": {
+          "tag": "FLT-SEMANTICS",
+          "role": "button",
+          "name": "Large"
+        },
+        "probe": {
+          "disableAnimations": false,
+          "platformDisableAnimations": false,
+          "motionOverride": null,
+          "backgroundArgb": 4294769916,
+          "constraints": {
+            "minWidth": 0,
+            "maxWidth": 592,
+            "minHeight": 0,
+            "maxHeight": null
+          },
+          "rect": {
+            "x": 344,
+            "y": 92,
+            "width": 592,
+            "height": 176
+          }
+        },
+        "stage": null,
+        "controls": [
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": null,
+            "name": "Continue\nDownload\nOutline\nGhost\nSmall\nMedium\nLarge\nDelete\nRipple\nTap me",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1000,
+              "top": 0,
+              "right": 1280,
+              "bottom": 1000,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": null,
+            "name": "Continue\nDownload\nOutline\nGhost\nSmall\nMedium\nLarge\nDelete\nRipple\nTap me",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1000,
+              "top": 0,
+              "right": 1280,
+              "bottom": 1000,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": null,
+            "name": "Continue\nDownload\nOutline\nGhost\nSmall\nMedium\nLarge\nDelete\nRipple\nTap me",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1000,
+              "top": 0,
+              "right": 1280,
+              "bottom": 1000,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": null,
+            "name": "Continue\nDownload\nOutline\nGhost\nSmall\nMedium\nLarge\nDelete\nRipple\nTap me",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1000,
+              "top": 0,
+              "right": 1280,
+              "bottom": 1000,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "group",
+            "name": "Continue\nDownload\nOutline\nGhost\nSmall\nMedium\nLarge\nDelete\nRipple\nTap me",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 360,
+              "top": 0,
+              "right": 1280,
+              "bottom": 360,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "button",
+            "name": "Continue",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 410.2164306640625,
+              "y": 92,
+              "width": 123.109375,
+              "height": 40,
+              "top": 92,
+              "right": 533.3258056640625,
+              "bottom": 132,
+              "left": 410.2164306640625
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "button",
+            "name": "Download",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 545.3381958007812,
+              "y": 92,
+              "width": 131.640625,
+              "height": 40,
+              "top": 92,
+              "right": 676.9788208007812,
+              "bottom": 132,
+              "left": 545.3381958007812
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "button",
+            "name": "Outline",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 688.98388671875,
+              "y": 92,
+              "width": 89.765625,
+              "height": 40,
+              "top": 92,
+              "right": 778.74951171875,
+              "bottom": 132,
+              "left": 688.98388671875
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "button",
+            "name": "Ghost",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 790.751708984375,
+              "y": 92,
+              "width": 79.03125,
+              "height": 40,
+              "top": 92,
+              "right": 869.782958984375,
+              "bottom": 132,
+              "left": 790.751708984375
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "button",
+            "name": "Small",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 486.5939636230469,
+              "y": 164,
+              "width": 55.640655517578125,
+              "height": 32,
+              "top": 164,
+              "right": 542.234619140625,
+              "bottom": 196,
+              "left": 486.5939636230469
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "button",
+            "name": "Medium",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 554.2381591796875,
+              "y": 160,
+              "width": 92.40625,
+              "height": 40,
+              "top": 160,
+              "right": 646.6444091796875,
+              "bottom": 200,
+              "left": 554.2381591796875
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "button",
+            "name": "Large",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 658.6539306640625,
+              "y": 156,
+              "width": 90.75,
+              "height": 48,
+              "top": 156,
+              "right": 749.4039306640625,
+              "bottom": 204,
+              "left": 658.6539306640625
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "button",
+            "name": "Delete",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 761.406005859375,
+              "y": 164,
+              "width": 32,
+              "height": 32,
+              "top": 164,
+              "right": 793.406005859375,
+              "bottom": 196,
+              "left": 761.406005859375
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "button",
+            "name": "Ripple",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 548.522216796875,
+              "y": 228,
+              "width": 81.90625,
+              "height": 40,
+              "top": 228,
+              "right": 630.428466796875,
+              "bottom": 268,
+              "left": 548.522216796875
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "button",
+            "name": "Tap me",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 642.43798828125,
+              "y": 228,
+              "width": 89.03125,
+              "height": 40,
+              "top": 228,
+              "right": 731.46923828125,
+              "bottom": 268,
+              "left": 642.43798828125
+            }
+          }
+        ]
+      }
+    },
+    {
+      "label": "control-6-semantics-geometry",
+      "rect": {
+        "x": 658.6539306640625,
+        "y": 156,
+        "width": 90.75,
+        "height": 48,
+        "top": 156,
+        "right": 749.4039306640625,
+        "bottom": 204,
+        "left": 658.6539306640625
+      },
+      "note": "Semantics bounds are not painted transform bounds. Compare native PNGs instead."
+    },
+    {
+      "label": "control-7-held",
+      "atMs": 4654.490416000001,
+      "observed": {
+        "url": "http://127.0.0.1:18120/after/?example=base&theme=light&captureProbe=1",
+        "reduce": false,
+        "active": {
+          "tag": "FLT-SEMANTICS",
+          "role": "button",
+          "name": "Delete"
+        },
+        "probe": {
+          "disableAnimations": false,
+          "platformDisableAnimations": false,
+          "motionOverride": null,
+          "backgroundArgb": 4294769916,
+          "constraints": {
+            "minWidth": 0,
+            "maxWidth": 592,
+            "minHeight": 0,
+            "maxHeight": null
+          },
+          "rect": {
+            "x": 344,
+            "y": 92,
+            "width": 592,
+            "height": 176
+          }
+        },
+        "stage": null,
+        "controls": [
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": null,
+            "name": "Continue\nDownload\nOutline\nGhost\nSmall\nMedium\nLarge\nDelete\nRipple\nTap me",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1000,
+              "top": 0,
+              "right": 1280,
+              "bottom": 1000,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": null,
+            "name": "Continue\nDownload\nOutline\nGhost\nSmall\nMedium\nLarge\nDelete\nRipple\nTap me",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1000,
+              "top": 0,
+              "right": 1280,
+              "bottom": 1000,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": null,
+            "name": "Continue\nDownload\nOutline\nGhost\nSmall\nMedium\nLarge\nDelete\nRipple\nTap me",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1000,
+              "top": 0,
+              "right": 1280,
+              "bottom": 1000,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": null,
+            "name": "Continue\nDownload\nOutline\nGhost\nSmall\nMedium\nLarge\nDelete\nRipple\nTap me",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1000,
+              "top": 0,
+              "right": 1280,
+              "bottom": 1000,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "group",
+            "name": "Continue\nDownload\nOutline\nGhost\nSmall\nMedium\nLarge\nDelete\nRipple\nTap me",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 360,
+              "top": 0,
+              "right": 1280,
+              "bottom": 360,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "button",
+            "name": "Continue",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 410.2164306640625,
+              "y": 92,
+              "width": 123.109375,
+              "height": 40,
+              "top": 92,
+              "right": 533.3258056640625,
+              "bottom": 132,
+              "left": 410.2164306640625
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "button",
+            "name": "Download",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 545.3381958007812,
+              "y": 92,
+              "width": 131.640625,
+              "height": 40,
+              "top": 92,
+              "right": 676.9788208007812,
+              "bottom": 132,
+              "left": 545.3381958007812
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "button",
+            "name": "Outline",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 688.98388671875,
+              "y": 92,
+              "width": 89.765625,
+              "height": 40,
+              "top": 92,
+              "right": 778.74951171875,
+              "bottom": 132,
+              "left": 688.98388671875
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "button",
+            "name": "Ghost",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 790.751708984375,
+              "y": 92,
+              "width": 79.03125,
+              "height": 40,
+              "top": 92,
+              "right": 869.782958984375,
+              "bottom": 132,
+              "left": 790.751708984375
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "button",
+            "name": "Small",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 486.5939636230469,
+              "y": 164,
+              "width": 55.640655517578125,
+              "height": 32,
+              "top": 164,
+              "right": 542.234619140625,
+              "bottom": 196,
+              "left": 486.5939636230469
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "button",
+            "name": "Medium",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 554.2381591796875,
+              "y": 160,
+              "width": 92.40625,
+              "height": 40,
+              "top": 160,
+              "right": 646.6444091796875,
+              "bottom": 200,
+              "left": 554.2381591796875
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "button",
+            "name": "Large",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 658.6539306640625,
+              "y": 156,
+              "width": 90.75,
+              "height": 48,
+              "top": 156,
+              "right": 749.4039306640625,
+              "bottom": 204,
+              "left": 658.6539306640625
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "button",
+            "name": "Delete",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 761.406005859375,
+              "y": 164,
+              "width": 32,
+              "height": 32,
+              "top": 164,
+              "right": 793.406005859375,
+              "bottom": 196,
+              "left": 761.406005859375
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "button",
+            "name": "Ripple",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 548.522216796875,
+              "y": 228,
+              "width": 81.90625,
+              "height": 40,
+              "top": 228,
+              "right": 630.428466796875,
+              "bottom": 268,
+              "left": 548.522216796875
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "button",
+            "name": "Tap me",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 642.43798828125,
+              "y": 228,
+              "width": 89.03125,
+              "height": 40,
+              "top": 228,
+              "right": 731.46923828125,
+              "bottom": 268,
+              "left": 642.43798828125
+            }
+          }
+        ]
+      }
+    },
+    {
+      "label": "control-7-semantics-geometry",
+      "rect": {
+        "x": 761.406005859375,
+        "y": 164,
+        "width": 32,
+        "height": 32,
+        "top": 164,
+        "right": 793.406005859375,
+        "bottom": 196,
+        "left": 761.406005859375
+      },
+      "note": "Semantics bounds are not painted transform bounds. Compare native PNGs instead."
+    },
+    {
+      "label": "control-8-held",
+      "atMs": 5522.753582999998,
+      "observed": {
+        "url": "http://127.0.0.1:18120/after/?example=base&theme=light&captureProbe=1",
+        "reduce": false,
+        "active": {
+          "tag": "FLT-SEMANTICS",
+          "role": "button",
+          "name": "Ripple"
+        },
+        "probe": {
+          "disableAnimations": false,
+          "platformDisableAnimations": false,
+          "motionOverride": null,
+          "backgroundArgb": 4294769916,
+          "constraints": {
+            "minWidth": 0,
+            "maxWidth": 592,
+            "minHeight": 0,
+            "maxHeight": null
+          },
+          "rect": {
+            "x": 344,
+            "y": 92,
+            "width": 592,
+            "height": 176
+          }
+        },
+        "stage": null,
+        "controls": [
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": null,
+            "name": "Continue\nDownload\nOutline\nGhost\nSmall\nMedium\nLarge\nDelete\nRipple\nTap me",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1000,
+              "top": 0,
+              "right": 1280,
+              "bottom": 1000,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": null,
+            "name": "Continue\nDownload\nOutline\nGhost\nSmall\nMedium\nLarge\nDelete\nRipple\nTap me",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1000,
+              "top": 0,
+              "right": 1280,
+              "bottom": 1000,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": null,
+            "name": "Continue\nDownload\nOutline\nGhost\nSmall\nMedium\nLarge\nDelete\nRipple\nTap me",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1000,
+              "top": 0,
+              "right": 1280,
+              "bottom": 1000,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": null,
+            "name": "Continue\nDownload\nOutline\nGhost\nSmall\nMedium\nLarge\nDelete\nRipple\nTap me",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1000,
+              "top": 0,
+              "right": 1280,
+              "bottom": 1000,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "group",
+            "name": "Continue\nDownload\nOutline\nGhost\nSmall\nMedium\nLarge\nDelete\nRipple\nTap me",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 360,
+              "top": 0,
+              "right": 1280,
+              "bottom": 360,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "button",
+            "name": "Continue",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 410.2164306640625,
+              "y": 92,
+              "width": 123.109375,
+              "height": 40,
+              "top": 92,
+              "right": 533.3258056640625,
+              "bottom": 132,
+              "left": 410.2164306640625
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "button",
+            "name": "Download",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 545.3381958007812,
+              "y": 92,
+              "width": 131.640625,
+              "height": 40,
+              "top": 92,
+              "right": 676.9788208007812,
+              "bottom": 132,
+              "left": 545.3381958007812
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "button",
+            "name": "Outline",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 688.98388671875,
+              "y": 92,
+              "width": 89.765625,
+              "height": 40,
+              "top": 92,
+              "right": 778.74951171875,
+              "bottom": 132,
+              "left": 688.98388671875
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "button",
+            "name": "Ghost",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 790.751708984375,
+              "y": 92,
+              "width": 79.03125,
+              "height": 40,
+              "top": 92,
+              "right": 869.782958984375,
+              "bottom": 132,
+              "left": 790.751708984375
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "button",
+            "name": "Small",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 486.5939636230469,
+              "y": 164,
+              "width": 55.640655517578125,
+              "height": 32,
+              "top": 164,
+              "right": 542.234619140625,
+              "bottom": 196,
+              "left": 486.5939636230469
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "button",
+            "name": "Medium",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 554.2381591796875,
+              "y": 160,
+              "width": 92.40625,
+              "height": 40,
+              "top": 160,
+              "right": 646.6444091796875,
+              "bottom": 200,
+              "left": 554.2381591796875
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "button",
+            "name": "Large",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 658.6539306640625,
+              "y": 156,
+              "width": 90.75,
+              "height": 48,
+              "top": 156,
+              "right": 749.4039306640625,
+              "bottom": 204,
+              "left": 658.6539306640625
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "button",
+            "name": "Delete",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 761.406005859375,
+              "y": 164,
+              "width": 32,
+              "height": 32,
+              "top": 164,
+              "right": 793.406005859375,
+              "bottom": 196,
+              "left": 761.406005859375
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "button",
+            "name": "Ripple",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 548.522216796875,
+              "y": 228,
+              "width": 81.90625,
+              "height": 40,
+              "top": 228,
+              "right": 630.428466796875,
+              "bottom": 268,
+              "left": 548.522216796875
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "button",
+            "name": "Tap me",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 642.43798828125,
+              "y": 228,
+              "width": 89.03125,
+              "height": 40,
+              "top": 228,
+              "right": 731.46923828125,
+              "bottom": 268,
+              "left": 642.43798828125
+            }
+          }
+        ]
+      }
+    },
+    {
+      "label": "control-8-semantics-geometry",
+      "rect": {
+        "x": 548.522216796875,
+        "y": 228,
+        "width": 81.90625,
+        "height": 40,
+        "top": 228,
+        "right": 630.428466796875,
+        "bottom": 268,
+        "left": 548.522216796875
+      },
+      "note": "Semantics bounds are not painted transform bounds. Compare native PNGs instead."
+    },
+    {
+      "label": "control-9-held",
+      "atMs": 6659.5272909999985,
+      "observed": {
+        "url": "http://127.0.0.1:18120/after/?example=base&theme=light&captureProbe=1",
+        "reduce": false,
+        "active": {
+          "tag": "FLT-SEMANTICS",
+          "role": "button",
+          "name": "Tap me"
+        },
+        "probe": {
+          "disableAnimations": false,
+          "platformDisableAnimations": false,
+          "motionOverride": null,
+          "backgroundArgb": 4294769916,
+          "constraints": {
+            "minWidth": 0,
+            "maxWidth": 592,
+            "minHeight": 0,
+            "maxHeight": null
+          },
+          "rect": {
+            "x": 344,
+            "y": 92,
+            "width": 592,
+            "height": 176
+          }
+        },
+        "stage": null,
+        "controls": [
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": null,
+            "name": "Continue\nDownload\nOutline\nGhost\nSmall\nMedium\nLarge\nDelete\nRipple\nTap me",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1000,
+              "top": 0,
+              "right": 1280,
+              "bottom": 1000,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": null,
+            "name": "Continue\nDownload\nOutline\nGhost\nSmall\nMedium\nLarge\nDelete\nRipple\nTap me",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1000,
+              "top": 0,
+              "right": 1280,
+              "bottom": 1000,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": null,
+            "name": "Continue\nDownload\nOutline\nGhost\nSmall\nMedium\nLarge\nDelete\nRipple\nTap me",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1000,
+              "top": 0,
+              "right": 1280,
+              "bottom": 1000,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": null,
+            "name": "Continue\nDownload\nOutline\nGhost\nSmall\nMedium\nLarge\nDelete\nRipple\nTap me",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1000,
+              "top": 0,
+              "right": 1280,
+              "bottom": 1000,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "group",
+            "name": "Continue\nDownload\nOutline\nGhost\nSmall\nMedium\nLarge\nDelete\nRipple\nTap me",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 360,
+              "top": 0,
+              "right": 1280,
+              "bottom": 360,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "button",
+            "name": "Continue",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 410.2164306640625,
+              "y": 92,
+              "width": 123.109375,
+              "height": 40,
+              "top": 92,
+              "right": 533.3258056640625,
+              "bottom": 132,
+              "left": 410.2164306640625
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "button",
+            "name": "Download",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 545.3381958007812,
+              "y": 92,
+              "width": 131.640625,
+              "height": 40,
+              "top": 92,
+              "right": 676.9788208007812,
+              "bottom": 132,
+              "left": 545.3381958007812
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "button",
+            "name": "Outline",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 688.98388671875,
+              "y": 92,
+              "width": 89.765625,
+              "height": 40,
+              "top": 92,
+              "right": 778.74951171875,
+              "bottom": 132,
+              "left": 688.98388671875
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "button",
+            "name": "Ghost",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 790.751708984375,
+              "y": 92,
+              "width": 79.03125,
+              "height": 40,
+              "top": 92,
+              "right": 869.782958984375,
+              "bottom": 132,
+              "left": 790.751708984375
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "button",
+            "name": "Small",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 486.5939636230469,
+              "y": 164,
+              "width": 55.640655517578125,
+              "height": 32,
+              "top": 164,
+              "right": 542.234619140625,
+              "bottom": 196,
+              "left": 486.5939636230469
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "button",
+            "name": "Medium",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 554.2381591796875,
+              "y": 160,
+              "width": 92.40625,
+              "height": 40,
+              "top": 160,
+              "right": 646.6444091796875,
+              "bottom": 200,
+              "left": 554.2381591796875
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "button",
+            "name": "Large",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 658.6539306640625,
+              "y": 156,
+              "width": 90.75,
+              "height": 48,
+              "top": 156,
+              "right": 749.4039306640625,
+              "bottom": 204,
+              "left": 658.6539306640625
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "button",
+            "name": "Delete",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 761.406005859375,
+              "y": 164,
+              "width": 32,
+              "height": 32,
+              "top": 164,
+              "right": 793.406005859375,
+              "bottom": 196,
+              "left": 761.406005859375
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "button",
+            "name": "Ripple",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 548.522216796875,
+              "y": 228,
+              "width": 81.90625,
+              "height": 40,
+              "top": 228,
+              "right": 630.428466796875,
+              "bottom": 268,
+              "left": 548.522216796875
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "button",
+            "name": "Tap me",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 642.43798828125,
+              "y": 228,
+              "width": 89.03125,
+              "height": 40,
+              "top": 228,
+              "right": 731.46923828125,
+              "bottom": 268,
+              "left": 642.43798828125
+            }
+          }
+        ]
+      }
+    },
+    {
+      "label": "control-9-semantics-geometry",
+      "rect": {
+        "x": 642.43798828125,
+        "y": 228,
+        "width": 89.03125,
+        "height": 40,
+        "top": 228,
+        "right": 731.46923828125,
+        "bottom": 268,
+        "left": 642.43798828125
+      },
+      "note": "Semantics bounds are not painted transform bounds. Compare native PNGs instead."
+    },
+    {
+      "label": "exit-reset",
+      "atMs": 9050.754541000002,
+      "observed": {
+        "url": "http://127.0.0.1:18120/after/?example=base&theme=light&captureProbe=1",
+        "reduce": false,
+        "active": {
+          "tag": "FLT-SEMANTICS",
+          "role": "button",
+          "name": "Tap me"
+        },
+        "probe": {
+          "disableAnimations": false,
+          "platformDisableAnimations": false,
+          "motionOverride": null,
+          "backgroundArgb": 4294769916,
+          "constraints": {
+            "minWidth": 0,
+            "maxWidth": 592,
+            "minHeight": 0,
+            "maxHeight": null
+          },
+          "rect": {
+            "x": 344,
+            "y": 92,
+            "width": 592,
+            "height": 176
+          }
+        },
+        "stage": null,
+        "controls": [
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": null,
+            "name": "Continue\nDownload\nOutline\nGhost\nSmall\nMedium\nLarge\nDelete\nRipple\nTap me",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1000,
+              "top": 0,
+              "right": 1280,
+              "bottom": 1000,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": null,
+            "name": "Continue\nDownload\nOutline\nGhost\nSmall\nMedium\nLarge\nDelete\nRipple\nTap me",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1000,
+              "top": 0,
+              "right": 1280,
+              "bottom": 1000,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": null,
+            "name": "Continue\nDownload\nOutline\nGhost\nSmall\nMedium\nLarge\nDelete\nRipple\nTap me",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1000,
+              "top": 0,
+              "right": 1280,
+              "bottom": 1000,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": null,
+            "name": "Continue\nDownload\nOutline\nGhost\nSmall\nMedium\nLarge\nDelete\nRipple\nTap me",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1000,
+              "top": 0,
+              "right": 1280,
+              "bottom": 1000,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "group",
+            "name": "Continue\nDownload\nOutline\nGhost\nSmall\nMedium\nLarge\nDelete\nRipple\nTap me",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 360,
+              "top": 0,
+              "right": 1280,
+              "bottom": 360,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "button",
+            "name": "Continue",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 410.2164306640625,
+              "y": 92,
+              "width": 123.109375,
+              "height": 40,
+              "top": 92,
+              "right": 533.3258056640625,
+              "bottom": 132,
+              "left": 410.2164306640625
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "button",
+            "name": "Download",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 545.3381958007812,
+              "y": 92,
+              "width": 131.640625,
+              "height": 40,
+              "top": 92,
+              "right": 676.9788208007812,
+              "bottom": 132,
+              "left": 545.3381958007812
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "button",
+            "name": "Outline",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 688.98388671875,
+              "y": 92,
+              "width": 89.765625,
+              "height": 40,
+              "top": 92,
+              "right": 778.74951171875,
+              "bottom": 132,
+              "left": 688.98388671875
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "button",
+            "name": "Ghost",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 790.751708984375,
+              "y": 92,
+              "width": 79.03125,
+              "height": 40,
+              "top": 92,
+              "right": 869.782958984375,
+              "bottom": 132,
+              "left": 790.751708984375
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "button",
+            "name": "Small",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 486.5939636230469,
+              "y": 164,
+              "width": 55.640655517578125,
+              "height": 32,
+              "top": 164,
+              "right": 542.234619140625,
+              "bottom": 196,
+              "left": 486.5939636230469
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "button",
+            "name": "Medium",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 554.2381591796875,
+              "y": 160,
+              "width": 92.40625,
+              "height": 40,
+              "top": 160,
+              "right": 646.6444091796875,
+              "bottom": 200,
+              "left": 554.2381591796875
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "button",
+            "name": "Large",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 658.6539306640625,
+              "y": 156,
+              "width": 90.75,
+              "height": 48,
+              "top": 156,
+              "right": 749.4039306640625,
+              "bottom": 204,
+              "left": 658.6539306640625
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "button",
+            "name": "Delete",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 761.406005859375,
+              "y": 164,
+              "width": 32,
+              "height": 32,
+              "top": 164,
+              "right": 793.406005859375,
+              "bottom": 196,
+              "left": 761.406005859375
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "button",
+            "name": "Ripple",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 548.522216796875,
+              "y": 228,
+              "width": 81.90625,
+              "height": 40,
+              "top": 228,
+              "right": 630.428466796875,
+              "bottom": 268,
+              "left": 548.522216796875
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "button",
+            "name": "Tap me",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 642.43798828125,
+              "y": 228,
+              "width": 89.03125,
+              "height": 40,
+              "top": 228,
+              "right": 731.46923828125,
+              "bottom": 268,
+              "left": 642.43798828125
+            }
+          }
+        ]
+      }
+    },
+    {
+      "label": "keyboard",
+      "atMs": 11016.826458000003,
+      "observed": {
+        "url": "http://127.0.0.1:18120/after/?example=base&theme=light&captureProbe=1",
+        "reduce": false,
+        "active": {
+          "tag": "BODY",
+          "role": null,
+          "name": "\n  \n  \n\n\nflutter typography measurementContinueDownloadOutlineGhostSmallMediumLargeDeleteRippleTap meflutter-view flt-scene-host {  font: normal normal 14px sans-serif;}flutter-view flt-semantics input[type=range] {  appearance: none;  -webkit-appearance: none;  width: 100%;  position: absolute;  border: none;  top: 0;  right: 0;  bottom: 0;  left: 0;}flutter-view input::selection {  background-color: transparent;}flutter-view textarea::selection {  background-color: transparent;}flutter-view flt-semantics input,flutter-view flt-semantics textarea,flutter-view flt-semantics [contentEditable=\"true\"] {  caret-color: transparent;}flutter-view .flt-text-editing::placeholder {  opacity: 0;}flutter-view:focus { outline: rgb(0, 0, 0) none 0px;}flutter-view .transparentTextEditing:-webkit-autofill,flutter-view .transparentTextEditing:-webkit-autofill:hover,flutter-view .transparentTextEditing:-webkit-autofill:focus,flutter-view .transparentTextEditing:-webkit-autofill:active {  opacity: 0 !important;}"
+        },
+        "probe": {
+          "disableAnimations": false,
+          "platformDisableAnimations": false,
+          "motionOverride": null,
+          "backgroundArgb": 4294769916,
+          "constraints": {
+            "minWidth": 0,
+            "maxWidth": 592,
+            "minHeight": 0,
+            "maxHeight": null
+          },
+          "rect": {
+            "x": 344,
+            "y": 92,
+            "width": 592,
+            "height": 176
+          }
+        },
+        "stage": null,
+        "controls": [
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": null,
+            "name": "Continue\nDownload\nOutline\nGhost\nSmall\nMedium\nLarge\nDelete\nRipple\nTap me",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1000,
+              "top": 0,
+              "right": 1280,
+              "bottom": 1000,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": null,
+            "name": "Continue\nDownload\nOutline\nGhost\nSmall\nMedium\nLarge\nDelete\nRipple\nTap me",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1000,
+              "top": 0,
+              "right": 1280,
+              "bottom": 1000,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": null,
+            "name": "Continue\nDownload\nOutline\nGhost\nSmall\nMedium\nLarge\nDelete\nRipple\nTap me",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1000,
+              "top": 0,
+              "right": 1280,
+              "bottom": 1000,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": null,
+            "name": "Continue\nDownload\nOutline\nGhost\nSmall\nMedium\nLarge\nDelete\nRipple\nTap me",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1000,
+              "top": 0,
+              "right": 1280,
+              "bottom": 1000,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "group",
+            "name": "Continue\nDownload\nOutline\nGhost\nSmall\nMedium\nLarge\nDelete\nRipple\nTap me",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 360,
+              "top": 0,
+              "right": 1280,
+              "bottom": 360,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "button",
+            "name": "Continue",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 410.2164306640625,
+              "y": 92,
+              "width": 123.109375,
+              "height": 40,
+              "top": 92,
+              "right": 533.3258056640625,
+              "bottom": 132,
+              "left": 410.2164306640625
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "button",
+            "name": "Download",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 545.3381958007812,
+              "y": 92,
+              "width": 131.640625,
+              "height": 40,
+              "top": 92,
+              "right": 676.9788208007812,
+              "bottom": 132,
+              "left": 545.3381958007812
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "button",
+            "name": "Outline",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 688.98388671875,
+              "y": 92,
+              "width": 89.765625,
+              "height": 40,
+              "top": 92,
+              "right": 778.74951171875,
+              "bottom": 132,
+              "left": 688.98388671875
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "button",
+            "name": "Ghost",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 790.751708984375,
+              "y": 92,
+              "width": 79.03125,
+              "height": 40,
+              "top": 92,
+              "right": 869.782958984375,
+              "bottom": 132,
+              "left": 790.751708984375
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "button",
+            "name": "Small",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 486.5939636230469,
+              "y": 164,
+              "width": 55.640655517578125,
+              "height": 32,
+              "top": 164,
+              "right": 542.234619140625,
+              "bottom": 196,
+              "left": 486.5939636230469
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "button",
+            "name": "Medium",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 554.2381591796875,
+              "y": 160,
+              "width": 92.40625,
+              "height": 40,
+              "top": 160,
+              "right": 646.6444091796875,
+              "bottom": 200,
+              "left": 554.2381591796875
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "button",
+            "name": "Large",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 658.6539306640625,
+              "y": 156,
+              "width": 90.75,
+              "height": 48,
+              "top": 156,
+              "right": 749.4039306640625,
+              "bottom": 204,
+              "left": 658.6539306640625
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "button",
+            "name": "Delete",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 761.406005859375,
+              "y": 164,
+              "width": 32,
+              "height": 32,
+              "top": 164,
+              "right": 793.406005859375,
+              "bottom": 196,
+              "left": 761.406005859375
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "button",
+            "name": "Ripple",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 548.522216796875,
+              "y": 228,
+              "width": 81.90625,
+              "height": 40,
+              "top": 228,
+              "right": 630.428466796875,
+              "bottom": 268,
+              "left": 548.522216796875
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "button",
+            "name": "Tap me",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 642.43798828125,
+              "y": 228,
+              "width": 89.03125,
+              "height": 40,
+              "top": 228,
+              "right": 731.46923828125,
+              "bottom": 268,
+              "left": 642.43798828125
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

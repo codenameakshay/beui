@@ -1,0 +1,36 @@
+# Chart change text
+
+## Round two captions
+
+These captions refer to the round-two code and stills in `round2/`. New native-cadence videos and side-by-side caption assembly remain with the parent's recorder. No video below is claimed as a new round-two recording.
+
+| Widget | Before round two | After round two | Recording obligation |
+| --- | --- | --- | --- |
+| Candlestick | Non-last wick, body, and volume changes jump. Entrance has no stagger. | Independent geometry springs retain stable candle identity. Candles enter 12ms apart. Last-price tag and line retarget through scale changes. | Initial reveal, paused Step, non-last update, interruption, pointer and keyboard restoration. |
+| Bump | Rank changes jump. Path hover has no emphasis motion. | Paths, dots, and endpoint labels share springs. Paths reveal; dots enter and grow on hover. Hover exit restores pinning. | Shuffle during motion, path and point A/B/A, pin, focus, exit, and removal. |
+| Donut | Entrance follows total. Narrow layout stays in a row. | Visibility-gated ring sweep, staggered segments, stable hit geometry, spring emphasis, and narrow column layout. | Entry before visibility threshold, segment A/B/A, pin, reorder, zero, and narrow layout. |
+| Volume profile | Positional identity and inferred midpoint ranges. | Stable IDs, validated low/high ranges, actual unequal geometry, source axes and POC marker, retained selection on tooltip close. | All sessions, top/middle/bottom bins, gap hit, replacement, removal, keyboard, and empty restore. |
+| Composition | 240px plot without cursor. | 320px desktop plot with a spring-driven dashed cursor. | Both views, period A/B/A, leave, keyboard, and missing data. |
+| Funnel | ChoiceChips and different heading/subtitle. | Source-style direction buttons, heading/subtitle, and canonical Next cohort action. | Both directions, cohort reversal, keyboard, zero, empty, and disabled states. |
+
+## Round one captions
+
+These captions describe the implementation changes for the parent's before/after video assembly. They are not parity verdicts.
+
+| Widget | Before | After | Video |
+| --- | --- | --- | --- |
+| Candlestick | No price-axis ticks or pointer-price readout. Geometry uses a 58px gutter and 78% price region. | Five midpoint ticks, 64px gutter, source price/volume allocation, horizontal pointer crosshair and price tag. Click takes focus. Blur, keyboard, and exit clear pointer state. Pause/Resume and Step drive source trades. | `after-final/candlestick-chart/interaction.webm` |
+| Bump | Dots and end labels add the top inset twice and miss their paths. Five ranks use a 300px plot. | Source 560 by 240 viewBox geometry aligns paths, dots, and labels. Markers have source outlines. Tooltip adds previous rank and Up/Down/No change. Shuffle keeps rank permutations. | `after-final/bump-chart/interaction.webm` |
+| Donut | Rounded caps cover the intended arc gaps. Demo selection does not report filtering. | Cap-aware arc insets preserve the gaps. Plan selection reports filtering and clears on repeated selection. | `after-final/donut-chart/interaction.webm` |
+| Volume profile | Value area grows beyond its target and excludes empty edge bins at 100%. Session tabs are absent. | Expansion stops before overshoot, resolves ties by distance then higher price, and includes all bins at 100%. Today/Previous/Week use source observation arrays. | `after-final/volume-profile/interaction.webm` |
+| Status bar | Only one history and no source replay or incident controls. | API and Website histories, Replay, Simulate incident, and Resolve incident. The incident changes the final three API observations. | `after-final/status-bar/interaction.webm` |
+| Liquidity heatmap | Initial market price and band formula differ from the source. No Resimulate action. | Source phase-zero observations and a Resimulate action update the phase while retaining snapshot IDs. | `after-final/liquidity-heatmap/interaction.webm` |
+| Order book | Static snapshot and no source live controls or selection readout. | Live depth updates at 950ms, Pause/Resume, Step, and selected-price readout with stable quote identities. | `after-final/order-book/interaction.webm` |
+| Heat calendar | Demo forces a cyan color absent from the source. | Demo uses the chart's source-default accent. | `after-final/heat-calendar/interaction.webm` |
+| Treemap | No slice change. | Audit and recordings only. | `after-final/treemap/interaction.webm` |
+| Composition | No slice change. | Audit and recordings only. | `after-final/composition-chart/interaction.webm` |
+| Funnel | No slice change. | Audit and recordings only. | `after-final/funnel-chart/interaction.webm` |
+| Returns calendar | No slice change. | Audit and recordings only. | `after-final/returns-calendar/interaction.webm` |
+| Price target fan | No slice change. | Audit and recordings only. | `after-final/price-target-fan/interaction.webm` |
+
+For each row, the corresponding baseline is `before/<slug>/interaction.webm` and the live source is `reference/<slug>/interaction.webm`. All final recordings use the existing fixed-coordinate script and inherit the limitations in `README.md`. They are not evidence that every captioned action occurred in the recording. The dedicated recovery worker must record the missing semantic actions and add visible captions to the final comparison videos.

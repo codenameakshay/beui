@@ -1,0 +1,18 @@
+node:internal/modules/run_main:111
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: The input did not match the regular expression /Services/. Input:
+
+'Subscriptions$70M$7012345678900123456789MToRevenue$70M'
+
+    at file:///Users/codenameakshay/.t3/worktrees/beui/t3-828b4918/test/charts/verify_sankey_activation.mjs:24:12 {
+  generatedMessage: true,
+  code: 'ERR_ASSERTION',
+  actual: 'Subscriptions$70M$7012345678900123456789MToRevenue$70M',
+  expected: /Services/,
+  operator: 'match',
+  diff: 'simple'
+}
+
+Node.js v26.12.1

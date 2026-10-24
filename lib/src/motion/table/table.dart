@@ -15,7 +15,10 @@ library;
 import 'dart:async';
 import 'dart:math' as math;
 
+import 'package:flutter/gestures.dart' show DragStartBehavior;
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart' show ScrollCacheExtent;
+import 'package:flutter/services.dart';
 
 import '../../overlay/beui_overlay.dart';
 import '../../theme/beui_colors.dart';
@@ -23,12 +26,27 @@ import '../../tokens/icons.dart';
 import '../../tokens/motion.dart';
 import '../_engine.dart';
 import '../checkbox.dart';
+import 'intrinsic_layout.dart';
+import 'intrinsic_measurement.dart';
+
+export 'intrinsic_measurement.dart' show BeuiTableIntrinsicSample;
 
 part 'editable_cell.dart';
 part 'row_handle.dart';
 part 'skeleton_rows.dart';
 part 'table_header.dart';
 part 'table_menu.dart';
+
+/// Column allocation policy. Intrinsic sizing requires passive cell samples.
+enum BeuiTableSizing { flex, intrinsic }
+
+class _ResolvedTableLayout {
+  const _ResolvedTableLayout(this.widths, this.selectionWidth, this.tableWidth);
+  final Map<String, double> widths;
+  final double selectionWidth;
+  final double tableWidth;
+  double? operator [](String key) => widths[key];
+}
 
 /// Sort direction for a column (source `SortDirection`).
 enum BeuiSortDirection {
@@ -138,8 +156,8 @@ class BeuiTableColumn<T> {
   /// Cell + header alignment.
   final BeuiTableAlign align;
 
-  /// Fixed column width in logical pixels. Omit to share remaining space by
-  /// [flex] (the source's fr-unit / auto columns).
+  /// Width in logical pixels. Fixed in flex mode; a preference subject to
+  /// measured content constraints in intrinsic mode. Omit for automatic sizing.
   final double? width;
 
   /// Flexible share weight when [width] is null. Defaults to 1.
@@ -186,6 +204,9 @@ class BeuiTable<T> extends StatefulWidget {
     required this.data,
     required this.columns,
     this.getRowId,
+    this.sizing = BeuiTableSizing.flex,
+    this.intrinsicSamples,
+    this.intrinsicSampleLimit = 256,
     this.selectable = false,
     this.selectedRowIds,
     this.defaultSelectedRowIds,
@@ -206,12 +227,35 @@ class BeuiTable<T> extends StatefulWidget {
     this.onDeleteColumn,
     this.rowHeight = 48,
     this.height = 440,
+    this.borderRadius = const BorderRadius.all(Radius.circular(16)),
     this.onEndReached,
     this.loading = false,
     this.skeletonRows = 3,
     this.emptyState,
     super.key,
   });
+
+  /// Flex retains the default allocation. Intrinsic uses measured content.
+  final BeuiTableSizing sizing;
+
+  /// Passive outer-width samples for every column's header and the supplied
+  /// sorted visible/overscan rows. Include padding, icons and matching styles.
+  /// Selectable tables also require a selection sample. Unsupported cells and
+  /// editors require explicit widths; never duplicate live controls or keys.
+  /// The supplied rows follow source fixed-estimate ranges using the full
+  /// table viewport plus ten rows on each side, independently of Flutter
+  /// mounting. Widths
+  /// can change as rows enter or leave this window. Called during layout;
+  /// do not mutate ancestor state. Required only for intrinsic sizing.
+  final List<BeuiTableIntrinsicSample> Function(
+    BuildContext context,
+    List<T> sampledRows,
+  )?
+  intrinsicSamples;
+
+  /// Maximum number of sample roots, including headers and selection.
+  /// This does not bound the complexity or text length within each sample.
+  final int intrinsicSampleLimit;
 
   /// The rows.
   final List<T> data;
@@ -285,6 +329,9 @@ class BeuiTable<T> extends StatefulWidget {
   /// Total table height in px (header + scroll body).
   final double height;
 
+  /// Outer clipping radius. Use [BorderRadius.zero] for the plain source table.
+  final BorderRadius borderRadius;
+
   /// Fires when the body scrolls near the bottom — load the next page.
   final VoidCallback? onEndReached;
 
@@ -342,11 +389,14 @@ class _BeuiTableState<T> extends State<BeuiTable<T>> {
   // `index.tsx`: `deactivateTimer` / `rowTimer`, `setTimeout(..., 100)`).
   String? _activeColumn;
   String? _activeRowId;
+  ({bool row, String id})? _openMenu;
   Timer? _columnDeactivateTimer;
   Timer? _rowDeactivateTimer;
 
   final ScrollController _vScroll = ScrollController();
+  final FocusNode _scrollFocus = FocusNode();
   bool _endReachedFired = false;
+  ({int start, int end})? _sampleRange;
 
   @override
   void initState() {
@@ -365,6 +415,7 @@ class _BeuiTableState<T> extends State<BeuiTable<T>> {
   void dispose() {
     _columnDeactivateTimer?.cancel();
     _rowDeactivateTimer?.cancel();
+    _scrollFocus.dispose();
     _vScroll
       ..removeListener(_onScroll)
       ..dispose();
@@ -581,12 +632,14 @@ class _BeuiTableState<T> extends State<BeuiTable<T>> {
   // so crossing the gap onto the handle — whose own MouseRegion re-activates —
   // never blanks the handle mid-reach. Mirrors the source's setTimeout bridge.
   void _activateColumn(String key) {
+    if (_openMenu != null) return;
     _columnDeactivateTimer?.cancel();
     _columnDeactivateTimer = null;
     if (_activeColumn != key) setState(() => _activeColumn = key);
   }
 
   void _deactivateColumn(String key) {
+    if (_openMenu == (row: false, id: key)) return;
     _columnDeactivateTimer?.cancel();
     _columnDeactivateTimer = Timer(const Duration(milliseconds: 100), () {
       if (mounted && _activeColumn == key) {
@@ -596,12 +649,14 @@ class _BeuiTableState<T> extends State<BeuiTable<T>> {
   }
 
   void _activateRow(String id) {
+    if (_openMenu != null) return;
     _rowDeactivateTimer?.cancel();
     _rowDeactivateTimer = null;
     if (_activeRowId != id) setState(() => _activeRowId = id);
   }
 
   void _deactivateRow(String id) {
+    if (_openMenu == (row: true, id: id)) return;
     _rowDeactivateTimer?.cancel();
     _rowDeactivateTimer = Timer(const Duration(milliseconds: 100), () {
       if (mounted && _activeRowId == id) {
@@ -610,8 +665,22 @@ class _BeuiTableState<T> extends State<BeuiTable<T>> {
     });
   }
 
+  void _setMenuOpen({
+    required bool row,
+    required String id,
+    required bool open,
+  }) {
+    _columnDeactivateTimer?.cancel();
+    _rowDeactivateTimer?.cancel();
+    setState(() => _openMenu = open ? (row: row, id: id) : null);
+  }
+
   // ---- infinite scroll ------------------------------------------------------
   void _onScroll() {
+    if (widget.sizing == BeuiTableSizing.intrinsic && _vScroll.hasClients) {
+      final range = _intrinsicSampleRange(_vScroll.offset);
+      if (range != _sampleRange) setState(() => _sampleRange = range);
+    }
     if (widget.onEndReached == null || widget.loading || _endReachedFired) {
       return;
     }
@@ -623,13 +692,30 @@ class _BeuiTableState<T> extends State<BeuiTable<T>> {
     }
   }
 
+  ({int start, int end}) _intrinsicSampleRange(double offset) {
+    final count = widget.data.length;
+    final height = widget.height.roundToDouble();
+    if (count == 0 || height <= 0) return (start: 0, end: 0);
+    final first = (math.max(0, offset) / widget.rowHeight).floor().clamp(
+      0,
+      count - 1,
+    );
+    final last = math
+        .max(
+          first,
+          ((math.max(0, offset) + height) / widget.rowHeight).ceil() - 1,
+        )
+        .clamp(0, count - 1);
+    return (start: math.max(0, first - 10), end: math.min(count, last + 11));
+  }
+
   // ---- width resolution -----------------------------------------------------
   //
   // Fixed columns keep their resize override / declared width; the rest share
   // the remaining viewport by flex. A trailing spacer owns any leftover (the
   // source's empty `<col/>` filler), so content stays fill-width until columns
   // out-grow the viewport, at which point the table scrolls horizontally.
-  Map<String, double> _resolveWidths(
+  _ResolvedTableLayout _resolveWidths(
     List<BeuiTableColumn<T>> cols,
     double viewport,
   ) {
@@ -652,7 +738,15 @@ class _BeuiTableState<T> extends State<BeuiTable<T>> {
       resolved[c.key] =
           fixed ?? math.max(widget.minColumnWidth, perFlex * c.flex);
     }
-    return resolved;
+    final selection = widget.selectable ? _checkboxWidth : 0.0;
+    return _ResolvedTableLayout(
+      resolved,
+      selection,
+      math.max(
+        viewport,
+        selection + resolved.values.fold(0.0, (a, b) => a + b),
+      ),
+    );
   }
 
   @override
@@ -683,53 +777,154 @@ class _BeuiTableState<T> extends State<BeuiTable<T>> {
       decoration: BoxDecoration(
         color: colors.background,
         border: Border.all(color: colors.border),
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: widget.borderRadius,
       ),
       clipBehavior: Clip.antiAlias,
       child: SizedBox(
         height: widget.height,
         child: LayoutBuilder(
           builder: (context, constraints) {
-            final viewport = constraints.maxWidth;
-            final resolved = _resolveWidths(cols, viewport);
-            final columnsWidth =
-                (widget.selectable ? _checkboxWidth : 0) +
-                cols.fold<double>(0, (sum, c) => sum + resolved[c.key]!);
-            final contentWidth = math.max(viewport, columnsWidth);
-            final bodyHeight = math.max(0.0, widget.height - widget.rowHeight);
+            Widget buildTable(_ResolvedTableLayout resolved) {
+              final contentWidth = resolved.tableWidth;
+              final bodyHeight = math.max(
+                0.0,
+                widget.height -
+                    widget.rowHeight -
+                    (widget.sizing == BeuiTableSizing.intrinsic
+                        ? _tableRuleWidth / 2
+                        : 0),
+              );
 
-            return SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: SizedBox(
-                width: contentWidth,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    _TableHeader<T>(
-                      state: this,
-                      columns: cols,
-                      colors: colors,
-                      reduce: reduce,
-                      resolved: resolved,
-                      allSelected: allSelected,
-                      someSelected: someSelected,
-                      onToggleAll: () => _toggleAll(sortedRows),
-                      hasColumnMenu: hasColumnMenu,
+              return SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: SizedBox(
+                  width: contentWidth,
+                  child: CustomPaint(
+                    foregroundPainter:
+                        widget.sizing == BeuiTableSizing.intrinsic
+                        ? _TableGridRules(
+                            scroll: _vScroll,
+                            rowHeight: widget.rowHeight,
+                            rowCount: sortedRows.isEmpty && widget.loading
+                                ? math.max(
+                                    1,
+                                    (widget.height / widget.rowHeight).ceil(),
+                                  )
+                                : sortedRows.length +
+                                      (widget.loading
+                                          ? widget.skeletonRows
+                                          : 0),
+                            headerColor: _collapsedRule(colors),
+                            color: Color.alphaBlend(
+                              colors.border.withValues(
+                                alpha: colors.border.a * 0.6,
+                              ),
+                              colors.background,
+                            ),
+                          )
+                        : null,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        _TableHeader<T>(
+                          state: this,
+                          columns: cols,
+                          colors: colors,
+                          reduce: reduce,
+                          resolved: resolved,
+                          allSelected: allSelected,
+                          someSelected: someSelected,
+                          onToggleAll: () => _toggleAll(sortedRows),
+                          hasColumnMenu: hasColumnMenu,
+                        ),
+                        SizedBox(
+                          height: bodyHeight,
+                          child: _buildBody(
+                            colors: colors,
+                            reduce: reduce,
+                            cols: cols,
+                            resolved: resolved,
+                            sortedRows: sortedRows,
+                            hasRowMenu: hasRowMenu,
+                          ),
+                        ),
+                      ],
                     ),
-                    SizedBox(
-                      height: bodyHeight,
-                      child: _buildBody(
-                        colors: colors,
-                        reduce: reduce,
-                        cols: cols,
-                        resolved: resolved,
-                        sortedRows: sortedRows,
-                        hasRowMenu: hasRowMenu,
-                      ),
-                    ),
-                  ],
+                  ),
                 ),
+              );
+            }
+
+            if (widget.sizing == BeuiTableSizing.flex) {
+              return buildTable(_resolveWidths(cols, constraints.maxWidth));
+            }
+            final sampler = widget.intrinsicSamples;
+            if (sampler == null || cols.any((c) => c.flex != 1)) {
+              throw FlutterError(
+                'Intrinsic Table sizing requires intrinsicSamples '
+                'and columns with flex == 1.',
+              );
+            }
+            final range = _intrinsicSampleRange(
+              _vScroll.hasClients ? _vScroll.offset : 0,
+            );
+            _sampleRange = range;
+            return IntrinsicMeasurement(
+              columns: [
+                if (widget.selectable) '#checkbox',
+                ...cols.map((c) => c.key),
+              ],
+              sampleLimit: widget.intrinsicSampleLimit,
+              samples: sampler(
+                context,
+                List.unmodifiable([
+                  for (var i = range.start; i < range.end; i++)
+                    sortedRows[i].row,
+                ]),
               ),
+              builder: (context, measurement) {
+                if (!measurement.supported) {
+                  throw FlutterError(
+                    'Unsupported intrinsic Table measurement: '
+                    '${measurement.error}',
+                  );
+                }
+                final metrics = {for (final c in measurement.columns) c.key: c};
+                final allocation = resolveSourceTable(
+                  dataColumns: [
+                    for (final c in cols)
+                      IntrinsicColumn(
+                        key: c.key,
+                        minimum: metrics[c.key]!.minimum,
+                        maximum: metrics[c.key]!.maximum,
+                        declared: c.width == null
+                            ? null
+                            : '${(c.width! * 64).floor() / 64}px',
+                        inputOnly: c.editable && c.cell == null,
+                      ),
+                  ],
+                  viewport: measurement.viewport,
+                  overrides: {
+                    for (final entry in _widths.entries)
+                      entry.key: (entry.value * 64).floor() / 64,
+                  },
+                  checkboxContribution: widget.selectable
+                      ? metrics['#checkbox']
+                      : null,
+                  minColumnWidth: widget.minColumnWidth,
+                );
+                final offset = widget.selectable ? 1 : 0;
+                return buildTable(
+                  _ResolvedTableLayout(
+                    {
+                      for (var i = 0; i < cols.length; i++)
+                        cols[i].key: allocation.widths[i + offset],
+                    },
+                    widget.selectable ? allocation.widths.first : 0,
+                    allocation.tableWidth,
+                  ),
+                );
+              },
             );
           },
         ),
@@ -741,7 +936,7 @@ class _BeuiTableState<T> extends State<BeuiTable<T>> {
     required BeuiColors colors,
     required bool reduce,
     required List<BeuiTableColumn<T>> cols,
-    required Map<String, double> resolved,
+    required _ResolvedTableLayout resolved,
     required List<_Entry<T>> sortedRows,
     required bool hasRowMenu,
   }) {
@@ -752,6 +947,7 @@ class _BeuiTableState<T> extends State<BeuiTable<T>> {
         // the header row and rendered ~1 skeleton short.
         final count = math.max(1, (widget.height / widget.rowHeight).ceil());
         return SingleChildScrollView(
+          controller: _vScroll,
           child: Column(
             children: [
               for (var i = 0; i < count; i++)
@@ -762,6 +958,7 @@ class _BeuiTableState<T> extends State<BeuiTable<T>> {
                   reduce: reduce,
                   rowHeight: widget.rowHeight,
                   selectable: widget.selectable,
+                  collapsed: widget.sizing == BeuiTableSizing.intrinsic,
                 ),
             ],
           ),
@@ -776,8 +973,11 @@ class _BeuiTableState<T> extends State<BeuiTable<T>> {
     }
 
     final skeletonCount = widget.loading ? widget.skeletonRows : 0;
-    return ListView.builder(
+    final list = ListView.builder(
       controller: _vScroll,
+      scrollCacheExtent: widget.sizing == BeuiTableSizing.intrinsic
+          ? ScrollCacheExtent.pixels(widget.rowHeight * 10)
+          : null,
       itemExtent: widget.rowHeight,
       itemCount: sortedRows.length + skeletonCount,
       itemBuilder: (context, index) {
@@ -789,6 +989,7 @@ class _BeuiTableState<T> extends State<BeuiTable<T>> {
             reduce: reduce,
             rowHeight: widget.rowHeight,
             selectable: widget.selectable,
+            collapsed: widget.sizing == BeuiTableSizing.intrinsic,
           );
         }
         final entry = sortedRows[index];
@@ -803,6 +1004,34 @@ class _BeuiTableState<T> extends State<BeuiTable<T>> {
           hasRowMenu: hasRowMenu,
         );
       },
+    );
+    return Focus(
+      focusNode: _scrollFocus,
+      onKeyEvent: (_, event) {
+        if (event is! KeyDownEvent || !_vScroll.hasClients) {
+          return KeyEventResult.ignored;
+        }
+        final position = _vScroll.position;
+        final key = event.logicalKey;
+        final target = switch (key) {
+          LogicalKeyboardKey.pageDown =>
+            position.pixels + position.viewportDimension,
+          LogicalKeyboardKey.pageUp =>
+            position.pixels - position.viewportDimension,
+          LogicalKeyboardKey.end => position.maxScrollExtent,
+          LogicalKeyboardKey.home => position.minScrollExtent,
+          _ => null,
+        };
+        if (target == null) return KeyEventResult.ignored;
+        _vScroll.jumpTo(
+          target.clamp(position.minScrollExtent, position.maxScrollExtent),
+        );
+        return KeyEventResult.handled;
+      },
+      child: Listener(
+        onPointerDown: hasRowMenu ? null : (_) => _scrollFocus.requestFocus(),
+        child: list,
+      ),
     );
   }
 }
@@ -826,7 +1055,7 @@ class _DataRow<T> extends StatefulWidget {
   final _Entry<T> entry;
   final int index;
   final List<BeuiTableColumn<T>> columns;
-  final Map<String, double> resolved;
+  final _ResolvedTableLayout resolved;
   final BeuiColors colors;
   final bool selected;
   final bool hasRowMenu;
@@ -853,7 +1082,7 @@ class _DataRowState<T> extends State<_DataRow<T>> {
       children: [
         if (w.state.widget.selectable)
           SizedBox(
-            width: _checkboxWidth,
+            width: w.resolved.selectionWidth,
             child: Center(
               child: BeuiCheckbox(
                 value: w.selected,
@@ -893,13 +1122,17 @@ class _DataRowState<T> extends State<_DataRow<T>> {
         height: w.state.widget.rowHeight,
         decoration: BoxDecoration(
           color: bg,
-          border: Border(
-            // `border-border/60` scales the token's own alpha (white/5%) — it
-            // does not replace it, which would paint a near-white rule.
-            bottom: BorderSide(
-              color: colors.border.withValues(alpha: colors.border.a * 0.6),
-            ),
-          ),
+          border: w.state.widget.sizing == BeuiTableSizing.intrinsic
+              ? null
+              : Border(
+                  // `border-border/60` scales the token's own alpha (white/5%) — it
+                  // does not replace it, which would paint a near-white rule.
+                  bottom: BorderSide(
+                    color: colors.border.withValues(
+                      alpha: colors.border.a * 0.6,
+                    ),
+                  ),
+                ),
         ),
         child: cells,
       ),

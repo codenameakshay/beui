@@ -1,0 +1,116 @@
+[
+  {
+    "slug": "card-held-press-dark",
+    "change": "Held upper-card press scales only the back/card layer. Front pocket stays stationary.",
+    "beforeFile": "press-before/candidate-dark-no-preference/capture.mp4",
+    "afterFile": "press-after/candidate-dark-no-preference/capture.mp4",
+    "video": "labeled-press/card-held-press-dark.mp4",
+    "sha256": "68788041543178b5e00129ae18980f759d0fb3b80d4c77a0c2ab950200eb77a1",
+    "labels": [
+      "ROUND2 before. card-held-press-dark. Whole folder shrinks on hold. Width592, d831524 wrapper, pointer recorder d53695f.",
+      "ROUND2 after. card-held-press-dark. Only back/card shrink. Same viewport, wrapper and protocol. No exact parity or 60fps claim."
+    ],
+    "beforeProbe": {
+      "programs": [],
+      "stream_groups": [],
+      "streams": [
+        {
+          "width": 1280,
+          "height": 1113,
+          "nb_read_frames": "138"
+        }
+      ],
+      "format": {
+        "duration": "4.998294"
+      }
+    },
+    "afterProbe": {
+      "programs": [],
+      "stream_groups": [],
+      "streams": [
+        {
+          "width": 1280,
+          "height": 1113,
+          "nb_read_frames": "141"
+        }
+      ],
+      "format": {
+        "duration": "4.999946"
+      }
+    },
+    "derivedProbe": {
+      "programs": [],
+      "stream_groups": [],
+      "streams": [
+        {
+          "width": 1280,
+          "height": 1178,
+          "nb_read_frames": "279"
+        }
+      ],
+      "format": {
+        "duration": "10.034723"
+      }
+    },
+    "inputFrames": 279,
+    "outputFrames": 279,
+    "method": "Sequential viewing edit, not aligned comparison. No scaling, masking, interpolation or duplicate frames. Black title and padding only. Round1 and round2 viewports and wrappers differ unless the labels state otherwise. Immutable 5ec78ac original remains at its existing path."
+  },
+  {
+    "slug": "card-held-press-light",
+    "change": "Light-theme held upper-card press, release open and Enter close.",
+    "beforeFile": "press-before/candidate-light-no-preference/capture.mp4",
+    "afterFile": "press-after/candidate-light-no-preference/capture.mp4",
+    "video": "labeled-press/card-held-press-light.mp4",
+    "sha256": "3bbb495ac8b968c00b7f6995aa6b9a6327ba377b03740d13b807fdff01756e88",
+    "labels": [
+      "ROUND2 before. card-held-press-light. Whole folder shrinks on hold. Width592, d831524 wrapper, pointer recorder d53695f.",
+      "ROUND2 after. card-held-press-light. Only back/card shrink. Same viewport, wrapper and protocol. No exact parity or 60fps claim."
+    ],
+    "beforeProbe": {
+      "programs": [],
+      "stream_groups": [],
+      "streams": [
+        {
+          "width": 1280,
+          "height": 1113,
+          "nb_read_frames": "136"
+        }
+      ],
+      "format": {
+        "duration": "4.995259"
+      }
+    },
+    "afterProbe": {
+      "programs": [],
+      "stream_groups": [],
+      "streams": [
+        {
+          "width": 1280,
+          "height": 1113,
+          "nb_read_frames": "137"
+        }
+      ],
+      "format": {
+        "duration": "4.989990"
+      }
+    },
+    "derivedProbe": {
+      "programs": [],
+      "stream_groups": [],
+      "streams": [
+        {
+          "width": 1280,
+          "height": 1178,
+          "nb_read_frames": "273"
+        }
+      ],
+      "format": {
+        "duration": "10.022250"
+      }
+    },
+    "inputFrames": 273,
+    "outputFrames": 273,
+    "method": "Sequential viewing edit, not aligned comparison. No scaling, masking, interpolation or duplicate frames. Black title and padding only. Round1 and round2 viewports and wrappers differ unless the labels state otherwise. Immutable 5ec78ac original remains at its existing path."
+  }
+]

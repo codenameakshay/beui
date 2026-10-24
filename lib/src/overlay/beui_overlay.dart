@@ -346,6 +346,8 @@ class _BeuiOverlayState extends State<BeuiOverlay>
       bindings: {const SingleActivator(LogicalKeyboardKey.escape): _dismiss},
       child: Focus(
         focusNode: _overlayFocus,
+        canRequestFocus: widget.trapFocus,
+        includeSemantics: widget.trapFocus,
         autofocus: widget.trapFocus,
         child: content,
       ),

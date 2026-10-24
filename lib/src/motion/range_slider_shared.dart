@@ -180,8 +180,8 @@ mixin BeuiSliderStateMixin<W extends StatefulWidget> on State<W> {
   void decreaseSliderValue() => commitValue(currentValue - sliderStep);
 
   /// The source's key contract, key for key: `←`/`↓` step down, `→`/`↑` step
-  /// up, `Home` → [sliderMin], `End` → [sliderMax]. There is deliberately no
-  /// PageUp/PageDown — the source has none.
+  /// up, `Home` → [sliderMin], `End` → [sliderMax].
+  /// PageUp/PageDown move ten steps.
   KeyEventResult handleSliderKey(KeyEvent event) {
     if (!sliderEnabled) return KeyEventResult.ignored;
     if (event is! KeyDownEvent && event is! KeyRepeatEvent) {
@@ -196,6 +196,14 @@ mixin BeuiSliderStateMixin<W extends StatefulWidget> on State<W> {
     if (key == LogicalKeyboardKey.arrowLeft ||
         key == LogicalKeyboardKey.arrowDown) {
       decreaseSliderValue();
+      return KeyEventResult.handled;
+    }
+    if (key == LogicalKeyboardKey.pageUp ||
+        key == LogicalKeyboardKey.pageDown) {
+      commitValue(
+        currentValue +
+            sliderStep * (key == LogicalKeyboardKey.pageUp ? 10 : -10),
+      );
       return KeyEventResult.handled;
     }
     if (key == LogicalKeyboardKey.home) {

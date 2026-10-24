@@ -20,7 +20,7 @@ class _DockDemoState extends State<_DockDemo> {
     ('home', LucideIcons.house),
     ('mail', LucideIcons.mail),
     ('calendar', LucideIcons.calendar),
-    ('music', LucideIcons.music),
+    ('music', LucideIcons.list_music),
     ('discover', LucideIcons.sparkles),
   ];
 

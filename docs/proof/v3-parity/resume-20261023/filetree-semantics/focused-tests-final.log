@@ -1,0 +1,94 @@
+Resolving dependencies...
+Downloading packages...
+  equatable 2.1.0 (3.0.0 available)
+  material_color_utilities 0.13.0 (0.13.1 available)
+  test_api 0.7.12 (0.7.15 available)
+  xml 7.0.1 (7.1.0 available)
+Got dependencies!
+4 packages have newer versions incompatible with dependency constraints.
+Try `flutter pub outdated` for more information.
+Resolving dependencies in `./example`...
+Downloading packages...
+Got dependencies in `./example`.
+00:00 +0: loading /Users/codenameakshay/.t3/worktrees/beui/t3-df4b55e2/test/motion/file_tree_test.dart
+00:00 +0: BeuiFileTree interaction expands nested items and selects a file
+00:00 +1: BeuiFileTree interaction controlled selection and expansion report changes only
+00:00 +2: BeuiFileTree interaction disabled items do not select or expand
+00:00 +3: BeuiFileTree interaction hovering a row uses foreground text color
+00:00 +4: BeuiFileTree interaction folder chevron uses the spring motion builder
+00:00 +5: BeuiFileTree interaction reduced motion snaps the folder chevron to expanded
+00:00 +6: BeuiFileTree interaction keyboard navigation follows visible tree rows
+00:00 +7: exposes supported list and listitem semantics
+00:00 +8: row actions expose selection and disabled state without losing focus
+00:00 +9: row icon keeps independent content actions
+
+Warning: A call to tap() with finder "Found 1 widget with a semantics label named "Inspect": [
+  Semantics(container: false, properties: SemanticsProperties, label: "Inspect", dependencies: [Directionality], renderObject: RenderSemanticsAnnotations#113b7 relayoutBoundary=up1),
+]" derived an Offset (Offset(36.0, 292.0)) that would not hit test on the specified widget.
+Maybe the widget is actually off-screen, or another widget is obscuring it, or the widget cannot receive pointer events.
+The finder corresponds to this RenderBox: RenderSemanticsAnnotations#113b7 relayoutBoundary=up1
+The hit test result at that offset is: HitTestResult(RenderDecoratedBox#52ad5@Offset(36.0, 10.0), RenderConstrainedBox#b17c4@Offset(36.0, 10.0), RenderMouseRegion#e39ca@Offset(36.0, 10.0), RenderOpacity#89930@Offset(36.0, 10.0), RenderPointerListener#9522a@Offset(36.0, 10.0), RenderSemanticsGestureHandler#674ef@Offset(36.0, 10.0), RenderSemanticsAnnotations#c04bf@Offset(36.0, 10.0), RenderSemanticsAnnotations#bdc5c@Offset(36.0, 10.0), RenderSemanticsAnnotations#d27d3@Offset(36.0, 10.0), RenderMouseRegion#91ede@Offset(36.0, 10.0), RenderFlex#915cc@Offset(36.0, 10.0), RenderConstrainedBox#894d0@Offset(36.0, 10.0), RenderStack#fab5f@Offset(36.0, 10.0), RenderMouseRegion#8d89d@Offset(36.0, 10.0), RenderConstrainedBox#2d014@Offset(36.0, 10.0), RenderClipRect#dab9d@Offset(36.0, 10.0), RenderSemanticsAnnotations#342cb@Offset(36.0, 10.0), RenderPositionedBox#ba432@Offset(36.0, 292.0), RenderCustomMultiChildLayoutBox#c6dc4@Offset(36.0, 292.0), _RenderInkFeatures#a10c1@Offset(36.0, 292.0), RenderPhysicalModel#71b66@Offset(36.0, 292.0), RenderSemanticsAnnotations#aa0a3@Offset(36.0, 292.0), RenderRepaintBoundary#67bca@Offset(36.0, 292.0), RenderIgnorePointer#f9e1e@Offset(36.0, 292.0), RenderAnimatedOpacity#783bc@Offset(36.0, 292.0), RenderAnimatedOpacity#3b417@Offset(36.0, 292.0), _RenderColoredBox#9d981@Offset(36.0, 292.0), RenderAnimatedOpacity#9523a@Offset(36.0, 292.0), RenderIgnorePointer#17658@Offset(36.0, 292.0), RenderAnimatedOpacity#e6eb1@Offset(36.0, 292.0), RenderRepaintBoundary#d3ad8@Offset(36.0, 292.0), RenderSemanticsAnnotations#a6014@Offset(36.0, 292.0), RenderOffstage#90654@Offset(36.0, 292.0), RenderSemanticsAnnotations#ce313@Offset(36.0, 292.0), _RenderTheater#8d03d@Offset(36.0, 292.0), RenderAbsorbPointer#42efd@Offset(36.0, 292.0), RenderPointerListener#4e4d0@Offset(36.0, 292.0), RenderSemanticsAnnotations#962a8@Offset(36.0, 292.0), RenderCustomPaint#adf54@Offset(36.0, 292.0), RenderSemanticsAnnotations#c82f2@Offset(36.0, 292.0), RenderSemanticsAnnotations#a24f9@Offset(36.0, 292.0), RenderSemanticsAnnotations#2f461@Offset(36.0, 292.0), RenderTapRegionSurface#71304@Offset(36.0, 292.0), RenderSemanticsAnnotations#ff32b@Offset(36.0, 292.0), RenderSemanticsAnnotations#843af@Offset(36.0, 292.0), HitTestEntry<HitTestTarget>#c9c21(_ReusableRenderView#b2bd5), HitTestEntry<HitTestTarget>#d85a0(<AutomatedTestWidgetsFlutterBinding>))
+#0      WidgetController._getElementPoint (package:flutter_test/src/controller.dart:2165:25)
+#1      WidgetController.getCenter (package:flutter_test/src/controller.dart:1947:12)
+#2      WidgetController.tap (package:flutter_test/src/controller.dart:1080:7)
+#3      main.<anonymous closure> (file:///Users/codenameakshay/.t3/worktrees/beui/t3-df4b55e2/test/motion/file_tree_test.dart:369:20)
+<asynchronous suspension>
+#4      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#5      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
+<asynchronous suspension>
+#6      StackZoneSpecification._registerCallback.<anonymous closure> (package:stack_trace/src/stack_zone_specification.dart:114:42)
+<asynchronous suspension>
+To silence this warning, pass "warnIfMissed: false" to "tap()".
+To make this warning fatal, set WidgetController.hitTestWarningShouldBeFatal to true.
+
+
+Warning: A call to tap() with finder "Found 1 widget with a semantics label named "Pin": [
+  Semantics(container: false, properties: SemanticsProperties, label: "Pin", dependencies: [Directionality], renderObject: RenderSemanticsAnnotations#9217b relayoutBoundary=up1),
+]" derived an Offset (Offset(44.0, 292.0)) that would not hit test on the specified widget.
+Maybe the widget is actually off-screen, or another widget is obscuring it, or the widget cannot receive pointer events.
+The finder corresponds to this RenderBox: RenderSemanticsAnnotations#9217b relayoutBoundary=up1
+The hit test result at that offset is: HitTestResult(RenderDecoratedBox#52ad5@Offset(44.0, 10.0), RenderConstrainedBox#b17c4@Offset(44.0, 10.0), RenderMouseRegion#e39ca@Offset(44.0, 10.0), RenderOpacity#89930@Offset(44.0, 10.0), RenderPointerListener#9522a@Offset(44.0, 10.0), RenderSemanticsGestureHandler#674ef@Offset(44.0, 10.0), RenderSemanticsAnnotations#c04bf@Offset(44.0, 10.0), RenderSemanticsAnnotations#bdc5c@Offset(44.0, 10.0), RenderSemanticsAnnotations#d27d3@Offset(44.0, 10.0), RenderMouseRegion#91ede@Offset(44.0, 10.0), RenderFlex#915cc@Offset(44.0, 10.0), RenderConstrainedBox#894d0@Offset(44.0, 10.0), RenderStack#fab5f@Offset(44.0, 10.0), RenderMouseRegion#8d89d@Offset(44.0, 10.0), RenderConstrainedBox#2d014@Offset(44.0, 10.0), RenderClipRect#dab9d@Offset(44.0, 10.0), RenderSemanticsAnnotations#342cb@Offset(44.0, 10.0), RenderPositionedBox#ba432@Offset(44.0, 292.0), RenderCustomMultiChildLayoutBox#c6dc4@Offset(44.0, 292.0), _RenderInkFeatures#a10c1@Offset(44.0, 292.0), RenderPhysicalModel#71b66@Offset(44.0, 292.0), RenderSemanticsAnnotations#aa0a3@Offset(44.0, 292.0), RenderRepaintBoundary#67bca@Offset(44.0, 292.0), RenderIgnorePointer#f9e1e@Offset(44.0, 292.0), RenderAnimatedOpacity#783bc@Offset(44.0, 292.0), RenderAnimatedOpacity#3b417@Offset(44.0, 292.0), _RenderColoredBox#9d981@Offset(44.0, 292.0), RenderAnimatedOpacity#9523a@Offset(44.0, 292.0), RenderIgnorePointer#17658@Offset(44.0, 292.0), RenderAnimatedOpacity#e6eb1@Offset(44.0, 292.0), RenderRepaintBoundary#d3ad8@Offset(44.0, 292.0), RenderSemanticsAnnotations#a6014@Offset(44.0, 292.0), RenderOffstage#90654@Offset(44.0, 292.0), RenderSemanticsAnnotations#ce313@Offset(44.0, 292.0), _RenderTheater#8d03d@Offset(44.0, 292.0), RenderAbsorbPointer#42efd@Offset(44.0, 292.0), RenderPointerListener#4e4d0@Offset(44.0, 292.0), RenderSemanticsAnnotations#962a8@Offset(44.0, 292.0), RenderCustomPaint#adf54@Offset(44.0, 292.0), RenderSemanticsAnnotations#c82f2@Offset(44.0, 292.0), RenderSemanticsAnnotations#a24f9@Offset(44.0, 292.0), RenderSemanticsAnnotations#2f461@Offset(44.0, 292.0), RenderTapRegionSurface#71304@Offset(44.0, 292.0), RenderSemanticsAnnotations#ff32b@Offset(44.0, 292.0), RenderSemanticsAnnotations#843af@Offset(44.0, 292.0), HitTestEntry<HitTestTarget>#cfd13(_ReusableRenderView#b2bd5), HitTestEntry<HitTestTarget>#75a39(<AutomatedTestWidgetsFlutterBinding>))
+#0      WidgetController._getElementPoint (package:flutter_test/src/controller.dart:2165:25)
+#1      WidgetController.getCenter (package:flutter_test/src/controller.dart:1947:12)
+#2      WidgetController.tap (package:flutter_test/src/controller.dart:1080:7)
+#3      main.<anonymous closure> (file:///Users/codenameakshay/.t3/worktrees/beui/t3-df4b55e2/test/motion/file_tree_test.dart:369:20)
+<asynchronous suspension>
+#4      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#5      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
+<asynchronous suspension>
+#6      StackZoneSpecification._registerCallback.<anonymous closure> (package:stack_trace/src/stack_zone_specification.dart:114:42)
+<asynchronous suspension>
+To silence this warning, pass "warnIfMissed: false" to "tap()".
+To make this warning fatal, set WidgetController.hitTestWarningShouldBeFatal to true.
+
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test:
+Expected: ['Inspect', 'Pin']
+  Actual: []
+   Which: at location [0] is [] which shorter than expected
+
+When the exception was thrown, this was the stack:
+#4      main.<anonymous closure> (file:///Users/codenameakshay/.t3/worktrees/beui/t3-df4b55e2/test/motion/file_tree_test.dart:372:5)
+<asynchronous suspension>
+#5      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#6      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+This was caught by the test expectation on the following line:
+  file:///Users/codenameakshay/.t3/worktrees/beui/t3-df4b55e2/test/motion/file_tree_test.dart line 372
+The test description was:
+  row icon keeps independent content actions
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:00 +9 -1: row icon keeps independent content actions [E]
+  Test failed. See exception logs above.
+  The test description was: row icon keeps independent content actions
+  
+00:00 +9 -1: Some tests failed.
+
+Failing tests:
+  /Users/codenameakshay/.t3/worktrees/beui/t3-df4b55e2/test/motion/file_tree_test.dart: row icon keeps independent content actions

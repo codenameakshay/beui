@@ -1,0 +1,114 @@
+{
+  "id": "components/collapsible",
+  "owner": "components",
+  "newBadge": true,
+  "demoChanged": true,
+  "sourceUrl": "https://beui.dev/components/motion/collapsible",
+  "sourceFiles": [
+    {
+      "path": "components/motion/collapsible.tsx",
+      "sha256": "2e34435d3cb4919ed07e0776c81ad6094ba893e168028aae3983e671c5d3502e"
+    }
+  ],
+  "sourcePreviews": [
+    "components/previews/motion/collapsible.preview.tsx"
+  ],
+  "sourceExamples": [],
+  "widgetParts": [
+    "BeuiCollapsible",
+    "BeuiCollapsibleTrigger",
+    "BeuiCollapsibleContent",
+    "BeuiCollapsibleIndicator"
+  ],
+  "states": [
+    "rest",
+    "hover-exit",
+    "keyboard",
+    "reduced-motion",
+    "trigger indicator and content open close reopen",
+    "controlled and uncontrolled disabled",
+    "nested content height replacement during exit"
+  ],
+  "themes": [
+    "dark",
+    "light"
+  ],
+  "verdict": "Inconclusive",
+  "implementation": "not changed in this repair checkpoint",
+  "missing": "No complete matched-width 60 FPS reference/before/after state set or independent visual verdict.",
+  "captures": [
+    {
+      "id": "candidate-light-collapsible",
+      "slug": "collapsible",
+      "origin": "candidate",
+      "theme": "light",
+      "code": 0,
+      "configPath": "/Users/codenameakshay/.t3/worktrees/beui/t3-48d38279/docs/proof/v3-parity/components/release-recordings-run2/configs/candidate-light-collapsible.json",
+      "runDirectory": "/Users/codenameakshay/.t3/worktrees/beui/t3-48d38279/docs/proof/v3-parity/components/release-recordings-run2/candidate-light-collapsible",
+      "missingTargets": [],
+      "stats": {
+        "originEpochMs": 1792743333220,
+        "backend": "screenshots",
+        "startMs": 5164.250959000001,
+        "sequenceStartMs": 5164.3604589999995,
+        "stopMs": 8319.622167,
+        "frames": 187,
+        "durationMs": 3129.988431930542,
+        "measuredFps": 59.42513975531765,
+        "medianIntervalMs": 16.637802124023438,
+        "maxIntervalMs": 29.660940170288086,
+        "reorderedDeliveries": 0,
+        "fastMotionVerdict": "inconclusive; inspect per-event gaps, not nominal frame rate",
+        "errors": [],
+        "video": {
+          "width": 1280,
+          "height": 913,
+          "decodedFrames": 187
+        }
+      },
+      "video": {
+        "path": "release-recordings-run2/candidate-light-collapsible/capture.mp4",
+        "bytes": 973979,
+        "sha256": "7af34a5d8d8ac1605e635a7e57aaa71aa8cf1c9eeef9f06296aa974f4772932a"
+      }
+    },
+    {
+      "id": "candidate-dark-collapsible",
+      "slug": "collapsible",
+      "origin": "candidate",
+      "theme": "dark",
+      "code": 0,
+      "configPath": "/Users/codenameakshay/.t3/worktrees/beui/t3-48d38279/docs/proof/v3-parity/components/release-recordings-run2/configs/candidate-dark-collapsible.json",
+      "runDirectory": "/Users/codenameakshay/.t3/worktrees/beui/t3-48d38279/docs/proof/v3-parity/components/release-recordings-run2/candidate-dark-collapsible",
+      "missingTargets": [],
+      "stats": {
+        "originEpochMs": 1792743618441,
+        "backend": "screenshots",
+        "startMs": 5321.007042,
+        "sequenceStartMs": 5321.123334,
+        "stopMs": 8477.436709,
+        "frames": 94,
+        "durationMs": 3148.542881011963,
+        "measuredFps": 29.53747289289234,
+        "medianIntervalMs": 33.41794013977051,
+        "maxIntervalMs": 49.50237274169922,
+        "reorderedDeliveries": 0,
+        "fastMotionVerdict": "inconclusive; inspect per-event gaps, not nominal frame rate",
+        "errors": [],
+        "video": {
+          "width": 1280,
+          "height": 913,
+          "decodedFrames": 94
+        }
+      },
+      "video": {
+        "path": "release-recordings-run2/candidate-dark-collapsible/capture.mp4",
+        "bytes": 525586,
+        "sha256": "65447166369e6d15fade988761eaf32dc6ba313bcdeb0f6a11078e12814a7ebf"
+      }
+    }
+  ],
+  "changeVideos": [],
+  "knownGaps": null,
+  "coverage": "Default preview recording only. No complete state or example parity certificate."
+}

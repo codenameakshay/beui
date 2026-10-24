@@ -1,0 +1,39 @@
+diff --git a/docs/proof/v3-parity/resume-20261024/collapsible-focus-precedence/originals/collapsible.dart b/lib/src/motion/collapsible.dart
+index 9b2024cf5..6c2ae32e8 100644
+--- a/docs/proof/v3-parity/resume-20261024/collapsible-focus-precedence/originals/collapsible.dart
++++ b/lib/src/motion/collapsible.dart
+@@ -64,7 +64,7 @@ class _BeuiCollapsibleState extends State<BeuiCollapsible> {
+ 
+   void setOpen(bool next) {
+     if (widget.disabled || next == isOpen) return;
+-    if (widget.open == null && !next && _contentFocusScope.hasFocus) {
++    if (widget.open == null && !next && _contentOwnsFocus) {
+       _triggerFocusNode.requestFocus();
+     }
+     if (widget.open == null) setState(() => _internalOpen = next);
+@@ -75,11 +75,24 @@ class _BeuiCollapsibleState extends State<BeuiCollapsible> {
+   void didUpdateWidget(BeuiCollapsible oldWidget) {
+     super.didUpdateWidget(oldWidget);
+     final wasOpen = oldWidget.open ?? _internalOpen;
+-    if (wasOpen && !isOpen && _contentFocusScope.hasFocus) {
++    if (wasOpen && !isOpen && _contentOwnsFocus) {
+       _triggerFocusNode.requestFocus();
+     }
+   }
+ 
++  bool get _contentOwnsFocus {
++    if (!_contentFocusScope.hasFocus) return false;
++    // Focus requests update scope history before primary-focus notifications.
++    // A newer request outside this path takes precedence over restoration.
++    FocusScopeNode scope = _contentFocusScope;
++    while (scope.enclosingScope != null) {
++      final parent = scope.enclosingScope!;
++      if (parent.focusedChild != scope) return false;
++      scope = parent;
++    }
++    return true;
++  }
++
+   void reportContentHeight(double height) {
+     if ((height - _contentHeight).abs() < 0.5) return;
+     setState(() => _contentHeight = height);

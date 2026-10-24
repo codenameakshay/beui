@@ -1,0 +1,356 @@
+{
+  "id": "components/timeline",
+  "owner": "components",
+  "newBadge": true,
+  "demoChanged": true,
+  "sourceUrl": "https://beui.dev/components/motion/timeline",
+  "sourceFiles": [
+    {
+      "path": "components/motion/timeline.tsx",
+      "sha256": "e05aa112fccaea356d7a73ff38a289b1aea58c9069b15fd63710204c50b298fc"
+    }
+  ],
+  "sourcePreviews": [
+    "components/previews/motion/timeline.preview.tsx"
+  ],
+  "sourceExamples": [],
+  "widgetParts": [
+    "BeuiTimeline"
+  ],
+  "states": [
+    "rest",
+    "hover-exit",
+    "keyboard",
+    "reduced-motion",
+    "drag through every event and release momentum",
+    "select first middle last cards and reverse",
+    "match dated tiles imagery and captions"
+  ],
+  "themes": [
+    "dark",
+    "light"
+  ],
+  "verdict": "Inconclusive",
+  "implementation": "repaired subset, see CHANGE_MANIFEST.md",
+  "missing": "No complete matched-width 60 FPS reference/before/after state set or independent visual verdict.",
+  "captures": [
+    {
+      "id": "reference-light-timeline",
+      "slug": "timeline",
+      "origin": "reference",
+      "theme": "light",
+      "code": 0,
+      "configPath": "/Users/codenameakshay/.t3/worktrees/beui/t3-48d38279/docs/proof/v3-parity/components/release-recordings-run2/configs/reference-light-timeline.json",
+      "runDirectory": "/Users/codenameakshay/.t3/worktrees/beui/t3-48d38279/docs/proof/v3-parity/components/release-recordings-run2/reference-light-timeline",
+      "missingTargets": [],
+      "stats": {
+        "originEpochMs": 1792743178031,
+        "backend": "screenshots",
+        "startMs": 2435.3845420000002,
+        "sequenceStartMs": 2435.496958,
+        "stopMs": 5591.365374999999,
+        "frames": 48,
+        "durationMs": 3114.792585372925,
+        "measuredFps": 15.089287235597046,
+        "medianIntervalMs": 66.7424201965332,
+        "maxIntervalMs": 70.5726146697998,
+        "reorderedDeliveries": 0,
+        "fastMotionVerdict": "inconclusive; inspect per-event gaps, not nominal frame rate",
+        "errors": [],
+        "video": {
+          "width": 1280,
+          "height": 913,
+          "decodedFrames": 48
+        }
+      },
+      "video": {
+        "path": "release-recordings-run2/reference-light-timeline/capture.mp4",
+        "bytes": 752977,
+        "sha256": "b80250ac141e3d2f3ec587d0655924fc9383c41757df025e6c3e48e12e7b45cd"
+      }
+    },
+    {
+      "id": "reference-dark-timeline",
+      "slug": "timeline",
+      "origin": "reference",
+      "theme": "dark",
+      "code": 0,
+      "configPath": "/Users/codenameakshay/.t3/worktrees/beui/t3-48d38279/docs/proof/v3-parity/components/release-recordings-run2/configs/reference-dark-timeline.json",
+      "runDirectory": "/Users/codenameakshay/.t3/worktrees/beui/t3-48d38279/docs/proof/v3-parity/components/release-recordings-run2/reference-dark-timeline",
+      "missingTargets": [],
+      "stats": {
+        "originEpochMs": 1792743243457,
+        "backend": "screenshots",
+        "startMs": 2253.799208,
+        "sequenceStartMs": 2253.923125,
+        "stopMs": 5426.698333,
+        "frames": 48,
+        "durationMs": 3113.2636070251465,
+        "measuredFps": 15.096697849145663,
+        "medianIntervalMs": 66.65182113647461,
+        "maxIntervalMs": 69.87619400024414,
+        "reorderedDeliveries": 0,
+        "fastMotionVerdict": "inconclusive; inspect per-event gaps, not nominal frame rate",
+        "errors": [],
+        "video": {
+          "width": 1280,
+          "height": 913,
+          "decodedFrames": 48
+        }
+      },
+      "video": {
+        "path": "release-recordings-run2/reference-dark-timeline/capture.mp4",
+        "bytes": 754416,
+        "sha256": "0af23bedad3dcc0290e0d4c52f2fc75b3a4b7bfaaa449cf1504817513a27367f"
+      }
+    },
+    {
+      "id": "candidate-light-timeline",
+      "slug": "timeline",
+      "origin": "candidate",
+      "theme": "light",
+      "code": 0,
+      "configPath": "/Users/codenameakshay/.t3/worktrees/beui/t3-48d38279/docs/proof/v3-parity/components/release-recordings-run2/configs/candidate-light-timeline.json",
+      "runDirectory": "/Users/codenameakshay/.t3/worktrees/beui/t3-48d38279/docs/proof/v3-parity/components/release-recordings-run2/candidate-light-timeline",
+      "missingTargets": [],
+      "stats": {
+        "originEpochMs": 1792743312029,
+        "backend": "screenshots",
+        "startMs": 5146.526458,
+        "sequenceStartMs": 5146.622583,
+        "stopMs": 8304.180458,
+        "frames": 103,
+        "durationMs": 3145.904302597046,
+        "measuredFps": 32.42310960183871,
+        "medianIntervalMs": 32.03988075256348,
+        "maxIntervalMs": 222.61333465576172,
+        "reorderedDeliveries": 0,
+        "fastMotionVerdict": "inconclusive; inspect per-event gaps, not nominal frame rate",
+        "errors": [],
+        "video": {
+          "width": 1280,
+          "height": 913,
+          "decodedFrames": 103
+        }
+      },
+      "video": {
+        "path": "release-recordings-run2/candidate-light-timeline/capture.mp4",
+        "bytes": 1099827,
+        "sha256": "ffa79bc858b059b5d9034f122262b57d08c3bad29b2086599acf4141ea60c605"
+      }
+    },
+    {
+      "id": "candidate-dark-timeline",
+      "slug": "timeline",
+      "origin": "candidate",
+      "theme": "dark",
+      "code": 0,
+      "configPath": "/Users/codenameakshay/.t3/worktrees/beui/t3-48d38279/docs/proof/v3-parity/components/release-recordings-run2/configs/candidate-dark-timeline.json",
+      "runDirectory": "/Users/codenameakshay/.t3/worktrees/beui/t3-48d38279/docs/proof/v3-parity/components/release-recordings-run2/candidate-dark-timeline",
+      "missingTargets": [],
+      "stats": {
+        "originEpochMs": 1792743596332,
+        "backend": "screenshots",
+        "startMs": 5352.607583,
+        "sequenceStartMs": 5352.748417,
+        "stopMs": 8519.611708,
+        "frames": 91,
+        "durationMs": 3161.675453186035,
+        "measuredFps": 28.465919836682346,
+        "medianIntervalMs": 34.41476821899414,
+        "maxIntervalMs": 54.28266525268555,
+        "reorderedDeliveries": 0,
+        "fastMotionVerdict": "inconclusive; inspect per-event gaps, not nominal frame rate",
+        "errors": [],
+        "video": {
+          "width": 1280,
+          "height": 913,
+          "decodedFrames": 91
+        }
+      },
+      "video": {
+        "path": "release-recordings-run2/candidate-dark-timeline/capture.mp4",
+        "bytes": 954843,
+        "sha256": "34c566db347be71da2d92c5f462a04301f1c2ad4a5e227df598a2de761acc57f"
+      }
+    }
+  ],
+  "changeVideos": [
+    {
+      "slug": "timeline",
+      "theme": "light",
+      "before": "/Users/codenameakshay/.t3/worktrees/beui/t3-48d38279/docs/proof/v3-parity/components/before-interactions/candidate/light/timeline/recording.webm",
+      "after": "/Users/codenameakshay/.t3/worktrees/beui/t3-48d38279/docs/proof/v3-parity/components/release-recordings-run2/candidate-light-timeline/capture.mp4",
+      "video": "/Users/codenameakshay/.t3/worktrees/beui/t3-48d38279/docs/proof/v3-parity/components/change-videos/timeline-light-before-after.mp4",
+      "change": "Replace invented media with the real source chart data, SVG/CSS tiles, theme colors, and captions.",
+      "frameProof": [
+        {
+          "phase": "BEFORE",
+          "original": {
+            "programs": [],
+            "stream_groups": [],
+            "streams": [
+              {
+                "width": 1440,
+                "height": 1000,
+                "nb_read_frames": "175"
+              }
+            ],
+            "format": {
+              "duration": "7.000000"
+            }
+          },
+          "presentation": {
+            "programs": [],
+            "stream_groups": [],
+            "streams": [
+              {
+                "width": 1440,
+                "height": 1120,
+                "nb_read_frames": "175"
+              }
+            ],
+            "format": {
+              "duration": "7.000000"
+            }
+          }
+        },
+        {
+          "phase": "AFTER",
+          "original": {
+            "programs": [],
+            "stream_groups": [],
+            "streams": [
+              {
+                "width": 1280,
+                "height": 913,
+                "nb_read_frames": "103"
+              }
+            ],
+            "format": {
+              "duration": "3.145905"
+            }
+          },
+          "presentation": {
+            "programs": [],
+            "stream_groups": [],
+            "streams": [
+              {
+                "width": 1440,
+                "height": 1120,
+                "nb_read_frames": "103"
+              }
+            ],
+            "format": {
+              "duration": "3.166667"
+            }
+          }
+        }
+      ],
+      "decoded": {
+        "programs": [],
+        "stream_groups": [],
+        "streams": [
+          {
+            "width": 1440,
+            "height": 1120,
+            "nb_read_frames": "278"
+          }
+        ],
+        "format": {
+          "duration": "10.166667"
+        }
+      },
+      "comparison": "Presentation only. Different original viewport widths are labeled. No rescaling or interpolation."
+    },
+    {
+      "slug": "timeline",
+      "theme": "dark",
+      "before": "/Users/codenameakshay/.t3/worktrees/beui/t3-48d38279/docs/proof/v3-parity/components/before-interactions/candidate/dark/timeline/recording.webm",
+      "after": "/Users/codenameakshay/.t3/worktrees/beui/t3-48d38279/docs/proof/v3-parity/components/release-recordings-run2/candidate-dark-timeline/capture.mp4",
+      "video": "/Users/codenameakshay/.t3/worktrees/beui/t3-48d38279/docs/proof/v3-parity/components/change-videos/timeline-dark-before-after.mp4",
+      "change": "Replace invented media with the real source chart data, SVG/CSS tiles, theme colors, and captions.",
+      "frameProof": [
+        {
+          "phase": "BEFORE",
+          "original": {
+            "programs": [],
+            "stream_groups": [],
+            "streams": [
+              {
+                "width": 1440,
+                "height": 1000,
+                "nb_read_frames": "234"
+              }
+            ],
+            "format": {
+              "duration": "9.360000"
+            }
+          },
+          "presentation": {
+            "programs": [],
+            "stream_groups": [],
+            "streams": [
+              {
+                "width": 1440,
+                "height": 1120,
+                "nb_read_frames": "234"
+              }
+            ],
+            "format": {
+              "duration": "9.360000"
+            }
+          }
+        },
+        {
+          "phase": "AFTER",
+          "original": {
+            "programs": [],
+            "stream_groups": [],
+            "streams": [
+              {
+                "width": 1280,
+                "height": 913,
+                "nb_read_frames": "91"
+              }
+            ],
+            "format": {
+              "duration": "3.161674"
+            }
+          },
+          "presentation": {
+            "programs": [],
+            "stream_groups": [],
+            "streams": [
+              {
+                "width": 1440,
+                "height": 1120,
+                "nb_read_frames": "91"
+              }
+            ],
+            "format": {
+              "duration": "3.183334"
+            }
+          }
+        }
+      ],
+      "decoded": {
+        "programs": [],
+        "stream_groups": [],
+        "streams": [
+          {
+            "width": 1440,
+            "height": 1120,
+            "nb_read_frames": "325"
+          }
+        ],
+        "format": {
+          "duration": "12.543334"
+        }
+      },
+      "comparison": "Presentation only. Different original viewport widths are labeled. No rescaling or interpolation."
+    }
+  ],
+  "knownGaps": null,
+  "coverage": "Default preview recording only. No complete state or example parity certificate."
+}

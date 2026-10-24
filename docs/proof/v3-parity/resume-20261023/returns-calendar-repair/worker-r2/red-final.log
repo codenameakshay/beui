@@ -1,0 +1,305 @@
+Resolving dependencies...
+Downloading packages...
+  equatable 2.1.0 (3.0.0 available)
+  material_color_utilities 0.13.0 (0.13.1 available)
+  test_api 0.7.12 (0.7.15 available)
+  xml 7.0.1 (7.1.0 available)
+Got dependencies!
+4 packages have newer versions incompatible with dependency constraints.
+Try `flutter pub outdated` for more information.
+00:00 +0: loading /private/tmp/returns-revision/red-final-project/test/regression_test.dart
+00:00 +0: reverse without grid replacement
+00:01 +1: whole calendar teardown
+00:01 +2: grid replacement does not delete live registration
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test:
+Expected: true
+  Actual: <false>
+
+When the exception was thrown, this was the stack:
+#4      main.<anonymous closure> (file:///private/tmp/returns-revision/red-final-project/test/regression_test.dart:70:5)
+<asynchronous suspension>
+#5      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#6      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+This was caught by the test expectation on the following line:
+  file:///private/tmp/returns-revision/red-final-project/test/regression_test.dart line 70
+The test description was:
+  grid replacement does not delete live registration
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:01 +2 -1: grid replacement does not delete live registration [E]
+  Test failed. See exception logs above.
+  The test description was: grid replacement does not delete live registration
+  
+00:01 +2 -1: global keyed calendar reparent preserves focus
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test:
+Expected: true
+  Actual: <false>
+
+When the exception was thrown, this was the stack:
+#4      main.<anonymous closure> (file:///private/tmp/returns-revision/red-final-project/test/regression_test.dart:102:5)
+<asynchronous suspension>
+#5      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#6      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+This was caught by the test expectation on the following line:
+  file:///private/tmp/returns-revision/red-final-project/test/regression_test.dart line 102
+The test description was:
+  global keyed calendar reparent preserves focus
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:01 +2 -2: global keyed calendar reparent preserves focus [E]
+  Test failed. See exception logs above.
+  The test description was: global keyed calendar reparent preserves focus
+  
+00:01 +2 -2: duplicate years have distinct stable occurrence identities
+══╡ EXCEPTION CAUGHT BY WIDGETS LIBRARY ╞═══════════════════════════════════════════════════════════
+The following assertion was thrown building _FocusInheritedScope:
+Duplicate keys found.
+If multiple keyed widgets exist as children of another widget, they must have unique keys.
+Column(direction: vertical, mainAxisAlignment: start, mainAxisSize: min, crossAxisAlignment: center)
+has multiple children with key [<2024>].
+
+The relevant error-causing widget was:
+  Focus
+  Focus:file:///private/tmp/returns-revision/red-final-project/lib/src/charts/returns_calendar.dart:403:18
+
+When the exception was thrown, this was the stack:
+#0      debugChildrenHaveDuplicateKeys.<anonymous closure> (package:flutter/src/widgets/debug.dart:243:7)
+#1      debugChildrenHaveDuplicateKeys (package:flutter/src/widgets/debug.dart:250:4)
+#2      new MultiChildRenderObjectElement (package:flutter/src/widgets/framework.dart:7178:15)
+#3      MultiChildRenderObjectWidget.createElement (package:flutter/src/widgets/framework.dart:2053:52)
+...     Normal element mounting (107 frames)
+#110    Element.inflateWidget (package:flutter/src/widgets/framework.dart:4600:20)
+#111    Element.updateChild (package:flutter/src/widgets/framework.dart:4072:18)
+#112    _LayoutBuilderElement._rebuildWithConstraints.updateChildCallback (package:flutter/src/widgets/layout_builder.dart:247:18)
+#113    BuildOwner.buildScope (package:flutter/src/widgets/framework.dart:3114:19)
+#114    _LayoutBuilderElement._rebuildWithConstraints (package:flutter/src/widgets/layout_builder.dart:270:12)
+#115    RenderAbstractLayoutBuilderMixin.layoutCallback (package:flutter/src/widgets/layout_builder.dart:333:38)
+#116    RenderObjectWithLayoutCallbackMixin.runLayoutCallback.<anonymous closure> (package:flutter/src/rendering/object.dart:4313:33)
+#117    RenderObject.invokeLayoutCallback.<anonymous closure> (package:flutter/src/rendering/object.dart:3042:17)
+#118    PipelineOwner._enableMutationsToDirtySubtrees (package:flutter/src/rendering/object.dart:1223:15)
+#119    RenderObject.invokeLayoutCallback (package:flutter/src/rendering/object.dart:3041:14)
+#120    RenderObjectWithLayoutCallbackMixin.runLayoutCallback (package:flutter/src/rendering/object.dart:4313:5)
+#121    _RenderLayoutBuilder.performLayout (package:flutter/src/widgets/layout_builder.dart:447:5)
+#122    RenderObject.layout (package:flutter/src/rendering/object.dart:2923:7)
+#123    RenderProxyBoxMixin.performLayout (package:flutter/src/rendering/proxy_box.dart:118:18)
+#124    RenderObject.layout (package:flutter/src/rendering/object.dart:2923:7)
+#125    RenderConstrainedBox.performLayout (package:flutter/src/rendering/proxy_box.dart:296:14)
+#126    RenderObject.layout (package:flutter/src/rendering/object.dart:2923:7)
+#127    RenderPositionedBox.performLayout (package:flutter/src/rendering/shifted_box.dart:484:14)
+#128    RenderObject.layout (package:flutter/src/rendering/object.dart:2923:7)
+#129    MultiChildLayoutDelegate.layoutChild (package:flutter/src/rendering/custom_layout.dart:180:12)
+#130    _ScaffoldLayout.performLayout (package:flutter/src/material/scaffold.dart:1113:7)
+#131    MultiChildLayoutDelegate._callPerformLayout (package:flutter/src/rendering/custom_layout.dart:246:7)
+#132    RenderCustomMultiChildLayoutBox.performLayout (package:flutter/src/rendering/custom_layout.dart:417:14)
+#133    RenderObject.layout (package:flutter/src/rendering/object.dart:2923:7)
+#134    RenderProxyBoxMixin.performLayout (package:flutter/src/rendering/proxy_box.dart:118:18)
+#135    RenderObject.layout (package:flutter/src/rendering/object.dart:2923:7)
+#136    RenderProxyBoxMixin.performLayout (package:flutter/src/rendering/proxy_box.dart:118:18)
+#137    _RenderCustomClip.performLayout (package:flutter/src/rendering/proxy_box.dart:1549:11)
+#138    RenderObject.layout (package:flutter/src/rendering/object.dart:2923:7)
+#139    RenderProxyBoxMixin.performLayout (package:flutter/src/rendering/proxy_box.dart:118:18)
+#140    RenderObject.layout (package:flutter/src/rendering/object.dart:2923:7)
+#141    RenderProxyBoxMixin.performLayout (package:flutter/src/rendering/proxy_box.dart:118:18)
+#142    RenderObject.layout (package:flutter/src/rendering/object.dart:2923:7)
+#143    RenderProxyBoxMixin.performLayout (package:flutter/src/rendering/proxy_box.dart:118:18)
+#144    RenderObject.layout (package:flutter/src/rendering/object.dart:2923:7)
+#145    RenderProxyBoxMixin.performLayout (package:flutter/src/rendering/proxy_box.dart:118:18)
+#146    RenderObject.layout (package:flutter/src/rendering/object.dart:2923:7)
+#147    RenderProxyBoxMixin.performLayout (package:flutter/src/rendering/proxy_box.dart:118:18)
+#148    RenderObject.layout (package:flutter/src/rendering/object.dart:2923:7)
+#149    RenderProxyBoxMixin.performLayout (package:flutter/src/rendering/proxy_box.dart:118:18)
+#150    RenderObject.layout (package:flutter/src/rendering/object.dart:2923:7)
+#151    RenderProxyBoxMixin.performLayout (package:flutter/src/rendering/proxy_box.dart:118:18)
+#152    RenderObject.layout (package:flutter/src/rendering/object.dart:2923:7)
+#153    RenderProxyBoxMixin.performLayout (package:flutter/src/rendering/proxy_box.dart:118:18)
+#154    RenderObject.layout (package:flutter/src/rendering/object.dart:2923:7)
+#155    RenderProxyBoxMixin.performLayout (package:flutter/src/rendering/proxy_box.dart:118:18)
+#156    RenderObject.layout (package:flutter/src/rendering/object.dart:2923:7)
+#157    RenderProxyBoxMixin.performLayout (package:flutter/src/rendering/proxy_box.dart:118:18)
+#158    RenderObject.layout (package:flutter/src/rendering/object.dart:2923:7)
+#159    RenderProxyBoxMixin.performLayout (package:flutter/src/rendering/proxy_box.dart:118:18)
+#160    RenderObject.layout (package:flutter/src/rendering/object.dart:2923:7)
+#161    RenderProxyBoxMixin.performLayout (package:flutter/src/rendering/proxy_box.dart:118:18)
+#162    RenderObject.layout (package:flutter/src/rendering/object.dart:2923:7)
+#163    RenderProxyBoxMixin.performLayout (package:flutter/src/rendering/proxy_box.dart:118:18)
+#164    RenderObject.layout (package:flutter/src/rendering/object.dart:2923:7)
+#165    RenderProxyBoxMixin.performLayout (package:flutter/src/rendering/proxy_box.dart:118:18)
+#166    RenderObject.layout (package:flutter/src/rendering/object.dart:2923:7)
+#167    RenderProxyBoxMixin.performLayout (package:flutter/src/rendering/proxy_box.dart:118:18)
+#168    RenderObject.layout (package:flutter/src/rendering/object.dart:2923:7)
+#169    RenderProxyBoxMixin.performLayout (package:flutter/src/rendering/proxy_box.dart:118:18)
+#170    RenderOffstage.performLayout (package:flutter/src/rendering/proxy_box.dart:3923:13)
+#171    RenderObject.layout (package:flutter/src/rendering/object.dart:2923:7)
+#172    RenderProxyBoxMixin.performLayout (package:flutter/src/rendering/proxy_box.dart:118:18)
+#173    RenderObject.layout (package:flutter/src/rendering/object.dart:2923:7)
+#174    _RenderTheaterMixin.layoutChild (package:flutter/src/widgets/overlay.dart:1124:13)
+#175    _RenderTheater.performLayout (package:flutter/src/widgets/overlay.dart:1482:9)
+#176    RenderObject.layout (package:flutter/src/rendering/object.dart:2923:7)
+#177    RenderProxyBoxMixin.performLayout (package:flutter/src/rendering/proxy_box.dart:118:18)
+#178    RenderObject.layout (package:flutter/src/rendering/object.dart:2923:7)
+#179    RenderProxyBoxMixin.performLayout (package:flutter/src/rendering/proxy_box.dart:118:18)
+#180    RenderObject.layout (package:flutter/src/rendering/object.dart:2923:7)
+#181    RenderProxyBoxMixin.performLayout (package:flutter/src/rendering/proxy_box.dart:118:18)
+#182    RenderObject.layout (package:flutter/src/rendering/object.dart:2923:7)
+#183    RenderProxyBoxMixin.performLayout (package:flutter/src/rendering/proxy_box.dart:118:18)
+#184    RenderCustomPaint.performLayout (package:flutter/src/rendering/custom_paint.dart:574:11)
+#185    RenderObject.layout (package:flutter/src/rendering/object.dart:2923:7)
+#186    RenderProxyBoxMixin.performLayout (package:flutter/src/rendering/proxy_box.dart:118:18)
+#187    RenderObject.layout (package:flutter/src/rendering/object.dart:2923:7)
+#188    RenderProxyBoxMixin.performLayout (package:flutter/src/rendering/proxy_box.dart:118:18)
+#189    RenderObject.layout (package:flutter/src/rendering/object.dart:2923:7)
+#190    RenderProxyBoxMixin.performLayout (package:flutter/src/rendering/proxy_box.dart:118:18)
+#191    RenderObject.layout (package:flutter/src/rendering/object.dart:2923:7)
+#192    RenderProxyBoxMixin.performLayout (package:flutter/src/rendering/proxy_box.dart:118:18)
+#193    RenderObject.layout (package:flutter/src/rendering/object.dart:2923:7)
+#194    RenderProxyBoxMixin.performLayout (package:flutter/src/rendering/proxy_box.dart:118:18)
+#195    RenderObject.layout (package:flutter/src/rendering/object.dart:2923:7)
+#196    RenderProxyBoxMixin.performLayout (package:flutter/src/rendering/proxy_box.dart:118:18)
+#197    RenderObject.layout (package:flutter/src/rendering/object.dart:2923:7)
+#198    RenderView.performLayout (package:flutter/src/rendering/view.dart:292:12)
+#199    RenderObject._layoutWithoutResize (package:flutter/src/rendering/object.dart:2771:7)
+#200    PipelineOwner.flushLayout (package:flutter/src/rendering/object.dart:1174:18)
+#201    PipelineOwner.flushLayout (package:flutter/src/rendering/object.dart:1187:15)
+#202    AutomatedTestWidgetsFlutterBinding.drawFrame (package:flutter_test/src/binding.dart:2434:27)
+#203    RendererBinding._handlePersistentFrameCallback (package:flutter/src/rendering/binding.dart:558:5)
+#204    SchedulerBinding._invokeFrameCallback (package:flutter/src/scheduler/binding.dart:1430:15)
+#205    SchedulerBinding.handleDrawFrame (package:flutter/src/scheduler/binding.dart:1345:9)
+#206    AutomatedTestWidgetsFlutterBinding.pump.<anonymous closure> (package:flutter_test/src/binding.dart:2261:9)
+#209    TestAsyncUtils.guard (package:flutter_test/src/test_async_utils.dart:74:41)
+#210    AutomatedTestWidgetsFlutterBinding.pump (package:flutter_test/src/binding.dart:2250:27)
+#211    WidgetTester.pumpWidget.<anonymous closure> (package:flutter_test/src/widget_tester.dart:598:22)
+#214    TestAsyncUtils.guard (package:flutter_test/src/test_async_utils.dart:74:41)
+#215    WidgetTester.pumpWidget (package:flutter_test/src/widget_tester.dart:595:27)
+#216    main.<anonymous closure>.show (file:///private/tmp/returns-revision/red-final-project/test/regression_test.dart:114:15)
+#217    main.<anonymous closure> (file:///private/tmp/returns-revision/red-final-project/test/regression_test.dart:121:11)
+#218    testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:29)
+<asynchronous suspension>
+#219    TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided 5 frames from dart:async and package:stack_trace)
+
+════════════════════════════════════════════════════════════════════════════════════════════════════
+══╡ EXCEPTION CAUGHT BY WIDGETS LIBRARY ╞═══════════════════════════════════════════════════════════
+The following assertion was thrown building _FocusInheritedScope:
+Duplicate keys found.
+If multiple keyed widgets exist as children of another widget, they must have unique keys.
+Column(direction: vertical, mainAxisAlignment: start, mainAxisSize: min, crossAxisAlignment: center)
+has multiple children with key [<2024>].
+
+The relevant error-causing widget was:
+  Focus
+  Focus:file:///private/tmp/returns-revision/red-final-project/lib/src/charts/returns_calendar.dart:403:18
+
+When the exception was thrown, this was the stack:
+#0      debugChildrenHaveDuplicateKeys.<anonymous closure> (package:flutter/src/widgets/debug.dart:243:7)
+#1      debugChildrenHaveDuplicateKeys (package:flutter/src/widgets/debug.dart:250:4)
+#2      new MultiChildRenderObjectElement (package:flutter/src/widgets/framework.dart:7178:15)
+#3      MultiChildRenderObjectWidget.createElement (package:flutter/src/widgets/framework.dart:2053:52)
+...     Normal element mounting (4 frames)
+#7      Element.inflateWidget (package:flutter/src/widgets/framework.dart:4600:20)
+#8      Element.updateChild (package:flutter/src/widgets/framework.dart:4066:20)
+#9      ComponentElement.performRebuild (package:flutter/src/widgets/framework.dart:5854:16)
+#10     Element.rebuild (package:flutter/src/widgets/framework.dart:5542:7)
+#11     ProxyElement.update (package:flutter/src/widgets/framework.dart:6162:5)
+#12     _InheritedNotifierElement.update (package:flutter/src/widgets/inherited_notifier.dart:108:11)
+#13     Element.updateChild (package:flutter/src/widgets/framework.dart:4050:15)
+#14     ComponentElement.performRebuild (package:flutter/src/widgets/framework.dart:5854:16)
+#15     StatefulElement.performRebuild (package:flutter/src/widgets/framework.dart:5995:11)
+#16     Element.rebuild (package:flutter/src/widgets/framework.dart:5542:7)
+#17     BuildScope._tryRebuild (package:flutter/src/widgets/framework.dart:2763:15)
+#18     BuildScope._flushDirtyElements (package:flutter/src/widgets/framework.dart:2820:11)
+#19     BuildOwner.buildScope (package:flutter/src/widgets/framework.dart:3124:18)
+#20     _LayoutBuilderElement._rebuildWithConstraints (package:flutter/src/widgets/layout_builder.dart:270:12)
+#21     RenderAbstractLayoutBuilderMixin.layoutCallback (package:flutter/src/widgets/layout_builder.dart:333:38)
+#22     RenderObjectWithLayoutCallbackMixin.runLayoutCallback.<anonymous closure> (package:flutter/src/rendering/object.dart:4313:33)
+#23     RenderObject.invokeLayoutCallback.<anonymous closure> (package:flutter/src/rendering/object.dart:3042:17)
+#24     PipelineOwner._enableMutationsToDirtySubtrees (package:flutter/src/rendering/object.dart:1223:15)
+#25     RenderObject.invokeLayoutCallback (package:flutter/src/rendering/object.dart:3041:14)
+#26     RenderObjectWithLayoutCallbackMixin.runLayoutCallback (package:flutter/src/rendering/object.dart:4313:5)
+#27     _RenderLayoutBuilder.performLayout (package:flutter/src/widgets/layout_builder.dart:447:5)
+#28     RenderObject.layout (package:flutter/src/rendering/object.dart:2923:7)
+#29     RenderProxyBoxMixin.performLayout (package:flutter/src/rendering/proxy_box.dart:118:18)
+#30     RenderObject.layout (package:flutter/src/rendering/object.dart:2923:7)
+#31     RenderConstrainedBox.performLayout (package:flutter/src/rendering/proxy_box.dart:296:14)
+#32     RenderObject.layout (package:flutter/src/rendering/object.dart:2923:7)
+#33     RenderPositionedBox.performLayout (package:flutter/src/rendering/shifted_box.dart:484:14)
+#34     RenderObject.layout (package:flutter/src/rendering/object.dart:2923:7)
+#35     MultiChildLayoutDelegate.layoutChild (package:flutter/src/rendering/custom_layout.dart:180:12)
+#36     _ScaffoldLayout.performLayout (package:flutter/src/material/scaffold.dart:1113:7)
+#37     MultiChildLayoutDelegate._callPerformLayout (package:flutter/src/rendering/custom_layout.dart:246:7)
+#38     RenderCustomMultiChildLayoutBox.performLayout (package:flutter/src/rendering/custom_layout.dart:417:14)
+#39     RenderObject._layoutWithoutResize (package:flutter/src/rendering/object.dart:2771:7)
+#40     PipelineOwner.flushLayout (package:flutter/src/rendering/object.dart:1174:18)
+#41     PipelineOwner.flushLayout (package:flutter/src/rendering/object.dart:1187:15)
+#42     AutomatedTestWidgetsFlutterBinding.drawFrame (package:flutter_test/src/binding.dart:2434:27)
+#43     RendererBinding._handlePersistentFrameCallback (package:flutter/src/rendering/binding.dart:558:5)
+#44     SchedulerBinding._invokeFrameCallback (package:flutter/src/scheduler/binding.dart:1430:15)
+#45     SchedulerBinding.handleDrawFrame (package:flutter/src/scheduler/binding.dart:1345:9)
+#46     AutomatedTestWidgetsFlutterBinding.pump.<anonymous closure> (package:flutter_test/src/binding.dart:2261:9)
+#49     TestAsyncUtils.guard (package:flutter_test/src/test_async_utils.dart:74:41)
+#50     AutomatedTestWidgetsFlutterBinding.pump (package:flutter_test/src/binding.dart:2250:27)
+#51     WidgetTester.pumpAndSettle.<anonymous closure> (package:flutter_test/src/widget_tester.dart:719:23)
+#54     TestAsyncUtils.guard (package:flutter_test/src/test_async_utils.dart:74:41)
+#55     WidgetTester.pumpAndSettle (package:flutter_test/src/widget_tester.dart:712:27)
+#56     main.<anonymous closure>.show (file:///private/tmp/returns-revision/red-final-project/test/regression_test.dart:117:15)
+<asynchronous suspension>
+#57     main.<anonymous closure> (file:///private/tmp/returns-revision/red-final-project/test/regression_test.dart:121:5)
+<asynchronous suspension>
+#58     testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#59     TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided 5 frames from dart:async and package:stack_trace)
+
+════════════════════════════════════════════════════════════════════════════════════════════════════
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test:
+Expected: null
+  Actual: 'Multiple exceptions (2) were detected during the running of the current test, and at
+least one was unexpected.'
+
+When the exception was thrown, this was the stack:
+#4      main.<anonymous closure>.show (file:///private/tmp/returns-revision/red-final-project/test/regression_test.dart:118:7)
+<asynchronous suspension>
+#5      main.<anonymous closure> (file:///private/tmp/returns-revision/red-final-project/test/regression_test.dart:121:5)
+<asynchronous suspension>
+#6      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#7      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+This was caught by the test expectation on the following line:
+  file:///private/tmp/returns-revision/red-final-project/test/regression_test.dart line 118
+The test description was:
+  duplicate years have distinct stable occurrence identities
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:01 +2 -3: duplicate years have distinct stable occurrence identities [E]
+  Test failed. See exception logs above.
+  The test description was: duplicate years have distinct stable occurrence identities
+  
+00:01 +2 -3: outside focus is not stolen on row replacement
+00:02 +3 -3: year identity and missing months, reduce=false
+00:02 +4 -3: empty calendar does not restore fixture focus history, reduce=false
+00:02 +5 -3: year identity and missing months, reduce=true
+00:02 +6 -3: empty calendar does not restore fixture focus history, reduce=true
+00:03 +7 -3: reordering preserves month and annual focus identities and index selection
+00:03 +8 -3: Some tests failed.
+
+Failing tests:
+  /private/tmp/returns-revision/red-final-project/test/regression_test.dart: duplicate years have distinct stable occurrence identities
+  /private/tmp/returns-revision/red-final-project/test/regression_test.dart: global keyed calendar reparent preserves focus
+  /private/tmp/returns-revision/red-final-project/test/regression_test.dart: grid replacement does not delete live registration

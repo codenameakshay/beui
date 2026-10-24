@@ -1,0 +1,88 @@
+Building flutter tool...
+Resolving dependencies...
+Downloading packages...
+Got dependencies.
+00:00 +0: loading /Users/codenameakshay/.t3/worktrees/beui/t3-df4b55e2/test/motion/tooltip_semantic_activation_test.dart
+00:00 +0: semantic taps toggle tooltip and preserve child action, reduce=false
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test:
+Expected: exactly one matching candidate
+  Actual: _TextWidgetFinder:<Found 0 widgets with text "Context": []>
+   Which: means none were found but one was expected
+
+When the exception was thrown, this was the stack:
+#4      main.<anonymous closure> (file:///Users/codenameakshay/.t3/worktrees/beui/t3-df4b55e2/test/motion/tooltip_semantic_activation_test.dart:43:9)
+<asynchronous suspension>
+#5      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#6      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+This was caught by the test expectation on the following line:
+  file:///Users/codenameakshay/.t3/worktrees/beui/t3-df4b55e2/test/motion/tooltip_semantic_activation_test.dart line 43
+The test description was:
+  semantic taps toggle tooltip and preserve child action, reduce=false
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:00 +0 -1: semantic taps toggle tooltip and preserve child action, reduce=false [E]
+  Test failed. See exception logs above.
+  The test description was: semantic taps toggle tooltip and preserve child action, reduce=false
+  
+00:00 +0 -1: semantic taps toggle tooltip and preserve child action, reduce=true
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test:
+Expected: exactly one matching candidate
+  Actual: _TextWidgetFinder:<Found 0 widgets with text "Context": []>
+   Which: means none were found but one was expected
+
+When the exception was thrown, this was the stack:
+#4      main.<anonymous closure> (file:///Users/codenameakshay/.t3/worktrees/beui/t3-df4b55e2/test/motion/tooltip_semantic_activation_test.dart:43:9)
+<asynchronous suspension>
+#5      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#6      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+This was caught by the test expectation on the following line:
+  file:///Users/codenameakshay/.t3/worktrees/beui/t3-df4b55e2/test/motion/tooltip_semantic_activation_test.dart line 43
+The test description was:
+  semantic taps toggle tooltip and preserve child action, reduce=true
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:00 +0 -2: semantic taps toggle tooltip and preserve child action, reduce=true [E]
+  Test failed. See exception logs above.
+  The test description was: semantic taps toggle tooltip and preserve child action, reduce=true
+  
+00:00 +0 -2: nonmodal overlay wrapper cannot acquire focus
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test:
+Expected: false
+  Actual: <true>
+
+When the exception was thrown, this was the stack:
+#4      main.<anonymous closure> (file:///Users/codenameakshay/.t3/worktrees/beui/t3-df4b55e2/test/motion/tooltip_semantic_activation_test.dart:68:5)
+<asynchronous suspension>
+#5      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#6      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+This was caught by the test expectation on the following line:
+  file:///Users/codenameakshay/.t3/worktrees/beui/t3-df4b55e2/test/motion/tooltip_semantic_activation_test.dart line 68
+The test description was:
+  nonmodal overlay wrapper cannot acquire focus
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:00 +0 -3: nonmodal overlay wrapper cannot acquire focus [E]
+  Test failed. See exception logs above.
+  The test description was: nonmodal overlay wrapper cannot acquire focus
+  
+00:00 +0 -3: Some tests failed.
+
+Failing tests:
+  /Users/codenameakshay/.t3/worktrees/beui/t3-df4b55e2/test/motion/tooltip_semantic_activation_test.dart: nonmodal overlay wrapper cannot acquire focus
+  /Users/codenameakshay/.t3/worktrees/beui/t3-df4b55e2/test/motion/tooltip_semantic_activation_test.dart: semantic taps toggle tooltip and preserve child action, reduce=false
+  /Users/codenameakshay/.t3/worktrees/beui/t3-df4b55e2/test/motion/tooltip_semantic_activation_test.dart: semantic taps toggle tooltip and preserve child action, reduce=true

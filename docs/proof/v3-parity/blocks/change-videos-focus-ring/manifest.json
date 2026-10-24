@@ -1,0 +1,55 @@
+[
+  {
+    "slug": "prediction-market-card",
+    "change": "Source images, probability swap, payout tooltip, one CTA focus stop",
+    "before": "before/interactions/candidate/prediction-market-card/interaction.webm",
+    "after": "recovered-focus-ring/candidate-prediction-market-card/capture.mp4",
+    "viewingVideo": "change-videos-focus-ring/prediction-market-card.mp4",
+    "sha256": "9dece1055f2ebad0d6bda3eab6627324254e7c8a75a5ab24bc747e97f8f27df6",
+    "beforeProbe": {
+      "programs": [],
+      "stream_groups": [],
+      "streams": [
+        {
+          "width": 1280,
+          "height": 900,
+          "nb_read_frames": "311"
+        }
+      ],
+      "format": {
+        "duration": "12.440000"
+      }
+    },
+    "afterProbe": {
+      "programs": [],
+      "stream_groups": [],
+      "streams": [
+        {
+          "width": 1280,
+          "height": 813,
+          "nb_read_frames": "116"
+        }
+      ],
+      "format": {
+        "duration": "4.699136"
+      }
+    },
+    "derivedProbe": {
+      "programs": [],
+      "stream_groups": [],
+      "streams": [
+        {
+          "width": 1280,
+          "height": 964,
+          "nb_read_frames": "427"
+        }
+      ],
+      "format": {
+        "duration": "17.139136"
+      }
+    },
+    "inputFrames": 427,
+    "outputFrames": 427,
+    "method": "Sequential before then after. Original pixels are not scaled. Black padding holds the title and fills the shorter capture. VFR passthrough, no interpolation or frame duplication. These differently staged and timed runs are not an aligned parity comparison."
+  }
+]

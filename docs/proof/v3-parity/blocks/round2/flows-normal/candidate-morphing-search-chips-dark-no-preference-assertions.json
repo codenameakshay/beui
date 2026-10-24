@@ -1,0 +1,80 @@
+{
+  "name": "candidate-morphing-search-chips-dark-no-preference",
+  "url": "http://127.0.0.1:8108/?slug=morphing-search-chips&theme=dark&previewWidth=592&captureProbe=1",
+  "checks": [
+    {
+      "label": "rest",
+      "checkedAt": "2026-10-23T08:54:18.495Z"
+    },
+    {
+      "label": "recents",
+      "checkedAt": "2026-10-23T08:54:19.234Z"
+    },
+    {
+      "label": "suggestions",
+      "checkedAt": "2026-10-23T08:54:19.601Z"
+    },
+    {
+      "label": "chip-added",
+      "checkedAt": "2026-10-23T08:54:20.329Z"
+    },
+    {
+      "label": "closed",
+      "checkedAt": "2026-10-23T08:54:21.055Z"
+    }
+  ],
+  "targets": {
+    "field": {
+      "x": 833.9520874023438,
+      "y": 715,
+      "measuredBounds": {
+        "x": 743.4520874023438,
+        "y": 700,
+        "width": 181,
+        "height": 30
+      }
+    }
+  },
+  "events": [
+    {
+      "atMs": 600,
+      "type": "click",
+      "target": "field"
+    },
+    {
+      "atMs": 1500,
+      "type": "text",
+      "text": "dark mode"
+    },
+    {
+      "atMs": 2400,
+      "type": "key",
+      "key": "Enter"
+    },
+    {
+      "atMs": 3300,
+      "type": "key",
+      "key": "Escape"
+    }
+  ],
+  "flutterCapture": {
+    "disableAnimations": false,
+    "platformDisableAnimations": false,
+    "motionOverride": null,
+    "backgroundArgb": 4279571733,
+    "constraints": {
+      "minWidth": 0,
+      "maxWidth": 592,
+      "minHeight": 0,
+      "maxHeight": null
+    },
+    "rect": {
+      "x": 476.5,
+      "y": 317,
+      "width": 592,
+      "height": 440
+    }
+  },
+  "browserReducedMotion": false,
+  "pass": true
+}

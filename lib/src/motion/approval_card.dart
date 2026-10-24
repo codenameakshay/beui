@@ -56,6 +56,7 @@ class BeuiApprovalCardOption {
   const BeuiApprovalCardOption({
     required this.value,
     required this.label,
+    this.description,
     this.enabled = true,
   });
 
@@ -64,6 +65,9 @@ class BeuiApprovalCardOption {
 
   /// Human-readable label.
   final String label;
+
+  /// Supporting copy displayed below the choice label.
+  final String? description;
 
   /// Whether the option can be chosen. Source `disabled` inverted.
   final bool enabled;
@@ -791,11 +795,9 @@ class _HeaderRow extends StatelessWidget {
           Text(
             strings.stepCounter(currentStep + 1, questionCount),
             style: agent.typography.status.copyWith(
+              height: 16 / 12,
               fontFeatures: const [FontFeature.tabularFigures()],
-              // The step counter tells you where you are in the flow —
-              // information, not chrome. It no longer gets alpha-multiplied
-              // down to 3:1.
-              color: colors.mutedForeground,
+              color: colors.mutedForeground.withValues(alpha: 0.65),
             ),
           )
         else
@@ -940,6 +942,7 @@ class _StatusBadge extends StatelessWidget {
       child: Text(
         label,
         style: agent.typography.metadata.copyWith(
+          height: 20 / 14,
           fontWeight: FontWeight.w500,
           color: palette.foreground,
         ),
@@ -1044,7 +1047,7 @@ class _SimpleBody extends StatelessWidget {
   }
 }
 
-class _QuestionBody extends StatelessWidget {
+class _QuestionBody extends StatefulWidget {
   const _QuestionBody({
     required this.question,
     required this.answer,
@@ -1064,51 +1067,71 @@ class _QuestionBody extends StatelessWidget {
   final VoidCallback onSingleSelect;
 
   @override
+  State<_QuestionBody> createState() => _QuestionBodyState();
+}
+
+enum _QuestionPhase { settled, exiting, entering }
+
+class _QuestionBodyState extends State<_QuestionBody>
+    with SingleTickerProviderStateMixin {
+  late _QuestionBody _shown = widget;
+  _QuestionPhase _phase = _QuestionPhase.settled;
+  late final _transition = AnimationController(
+    vsync: this,
+    duration: _stepDuration,
+    value: 1,
+  )..addStatusListener(_onTransition);
+
+  void _onTransition(AnimationStatus status) {
+    if (status != AnimationStatus.completed) return;
+    if (_phase == _QuestionPhase.exiting) {
+      setState(() {
+        _shown = widget;
+        _phase = _QuestionPhase.entering;
+      });
+      _transition.forward(from: 0);
+    } else if (_phase == _QuestionPhase.entering) {
+      setState(() => _phase = _QuestionPhase.settled);
+    }
+  }
+
+  @override
+  void didUpdateWidget(_QuestionBody oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.reduce) {
+      _phase = _QuestionPhase.settled;
+      _shown = widget;
+      _transition.stop();
+    } else if (widget.question.id == _shown.question.id) {
+      _shown = widget;
+    } else if (_phase != _QuestionPhase.exiting) {
+      _phase = _QuestionPhase.exiting;
+      _transition.forward(from: 0);
+    }
+  }
+
+  @override
+  void dispose() {
+    _transition.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    // AnimatePresence mode="wait" step swap — enter x:+8, exit x:−6, 200ms
-    // EASE_OUT. DualTransitionBuilder gives asymmetric enter/exit offsets.
-    return AnimatedSwitcher(
-      duration: reduce ? Duration.zero : _stepDuration,
-      switchInCurve: beuiEaseOut,
-      switchOutCurve: beuiEaseOut,
-      layoutBuilder: (current, previous) => Stack(
-        alignment: Alignment.topLeft,
-        children: <Widget>[...previous, ?current],
-      ),
-      transitionBuilder: (child, animation) {
-        if (reduce) {
-          return FadeTransition(opacity: animation, child: child);
-        }
-        return DualTransitionBuilder(
-          animation: animation,
-          forwardBuilder: (context, anim, child) {
-            return FadeTransition(
-              opacity: anim,
-              child: AnimatedBuilder(
-                animation: anim,
-                builder: (context, child) => Transform.translate(
-                  offset: Offset(8 * (1 - anim.value), 0),
-                  child: child,
-                ),
-                child: child,
-              ),
-            );
-          },
-          reverseBuilder: (context, anim, child) {
-            // anim goes 0→1 during exit.
-            return AnimatedBuilder(
-              animation: anim,
-              builder: (context, child) => Opacity(
-                opacity: 1 - anim.value,
-                child: Transform.translate(
-                  offset: Offset(-6 * anim.value, 0),
-                  child: child,
-                ),
-              ),
-              child: child,
-            );
-          },
-          child: child,
+    final shown = _shown;
+    final question = shown.question;
+    return AnimatedBuilder(
+      animation: _transition,
+      builder: (context, child) {
+        final t = beuiEaseOut.transform(_transition.value);
+        final (opacity, x) = switch (_phase) {
+          _QuestionPhase.settled => (1.0, 0.0),
+          _QuestionPhase.exiting => (1 - t, -6 * t),
+          _QuestionPhase.entering => (t, 8 * (1 - t)),
+        };
+        return Opacity(
+          opacity: opacity,
+          child: Transform.translate(offset: Offset(x, 0), child: child),
         );
       },
       child: KeyedSubtree(
@@ -1123,16 +1146,16 @@ class _QuestionBody extends StatelessWidget {
                 child: Text(
                   question.description!,
                   style: BeuiAgentTheme.of(context).typography.description
-                      .copyWith(color: colors.mutedForeground),
+                      .copyWith(color: shown.colors.mutedForeground),
                 ),
               ),
             _QuestionOptions(
               question: question,
-              answer: answer,
-              disabled: busy,
-              colors: colors,
-              onChange: onChange,
-              onSingleSelect: onSingleSelect,
+              answer: shown.answer,
+              disabled: shown.busy,
+              colors: shown.colors,
+              onChange: shown.onChange,
+              onSingleSelect: shown.onSingleSelect,
             ),
           ],
         ),
@@ -1179,10 +1202,11 @@ class _QuestionOptions extends StatelessWidget {
                       for (var i = 0; i < options.length; i++) ...[
                         if (i > 0) const SizedBox(height: 2), // gap-0.5
                         _OptionRow(
-                          child: BeuiCheckbox(
+                          child: _ApprovalCheckboxOption(
                             value: answer.selected.contains(options[i].value),
                             enabled: !disabled && options[i].enabled,
                             label: options[i].label,
+                            description: options[i].description,
                             onChanged: (checked) {
                               final next = List<String>.from(answer.selected);
                               if (checked) {
@@ -1206,18 +1230,37 @@ class _QuestionOptions extends StatelessWidget {
                 // own insets — 8px above/below each 20px ring plus the
                 // `gap-0.5` between rows gives the source's 38px row pitch.
                 : Padding(
-                    padding: const EdgeInsets.symmetric(
+                    padding: EdgeInsets.symmetric(
                       horizontal: 6, // px-1.5
-                      vertical: 8, // min-h-9 around a 20px ring
+                      vertical: options.any((o) => o.description != null)
+                          ? 4
+                          : 8,
                     ),
                     child: BeuiRadioGroup<String>(
                       items: [
                         for (final o in options)
-                          BeuiRadioItem<String>(
-                            value: o.value,
-                            label: o.label,
-                            enabled: !disabled && o.enabled,
-                          ),
+                          if (o.description != null)
+                            _DescribedRadioItem(
+                              value: o.value,
+                              label: o.label,
+                              description: o.description!,
+                              enabled: !disabled && o.enabled,
+                              onSelected: () {
+                                onChange(
+                                  BeuiApprovalCardAnswer(
+                                    selected: [o.value],
+                                    custom: '',
+                                  ),
+                                );
+                                onSingleSelect();
+                              },
+                            )
+                          else
+                            BeuiRadioItem<String>(
+                              value: o.value,
+                              label: o.label,
+                              enabled: !disabled && o.enabled,
+                            ),
                       ],
                       // Empty string keeps the group controlled with no match
                       // (source `value={answer.selected[0] ?? ""}`).
@@ -1230,7 +1273,9 @@ class _QuestionOptions extends StatelessWidget {
                         );
                         onSingleSelect();
                       },
-                      spacing: 18, // 8 + gap-0.5 + 8
+                      spacing: options.any((o) => o.description != null)
+                          ? 10
+                          : 18,
                     ),
                   ),
           if (question.allowCustom)
@@ -1239,43 +1284,164 @@ class _QuestionOptions extends StatelessWidget {
               // gutter around the 40px field — the source passes
               // `className={cn("p-0.5", …)}`, so the slot is 44px tall.
               padding: EdgeInsets.fromLTRB(2, hasOptions ? 8 : 2, 2, 2),
-              // source field classes: `h-10 rounded-xl border-0
-              // bg-background/70`. BeuiInputStyle has no fill, so the capsule
-              // is painted behind the (transparent-bordered) field.
-              child: DecoratedBox(
-                decoration: BoxDecoration(
-                  color: colors.background.withValues(alpha: 0.7),
-                  borderRadius: BeuiAgentTheme.of(context).shapes.nested,
-                ),
-                child: BeuiInput(
-                  value: custom,
-                  enabled: !disabled,
-                  placeholder:
-                      question.customPlaceholder ??
-                      BeuiAgentTheme.of(
-                        context,
-                      ).strings.customAnswerPlaceholder,
-                  onChanged: (value) {
-                    onChange(
-                      BeuiApprovalCardAnswer(
-                        selected: question.multiple
-                            ? answer.selected
-                            : const [],
-                        custom: value,
-                      ),
-                    );
-                  },
-                  style: BeuiInputStyle(
-                    height: 40, // h-10
-                    borderRadius: 12, // rounded-xl
-                    borderColor: Colors.transparent,
-                    focusedBorderColor: Colors.transparent,
+              child: BeuiInput(
+                value: custom,
+                enabled: !disabled,
+                placeholder:
+                    question.customPlaceholder ??
+                    BeuiAgentTheme.of(context).strings.customAnswerPlaceholder,
+                onChanged: (value) {
+                  onChange(
+                    BeuiApprovalCardAnswer(
+                      selected: question.multiple ? answer.selected : const [],
+                      custom: value,
+                    ),
+                  );
+                },
+                style: BeuiInputStyle(
+                  height: 40, // h-10
+                  borderRadius: 12, // rounded-xl
+                  borderWidth: 0, // border-0
+                  textStyle: const TextStyle(fontSize: 14, height: 20 / 14),
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 12),
+                  placeholderColor: colors.mutedForeground.withValues(
+                    alpha: colors.mutedForeground.a * 0.6,
                   ),
+                  backgroundColor: colors.background.withValues(
+                    alpha: colors.background.a * 0.7,
+                  ),
+                  focusedBackgroundColor: colors.background,
+                  borderColor: Colors.transparent,
+                  focusedBorderColor: Colors.transparent,
                 ),
               ),
             ),
         ],
       ),
+    );
+  }
+}
+
+class _DescribedRadioItem extends BeuiRadioItem<String> {
+  const _DescribedRadioItem({
+    required super.value,
+    required super.label,
+    required this.description,
+    required super.enabled,
+    required this.onSelected,
+  });
+
+  final String description;
+  final VoidCallback onSelected;
+
+  @override
+  State<BeuiRadioItem<String>> createState() => _DescribedRadioItemState();
+}
+
+class _DescribedRadioItemState extends State<BeuiRadioItem<String>> {
+  @override
+  Widget build(BuildContext context) {
+    final item = widget as _DescribedRadioItem;
+    return MergeSemantics(
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          BeuiRadioItem<String>(value: item.value, enabled: item.enabled),
+          const SizedBox(width: 12),
+          Expanded(
+            child: GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTap: item.enabled ? item.onSelected : null,
+              child: Opacity(
+                opacity: item.enabled ? 1 : 0.6,
+                child: _OptionCopy(
+                  label: item.label!,
+                  description: item.description,
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _ApprovalCheckboxOption extends StatelessWidget {
+  const _ApprovalCheckboxOption({
+    required this.value,
+    required this.enabled,
+    required this.label,
+    required this.description,
+    required this.onChanged,
+  });
+  final bool value;
+  final bool enabled;
+  final String label;
+  final String? description;
+  final ValueChanged<bool> onChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    if (description == null) {
+      return BeuiCheckbox(
+        value: value,
+        enabled: enabled,
+        label: label,
+        onChanged: onChanged,
+      );
+    }
+    return MergeSemantics(
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          BeuiCheckbox(value: value, enabled: enabled, onChanged: onChanged),
+          const SizedBox(width: 12),
+          Expanded(
+            child: GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTap: enabled ? () => onChanged(!value) : null,
+              child: Opacity(
+                opacity: enabled ? 1 : 0.6,
+                child: _OptionCopy(label: label, description: description!),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _OptionCopy extends StatelessWidget {
+  const _OptionCopy({required this.label, required this.description});
+  final String label;
+  final String description;
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = BeuiColors.resolve(context);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          label,
+          style: TextStyle(
+            fontSize: 14,
+            height: 16 / 14,
+            color: colors.foreground,
+          ),
+        ),
+        const SizedBox(height: 2),
+        Text(
+          description,
+          style: TextStyle(
+            fontSize: 12,
+            height: 16 / 12,
+            color: colors.mutedForeground,
+          ),
+        ),
+      ],
     );
   }
 }

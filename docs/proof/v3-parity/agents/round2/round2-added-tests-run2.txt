@@ -1,0 +1,74 @@
+00:00 +0: loading /Users/codenameakshay/.t3/worktrees/beui/t3-450031da/test/motion/agents_round2_test.dart
+00:00 +0: (setUpAll)
+00:00 +0: mobile chat opens the actual rail and restores trigger focus
+
+Warning: A call to tap() with finder "Found 1 widget with widget matching predicate: [
+  IconButton(tooltip: Show sidebar, disabled, disabled, focusNode: FocusNode#102d0, dependencies: [InheritedCupertinoTheme, _InheritedTheme, _LocalizationsScope-[GlobalKey#aaa33]]),
+]" derived an Offset (Offset(235.0, 148.0)) that would not hit test on the specified widget.
+Maybe the widget is actually off-screen, or another widget is obscuring it, or the widget cannot receive pointer events.
+The finder corresponds to this RenderBox: RenderSemanticsAnnotations#329f9 relayoutBoundary=up1 NEEDS-PAINT
+The hit test result at that offset is: HitTestResult(_RenderInkFeatures#761be@Offset(235.0, 148.0), RenderPhysicalModel#78712@Offset(235.0, 148.0), RenderSemanticsAnnotations#e4d7c@Offset(235.0, 148.0), RenderRepaintBoundary#41865@Offset(235.0, 148.0), RenderIgnorePointer#eed9a@Offset(235.0, 148.0), RenderAnimatedOpacity#a01b1@Offset(235.0, 148.0), RenderAnimatedOpacity#ebd1d@Offset(235.0, 148.0), _RenderColoredBox#ad6cc@Offset(235.0, 148.0), RenderAnimatedOpacity#358b1@Offset(235.0, 148.0), RenderIgnorePointer#dfbfa@Offset(235.0, 148.0), RenderAnimatedOpacity#32b43@Offset(235.0, 148.0), RenderRepaintBoundary#1799f@Offset(235.0, 148.0), RenderSemanticsAnnotations#4f15f@Offset(235.0, 148.0), RenderOffstage#261d1@Offset(235.0, 148.0), RenderSemanticsAnnotations#7ad16@Offset(235.0, 148.0), _RenderTheater#d07da@Offset(235.0, 148.0), RenderAbsorbPointer#8b3fb@Offset(235.0, 148.0), RenderPointerListener#540ea@Offset(235.0, 148.0), RenderSemanticsAnnotations#91790@Offset(235.0, 148.0), RenderCustomPaint#bc104@Offset(235.0, 148.0), RenderSemanticsAnnotations#518d0@Offset(235.0, 148.0), RenderSemanticsAnnotations#1a777@Offset(235.0, 148.0), RenderSemanticsAnnotations#ad533@Offset(235.0, 148.0), RenderTapRegionSurface#57a5b@Offset(235.0, 148.0), RenderSemanticsAnnotations#e1326@Offset(235.0, 148.0), RenderSemanticsAnnotations#c4d10@Offset(235.0, 148.0), HitTestEntry<HitTestTarget>#7c88e(_ReusableRenderView#21074), HitTestEntry<HitTestTarget>#ee87b(<AutomatedTestWidgetsFlutterBinding>))
+#0      WidgetController._getElementPoint (package:flutter_test/src/controller.dart:2165:25)
+#1      WidgetController.getCenter (package:flutter_test/src/controller.dart:1947:12)
+#2      WidgetController.tap (package:flutter_test/src/controller.dart:1080:7)
+#3      main.<anonymous closure> (file:///Users/codenameakshay/.t3/worktrees/beui/t3-450031da/test/motion/agents_round2_test.dart:40:18)
+<asynchronous suspension>
+#4      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#5      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
+<asynchronous suspension>
+#6      StackZoneSpecification._registerCallback.<anonymous closure> (package:stack_trace/src/stack_zone_specification.dart:114:42)
+<asynchronous suspension>
+To silence this warning, pass "warnIfMissed: false" to "tap()".
+To make this warning fatal, set WidgetController.hitTestWarningShouldBeFatal to true.
+
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test:
+Expected: exactly one matching candidate
+  Actual: _HitTestableWidgetFinder:<Found 0 widgets with text "Projects" (considering only
+hit-testable widgets with a RenderBox): []>
+   Which: means none were found but one was expected
+
+When the exception was thrown, this was the stack:
+#4      main.<anonymous closure> (file:///Users/codenameakshay/.t3/worktrees/beui/t3-450031da/test/motion/agents_round2_test.dart:42:5)
+<asynchronous suspension>
+#5      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#6      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+This was caught by the test expectation on the following line:
+  file:///Users/codenameakshay/.t3/worktrees/beui/t3-450031da/test/motion/agents_round2_test.dart line 42
+The test description was:
+  mobile chat opens the actual rail and restores trigger focus
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:00 +0 -1: mobile chat opens the actual rail and restores trigger focus [E]
+  Test failed. See exception logs above.
+  The test description was: mobile chat opens the actual rail and restores trigger focus
+  
+00:00 +0 -1: checkbox option description selects its associated value
+00:00 +1 -1: prompt notice enters from source 3px or immediately reduced=false
+00:01 +2 -1: prompt notice enters from source 3px or immediately reduced=true
+00:01 +3 -1: source 600px shell-fit threshold keeps the 728px docked rail
+00:01 +4 -1: orb silhouette samples match pinned Motion 12.43 glide generator
+00:01 +5 -1: orb springs a nonzero initial activity from the source rest silhouette
+00:01 +6 -1: each loading source example is isolated
+00:01 +7 -1: avatar source example mounts at 650ms and 1550ms
+00:01 +8 -1: activity source reasoning-steps reaches its terminal summary
+00:01 +9 -1: activity source web-search reaches its terminal summary
+00:01 +10 -1: activity source tool-calls reaches its terminal summary
+00:01 +11 -1: activity source agent-trace reaches its terminal summary
+00:01 +12 -1: activity source mixed-activity reaches its terminal summary
+00:01 +13 -1: chat-app streams at 92 cps, stops, resumes without duplicate turns
+00:02 +14 -1: source diff has five rows without an invented context gap
+00:02 +15 -1: source questions show all three option descriptions
+00:02 +16 -1: sent prompt notice wins over later action, reduce=false
+00:02 +17 -1: sent prompt notice wins over later action, reduce=true
+00:02 +18 -1: chat-app pending stop does not fabricate an assistant reply
+00:02 +19 -1: (tearDownAll)
+00:02 +19 -1: Some tests failed.
+
+Failing tests:
+  /Users/codenameakshay/.t3/worktrees/beui/t3-450031da/test/motion/agents_round2_test.dart: mobile chat opens the actual rail and restores trigger focus

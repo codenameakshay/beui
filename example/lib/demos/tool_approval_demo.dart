@@ -22,6 +22,27 @@ class _ToolApprovalDemoState extends State<_ToolApprovalDemo> {
 
   @override
   Widget build(BuildContext context) {
+    if (Uri.base.queryParameters['example'] != 'api-specimens') {
+      return Center(
+        child: SizedBox(
+          width: 512,
+          height: 360,
+          child: Stack(
+            children: [
+              Align(
+                alignment: Alignment.topCenter,
+                child: _ApprovalRun(key: ValueKey(_run)),
+              ),
+              Positioned(
+                left: 0,
+                bottom: 0,
+                child: ReplayButton(onPressed: () => setState(() => _run++)),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
     return SingleChildScrollView(
       child: Center(
         child: ConstrainedBox(
@@ -139,7 +160,9 @@ class _ApprovalRunState extends State<_ApprovalRun> {
       // Recording which grant was used is what lets the approved card say
       // "Always allowed" instead of a bare "Approved", and what makes the
       // Revoke affordance meaningful.
-      grant: _grant,
+      grant: Uri.base.queryParameters['example'] == 'api-specimens'
+          ? _grant
+          : null,
       open: _detailsOpen,
       onOpenChange: (v) => setState(() => _detailsOpen = v),
       parameters: const [
@@ -160,7 +183,9 @@ class _ApprovalRunState extends State<_ApprovalRun> {
       onApprove: () => _approve(BeuiToolApprovalGrant.once),
       onAlwaysAllow: () => _approve(BeuiToolApprovalGrant.always),
       onDeny: () => _finish(BeuiToolApprovalStatus.denied),
-      onRevoke: _grant == BeuiToolApprovalGrant.always
+      onRevoke:
+          Uri.base.queryParameters['example'] == 'api-specimens' &&
+              _grant == BeuiToolApprovalGrant.always
           ? () => setState(() {
               _grant = null;
               _status = BeuiToolApprovalStatus.pending;

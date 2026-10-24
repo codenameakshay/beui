@@ -1,0 +1,98 @@
+{
+  "url": "http://127.0.0.1:18120/source/?example=magnetic&theme=light&captureProbe=1",
+  "theme": "light",
+  "reducedMotion": "no-preference",
+  "viewport": {
+    "width": 1280,
+    "height": 1000
+  },
+  "loadWaitMs": 700,
+  "backend": "screenshots",
+  "requireFlutterProbe": false,
+  "servedJs": {
+    "url": "http://127.0.0.1:18120/source/source.js",
+    "sha256": "723c4c94566a7077dab3769a4fce2b7d39d7f055c199727fdb2b3b00240fbe43",
+    "revision": "a76e57c9bbc2837e96420b2610e9c82a3271bb05"
+  },
+  "provenance": {
+    "example": "example/button-magnetic/magnetic",
+    "origin": "source",
+    "recorderHash": "2aa405da2051b7a59a3010f7b0e3291108e3c51c65f6e1e76bf73bca120709ca",
+    "sourceDeployment": "pinned-isolated-preview; live deployment revision unknown"
+  },
+  "targets": {
+    "p0": {
+      "x": 537.5359375,
+      "y": 180
+    },
+    "p1": {
+      "x": 668.6359375,
+      "y": 180
+    },
+    "p2": {
+      "x": 796.3953125,
+      "y": 180
+    },
+    "p3": {
+      "x": 10,
+      "y": 10
+    }
+  },
+  "events": [
+    {
+      "atMs": 1023,
+      "type": "move",
+      "target": "p0"
+    },
+    {
+      "atMs": 1340,
+      "type": "down"
+    },
+    {
+      "atMs": 1754,
+      "type": "up"
+    },
+    {
+      "atMs": 1914,
+      "type": "move",
+      "target": "p1"
+    },
+    {
+      "atMs": 2084,
+      "type": "down"
+    },
+    {
+      "atMs": 2316,
+      "type": "up"
+    },
+    {
+      "atMs": 2461,
+      "type": "move",
+      "target": "p2"
+    },
+    {
+      "atMs": 2634,
+      "type": "down"
+    },
+    {
+      "atMs": 2865,
+      "type": "up"
+    },
+    {
+      "atMs": 3008,
+      "type": "move",
+      "target": "p3"
+    },
+    {
+      "atMs": 3530,
+      "type": "key",
+      "key": "Tab"
+    },
+    {
+      "atMs": 3538,
+      "type": "key",
+      "key": "Space"
+    }
+  ],
+  "finalHoldMs": 500
+}

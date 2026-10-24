@@ -1,0 +1,22 @@
+{
+  "spec": {
+    "slug": "file-diff",
+    "theme": "dark",
+    "width": 1440,
+    "height": 1000
+  },
+  "facts": {
+    "url": "http://localhost:8104/agents-final/?slug=file-diff&theme=dark",
+    "viewport": {
+      "width": 1440,
+      "height": 1000,
+      "dpr": 1
+    },
+    "dark": false,
+    "reduced": false,
+    "text": "Copy diff\n18\n18\nexport async function runTask() {\n19\n−\nreturn execute(task);\n19\n+\nconst result = await execute(task);\n20\n+\nreturn normalize(result);\nExpand 20 hidden lines ⋯ Expand 20 hidden lines\n40\n41\n}\nReplay",
+    "slots": []
+  },
+  "failures": [],
+  "capturedAt": "2026-10-23T07:44:43.816Z"
+}

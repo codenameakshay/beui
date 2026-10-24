@@ -22,6 +22,10 @@ class _NumberDemo extends StatefulWidget {
 class _NumberDemoState extends State<_NumberDemo> {
   final _rng = Random();
 
+  static const _card = '4242 4242 4242 0806';
+  static const _masked = '•••• •••• •••• 0806';
+  bool _revealed = false;
+
   // NumberTickerPreview: "Active users" creeps up every 2.5s.
   int _users = 48273;
 
@@ -69,6 +73,50 @@ class _NumberDemoState extends State<_NumberDemo> {
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
+        Center(
+          child: SizedBox(
+            width: 320,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                caption('Card number'),
+                const SizedBox(height: 8),
+                FittedBox(
+                  fit: BoxFit.scaleDown,
+                  alignment: Alignment.centerLeft,
+                  child: BeuiDigitSwap(
+                    value: _revealed ? _card : _masked,
+                    animationKey: _revealed ? 'revealed' : 'masked',
+                    direction: _revealed
+                        ? BeuiDigitSwapDirection.up
+                        : BeuiDigitSwapDirection.down,
+                    suffixLength: 4,
+                    style: TextStyle(
+                      fontFamily: 'monospace',
+                      fontSize: 18,
+                      letterSpacing: 1.4,
+                      fontFeatures: const [FontFeature.tabularFigures()],
+                      color: colors.foreground,
+                    ),
+                    glyphStyle: TextStyle(
+                      color: _revealed
+                          ? colors.foreground
+                          : colors.mutedForeground,
+                    ),
+                    suffixStyle: TextStyle(color: colors.foreground),
+                  ),
+                ),
+                const SizedBox(height: 20),
+                OutlinedButton(
+                  onPressed: () => setState(() => _revealed = !_revealed),
+                  child: const Text('Animate'),
+                ),
+              ],
+            ),
+          ),
+        ),
+        const SizedBox(height: 96),
+
         // ── NumberTickerPreview ───────────────────────────────────────────
         caption('Active users'),
         const SizedBox(height: 12), // gap-3

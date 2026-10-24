@@ -1,0 +1,111 @@
+{
+  "id": "components/expandable-control",
+  "owner": "components",
+  "newBadge": true,
+  "demoChanged": true,
+  "sourceUrl": "https://beui.dev/components/motion/expandable-control",
+  "sourceFiles": [
+    {
+      "path": "components/motion/expandable-control.tsx",
+      "sha256": "91284ad416cbd533f457fa2e8cb2106a25d7770d34f94c25dca2e2afafc380f9"
+    }
+  ],
+  "sourcePreviews": [
+    "components/previews/motion/expandable-control.preview.tsx"
+  ],
+  "sourceExamples": [],
+  "widgetParts": [
+    "BeuiExpandableButton",
+    "BeuiExpandableChip"
+  ],
+  "states": [
+    "rest",
+    "hover-exit",
+    "keyboard",
+    "reduced-motion",
+    "button and chip rest hover expand press collapse",
+    "label and icon entry exit and focus expansion"
+  ],
+  "themes": [
+    "dark",
+    "light"
+  ],
+  "verdict": "Inconclusive",
+  "implementation": "not changed in this repair checkpoint",
+  "missing": "No complete matched-width 60 FPS reference/before/after state set or independent visual verdict.",
+  "captures": [
+    {
+      "id": "candidate-light-expandable-control",
+      "slug": "expandable-control",
+      "origin": "candidate",
+      "theme": "light",
+      "code": 0,
+      "configPath": "/Users/codenameakshay/.t3/worktrees/beui/t3-48d38279/docs/proof/v3-parity/components/release-recordings-run2/configs/candidate-light-expandable-control.json",
+      "runDirectory": "/Users/codenameakshay/.t3/worktrees/beui/t3-48d38279/docs/proof/v3-parity/components/release-recordings-run2/candidate-light-expandable-control",
+      "missingTargets": [],
+      "stats": {
+        "originEpochMs": 1792743442699,
+        "backend": "screenshots",
+        "startMs": 5149.5375,
+        "sequenceStartMs": 5149.71075,
+        "stopMs": 8316.689167,
+        "frames": 95,
+        "durationMs": 3162.08815574646,
+        "measuredFps": 29.727191453904876,
+        "medianIntervalMs": 33.28728675842285,
+        "maxIntervalMs": 79.94842529296875,
+        "reorderedDeliveries": 0,
+        "fastMotionVerdict": "inconclusive; inspect per-event gaps, not nominal frame rate",
+        "errors": [],
+        "video": {
+          "width": 1280,
+          "height": 913,
+          "decodedFrames": 95
+        }
+      },
+      "video": {
+        "path": "release-recordings-run2/candidate-light-expandable-control/capture.mp4",
+        "bytes": 560334,
+        "sha256": "84523057c9174b8ee9ff1d1e24e2ce55247e10ffd3a06fc6c6426c1be08f49b8"
+      }
+    },
+    {
+      "id": "candidate-dark-expandable-control",
+      "slug": "expandable-control",
+      "origin": "candidate",
+      "theme": "dark",
+      "code": 0,
+      "configPath": "/Users/codenameakshay/.t3/worktrees/beui/t3-48d38279/docs/proof/v3-parity/components/release-recordings-run2/configs/candidate-dark-expandable-control.json",
+      "runDirectory": "/Users/codenameakshay/.t3/worktrees/beui/t3-48d38279/docs/proof/v3-parity/components/release-recordings-run2/candidate-dark-expandable-control",
+      "missingTargets": [],
+      "stats": {
+        "originEpochMs": 1792743728393,
+        "backend": "screenshots",
+        "startMs": 5204.286042,
+        "sequenceStartMs": 5204.603792,
+        "stopMs": 8369.340625,
+        "frames": 178,
+        "durationMs": 3143.183469772339,
+        "measuredFps": 56.31233483574541,
+        "medianIntervalMs": 16.669511795043945,
+        "maxIntervalMs": 45.287132263183594,
+        "reorderedDeliveries": 0,
+        "fastMotionVerdict": "inconclusive; inspect per-event gaps, not nominal frame rate",
+        "errors": [],
+        "video": {
+          "width": 1280,
+          "height": 913,
+          "decodedFrames": 178
+        }
+      },
+      "video": {
+        "path": "release-recordings-run2/candidate-dark-expandable-control/capture.mp4",
+        "bytes": 975297,
+        "sha256": "10a9ced9382336f87ddeed28c69e455045efb280bbf44aaf9ab777aad8e9f609"
+      }
+    }
+  ],
+  "changeVideos": [],
+  "knownGaps": null,
+  "coverage": "Default preview recording only. No complete state or example parity certificate."
+}

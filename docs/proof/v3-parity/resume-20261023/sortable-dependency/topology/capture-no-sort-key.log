@@ -1,0 +1,78 @@
+{
+  target: 'source',
+  reducedMotion: 'no-preference',
+  states: 5,
+  frames: 141,
+  decoded: 141,
+  checks: 24,
+  failures: []
+}
+{
+  target: 'source',
+  reducedMotion: 'reduce',
+  states: 5,
+  frames: 16,
+  decoded: 16,
+  checks: 24,
+  failures: []
+}
+FAIL candidate no-preference move focus {"tag":"BODY","label":null,"text":""}
+FAIL candidate no-preference end order ["B","A","C"]
+FAIL candidate no-preference end callbacks [["B","A","C"]]
+FAIL candidate no-preference end focus {"tag":"BODY","label":null,"text":""}
+FAIL candidate no-preference home order ["B","A","C"]
+FAIL candidate no-preference home callbacks [["B","A","C"]]
+FAIL candidate no-preference home focus {"tag":"BODY","label":null,"text":""}
+FAIL candidate no-preference home-undo order ["A","B","C"]
+FAIL candidate no-preference home-undo callbacks [["B","A","C"],["A","B","C"]]
+FAIL candidate no-preference home-undo focus {"tag":"FLT-SEMANTICS","label":null,"text":"Reorder A"}
+{
+  target: 'candidate',
+  reducedMotion: 'no-preference',
+  states: 5,
+  frames: 31,
+  decoded: 31,
+  checks: 24,
+  failures: [
+    'move focus',
+    'end order',
+    'end callbacks',
+    'end focus',
+    'home order',
+    'home callbacks',
+    'home focus',
+    'home-undo order',
+    'home-undo callbacks',
+    'home-undo focus'
+  ]
+}
+FAIL candidate reduce move focus {"tag":"BODY","label":null,"text":""}
+FAIL candidate reduce end order ["B","A","C"]
+FAIL candidate reduce end callbacks [["B","A","C"]]
+FAIL candidate reduce end focus {"tag":"BODY","label":null,"text":""}
+FAIL candidate reduce home order ["B","A","C"]
+FAIL candidate reduce home callbacks [["B","A","C"]]
+FAIL candidate reduce home focus {"tag":"BODY","label":null,"text":""}
+FAIL candidate reduce home-undo order ["A","B","C"]
+FAIL candidate reduce home-undo callbacks [["B","A","C"],["A","B","C"]]
+FAIL candidate reduce home-undo focus {"tag":"FLT-SEMANTICS","label":null,"text":"Reorder A"}
+{
+  target: 'candidate',
+  reducedMotion: 'reduce',
+  states: 5,
+  frames: 14,
+  decoded: 14,
+  checks: 24,
+  failures: [
+    'move focus',
+    'end order',
+    'end callbacks',
+    'end focus',
+    'home order',
+    'home callbacks',
+    'home focus',
+    'home-undo order',
+    'home-undo callbacks',
+    'home-undo focus'
+  ]
+}

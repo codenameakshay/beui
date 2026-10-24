@@ -1,0 +1,13 @@
+node:internal/modules/run_main:111
+    triggerUncaughtException(
+    ^
+
+locator.click: Timeout 30000ms exceeded.
+Call log:
+[2m  - waiting for getByRole('button', { name: 'GPT-5.2', exact: true })[22m
+
+    at /Users/codenameakshay/.t3/worktrees/beui/t3-450031da/docs/proof/v3-parity/agents/round2/favicon_probe.mjs:50:70 {
+  name: 'TimeoutError'
+}
+
+Node.js v26.12.0

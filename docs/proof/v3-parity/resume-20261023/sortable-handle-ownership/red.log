@@ -1,0 +1,135 @@
+Resolving dependencies...
+Downloading packages...
+  equatable 2.1.0 (3.0.0 available)
+  material_color_utilities 0.13.0 (0.13.1 available)
+  test_api 0.7.12 (0.7.15 available)
+  xml 7.0.1 (7.1.0 available)
+Got dependencies!
+4 packages have newer versions incompatible with dependency constraints.
+Try `flutter pub outdated` for more information.
+Resolving dependencies in `./example`...
+Downloading packages...
+Got dependencies in `./example`.
+00:00 +0: loading /Users/codenameakshay/.t3/worktrees/beui/t3-df4b55e2/test/motion/sortable_list_test.dart
+00:00 +0: Enter activates the requested first handle callback
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test:
+Expected: ['first']
+  Actual: ['second']
+   Which: at location [0] is 'second' instead of 'first'
+
+When the exception was thrown, this was the stack:
+#4      _ownershipMain.<anonymous closure> (file:///Users/codenameakshay/.t3/worktrees/beui/t3-df4b55e2/test/motion/sortable_list_test.dart:660:3)
+<asynchronous suspension>
+#5      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#6      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+This was caught by the test expectation on the following line:
+  file:///Users/codenameakshay/.t3/worktrees/beui/t3-df4b55e2/test/motion/sortable_list_test.dart line 660
+The test description was:
+  Enter activates the requested first handle callback
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:00 +0 -1: Enter activates the requested first handle callback [E]
+  Test failed. See exception logs above.
+  The test description was: Enter activates the requested first handle callback
+  
+00:00 +0 -1: two enabled handles preserve independent _ownershipFocus ownership
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test:
+Expected: <Instance of 'Text'> with `focused handle`: 'A-first'
+  Actual: Text:<Text("A-second")>
+   Which: has `focused handle` with value 'A-second' which is different.
+          Expected: A-first
+            Actual: A-second
+                      ^
+           Differ at offset 2
+
+When the exception was thrown, this was the stack:
+#4      _ownershipMain.<anonymous closure> (file:///Users/codenameakshay/.t3/worktrees/beui/t3-df4b55e2/test/motion/sortable_list_test.dart:668:3)
+<asynchronous suspension>
+#5      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#6      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+This was caught by the test expectation on the following line:
+  file:///Users/codenameakshay/.t3/worktrees/beui/t3-df4b55e2/test/motion/sortable_list_test.dart line 668
+The test description was:
+  two enabled handles preserve independent _ownershipFocus ownership
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:00 +0 -2: two enabled handles preserve independent _ownershipFocus ownership [E]
+  Test failed. See exception logs above.
+  The test description was: two enabled handles preserve independent _ownershipFocus ownership
+  
+00:00 +0 -2: disabled second handle does not disable first handle
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test:
+Expected: <1>
+  Actual: <0>
+
+When the exception was thrown, this was the stack:
+#4      _ownershipMain.<anonymous closure> (file:///Users/codenameakshay/.t3/worktrees/beui/t3-df4b55e2/test/motion/sortable_list_test.dart:676:3)
+<asynchronous suspension>
+#5      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#6      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+This was caught by the test expectation on the following line:
+  file:///Users/codenameakshay/.t3/worktrees/beui/t3-df4b55e2/test/motion/sortable_list_test.dart line 676
+The test description was:
+  disabled second handle does not disable first handle
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:00 +0 -3: disabled second handle does not disable first handle [E]
+  Test failed. See exception logs above.
+  The test description was: disabled second handle does not disable first handle
+  
+00:00 +0 -3: removing second handle leaves first usable
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test:
+Expected: <1>
+  Actual: <0>
+
+When the exception was thrown, this was the stack:
+#4      _ownershipMain.<anonymous closure> (file:///Users/codenameakshay/.t3/worktrees/beui/t3-df4b55e2/test/motion/sortable_list_test.dart:686:3)
+<asynchronous suspension>
+#5      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#6      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+This was caught by the test expectation on the following line:
+  file:///Users/codenameakshay/.t3/worktrees/beui/t3-df4b55e2/test/motion/sortable_list_test.dart line 686
+The test description was:
+  removing second handle leaves first usable
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:00 +0 -4: removing second handle leaves first usable [E]
+  Test failed. See exception logs above.
+  The test description was: removing second handle leaves first usable
+  
+00:00 +0 -4: key remount keeps replacement handle usable
+00:00 +1 -4: membership removes focused handle and reintroduces fresh usable handle
+00:00 +2 -4: disabled sole handle is not chosen by Undo
+00:00 +3 -4: pointer drag reorders from the explicit handle
+00:00 +4 -4: hovering the handle paints the muted background
+00:00 +5 -4: disabled handles cannot move items
+00:01 +6 -4: reparent retains handle ownership and never replays stale focus
+00:01 +7 -4: removed and reintroduced handle does not reclaim external focus
+00:01 +8 -4: Undo never focuses a disabled handle
+00:01 +9 -4: Some tests failed.
+
+Failing tests:
+  /Users/codenameakshay/.t3/worktrees/beui/t3-df4b55e2/test/motion/sortable_list_test.dart: Enter activates the requested first handle callback
+  /Users/codenameakshay/.t3/worktrees/beui/t3-df4b55e2/test/motion/sortable_list_test.dart: disabled second handle does not disable first handle
+  /Users/codenameakshay/.t3/worktrees/beui/t3-df4b55e2/test/motion/sortable_list_test.dart: removing second handle leaves first usable
+  /Users/codenameakshay/.t3/worktrees/beui/t3-df4b55e2/test/motion/sortable_list_test.dart: two enabled handles preserve independent _ownershipFocus ownership

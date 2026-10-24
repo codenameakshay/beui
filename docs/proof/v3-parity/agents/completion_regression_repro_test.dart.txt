@@ -1,0 +1,33 @@
+import 'package:beui/beui.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_test/flutter_test.dart';
+
+import '../support.dart';
+
+void main() {
+  testWidgets('completion flush updates the ancestor live region after build', (
+    tester,
+  ) async {
+    final handle = tester.ensureSemantics();
+    Widget app(BeuiStreamingResponseStatus status) => beuiTestApp(
+      BeuiMessageScroller(
+        child: BeuiStreamingResponse(
+          status: status,
+          announceText: 'A complete answer without punctuation',
+          showActions: false,
+          child: const Text('A complete answer without punctuation'),
+        ),
+      ),
+    );
+    await tester.pumpWidget(app(BeuiStreamingResponseStatus.streaming));
+    await tester.pumpWidget(app(BeuiStreamingResponseStatus.complete));
+    await tester.pump();
+    expect(tester.takeException(), isNull);
+    expect(
+      find.bySemanticsLabel('A complete answer without punctuation'),
+      findsWidgets,
+    );
+    handle.dispose();
+    await tester.pumpWidget(const SizedBox.shrink());
+  });
+}

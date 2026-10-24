@@ -1,0 +1,16 @@
+source no-preference 24 []
+FAIL final3 source reduce sequence completed "Error: ENOSPC: no space left on device, open '/tmp/beui-collapsible-lifecycle/final3/source-reduce/hidden-growth.png'"
+source reduce 16 [ 'sequence completed' ]
+FAIL final3 candidate no-preference sequence completed "Error: ENOSPC: no space left on device, open '/tmp/beui-collapsible-lifecycle/final3/candidate-no-preference/grown.png'"
+node:internal/modules/run_main:111
+    triggerUncaughtException(
+    ^
+
+[Error: ENOSPC: no space left on device, open '/tmp/beui-collapsible-lifecycle/final3/candidate-no-preference/frames.ffconcat'] {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'open',
+  path: '/tmp/beui-collapsible-lifecycle/final3/candidate-no-preference/frames.ffconcat'
+}
+
+Node.js v26.12.1

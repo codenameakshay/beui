@@ -1,0 +1,18 @@
+00:00 +0: loading /Users/codenameakshay/.t3/worktrees/beui/t3-5c0570f2/test/motion/card_folder_test.dart
+00:00 +0: pointer activation transfers keyboard control to the folder
+00:00 +1: folder focus paints the source two-pixel ring beyond a four-pixel gap
+00:00 +2: held card press leaves pocket and action stationary, reduce=false
+00:00 +3: privacy uses the shared tooltip on hover and keyboard, reduce=false
+00:00 +4: held card press leaves pocket and action stationary, reduce=true
+00:00 +5: privacy uses the shared tooltip on hover and keyboard, reduce=true
+00:00 +6: keyboard opens and closes the folder before privacy control
+00:01 +7: closed rest state masks details and retains last four
+00:01 +8: folder tap reports open state
+00:01 +9: details toggle reveals number and CVV
+00:01 +10: closed eye toggle reveals CVV and keeps expiry static
+00:01 +11: details toggle is active while the folder is closed
+00:01 +12: CVV reveal retains outgoing glyphs and rolls incoming glyphs
+00:01 +13: action fires without toggling the folder
+00:01 +14: disabled folder ignores tap and detail toggle
+00:01 +15: reduced motion does not lift the card
+00:01 +16: All tests passed!

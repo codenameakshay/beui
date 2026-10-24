@@ -1,0 +1,48 @@
+[
+  {
+    "name": "idle",
+    "atMs": 1731.366625,
+    "aria": "- group \"Capture stage width 752 height 1000 reduced true\":\n  - textbox \"Prompt\":\n    - /placeholder: Ask the agent to do something…\n    - text: Review the current implementation and suggest the next improvement.\n  - button \"Add to prompt\":\n    - button\n  - button \"GPT-5.2\"\n  - button \"Send prompt\":\n    - button"
+  },
+  {
+    "action": "submit source prompt through composer",
+    "beforeMs": 1735.666917,
+    "afterMs": 4806.476042
+  },
+  {
+    "composerBeforeSubmit": {
+      "tag": "TEXTAREA",
+      "value": "Review the current implementation and suggest the next improvement."
+    },
+    "editors": [
+      {
+        "tag": "TEXTAREA",
+        "parent": "FLT-SEMANTICS",
+        "value": "Review the current implementation and suggest the next improvement.",
+        "active": true,
+        "rect": {
+          "x": 441,
+          "y": 442,
+          "width": 564,
+          "height": 54,
+          "top": 442,
+          "right": 1005,
+          "bottom": 496,
+          "left": 441
+        }
+      }
+    ],
+    "atMs": 4804.933958
+  },
+  {
+    "name": "loading send becomes stop",
+    "atMs": 4814.617,
+    "expected": "Stop generating",
+    "aria": "- group \"Capture stage width 752 height 1000 reduced true\":\n  - textbox \"Prompt\":\n    - /placeholder: Ask the agent to do something…\n  - button \"Add to prompt\":\n    - button\n  - button \"GPT-5.2\"\n  - button \"Send prompt\":\n    - button"
+  },
+  {
+    "failure": "AssertionError [ERR_ASSERTION]: Missing Stop generating in loading send becomes stop",
+    "atMs": 4814.831458000001,
+    "aria": "- group \"Capture stage width 752 height 1000 reduced true\":\n  - textbox \"Prompt\":\n    - /placeholder: Ask the agent to do something…\n  - button \"Add to prompt\":\n    - button\n  - button \"GPT-5.2\"\n  - button \"Send prompt\":\n    - button"
+  }
+]

@@ -28,10 +28,8 @@ import '_engine.dart';
 ///
 /// ## Narrow windows
 ///
-/// Below [sidebarBreakpoint] the sidebar leaves the flow. The source
-/// hardcodes a 272px rail with no responsive behaviour at all, which on a
-/// 300px window left the conversation 28px — narrow enough to trip the message
-/// bubble's own minimum-width assert. Below the breakpoint the sidebar either
+/// Below [sidebarBreakpoint] the sidebar leaves the flow, matching the source
+/// shell's 600px minimum docked width. Below the breakpoint the sidebar either
 /// hides (the default) or slides in over the transcript when [sidebarOpen] is
 /// true, dismissible through [onSidebarDismiss].
 ///
@@ -70,9 +68,9 @@ class BeuiChatApp extends StatelessWidget {
 
   /// Width below which the sidebar collapses out of the flow.
   ///
-  /// 768 is the conventional tablet breakpoint and leaves ~496px for the
-  /// conversation at the default [kBeuiChatAppSidebarWidth].
-  static const double kBeuiChatAppSidebarBreakpoint = 768;
+  /// Source `MIN_DOCKED_WIDTH` is 600px, independent of the viewport's mobile
+  /// breakpoint. A 752px documentation stage still shows its docked sidebar.
+  static const double kBeuiChatAppSidebarBreakpoint = 600;
 
   /// Main conversation region (source `AnimatedSidebarInset` body).
   ///
@@ -218,8 +216,9 @@ class BeuiChatApp extends StatelessWidget {
         // becomes an overlay drawer over it when asked for.
         final open = sidebarOpen ?? false;
         return Stack(
+          fit: StackFit.expand,
           children: [
-            Positioned.fill(child: mainColumn),
+            mainColumn,
             if (sidebarOpen != null)
               _SidebarDrawer(
                 open: open,

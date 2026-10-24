@@ -430,6 +430,7 @@ List<BeuiSyntaxToken> _highlightGeneric(
   const keywords = beuiTsKeywords;
   final out = <BeuiSyntaxToken>[];
   var i = 0;
+  String? previousIdentifier;
   while (i < line.length) {
     final ch = line[i];
 
@@ -470,21 +471,47 @@ List<BeuiSyntaxToken> _highlightGeneric(
       final word = line.substring(i, end);
       final color = keywords.contains(word)
           ? palette.keyword
+          : previousIdentifier == 'const'
+          ? _constantBindingColor(line, end, palette)
           : _callsAhead(line, end)
           ? palette.entity
           : palette.base;
       out.add(BeuiSyntaxToken(word, color));
+      previousIdentifier = word;
       i = end;
       continue;
     }
 
     // Punctuation / whitespace.
+    final assignment = ch == '=' || (ch == '>' && i > 0 && line[i - 1] == '=');
     out.add(
-      BeuiSyntaxToken(ch, ch.trim().isEmpty ? palette.base : palette.punct),
+      BeuiSyntaxToken(
+        ch,
+        assignment
+            ? palette.keyword
+            : ch.trim().isEmpty
+            ? palette.base
+            : palette.punct,
+      ),
     );
+    if (ch.trim().isNotEmpty) previousIdentifier = null;
     i++;
   }
   return out;
+}
+
+final _arrowInitializer = RegExp(
+  r'^=\s*(?:async\s+)?(?:[A-Za-z_$][\w$]*|\([^)]*\))\s*=>',
+);
+
+Color _constantBindingColor(String line, int end, BeuiSyntaxPalette palette) {
+  final initializer = line.substring(end).trimLeft();
+  if (!initializer.startsWith('=') || initializer.startsWith('==')) {
+    return palette.base;
+  }
+  return _arrowInitializer.hasMatch(initializer)
+      ? palette.entity
+      : palette.number;
 }
 
 /// True when the next non-space character after [end] opens a call — the

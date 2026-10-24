@@ -1,0 +1,28 @@
+FAIL candidate no-preference accept sequence completed "Error: Tab target unreachable {\"text\":\"Add time\\nAdd time range to Sunday\",\"label\":null,\"role\":\"button\",\"tag\":\"FLT-SEMANTICS\"}"
+{
+  target: 'candidate',
+  reducedMotion: 'no-preference',
+  owner: 'accept',
+  failures: [ 'sequence completed' ]
+}
+FAIL candidate no-preference reject sequence completed "Error: Tab target unreachable {\"text\":\"Add time\\nAdd time range to Sunday\",\"label\":null,\"role\":\"button\",\"tag\":\"FLT-SEMANTICS\"}"
+{
+  target: 'candidate',
+  reducedMotion: 'no-preference',
+  owner: 'reject',
+  failures: [ 'sequence completed' ]
+}
+FAIL candidate reduce accept sequence completed "Error: Tab target unreachable {\"text\":\"Add time\\nAdd time range to Sunday\",\"label\":null,\"role\":\"button\",\"tag\":\"FLT-SEMANTICS\"}"
+{
+  target: 'candidate',
+  reducedMotion: 'reduce',
+  owner: 'accept',
+  failures: [ 'sequence completed' ]
+}
+FAIL candidate reduce reject sequence completed "Error: Tab target unreachable {\"text\":\"Add time\\nAdd time range to Sunday\",\"label\":null,\"role\":\"button\",\"tag\":\"FLT-SEMANTICS\"}"
+{
+  target: 'candidate',
+  reducedMotion: 'reduce',
+  owner: 'reject',
+  failures: [ 'sequence completed' ]
+}

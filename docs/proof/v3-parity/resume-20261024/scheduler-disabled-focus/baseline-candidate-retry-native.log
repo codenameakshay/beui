@@ -1,0 +1,36 @@
+FAIL candidate no-preference accept disabled Enter emits no proposal {"value":{"mon":{"enabled":true,"ranges":[{"id":"mon-fixed","start":"08:30","end":"16:30"}]},"tue":{"enabled":false,"ranges":[{"id":"tue-fixed","start":"10:00","end":"12:00"}]},"wed":{"enabled":true,"ranges":[{"id":"wed-fixed","start":"10:00","end":"12:00"}]},"thu":{"enabled":true,"ranges":[{"id":"thu-fixed","start":"10:00","end":"12:00"}]},"fri":{"enabled":false,"ranges":[]},"sat":{"enabled":false,"ranges":[{"id":"sat-fixed","start":"10:00","end":"12:00"}]},"sun":{"enabled":true,"ranges":[{"id":"sun-fixed","start":"10:00","end":"12:00"}]}},"calls":[{"mon":{"enabled":true,"ranges":[{"id":"mon-fixed","start":"08:30","end":"16:30"}]},"tue":{"enabled":false,"ranges":[{"id":"tue-fixed","start":"10:00","end":"12:00"}]},"wed":{"enabled":true,"ranges":[{"id":"wed-fixed","start":"10:00","end":"12:00"}]},"thu":{"enabled":true,"ranges":[{"id":"thu-fixed","start":"10:00","end":"12:00"}]},"fri":{"enabled":false,"ranges":[]},"sat":{"enabled":false,"ranges":[{"id":"sat-fixed","start":"10:00","end":"12:00"}]},"sun":{"enabled":true,"ranges":[{"id":"sun-fixed","start":"10:00","end":"12:00"}]}}],"reject":false}
+FAIL candidate no-preference accept disabled Enter preserves Friday {"enabled":false,"ranges":[]}
+{
+  target: 'candidate',
+  reducedMotion: 'no-preference',
+  owner: 'accept',
+  failures: [
+    'disabled Enter emits no proposal',
+    'disabled Enter preserves Friday'
+  ]
+}
+FAIL candidate no-preference reject disabled Enter emits no proposal {"value":{"mon":{"enabled":true,"ranges":[{"id":"mon-fixed","start":"08:30","end":"16:30"}]},"tue":{"enabled":false,"ranges":[{"id":"tue-fixed","start":"10:00","end":"12:00"}]},"wed":{"enabled":true,"ranges":[{"id":"wed-fixed","start":"10:00","end":"12:00"}]},"thu":{"enabled":true,"ranges":[{"id":"thu-fixed","start":"10:00","end":"12:00"}]},"fri":{"enabled":true,"ranges":[{"id":"fri-fixed","start":"10:00","end":"12:00"}]},"sat":{"enabled":false,"ranges":[{"id":"sat-fixed","start":"10:00","end":"12:00"}]},"sun":{"enabled":true,"ranges":[{"id":"sun-fixed","start":"10:00","end":"12:00"}]}},"calls":[{"mon":{"enabled":true,"ranges":[{"id":"mon-fixed","start":"08:30","end":"16:30"}]},"tue":{"enabled":false,"ranges":[{"id":"tue-fixed","start":"10:00","end":"12:00"}]},"wed":{"enabled":true,"ranges":[{"id":"wed-fixed","start":"10:00","end":"12:00"}]},"thu":{"enabled":true,"ranges":[{"id":"thu-fixed","start":"10:00","end":"12:00"}]},"fri":{"enabled":false,"ranges":[]},"sat":{"enabled":false,"ranges":[{"id":"sat-fixed","start":"10:00","end":"12:00"}]},"sun":{"enabled":true,"ranges":[{"id":"sun-fixed","start":"10:00","end":"12:00"}]}}],"reject":true}
+{
+  target: 'candidate',
+  reducedMotion: 'no-preference',
+  owner: 'reject',
+  failures: [ 'disabled Enter emits no proposal' ]
+}
+FAIL candidate reduce accept disabled Enter emits no proposal {"value":{"mon":{"enabled":true,"ranges":[{"id":"mon-fixed","start":"08:30","end":"16:30"}]},"tue":{"enabled":false,"ranges":[{"id":"tue-fixed","start":"10:00","end":"12:00"}]},"wed":{"enabled":true,"ranges":[{"id":"wed-fixed","start":"10:00","end":"12:00"}]},"thu":{"enabled":true,"ranges":[{"id":"thu-fixed","start":"10:00","end":"12:00"}]},"fri":{"enabled":false,"ranges":[]},"sat":{"enabled":false,"ranges":[{"id":"sat-fixed","start":"10:00","end":"12:00"}]},"sun":{"enabled":true,"ranges":[{"id":"sun-fixed","start":"10:00","end":"12:00"}]}},"calls":[{"mon":{"enabled":true,"ranges":[{"id":"mon-fixed","start":"08:30","end":"16:30"}]},"tue":{"enabled":false,"ranges":[{"id":"tue-fixed","start":"10:00","end":"12:00"}]},"wed":{"enabled":true,"ranges":[{"id":"wed-fixed","start":"10:00","end":"12:00"}]},"thu":{"enabled":true,"ranges":[{"id":"thu-fixed","start":"10:00","end":"12:00"}]},"fri":{"enabled":false,"ranges":[]},"sat":{"enabled":false,"ranges":[{"id":"sat-fixed","start":"10:00","end":"12:00"}]},"sun":{"enabled":true,"ranges":[{"id":"sun-fixed","start":"10:00","end":"12:00"}]}}],"reject":false}
+FAIL candidate reduce accept disabled Enter preserves Friday {"enabled":false,"ranges":[]}
+{
+  target: 'candidate',
+  reducedMotion: 'reduce',
+  owner: 'accept',
+  failures: [
+    'disabled Enter emits no proposal',
+    'disabled Enter preserves Friday'
+  ]
+}
+FAIL candidate reduce reject disabled Enter emits no proposal {"value":{"mon":{"enabled":true,"ranges":[{"id":"mon-fixed","start":"08:30","end":"16:30"}]},"tue":{"enabled":false,"ranges":[{"id":"tue-fixed","start":"10:00","end":"12:00"}]},"wed":{"enabled":true,"ranges":[{"id":"wed-fixed","start":"10:00","end":"12:00"}]},"thu":{"enabled":true,"ranges":[{"id":"thu-fixed","start":"10:00","end":"12:00"}]},"fri":{"enabled":true,"ranges":[{"id":"fri-fixed","start":"10:00","end":"12:00"}]},"sat":{"enabled":false,"ranges":[{"id":"sat-fixed","start":"10:00","end":"12:00"}]},"sun":{"enabled":true,"ranges":[{"id":"sun-fixed","start":"10:00","end":"12:00"}]}},"calls":[{"mon":{"enabled":true,"ranges":[{"id":"mon-fixed","start":"08:30","end":"16:30"}]},"tue":{"enabled":false,"ranges":[{"id":"tue-fixed","start":"10:00","end":"12:00"}]},"wed":{"enabled":true,"ranges":[{"id":"wed-fixed","start":"10:00","end":"12:00"}]},"thu":{"enabled":true,"ranges":[{"id":"thu-fixed","start":"10:00","end":"12:00"}]},"fri":{"enabled":false,"ranges":[]},"sat":{"enabled":false,"ranges":[{"id":"sat-fixed","start":"10:00","end":"12:00"}]},"sun":{"enabled":true,"ranges":[{"id":"sun-fixed","start":"10:00","end":"12:00"}]}}],"reject":true}
+{
+  target: 'candidate',
+  reducedMotion: 'reduce',
+  owner: 'reject',
+  failures: [ 'disabled Enter emits no proposal' ]
+}

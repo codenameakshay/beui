@@ -1,0 +1,62 @@
+{
+  "url": "http://127.0.0.1:8108/?slug=prediction-market-card&theme=dark&previewWidth=592&captureProbe=1",
+  "viewport": {
+    "width": 1280,
+    "height": 1800
+  },
+  "theme": "dark",
+  "reducedMotion": "no-preference",
+  "reference": false,
+  "requireFlutterProbe": true,
+  "servedJs": {
+    "url": "http://127.0.0.1:8108/main.dart.js",
+    "sha256": "e3bf35755216290ce0691d866fbddd66cb31529ae7476fb715e56ed7ba2402ee",
+    "revision": "997292260409b270fed1a8cec35ac1b1e05e3778 + round2 dirty diff"
+  },
+  "backend": "screenshots",
+  "loadWaitMs": 3500,
+  "finalHoldMs": 900,
+  "targets": {
+    "0": {
+      "x": 999.9013977050781,
+      "y": 363,
+      "measuredBounds": {
+        "role": "button",
+        "label": null,
+        "text": "Update odds",
+        "x": 951.3154907226562,
+        "y": 347,
+        "width": 97.17181396484375,
+        "height": 32
+      }
+    },
+    "outside": {
+      "x": 1100,
+      "y": 100
+    }
+  },
+  "provenance": {
+    "batch": "after-svg-final",
+    "expectedJsSha256": "e3bf35755216290ce0691d866fbddd66cb31529ae7476fb715e56ed7ba2402ee",
+    "tool": "/Users/codenameakshay/.t3/worktrees/beui/t3-655688e6/tool/parity_capture.mjs",
+    "toolHash": "47995b4625b91fdec1c2f8d56b193a1049fa1dc22d97ce881987189a20658e48",
+    "source": "a76e57c9bbc2837e96420b2610e9c82a3271bb05",
+    "liveDeploymentRevision": null,
+    "baselineWrapperApplied": false,
+    "candidatePreviewInnerWidth": 592,
+    "wrapper": "d831524 source background and opt-in capture probe. Old baseline unchanged.",
+    "label": "Round2 observation, no native 60 FPS or exact-parity claim"
+  },
+  "events": [
+    {
+      "atMs": 600,
+      "type": "click",
+      "target": "0"
+    },
+    {
+      "atMs": 1600,
+      "type": "move",
+      "target": "outside"
+    }
+  ]
+}

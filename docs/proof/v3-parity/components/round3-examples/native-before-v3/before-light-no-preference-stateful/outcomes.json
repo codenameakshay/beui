@@ -1,0 +1,1370 @@
+{
+  "example": {
+    "key": "stateful",
+    "id": "example/button-stateful/stateful",
+    "preview": "button-stateful",
+    "family": "button",
+    "seed": "Save changes, Submit",
+    "flows": [
+      "Saving",
+      "Saved",
+      "idle",
+      "Submitting",
+      "Failed",
+      "busy-lockout",
+      "keyboard",
+      "reduced-motion"
+    ]
+  },
+  "origin": "before",
+  "theme": "light",
+  "motion": "no-preference",
+  "checks": [
+    {
+      "name": "Save changes loading",
+      "actual": false,
+      "expected": true,
+      "pass": false
+    },
+    {
+      "name": "Save changes busy lockout",
+      "actual": false,
+      "expected": true,
+      "pass": false
+    },
+    {
+      "name": "Save changes result",
+      "actual": false,
+      "expected": true,
+      "pass": false
+    },
+    {
+      "name": "Save changes idle",
+      "actual": true,
+      "expected": true,
+      "pass": true
+    },
+    {
+      "name": "Submit loading",
+      "actual": false,
+      "expected": true,
+      "pass": false
+    },
+    {
+      "name": "Submit busy lockout",
+      "actual": false,
+      "expected": true,
+      "pass": false
+    },
+    {
+      "name": "Submit result",
+      "actual": false,
+      "expected": true,
+      "pass": false
+    },
+    {
+      "name": "Submit idle",
+      "actual": true,
+      "expected": true,
+      "pass": true
+    }
+  ],
+  "observations": [
+    {
+      "label": "rest",
+      "atMs": 1.8178750000006403,
+      "observed": {
+        "url": "http://127.0.0.1:18120/before/?example=stateful&theme=light&captureProbe=1",
+        "reduce": false,
+        "probe": {
+          "disableAnimations": false,
+          "platformDisableAnimations": false,
+          "motionOverride": null,
+          "backgroundArgb": 4294769916,
+          "constraints": {
+            "minWidth": 0,
+            "maxWidth": 592,
+            "minHeight": 0,
+            "maxHeight": null
+          },
+          "rect": {
+            "x": 344,
+            "y": 134,
+            "width": 592,
+            "height": 92
+          }
+        },
+        "stage": null,
+        "controls": [
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": null,
+            "name": "Save changes\nSubmit",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1000,
+              "top": 0,
+              "right": 1280,
+              "bottom": 1000,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": null,
+            "name": "Save changes\nSubmit",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1000,
+              "top": 0,
+              "right": 1280,
+              "bottom": 1000,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": null,
+            "name": "Save changes\nSubmit",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1000,
+              "top": 0,
+              "right": 1280,
+              "bottom": 1000,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": null,
+            "name": "Save changes\nSubmit",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1000,
+              "top": 0,
+              "right": 1280,
+              "bottom": 1000,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "group",
+            "name": "Save changes\nSubmit",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 360,
+              "top": 0,
+              "right": 1280,
+              "bottom": 360,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "button",
+            "name": "Save changes",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 562.3181762695312,
+              "y": 134,
+              "width": 155.359375,
+              "height": 40,
+              "top": 134,
+              "right": 717.6775512695312,
+              "bottom": 174,
+              "left": 562.3181762695312
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "button",
+            "name": "Submit",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 595.662109375,
+              "y": 186,
+              "width": 88.671875,
+              "height": 40,
+              "top": 186,
+              "right": 684.333984375,
+              "bottom": 226,
+              "left": 595.662109375
+            }
+          }
+        ]
+      }
+    },
+    {
+      "label": "success-loading",
+      "atMs": 419.9974170000023,
+      "observed": {
+        "url": "http://127.0.0.1:18120/before/?example=stateful&theme=light&captureProbe=1",
+        "reduce": false,
+        "probe": {
+          "disableAnimations": false,
+          "platformDisableAnimations": false,
+          "motionOverride": null,
+          "backgroundArgb": 4294769916,
+          "constraints": {
+            "minWidth": 0,
+            "maxWidth": 592,
+            "minHeight": 0,
+            "maxHeight": null
+          },
+          "rect": {
+            "x": 344,
+            "y": 134,
+            "width": 592,
+            "height": 92
+          }
+        },
+        "stage": null,
+        "controls": [
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": null,
+            "name": "L o a d i n g\nSubmit",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1000,
+              "top": 0,
+              "right": 1280,
+              "bottom": 1000,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": null,
+            "name": "L o a d i n g\nSubmit",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1000,
+              "top": 0,
+              "right": 1280,
+              "bottom": 1000,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": null,
+            "name": "L o a d i n g\nSubmit",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1000,
+              "top": 0,
+              "right": 1280,
+              "bottom": 1000,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": null,
+            "name": "L o a d i n g\nSubmit",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1000,
+              "top": 0,
+              "right": 1280,
+              "bottom": 1000,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "group",
+            "name": "L o a d i n g\nSubmit",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 360,
+              "top": 0,
+              "right": 1280,
+              "bottom": 360,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "button",
+            "name": "L o a d i n g",
+            "disabled": true,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 581.4141235351562,
+              "y": 134,
+              "width": 117.15625,
+              "height": 40,
+              "top": 134,
+              "right": 698.5703735351562,
+              "bottom": 174,
+              "left": 581.4141235351562
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "button",
+            "name": "Submit",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 595.662109375,
+              "y": 186,
+              "width": 88.671875,
+              "height": 40,
+              "top": 186,
+              "right": 684.333984375,
+              "bottom": 226,
+              "left": 595.662109375
+            }
+          }
+        ]
+      }
+    },
+    {
+      "label": "success-result",
+      "atMs": 1717.515041999999,
+      "observed": {
+        "url": "http://127.0.0.1:18120/before/?example=stateful&theme=light&captureProbe=1",
+        "reduce": false,
+        "probe": {
+          "disableAnimations": false,
+          "platformDisableAnimations": false,
+          "motionOverride": null,
+          "backgroundArgb": 4294769916,
+          "constraints": {
+            "minWidth": 0,
+            "maxWidth": 592,
+            "minHeight": 0,
+            "maxHeight": null
+          },
+          "rect": {
+            "x": 344,
+            "y": 134,
+            "width": 592,
+            "height": 92
+          }
+        },
+        "stage": null,
+        "controls": [
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": null,
+            "name": "Done\nSubmit",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1000,
+              "top": 0,
+              "right": 1280,
+              "bottom": 1000,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": null,
+            "name": "Done\nSubmit",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1000,
+              "top": 0,
+              "right": 1280,
+              "bottom": 1000,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": null,
+            "name": "Done\nSubmit",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1000,
+              "top": 0,
+              "right": 1280,
+              "bottom": 1000,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": null,
+            "name": "Done\nSubmit",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1000,
+              "top": 0,
+              "right": 1280,
+              "bottom": 1000,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "group",
+            "name": "Done\nSubmit",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 360,
+              "top": 0,
+              "right": 1280,
+              "bottom": 360,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "button",
+            "name": "Done",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 590.8773193359375,
+              "y": 134,
+              "width": 98.234375,
+              "height": 40,
+              "top": 134,
+              "right": 689.1116943359375,
+              "bottom": 174,
+              "left": 590.8773193359375
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "button",
+            "name": "Submit",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 595.662109375,
+              "y": 186,
+              "width": 88.671875,
+              "height": 40,
+              "top": 186,
+              "right": 684.333984375,
+              "bottom": 226,
+              "left": 595.662109375
+            }
+          }
+        ]
+      }
+    },
+    {
+      "label": "success-idle",
+      "atMs": 3566.4625830000004,
+      "observed": {
+        "url": "http://127.0.0.1:18120/before/?example=stateful&theme=light&captureProbe=1",
+        "reduce": false,
+        "probe": {
+          "disableAnimations": false,
+          "platformDisableAnimations": false,
+          "motionOverride": null,
+          "backgroundArgb": 4294769916,
+          "constraints": {
+            "minWidth": 0,
+            "maxWidth": 592,
+            "minHeight": 0,
+            "maxHeight": null
+          },
+          "rect": {
+            "x": 344,
+            "y": 134,
+            "width": 592,
+            "height": 92
+          }
+        },
+        "stage": null,
+        "controls": [
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": null,
+            "name": "Save changes\nSubmit",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1000,
+              "top": 0,
+              "right": 1280,
+              "bottom": 1000,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": null,
+            "name": "Save changes\nSubmit",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1000,
+              "top": 0,
+              "right": 1280,
+              "bottom": 1000,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": null,
+            "name": "Save changes\nSubmit",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1000,
+              "top": 0,
+              "right": 1280,
+              "bottom": 1000,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": null,
+            "name": "Save changes\nSubmit",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1000,
+              "top": 0,
+              "right": 1280,
+              "bottom": 1000,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "group",
+            "name": "Save changes\nSubmit",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 360,
+              "top": 0,
+              "right": 1280,
+              "bottom": 360,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "button",
+            "name": "Save changes",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 562.3181762695312,
+              "y": 134,
+              "width": 155.359375,
+              "height": 40,
+              "top": 134,
+              "right": 717.6775512695312,
+              "bottom": 174,
+              "left": 562.3181762695312
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "button",
+            "name": "Submit",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 595.662109375,
+              "y": 186,
+              "width": 88.671875,
+              "height": 40,
+              "top": 186,
+              "right": 684.333984375,
+              "bottom": 226,
+              "left": 595.662109375
+            }
+          }
+        ]
+      }
+    },
+    {
+      "label": "error-loading",
+      "atMs": 3934.7398749999993,
+      "observed": {
+        "url": "http://127.0.0.1:18120/before/?example=stateful&theme=light&captureProbe=1",
+        "reduce": false,
+        "probe": {
+          "disableAnimations": false,
+          "platformDisableAnimations": false,
+          "motionOverride": null,
+          "backgroundArgb": 4294769916,
+          "constraints": {
+            "minWidth": 0,
+            "maxWidth": 592,
+            "minHeight": 0,
+            "maxHeight": null
+          },
+          "rect": {
+            "x": 344,
+            "y": 134,
+            "width": 592,
+            "height": 92
+          }
+        },
+        "stage": null,
+        "controls": [
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": null,
+            "name": "Save changes\nSubmit",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1000,
+              "top": 0,
+              "right": 1280,
+              "bottom": 1000,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": null,
+            "name": "Save changes\nSubmit",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1000,
+              "top": 0,
+              "right": 1280,
+              "bottom": 1000,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": null,
+            "name": "Save changes\nSubmit",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1000,
+              "top": 0,
+              "right": 1280,
+              "bottom": 1000,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": null,
+            "name": "Save changes\nSubmit",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1000,
+              "top": 0,
+              "right": 1280,
+              "bottom": 1000,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "group",
+            "name": "Save changes\nSubmit",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 360,
+              "top": 0,
+              "right": 1280,
+              "bottom": 360,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "button",
+            "name": "Save changes",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 562.3181762695312,
+              "y": 134,
+              "width": 155.359375,
+              "height": 40,
+              "top": 134,
+              "right": 717.6775512695312,
+              "bottom": 174,
+              "left": 562.3181762695312
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "button",
+            "name": "Submit",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 595.662109375,
+              "y": 186,
+              "width": 88.671875,
+              "height": 40,
+              "top": 186,
+              "right": 684.333984375,
+              "bottom": 226,
+              "left": 595.662109375
+            }
+          }
+        ]
+      }
+    },
+    {
+      "label": "error-result",
+      "atMs": 5237.8192500000005,
+      "observed": {
+        "url": "http://127.0.0.1:18120/before/?example=stateful&theme=light&captureProbe=1",
+        "reduce": false,
+        "probe": {
+          "disableAnimations": false,
+          "platformDisableAnimations": false,
+          "motionOverride": null,
+          "backgroundArgb": 4294769916,
+          "constraints": {
+            "minWidth": 0,
+            "maxWidth": 592,
+            "minHeight": 0,
+            "maxHeight": null
+          },
+          "rect": {
+            "x": 344,
+            "y": 134,
+            "width": 592,
+            "height": 92
+          }
+        },
+        "stage": null,
+        "controls": [
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": null,
+            "name": "Save changes\nSubmit",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1000,
+              "top": 0,
+              "right": 1280,
+              "bottom": 1000,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": null,
+            "name": "Save changes\nSubmit",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1000,
+              "top": 0,
+              "right": 1280,
+              "bottom": 1000,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": null,
+            "name": "Save changes\nSubmit",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1000,
+              "top": 0,
+              "right": 1280,
+              "bottom": 1000,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": null,
+            "name": "Save changes\nSubmit",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1000,
+              "top": 0,
+              "right": 1280,
+              "bottom": 1000,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "group",
+            "name": "Save changes\nSubmit",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 360,
+              "top": 0,
+              "right": 1280,
+              "bottom": 360,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "button",
+            "name": "Save changes",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 562.3181762695312,
+              "y": 134,
+              "width": 155.359375,
+              "height": 40,
+              "top": 134,
+              "right": 717.6775512695312,
+              "bottom": 174,
+              "left": 562.3181762695312
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "button",
+            "name": "Submit",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 595.662109375,
+              "y": 186,
+              "width": 88.671875,
+              "height": 40,
+              "top": 186,
+              "right": 684.333984375,
+              "bottom": 226,
+              "left": 595.662109375
+            }
+          }
+        ]
+      }
+    },
+    {
+      "label": "error-idle",
+      "atMs": 7201.192042000002,
+      "observed": {
+        "url": "http://127.0.0.1:18120/before/?example=stateful&theme=light&captureProbe=1",
+        "reduce": false,
+        "probe": {
+          "disableAnimations": false,
+          "platformDisableAnimations": false,
+          "motionOverride": null,
+          "backgroundArgb": 4294769916,
+          "constraints": {
+            "minWidth": 0,
+            "maxWidth": 592,
+            "minHeight": 0,
+            "maxHeight": null
+          },
+          "rect": {
+            "x": 344,
+            "y": 134,
+            "width": 592,
+            "height": 92
+          }
+        },
+        "stage": null,
+        "controls": [
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": null,
+            "name": "Save changes\nSubmit",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1000,
+              "top": 0,
+              "right": 1280,
+              "bottom": 1000,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": null,
+            "name": "Save changes\nSubmit",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1000,
+              "top": 0,
+              "right": 1280,
+              "bottom": 1000,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": null,
+            "name": "Save changes\nSubmit",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1000,
+              "top": 0,
+              "right": 1280,
+              "bottom": 1000,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": null,
+            "name": "Save changes\nSubmit",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1000,
+              "top": 0,
+              "right": 1280,
+              "bottom": 1000,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "group",
+            "name": "Save changes\nSubmit",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 360,
+              "top": 0,
+              "right": 1280,
+              "bottom": 360,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "button",
+            "name": "Save changes",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 562.3181762695312,
+              "y": 134,
+              "width": 155.359375,
+              "height": 40,
+              "top": 134,
+              "right": 717.6775512695312,
+              "bottom": 174,
+              "left": 562.3181762695312
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "button",
+            "name": "Submit",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 595.662109375,
+              "y": 186,
+              "width": 88.671875,
+              "height": 40,
+              "top": 186,
+              "right": 684.333984375,
+              "bottom": 226,
+              "left": 595.662109375
+            }
+          }
+        ]
+      }
+    },
+    {
+      "label": "keyboard-activation",
+      "atMs": 7685.453500000003,
+      "observed": {
+        "url": "http://127.0.0.1:18120/before/?example=stateful&theme=light&captureProbe=1",
+        "reduce": false,
+        "probe": {
+          "disableAnimations": false,
+          "platformDisableAnimations": false,
+          "motionOverride": null,
+          "backgroundArgb": 4294769916,
+          "constraints": {
+            "minWidth": 0,
+            "maxWidth": 592,
+            "minHeight": 0,
+            "maxHeight": null
+          },
+          "rect": {
+            "x": 344,
+            "y": 134,
+            "width": 592,
+            "height": 92
+          }
+        },
+        "stage": null,
+        "controls": [
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": null,
+            "name": "Save changes\nSubmit",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1000,
+              "top": 0,
+              "right": 1280,
+              "bottom": 1000,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": null,
+            "name": "Save changes\nSubmit",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1000,
+              "top": 0,
+              "right": 1280,
+              "bottom": 1000,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": null,
+            "name": "Save changes\nSubmit",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1000,
+              "top": 0,
+              "right": 1280,
+              "bottom": 1000,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": null,
+            "name": "Save changes\nSubmit",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1000,
+              "top": 0,
+              "right": 1280,
+              "bottom": 1000,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "group",
+            "name": "Save changes\nSubmit",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 360,
+              "top": 0,
+              "right": 1280,
+              "bottom": 360,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "button",
+            "name": "Save changes",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 562.3181762695312,
+              "y": 134,
+              "width": 155.359375,
+              "height": 40,
+              "top": 134,
+              "right": 717.6775512695312,
+              "bottom": 174,
+              "left": 562.3181762695312
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "button",
+            "name": "Submit",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 595.662109375,
+              "y": 186,
+              "width": 88.671875,
+              "height": 40,
+              "top": 186,
+              "right": 684.333984375,
+              "bottom": 226,
+              "left": 595.662109375
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

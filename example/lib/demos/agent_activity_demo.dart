@@ -4,10 +4,54 @@ import 'package:beui/beui.dart';
 import 'package:flutter/material.dart';
 
 import '../explorer/widgets.dart';
+import 'agent_activity_source_examples.dart';
 
 /// Gallery route for [BeuiAgentActivity] — mirrors the source mixed-stream
 /// preview: frames of steps → search → tools, then complete, with Replay.
-Widget agentActivityDemo(BuildContext context) => const _AgentActivityDemo();
+Widget agentActivityDemo(BuildContext context, {String? example}) {
+  final selected = example ?? Uri.base.queryParameters['example'];
+  if (selected == 'api-specimens') return const _AgentActivityDemo();
+  if (selected == 'mixed-activity') return const _MixedPreview();
+  return AgentActivitySourcePreview(
+    example: switch (selected) {
+      'reasoning-steps' => AgentActivityExample.steps,
+      'web-search' => AgentActivityExample.search,
+      'tool-calls' => AgentActivityExample.tools,
+      'agent-trace' => AgentActivityExample.trace,
+      _ => AgentActivityExample.text,
+    },
+  );
+}
+
+class _MixedPreview extends StatefulWidget {
+  const _MixedPreview();
+  @override
+  State<_MixedPreview> createState() => _MixedPreviewState();
+}
+
+class _MixedPreviewState extends State<_MixedPreview> {
+  int _run = 0;
+  @override
+  Widget build(BuildContext context) => Center(
+    child: SizedBox(
+      width: 576,
+      height: 330,
+      child: Stack(
+        children: [
+          Align(
+            alignment: Alignment.topLeft,
+            child: _ActivityRun(key: ValueKey(_run)),
+          ),
+          Positioned(
+            left: 0,
+            bottom: 0,
+            child: ReplayButton(onPressed: () => setState(() => _run++)),
+          ),
+        ],
+      ),
+    ),
+  );
+}
 
 const _activeBrief = BeuiAgentActivityStep(
   id: 'brief',

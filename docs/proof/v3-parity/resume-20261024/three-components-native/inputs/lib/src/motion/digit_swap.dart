@@ -1,0 +1,241 @@
+import 'dart:async';
+
+import 'package:flutter/widgets.dart';
+
+import '../tokens/motion.dart';
+
+/// Direction the next glyph enters from in a [BeuiDigitSwap].
+enum BeuiDigitSwapDirection {
+  /// New glyphs rise from below (source `"up"`).
+  up,
+
+  /// New glyphs drop from above (source `"down"`).
+  down,
+}
+
+/// Fixed-slot digits and mask glyphs that roll on change — the Flutter port of
+/// beUI's `digit-swap`.
+///
+/// Each character sits in its own slot. Digits use a fixed `1ch` width so rolls
+/// never jitter; other glyphs keep their natural width. Changing [value]
+/// (or [animationKey]) rolls only the glyphs that change. Reduced motion
+/// replaces the vertical roll with a short fade.
+///
+/// Screen readers hear the full [value] string, never the rolling columns.
+class BeuiDigitSwap extends StatelessWidget {
+  /// Creates a digit-swap readout for [value].
+  const BeuiDigitSwap({
+    required this.value,
+    this.animationKey,
+    this.direction = BeuiDigitSwapDirection.up,
+    this.duration = const Duration(milliseconds: 180),
+    this.stagger = const Duration(milliseconds: 6),
+    this.suffixLength = 0,
+    this.style,
+    this.glyphStyle,
+    this.suffixStyle,
+    super.key,
+  });
+
+  /// Numeric or masked value rendered in fixed character slots.
+  final Object value;
+
+  /// Replays every glyph when the printed value itself contains unchanged
+  /// characters (source `animationKey`).
+  final Object? animationKey;
+
+  /// Direction the next glyph enters from.
+  final BeuiDigitSwapDirection direction;
+
+  /// Per-glyph transition duration (source default `0.18s`).
+  final Duration duration;
+
+  /// Delay between neighbouring glyphs (source default `0.006s`).
+  final Duration stagger;
+
+  /// Number of final characters that receive [suffixStyle].
+  final int suffixLength;
+
+  /// Base text style. Falls back to the ambient [DefaultTextStyle].
+  final TextStyle? style;
+
+  /// Style applied to every visible glyph.
+  final TextStyle? glyphStyle;
+
+  /// Style applied to the last [suffixLength] characters, on top of [glyphStyle].
+  final TextStyle? suffixStyle;
+
+  @override
+  Widget build(BuildContext context) {
+    final text = value.toString();
+    final characters = text.runes.map(String.fromCharCode).toList();
+    final reduce = MediaQuery.disableAnimationsOf(context);
+    final base = (style ?? DefaultTextStyle.of(context).style).merge(
+      glyphStyle,
+    );
+    final suffixStart = (text.length - suffixLength.clamp(0, text.length))
+        .clamp(0, text.length);
+    final fadeDuration = reduce
+        ? Duration(milliseconds: duration.inMilliseconds.clamp(0, 120))
+        : duration;
+    final enterDy = direction == BeuiDigitSwapDirection.up ? 0.45 : -0.45;
+
+    return Semantics(
+      label: text,
+      excludeSemantics: true,
+      child: DefaultTextStyle(
+        style: base,
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.baseline,
+          textBaseline: TextBaseline.alphabetic,
+          children: [
+            for (var i = 0; i < characters.length; i++)
+              _GlyphSlot(
+                character: characters[i],
+                replayKey: animationKey,
+                delay: reduce ? Duration.zero : stagger * i,
+                duration: fadeDuration,
+                enterDy: reduce ? 0 : enterDy,
+                style: i >= suffixStart ? base.merge(suffixStyle) : base,
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _GlyphSlot extends StatelessWidget {
+  const _GlyphSlot({
+    required this.character,
+    required this.replayKey,
+    required this.delay,
+    required this.duration,
+    required this.enterDy,
+    required this.style,
+  });
+
+  final String character;
+  final Object? replayKey;
+  final Duration delay;
+  final Duration duration;
+  final double enterDy;
+  final TextStyle style;
+
+  bool get _isDigit =>
+      character.codeUnitAt(0) >= 48 && character.codeUnitAt(0) <= 57;
+
+  @override
+  Widget build(BuildContext context) {
+    final fontSize =
+        style.fontSize ?? DefaultTextStyle.of(context).style.fontSize ?? 14;
+    final metrics = TextPainter(
+      text: TextSpan(text: '0', style: style.copyWith(letterSpacing: 0)),
+      textDirection: Directionality.of(context),
+      textScaler: MediaQuery.textScalerOf(context),
+    )..layout();
+    final ch = metrics.width;
+    metrics.dispose();
+    if (character == ' ') {
+      return SizedBox(width: ch * 0.7);
+    }
+    final slotWidth = _isDigit ? ch : null;
+    final slotHeight = MediaQuery.textScalerOf(context).scale(fontSize) * 1.1;
+    final glyphKey = ValueKey<Object?>('${replayKey ?? ''}-$character');
+    final switcher = AnimatedSwitcher(
+      duration: duration,
+      switchInCurve: beuiEaseOut,
+      switchOutCurve: beuiEaseOut,
+      transitionBuilder: (child, animation) {
+        final offset = Tween<Offset>(
+          begin: Offset(0, child.key == glyphKey ? enterDy : -enterDy),
+          end: Offset.zero,
+        ).animate(animation);
+        return FadeTransition(
+          opacity: animation,
+          child: enterDy == 0
+              ? child
+              : SlideTransition(position: offset, child: child),
+        );
+      },
+      layoutBuilder: (current, previous) => Stack(
+        alignment: Alignment.center,
+        clipBehavior: Clip.hardEdge,
+        children: [...previous, ?current],
+      ),
+      child: Text(
+        character,
+        key: glyphKey,
+        style: style.copyWith(
+          height: 1.1,
+          leadingDistribution: TextLeadingDistribution.even,
+        ),
+      ),
+    );
+
+    return SizedBox(
+      width: slotWidth,
+      height: slotHeight,
+      child: ClipRect(
+        child: delay == Duration.zero
+            ? switcher
+            : _Delayed(
+                delay: delay,
+                token: '${replayKey ?? ''}-$character',
+                child: switcher,
+              ),
+      ),
+    );
+  }
+}
+
+/// Holds the previous glyph until [delay] elapses, matching source stagger.
+class _Delayed extends StatefulWidget {
+  const _Delayed({
+    required this.delay,
+    required this.token,
+    required this.child,
+  });
+  final Duration delay;
+  final Object token;
+  final Widget child;
+
+  @override
+  State<_Delayed> createState() => _DelayedState();
+}
+
+class _DelayedState extends State<_Delayed> {
+  Widget? _shown;
+  Timer? _pending;
+
+  @override
+  void initState() {
+    super.initState();
+    _shown = widget.child;
+  }
+
+  @override
+  void didUpdateWidget(_Delayed old) {
+    super.didUpdateWidget(old);
+    if (old.token != widget.token) {
+      _pending?.cancel();
+      final next = widget.child;
+      _pending = Timer(widget.delay, () {
+        _pending = null;
+        if (mounted) setState(() => _shown = next);
+      });
+    } else if (_pending == null) {
+      _shown = widget.child;
+    }
+  }
+
+  @override
+  void dispose() {
+    _pending?.cancel();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) => _shown ?? widget.child;
+}

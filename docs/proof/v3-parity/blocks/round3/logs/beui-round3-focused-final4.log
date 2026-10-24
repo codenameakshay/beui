@@ -1,0 +1,200 @@
+00:00 +0: loading /Users/codenameakshay/.t3/worktrees/beui/t3-5c0570f2/test/motion/card_folder_test.dart
+00:00 +0: /Users/codenameakshay/.t3/worktrees/beui/t3-5c0570f2/test/motion/feedback_widget_test.dart: BeuiFeedbackWidget interaction tap trigger morphs into the form
+00:01 +1: /Users/codenameakshay/.t3/worktrees/beui/t3-5c0570f2/test/motion/card_folder_test.dart: noninteractive pocket copy passes pointer input through to folder
+
+Warning: A call to tap() with finder "Found 1 widget with text "Travel Card": [
+  Text("Travel Card", inherit: true, color: Color(alpha: 1.0000, red: 0.0431, green: 0.0431, blue: 0.0431, colorSpace: ColorSpace.sRGB), size: 18.0, weight: 500, height: 1.3x, overflow: ellipsis, maxLines: 1, dependencies: [DefaultSelectionStyle, DefaultTextStyle, MediaQuery]),
+]" derived an Offset (Offset(277.6, 383.0)) that would not hit test on the specified widget.
+Maybe the widget is actually off-screen, or another widget is obscuring it, or the widget cannot receive pointer events.
+The finder corresponds to this RenderBox: RenderParagraph#44976 relayoutBoundary=up3
+The hit test result at that offset is: HitTestResult(RenderDecoratedBox#06be6@Offset(51.6, 193.4), RenderClipRRect#bb2d1@Offset(51.6, 193.4), RenderDecoratedBox#d152e@Offset(51.6, 193.4), RenderStack#3f2df@Offset(69.6, 193.4), RenderCustomPaint#4f918@Offset(69.6, 193.4), RenderOpacity#b2816@Offset(69.6, 193.4), RenderPointerListener#a2425@Offset(69.6, 193.4), RenderSemanticsGestureHandler#23915@Offset(69.6, 193.4), RenderSemanticsAnnotations#c8718@Offset(69.6, 193.4), RenderMouseRegion#36cd8@Offset(69.6, 193.4), RenderSemanticsAnnotations#d415c@Offset(69.6, 193.4), RenderStack#a75bb@Offset(69.6, 193.4), RenderSemanticsAnnotations#b4d05@Offset(69.6, 193.4), RenderStack#2f062@Offset(69.6, 193.4), RenderConstrainedBox#dba15@Offset(69.6, 193.4), _RenderLayoutBuilder#1a011@Offset(69.6, 193.4), RenderPositionedBox#da7af@Offset(277.6, 383.0), RenderCustomMultiChildLayoutBox#2c703@Offset(277.6, 383.0), _RenderInkFeatures#0c39e@Offset(277.6, 383.0), RenderPhysicalModel#35f39@Offset(277.6, 383.0), RenderSemanticsAnnotations#e9ee9@Offset(277.6, 383.0), RenderRepaintBoundary#7a1d1@Offset(277.6, 383.0), RenderIgnorePointer#3740e@Offset(277.6, 383.0), RenderAnimatedOpacity#073f9@Offset(277.6, 383.0), RenderAnimatedOpacity#0ddf0@Offset(277.6, 383.0), _RenderColoredBox#44eef@Offset(277.6, 383.0), RenderAnimatedOpacity#1bc17@Offset(277.6, 383.0), RenderIgnorePointer#f90ed@Offset(277.6, 383.0), RenderAnimatedOpacity#26e6e@Offset(277.6, 383.0), RenderRepaintBoundary#9622f@Offset(277.6, 383.0), RenderSemanticsAnnotations#f138c@Offset(277.6, 383.0), RenderOffstage#a36b9@Offset(277.6, 383.0), RenderSemanticsAnnotations#ee2de@Offset(277.6, 383.0), _RenderTheater#8cd90@Offset(277.6, 383.0), RenderAbsorbPointer#12a63@Offset(277.6, 383.0), RenderPointerListener#2eedf@Offset(277.6, 383.0), RenderSemanticsAnnotations#d6f19@Offset(277.6, 383.0), RenderCustomPaint#2404a@Offset(277.6, 383.0), RenderSemanticsAnnotations#125b7@Offset(277.6, 383.0), RenderSemanticsAnnotations#b2c7b@Offset(277.6, 383.0), RenderSemanticsAnnotations#79454@Offset(277.6, 383.0), RenderTapRegionSurface#e8f41@Offset(277.6, 383.0), RenderSemanticsAnnotations#01cdf@Offset(277.6, 383.0), RenderSemanticsAnnotations#4079f@Offset(277.6, 383.0), HitTestEntry<HitTestTarget>#73a88(_ReusableRenderView#03db8), HitTestEntry<HitTestTarget>#f23d6(<AutomatedTestWidgetsFlutterBinding>))
+#0      WidgetController._getElementPoint (package:flutter_test/src/controller.dart:2165:25)
+#1      WidgetController.getCenter (package:flutter_test/src/controller.dart:1947:12)
+#2      WidgetController.tap (package:flutter_test/src/controller.dart:1080:7)
+#3      main.<anonymous closure> (file:///Users/codenameakshay/.t3/worktrees/beui/t3-5c0570f2/test/motion/card_folder_test.dart:61:20)
+<asynchronous suspension>
+#4      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#5      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
+<asynchronous suspension>
+#6      StackZoneSpecification._registerCallback.<anonymous closure> (package:stack_trace/src/stack_zone_specification.dart:114:42)
+<asynchronous suspension>
+To silence this warning, pass "warnIfMissed: false" to "tap()".
+To make this warning fatal, set WidgetController.hitTestWarningShouldBeFatal to true.
+
+00:01 +2: /Users/codenameakshay/.t3/worktrees/beui/t3-5c0570f2/test/motion/card_folder_test.dart: noninteractive pocket copy passes pointer input through to folder
+00:01 +3: /Users/codenameakshay/.t3/worktrees/beui/t3-5c0570f2/test/motion/card_folder_test.dart: noninteractive pocket copy passes pointer input through to folder
+00:01 +4: /Users/codenameakshay/.t3/worktrees/beui/t3-5c0570f2/test/motion/card_folder_test.dart: noninteractive pocket copy passes pointer input through to folder
+00:01 +5: /Users/codenameakshay/.t3/worktrees/beui/t3-5c0570f2/test/motion/card_folder_test.dart: noninteractive pocket copy passes pointer input through to folder
+
+Warning: A call to tap() with finder "Found 1 widget with text "08/29": [
+  Text("08/29", inherit: true, color: Color(alpha: 1.0000, red: 0.0431, green: 0.0431, blue: 0.0431, colorSpace: ColorSpace.sRGB), size: 12.0, weight: 500, height: 1.3x, dependencies: [DefaultSelectionStyle, DefaultTextStyle, MediaQuery]),
+]" derived an Offset (Offset(484.3, 348.0)) that would not hit test on the specified widget.
+Maybe the widget is actually off-screen, or another widget is obscuring it, or the widget cannot receive pointer events.
+The finder corresponds to this RenderBox: RenderParagraph#5ad4c relayoutBoundary=up6
+The hit test result at that offset is: HitTestResult(RenderDecoratedBox#06be6@Offset(258.3, 158.5), RenderClipRRect#bb2d1@Offset(258.3, 158.5), RenderDecoratedBox#d152e@Offset(258.3, 158.5), RenderStack#3f2df@Offset(276.3, 158.5), RenderCustomPaint#4f918@Offset(276.3, 158.5), RenderOpacity#b2816@Offset(276.3, 158.5), RenderPointerListener#a2425@Offset(276.3, 158.5), RenderSemanticsGestureHandler#23915@Offset(276.3, 158.5), RenderSemanticsAnnotations#c8718@Offset(276.3, 158.5), RenderMouseRegion#36cd8@Offset(276.3, 158.5), RenderSemanticsAnnotations#d415c@Offset(276.3, 158.5), RenderStack#a75bb@Offset(276.3, 158.5), RenderSemanticsAnnotations#b4d05@Offset(276.3, 158.5), RenderStack#2f062@Offset(276.3, 158.5), RenderConstrainedBox#dba15@Offset(276.3, 158.5), _RenderLayoutBuilder#1a011@Offset(276.3, 158.5), RenderPositionedBox#da7af@Offset(484.3, 348.0), RenderCustomMultiChildLayoutBox#2c703@Offset(484.3, 348.0), _RenderInkFeatures#0c39e@Offset(484.3, 348.0), RenderPhysicalModel#35f39@Offset(484.3, 348.0), RenderSemanticsAnnotations#e9ee9@Offset(484.3, 348.0), RenderRepaintBoundary#7a1d1@Offset(484.3, 348.0), RenderIgnorePointer#3740e@Offset(484.3, 348.0), RenderAnimatedOpacity#073f9@Offset(484.3, 348.0), RenderAnimatedOpacity#0ddf0@Offset(484.3, 348.0), _RenderColoredBox#44eef@Offset(484.3, 348.0), RenderAnimatedOpacity#1bc17@Offset(484.3, 348.0), RenderIgnorePointer#f90ed@Offset(484.3, 348.0), RenderAnimatedOpacity#26e6e@Offset(484.3, 348.0), RenderRepaintBoundary#9622f@Offset(484.3, 348.0), RenderSemanticsAnnotations#f138c@Offset(484.3, 348.0), RenderOffstage#a36b9@Offset(484.3, 348.0), RenderSemanticsAnnotations#ee2de@Offset(484.3, 348.0), _RenderTheater#8cd90@Offset(484.3, 348.0), RenderAbsorbPointer#12a63@Offset(484.3, 348.0), RenderPointerListener#2eedf@Offset(484.3, 348.0), RenderSemanticsAnnotations#d6f19@Offset(484.3, 348.0), RenderCustomPaint#2404a@Offset(484.3, 348.0), RenderSemanticsAnnotations#125b7@Offset(484.3, 348.0), RenderSemanticsAnnotations#b2c7b@Offset(484.3, 348.0), RenderSemanticsAnnotations#79454@Offset(484.3, 348.0), RenderTapRegionSurface#e8f41@Offset(484.3, 348.0), RenderSemanticsAnnotations#01cdf@Offset(484.3, 348.0), RenderSemanticsAnnotations#4079f@Offset(484.3, 348.0), HitTestEntry<HitTestTarget>#93914(_ReusableRenderView#03db8), HitTestEntry<HitTestTarget>#4e3cd(<AutomatedTestWidgetsFlutterBinding>))
+#0      WidgetController._getElementPoint (package:flutter_test/src/controller.dart:2165:25)
+#1      WidgetController.getCenter (package:flutter_test/src/controller.dart:1947:12)
+#2      WidgetController.tap (package:flutter_test/src/controller.dart:1080:7)
+#3      main.<anonymous closure> (file:///Users/codenameakshay/.t3/worktrees/beui/t3-5c0570f2/test/motion/card_folder_test.dart:66:20)
+<asynchronous suspension>
+#4      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#5      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
+<asynchronous suspension>
+#6      StackZoneSpecification._registerCallback.<anonymous closure> (package:stack_trace/src/stack_zone_specification.dart:114:42)
+<asynchronous suspension>
+To silence this warning, pass "warnIfMissed: false" to "tap()".
+To make this warning fatal, set WidgetController.hitTestWarningShouldBeFatal to true.
+
+00:01 +6: /Users/codenameakshay/.t3/worktrees/beui/t3-5c0570f2/test/motion/card_folder_test.dart: noninteractive pocket copy passes pointer input through to folder
+00:01 +7: /Users/codenameakshay/.t3/worktrees/beui/t3-5c0570f2/test/motion/card_folder_test.dart: noninteractive pocket copy passes pointer input through to folder
+00:01 +8: /Users/codenameakshay/.t3/worktrees/beui/t3-5c0570f2/test/motion/card_folder_test.dart: noninteractive pocket copy passes pointer input through to folder
+00:01 +9: /Users/codenameakshay/.t3/worktrees/beui/t3-5c0570f2/test/motion/prediction_market_card_test.dart: pointer activation moves the keyboard target to that outcome
+00:01 +10: /Users/codenameakshay/.t3/worktrees/beui/t3-5c0570f2/test/motion/prediction_market_card_test.dart: pointer activation moves the keyboard target to that outcome
+00:01 +11: /Users/codenameakshay/.t3/worktrees/beui/t3-5c0570f2/test/motion/prediction_market_card_test.dart: pointer activation moves the keyboard target to that outcome
+00:01 +12: /Users/codenameakshay/.t3/worktrees/beui/t3-5c0570f2/test/motion/prediction_market_card_test.dart: pointer activation moves the keyboard target to that outcome
+00:01 +13: /Users/codenameakshay/.t3/worktrees/beui/t3-5c0570f2/test/motion/card_folder_test.dart: disabled card dims source layers and disables every action
+00:01 +14: /Users/codenameakshay/.t3/worktrees/beui/t3-5c0570f2/test/motion/card_folder_test.dart: disabled card dims source layers and disables every action
+00:01 +15: /Users/codenameakshay/.t3/worktrees/beui/t3-5c0570f2/test/motion/feedback_widget_test.dart: BeuiFeedbackWidget interaction closing discards the draft before reopening
+00:02 +16: /Users/codenameakshay/.t3/worktrees/beui/t3-5c0570f2/test/motion/prediction_market_card_test.dart: keyboard visits each payout and CTA only once
+00:02 +17: /Users/codenameakshay/.t3/worktrees/beui/t3-5c0570f2/test/motion/prediction_market_card_test.dart: keyboard visits each payout and CTA only once
+00:02 +18: /Users/codenameakshay/.t3/worktrees/beui/t3-5c0570f2/test/motion/card_folder_test.dart: privacy short held press scales only its own target, reduce=false
+00:02 +19: /Users/codenameakshay/.t3/worktrees/beui/t3-5c0570f2/test/motion/card_folder_test.dart: privacy short held press scales only its own target, reduce=false
+00:02 +20: /Users/codenameakshay/.t3/worktrees/beui/t3-5c0570f2/test/motion/feedback_widget_test.dart: BeuiFeedbackWidget interaction Escape closes and discards the draft
+00:02 +21: /Users/codenameakshay/.t3/worktrees/beui/t3-5c0570f2/test/motion/morphing_tabs_test.dart: BeuiMorphingTabs arrow keys wrap between enabled tabs
+00:02 +22: /Users/codenameakshay/.t3/worktrees/beui/t3-5c0570f2/test/motion/prediction_market_card_test.dart: uncontrolled bookmark toggles and reports changes
+00:02 +23: /Users/codenameakshay/.t3/worktrees/beui/t3-5c0570f2/test/motion/card_folder_test.dart: privacy short held press scales only its own target, reduce=true
+00:02 +24: /Users/codenameakshay/.t3/worktrees/beui/t3-5c0570f2/test/motion/card_folder_test.dart: privacy short held press scales only its own target, reduce=true
+00:02 +25: /Users/codenameakshay/.t3/worktrees/beui/t3-5c0570f2/test/motion/card_folder_test.dart: privacy short held press scales only its own target, reduce=true
+00:02 +26: /Users/codenameakshay/.t3/worktrees/beui/t3-5c0570f2/test/motion/feedback_widget_test.dart: BeuiFeedbackWidget interaction the success view holds while a screen reader is active
+00:02 +27: /Users/codenameakshay/.t3/worktrees/beui/t3-5c0570f2/test/motion/morphing_tabs_test.dart: BeuiMorphingTabs pointer drag reorders and notifies once on release
+00:02 +28: /Users/codenameakshay/.t3/worktrees/beui/t3-5c0570f2/test/motion/morphing_tabs_test.dart: BeuiMorphingTabs pointer drag reorders and notifies once on release
+00:02 +29: /Users/codenameakshay/.t3/worktrees/beui/t3-5c0570f2/test/motion/card_folder_test.dart: privacy eye crossfade follows source spring or reduced fade, reduce=false
+00:02 +30: /Users/codenameakshay/.t3/worktrees/beui/t3-5c0570f2/test/motion/card_folder_test.dart: privacy eye crossfade follows source spring or reduced fade, reduce=false
+00:02 +31: /Users/codenameakshay/.t3/worktrees/beui/t3-5c0570f2/test/motion/card_folder_test.dart: privacy eye crossfade follows source spring or reduced fade, reduce=false
+00:02 +32: /Users/codenameakshay/.t3/worktrees/beui/t3-5c0570f2/test/motion/card_folder_test.dart: privacy eye crossfade follows source spring or reduced fade, reduce=false
+00:02 +33: /Users/codenameakshay/.t3/worktrees/beui/t3-5c0570f2/test/motion/card_folder_test.dart: privacy eye crossfade follows source spring or reduced fade, reduce=false
+00:02 +34: /Users/codenameakshay/.t3/worktrees/beui/t3-5c0570f2/test/motion/card_folder_test.dart: privacy eye crossfade follows source spring or reduced fade, reduce=false
+00:02 +35: /Users/codenameakshay/.t3/worktrees/beui/t3-5c0570f2/test/motion/feedback_widget_test.dart: BeuiFeedbackWidget interaction opted-in sentiment rides along with the message
+00:02 +36: /Users/codenameakshay/.t3/worktrees/beui/t3-5c0570f2/test/motion/feedback_widget_test.dart: BeuiFeedbackWidget interaction opted-in sentiment rides along with the message
+00:02 +37: /Users/codenameakshay/.t3/worktrees/beui/t3-5c0570f2/test/motion/morphing_tabs_test.dart: BeuiMorphingTabs disabled item is skipped by keyboard navigation
+00:02 +38: /Users/codenameakshay/.t3/worktrees/beui/t3-5c0570f2/test/motion/card_folder_test.dart: privacy eye crossfade follows source spring or reduced fade, reduce=true
+00:02 +39: /Users/codenameakshay/.t3/worktrees/beui/t3-5c0570f2/test/motion/card_folder_test.dart: privacy eye crossfade follows source spring or reduced fade, reduce=true
+00:02 +40: /Users/codenameakshay/.t3/worktrees/beui/t3-5c0570f2/test/motion/card_folder_test.dart: privacy eye crossfade follows source spring or reduced fade, reduce=true
+00:02 +41: /Users/codenameakshay/.t3/worktrees/beui/t3-5c0570f2/test/motion/card_folder_test.dart: privacy eye crossfade follows source spring or reduced fade, reduce=true
+00:02 +42: /Users/codenameakshay/.t3/worktrees/beui/t3-5c0570f2/test/motion/feedback_widget_test.dart: BeuiFeedbackWidget interaction a thrown submit routes to the retry view
+00:02 +43: /Users/codenameakshay/.t3/worktrees/beui/t3-5c0570f2/test/motion/feedback_widget_test.dart: BeuiFeedbackWidget interaction a thrown submit routes to the retry view
+00:03 +44: /Users/codenameakshay/.t3/worktrees/beui/t3-5c0570f2/test/motion/feedback_widget_test.dart: BeuiFeedbackWidget interaction a thrown submit routes to the retry view
+00:03 +45: /Users/codenameakshay/.t3/worktrees/beui/t3-5c0570f2/test/motion/feedback_widget_test.dart: BeuiFeedbackWidget interaction a thrown submit routes to the retry view
+00:03 +46: /Users/codenameakshay/.t3/worktrees/beui/t3-5c0570f2/test/motion/feedback_widget_test.dart: BeuiFeedbackWidget interaction a thrown submit routes to the retry view
+00:03 +47: /Users/codenameakshay/.t3/worktrees/beui/t3-5c0570f2/test/motion/card_folder_test.dart: privacy has one accessible toggle node after reveal
+00:03 +48: /Users/codenameakshay/.t3/worktrees/beui/t3-5c0570f2/test/motion/card_folder_test.dart: privacy has one accessible toggle node after reveal
+SemanticsNode#0
+ │ Rect.fromLTRB(0.0, 0.0, 2400.0, 1800.0)
+ │
+ └─SemanticsNode#1
+   │ Rect.fromLTRB(0.0, 0.0, 800.0, 600.0) scaled by 3.0x
+   │ textDirection: ltr
+   │
+   └─SemanticsNode#2
+     │ Rect.fromLTRB(0.0, 0.0, 800.0, 600.0)
+     │ sortKey: OrdinalSortKey#c1a18(order: 0.0)
+     │
+     └─SemanticsNode#3
+       │ Rect.fromLTRB(0.0, 0.0, 800.0, 600.0)
+       │ flags: scopesRoute
+       │
+       └─SemanticsNode#4
+         │ Rect.fromLTRB(208.0, 189.5, 592.0, 410.5)
+         │ flags: isButton, hasEnabledState, isEnabled, hasExpandedState
+         │ label: "Open Travel Card, card ending in 0806, expires 08/29"
+         │ textDirection: ltr
+         │
+         ├─SemanticsNode#5
+         │   Rect.fromLTRB(0.0, 0.0, 384.0, 220.9)
+         │   actions: focus, tap
+         │   flags: isFocusable
+         │   label: "•••• •••• •••• 0806"
+         │   textDirection: ltr
+         │
+         ├─SemanticsNode#6
+         │   Rect.fromLTRB(0.0, 0.0, 40.0, 40.0) with transform
+         │   [[1.0,0.0,-0.16,19.200000000000003];
+         │   [0.0,1.0,-0.1841010689990282,126.46064139941691];
+         │   [0.0,0.0,1.0,0.0]; [0.0,0.0,-0.0008333333333333334,1.0]]
+         │   actions: tap
+         │   flags: isButton, hasEnabledState, isEnabled, hasToggledState,
+         │     isToggled, isFocusable
+         │   label: "Hide card details"
+         │   textDirection: ltr
+         │
+         ├─SemanticsNode#7
+         │   Rect.fromLTRB(0.0, 0.0, 60.5, 14.0) with transform
+         │   [[1.0,0.0,-0.16,246.32000045776368];
+         │   [0.0,1.0,-0.1841010689990282,134.46064139941691];
+         │   [0.0,0.0,1.0,0.0]; [0.0,0.0,-0.0008333333333333334,1.0]]
+         │   label: "EXPIRY"
+         │   textDirection: ltr
+         │
+         ├─SemanticsNode#9
+         │   Rect.fromLTRB(0.0, 0.0, 30.2, 14.0) with transform
+         │   [[1.0,0.0,-0.16,320.8];
+         │   [0.0,1.0,-0.1841010689990282,137.2606413994169];
+         │   [0.0,0.0,1.0,0.0]; [0.0,0.0,-0.0008333333333333334,1.0]]
+         │   label: "CVV"
+         │   textDirection: ltr
+         │
+         ├─SemanticsNode#8
+         │   Rect.fromLTRB(0.0, 0.0, 60.0, 16.0) with transform
+         │   [[1.0,0.0,-0.16,246.32000045776368];
+         │   [0.0,1.0,-0.1841010689990282,150.46064139941691];
+         │   [0.0,0.0,1.0,0.0]; [0.0,0.0,-0.0008333333333333334,1.0]]
+         │   label: "08/29"
+         │   textDirection: ltr
+         │
+         ├─SemanticsNode#11
+         │   Rect.fromLTRB(0.0, 0.0, 112.4, 23.0) with transform
+         │   [[1.0,0.0,-0.16,19.200000000000003];
+         │   [0.0,1.0,-0.1841010689990282,181.92128279883383];
+         │   [0.0,0.0,1.0,0.0]; [0.0,0.0,-0.0008333333333333334,1.0]]
+         │   label: "Travel Card"
+         │   textDirection: ltr
+         │
+         ├─SemanticsNode#12
+         │   Rect.fromLTRB(0.0, 0.0, 217.2, 13.2) with transform
+         │   [[1.0,0.0,-0.16,147.60000000000002];
+         │   [0.0,1.0,-0.1841010689990282,187.9712824173641];
+         │   [0.0,0.0,1.0,0.0]; [0.0,0.0,-0.0008333333333333334,1.0]]
+         │   label: "3745 6987 4096 0806"
+         │   textDirection: ltr
+         │
+         └─SemanticsNode#10
+             Rect.fromLTRB(0.0, 0.0, 36.0, 13.2) with transform
+             [[1.0,0.0,-0.16,320.8];
+             [0.0,1.0,-0.1841010689990282,153.2606413994169];
+             [0.0,0.0,1.0,0.0]; [0.0,0.0,-0.0008333333333333334,1.0]]
+             label: "123"
+             textDirection: ltr
+
+00:03 +49: /Users/codenameakshay/.t3/worktrees/beui/t3-5c0570f2/test/motion/feedback_widget_test.dart: BeuiFeedbackWidget interaction success view auto-dismisses back to the trigger
+00:03 +50: /Users/codenameakshay/.t3/worktrees/beui/t3-5c0570f2/test/motion/card_folder_test.dart: pointer activation transfers keyboard control to the folder
+00:03 +51: /Users/codenameakshay/.t3/worktrees/beui/t3-5c0570f2/test/motion/feedback_widget_test.dart: BeuiFeedbackWidget motion fidelity content morph blurs under normal motion
+00:03 +52: /Users/codenameakshay/.t3/worktrees/beui/t3-5c0570f2/test/motion/card_folder_test.dart: folder focus paints the source two-pixel ring beyond a four-pixel gap
+00:03 +53: /Users/codenameakshay/.t3/worktrees/beui/t3-5c0570f2/test/motion/card_folder_test.dart: folder focus paints the source two-pixel ring beyond a four-pixel gap
+00:03 +54: /Users/codenameakshay/.t3/worktrees/beui/t3-5c0570f2/test/motion/feedback_widget_test.dart: BeuiFeedbackWidget motion fidelity reduced motion still reaches the success view
+00:03 +55: /Users/codenameakshay/.t3/worktrees/beui/t3-5c0570f2/test/motion/card_folder_test.dart: held card press leaves pocket and action stationary, reduce=false
+00:03 +56: /Users/codenameakshay/.t3/worktrees/beui/t3-5c0570f2/test/motion/card_folder_test.dart: privacy uses the shared tooltip on hover and keyboard, reduce=false
+00:03 +57: /Users/codenameakshay/.t3/worktrees/beui/t3-5c0570f2/test/motion/card_folder_test.dart: held card press leaves pocket and action stationary, reduce=true
+00:03 +58: /Users/codenameakshay/.t3/worktrees/beui/t3-5c0570f2/test/motion/card_folder_test.dart: privacy uses the shared tooltip on hover and keyboard, reduce=true
+00:04 +59: /Users/codenameakshay/.t3/worktrees/beui/t3-5c0570f2/test/motion/card_folder_test.dart: keyboard opens and closes the folder before privacy control
+00:04 +60: /Users/codenameakshay/.t3/worktrees/beui/t3-5c0570f2/test/motion/card_folder_test.dart: closed rest state masks details and retains last four
+00:04 +61: /Users/codenameakshay/.t3/worktrees/beui/t3-5c0570f2/test/motion/card_folder_test.dart: folder tap reports open state
+00:04 +62: /Users/codenameakshay/.t3/worktrees/beui/t3-5c0570f2/test/motion/card_folder_test.dart: details toggle reveals number and CVV
+00:04 +63: /Users/codenameakshay/.t3/worktrees/beui/t3-5c0570f2/test/motion/card_folder_test.dart: closed eye toggle reveals CVV and keeps expiry static
+00:04 +64: /Users/codenameakshay/.t3/worktrees/beui/t3-5c0570f2/test/motion/card_folder_test.dart: details toggle is active while the folder is closed
+00:04 +65: /Users/codenameakshay/.t3/worktrees/beui/t3-5c0570f2/test/motion/card_folder_test.dart: CVV reveal retains outgoing glyphs and rolls incoming glyphs
+00:04 +66: /Users/codenameakshay/.t3/worktrees/beui/t3-5c0570f2/test/motion/card_folder_test.dart: action fires without toggling the folder
+00:04 +67: /Users/codenameakshay/.t3/worktrees/beui/t3-5c0570f2/test/motion/card_folder_test.dart: disabled folder ignores tap and detail toggle
+00:04 +68: /Users/codenameakshay/.t3/worktrees/beui/t3-5c0570f2/test/motion/card_folder_test.dart: reduced motion does not lift the card
+00:04 +69: All tests passed!

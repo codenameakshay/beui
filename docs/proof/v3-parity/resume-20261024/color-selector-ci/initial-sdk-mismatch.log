@@ -1,0 +1,42 @@
+00:00 +0: loading /Users/codenameakshay/.t3/worktrees/beui/t3-df4b55e2/test/motion/color_selector_test.dart
+../../../../fvm/versions/stable/packages/flutter/lib/src/gestures/binding.dart:324:3: Error: Type 'ui.HitTestResponse' not found.
+  ui.HitTestResponse _handleHitTest(ui.HitTestRequest request) {
+  ^^^^^^^^^^^^^^^^^^
+../../../../fvm/versions/stable/packages/flutter/lib/src/gestures/binding.dart:324:37: Error: Type 'ui.HitTestRequest' not found.
+  ui.HitTestResponse _handleHitTest(ui.HitTestRequest request) {
+                                    ^^^^^^^^^^^^^^^^^
+../../../../fvm/versions/stable/packages/flutter/lib/src/gestures/binding.dart:283:9: Error: The setter 'onHitTest' isn't defined for the type 'PlatformDispatcher'.
+ - 'PlatformDispatcher' is from 'dart:ui'.
+Try correcting the name to the name of an existing setter, or defining a setter or field named 'onHitTest'.
+      ..onHitTest = _handleHitTest;
+        ^^^^^^^^^
+../../../../fvm/versions/stable/packages/flutter/lib/src/gestures/binding.dart:324:40: Error: 'HitTestRequest' isn't a type.
+  ui.HitTestResponse _handleHitTest(ui.HitTestRequest request) {
+                                       ^^^^^^^^^^^^^^
+../../../../fvm/versions/stable/packages/flutter/lib/src/gestures/binding.dart:329:15: Error: Method not found: 'HitTestResponse'.
+    return ui.HitTestResponse(hasPlatformView: hasPlatformView);
+              ^^^^^^^^^^^^^^^
+00:00 +0 -1: loading /Users/codenameakshay/.t3/worktrees/beui/t3-df4b55e2/test/motion/color_selector_test.dart [E]
+  Failed to load "/Users/codenameakshay/.t3/worktrees/beui/t3-df4b55e2/test/motion/color_selector_test.dart":
+  Compilation failed for testPath=/Users/codenameakshay/.t3/worktrees/beui/t3-df4b55e2/test/motion/color_selector_test.dart: ../../../../fvm/versions/stable/packages/flutter/lib/src/gestures/binding.dart:324:3: Error: Type 'ui.HitTestResponse' not found.
+    ui.HitTestResponse _handleHitTest(ui.HitTestRequest request) {
+    ^^^^^^^^^^^^^^^^^^
+  ../../../../fvm/versions/stable/packages/flutter/lib/src/gestures/binding.dart:324:37: Error: Type 'ui.HitTestRequest' not found.
+    ui.HitTestResponse _handleHitTest(ui.HitTestRequest request) {
+                                      ^^^^^^^^^^^^^^^^^
+  ../../../../fvm/versions/stable/packages/flutter/lib/src/gestures/binding.dart:283:9: Error: The setter 'onHitTest' isn't defined for the type 'PlatformDispatcher'.
+   - 'PlatformDispatcher' is from 'dart:ui'.
+  Try correcting the name to the name of an existing setter, or defining a setter or field named 'onHitTest'.
+        ..onHitTest = _handleHitTest;
+          ^^^^^^^^^
+  ../../../../fvm/versions/stable/packages/flutter/lib/src/gestures/binding.dart:324:40: Error: 'HitTestRequest' isn't a type.
+    ui.HitTestResponse _handleHitTest(ui.HitTestRequest request) {
+                                         ^^^^^^^^^^^^^^
+  ../../../../fvm/versions/stable/packages/flutter/lib/src/gestures/binding.dart:329:15: Error: Method not found: 'HitTestResponse'.
+      return ui.HitTestResponse(hasPlatformView: hasPlatformView);
+                ^^^^^^^^^^^^^^^
+  .
+00:00 +0 -1: Some tests failed.
+
+Failing tests:
+  /Users/codenameakshay/.t3/worktrees/beui/t3-df4b55e2/test/motion/color_selector_test.dart: loading /Users/codenameakshay/.t3/worktrees/beui/t3-df4b55e2/test/motion/color_selector_test.dart

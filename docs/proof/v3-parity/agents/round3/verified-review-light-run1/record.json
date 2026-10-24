@@ -1,0 +1,1899 @@
+{
+  "phase": "after",
+  "slug": "approval-card",
+  "theme": "light",
+  "motion": "normal",
+  "sourceRevision": "a76e57c9bbc2837e96420b2610e9c82a3271bb05",
+  "liveRevision": "unknown",
+  "expectedJs": "844fc1470486a6418bf636de77963babf0a573cc9e0f67456d5a5f008ccae43c",
+  "captureScriptSha256": "b260251b269a5c9ac007eb4edfc644985df0f8c9a3dcbd39d8f61029ae20166d",
+  "loaded": [
+    {
+      "url": "http://127.0.0.1:18117/agents-round3-after6/flutter_bootstrap.js",
+      "sha256": "058171b462de572e7dc3822cf2ce238d4762d056be3f1559519dab15572a48c3"
+    },
+    {
+      "url": "https://www.gstatic.com/flutter-canvaskit/5d531788691ec3404cac0cee66ead4007b177363/chromium/canvaskit.js",
+      "sha256": "6018b12bd8ed37e6952eee72d59c1cf7ad707ccdb74a0a45190010f77edd9068"
+    },
+    {
+      "url": "http://127.0.0.1:18117/agents-round3-after6/main.dart.js",
+      "sha256": "844fc1470486a6418bf636de77963babf0a573cc9e0f67456d5a5f008ccae43c"
+    }
+  ],
+  "fontAssets": [
+    {
+      "url": "http://127.0.0.1:18117/agents-round3-after6/assets/FontManifest.json",
+      "bytes": 748,
+      "sha256": "94709ae500d3812d4e346edadad1c08c8e845b1f7d00dceef94f2bee2c322c1d"
+    },
+    {
+      "url": "http://127.0.0.1:18117/agents-round3-after6/assets/fonts/MaterialIcons-Regular.otf",
+      "bytes": 8948,
+      "sha256": "82558eeb1319decabd4b03ddb146330dcf7cfbc559e8f1c065e83893f55230af"
+    },
+    {
+      "url": "http://127.0.0.1:18117/agents-round3-after6/assets/assets/fonts/Geist-Regular.ttf",
+      "bytes": 72916,
+      "sha256": "ccce59465ae5c61930ada5453834f60500fbd95084d85db63e0e65fad0125455"
+    },
+    {
+      "url": "http://127.0.0.1:18117/agents-round3-after6/assets/assets/fonts/Geist-Medium.ttf",
+      "bytes": 72996,
+      "sha256": "a8eefb873ba9c9020665f8a98302697ce1f3b79ab2deef6ee508c0ca6a82e876"
+    },
+    {
+      "url": "http://127.0.0.1:18117/agents-round3-after6/assets/assets/fonts/Geist-SemiBold.ttf",
+      "bytes": 73048,
+      "sha256": "7171f481b121803d007f5c6c76cd9988c0d41cce4202db9a18dff9945505d36d"
+    },
+    {
+      "url": "http://127.0.0.1:18117/agents-round3-after6/assets/assets/fonts/Geist-Bold.ttf",
+      "bytes": 72984,
+      "sha256": "1a9874b3be0fc168692a3d2327bccb4d28835653d3b91537a755296a467a83e3"
+    },
+    {
+      "url": "http://127.0.0.1:18117/agents-round3-after6/assets/assets/fonts/GeistMono-Regular.ttf",
+      "bytes": 71160,
+      "sha256": "7022da390e9b401ea35b722f8ed2376948e70add10954bc798839b4bfe17ef3f"
+    },
+    {
+      "url": "http://127.0.0.1:18117/agents-round3-after6/assets/assets/fonts/GeistMono-Medium.ttf",
+      "bytes": 71212,
+      "sha256": "5c1b7b77c2d6132460f03b60c175adc80da1ebd0b418c785135b1aed27a28b30"
+    },
+    {
+      "url": "http://127.0.0.1:18117/agents-round3-after6/assets/assets/fonts/GeistMono-Regular.ttf",
+      "bytes": 71160,
+      "sha256": "7022da390e9b401ea35b722f8ed2376948e70add10954bc798839b4bfe17ef3f"
+    },
+    {
+      "url": "http://127.0.0.1:18117/agents-round3-after6/assets/assets/fonts/GeistMono-Medium.ttf",
+      "bytes": 71212,
+      "sha256": "5c1b7b77c2d6132460f03b60c175adc80da1ebd0b418c785135b1aed27a28b30"
+    },
+    {
+      "url": "http://127.0.0.1:18117/agents-round3-after6/assets/packages/flutter_lucide/lib/fonts/lucide.ttf",
+      "bytes": 62176,
+      "sha256": "48a6bf842b1c18318ebfb54a1391d666b4b75e7281bfc671efdeed6ecad12709"
+    },
+    {
+      "url": "https://fonts.gstatic.com/s/roboto/v32/KFOmCnqEu92Fr1Me4GZLCzYlKw.woff2",
+      "bytes": 63464,
+      "sha256": "35b02ca266b79eb4996590f15817425a1ce9ebf48f84471843233ff614656bf2"
+    }
+  ],
+  "errors": [],
+  "snapshots": [
+    {
+      "state": "approve-pending",
+      "stage": {
+        "x": 464,
+        "y": 320,
+        "width": 512,
+        "height": 360
+      },
+      "nativeRaster": {
+        "width": 1440,
+        "height": 913
+      },
+      "aria": "- group \"Capture stage width 752 height 1000 reduced false palette source-default-a76e57c9\":\n  - group \"Publish the component update? Input required The agent has prepared the release and is waiting for your decision. Release approval-card Checks 4 passed Visibility Public registry\":\n    - button \"Approve\"\n    - button \"Request changes\"\n    - button \"Reject\"\n  - button \"Replay\"",
+      "controls": [
+        {
+          "tag": "FLT-SEMANTICS",
+          "role": "button",
+          "label": "Approve",
+          "checked": null,
+          "disabled": null,
+          "bounds": {
+            "x": 512,
+            "y": 490,
+            "width": 70.671875,
+            "height": 32,
+            "top": 490,
+            "right": 582.671875,
+            "bottom": 522,
+            "left": 512
+          },
+          "font": "16px Times",
+          "background": "rgba(0, 0, 0, 0)",
+          "color": "rgba(0, 0, 0, 0)",
+          "focused": true
+        },
+        {
+          "tag": "FLT-SEMANTICS",
+          "role": "button",
+          "label": "Request changes",
+          "checked": null,
+          "disabled": null,
+          "bounds": {
+            "x": 594.6802978515625,
+            "y": 490,
+            "width": 123.390625,
+            "height": 32,
+            "top": 490,
+            "right": 718.0709228515625,
+            "bottom": 522,
+            "left": 594.6802978515625
+          },
+          "font": "16px Times",
+          "background": "rgba(0, 0, 0, 0)",
+          "color": "rgba(0, 0, 0, 0)",
+          "focused": false
+        },
+        {
+          "tag": "FLT-SEMANTICS",
+          "role": "button",
+          "label": "Reject",
+          "checked": null,
+          "disabled": null,
+          "bounds": {
+            "x": 730.0850830078125,
+            "y": 490,
+            "width": 60.09375,
+            "height": 32,
+            "top": 490,
+            "right": 790.1788330078125,
+            "bottom": 522,
+            "left": 730.0850830078125
+          },
+          "font": "16px Times",
+          "background": "rgba(0, 0, 0, 0)",
+          "color": "rgba(0, 0, 0, 0)",
+          "focused": false
+        },
+        {
+          "tag": "FLT-SEMANTICS",
+          "role": "button",
+          "label": "Replay",
+          "checked": null,
+          "disabled": null,
+          "bounds": {
+            "x": 464,
+            "y": 656,
+            "width": 69.5,
+            "height": 24,
+            "top": 656,
+            "right": 533.5,
+            "bottom": 680,
+            "left": 464
+          },
+          "font": "16px Times",
+          "background": "rgba(0, 0, 0, 0)",
+          "color": "rgba(0, 0, 0, 0)",
+          "focused": false
+        }
+      ],
+      "localControls": [
+        {
+          "tag": "FLT-SEMANTICS",
+          "role": "button",
+          "label": "Approve",
+          "checked": null,
+          "disabled": null,
+          "bounds": {
+            "x": 48,
+            "y": 170,
+            "width": 70.671875,
+            "height": 32
+          },
+          "font": "16px Times",
+          "background": "rgba(0, 0, 0, 0)",
+          "color": "rgba(0, 0, 0, 0)",
+          "focused": true
+        },
+        {
+          "tag": "FLT-SEMANTICS",
+          "role": "button",
+          "label": "Request changes",
+          "checked": null,
+          "disabled": null,
+          "bounds": {
+            "x": 130.6802978515625,
+            "y": 170,
+            "width": 123.390625,
+            "height": 32
+          },
+          "font": "16px Times",
+          "background": "rgba(0, 0, 0, 0)",
+          "color": "rgba(0, 0, 0, 0)",
+          "focused": false
+        },
+        {
+          "tag": "FLT-SEMANTICS",
+          "role": "button",
+          "label": "Reject",
+          "checked": null,
+          "disabled": null,
+          "bounds": {
+            "x": 266.0850830078125,
+            "y": 170,
+            "width": 60.09375,
+            "height": 32
+          },
+          "font": "16px Times",
+          "background": "rgba(0, 0, 0, 0)",
+          "color": "rgba(0, 0, 0, 0)",
+          "focused": false
+        },
+        {
+          "tag": "FLT-SEMANTICS",
+          "role": "button",
+          "label": "Replay",
+          "checked": null,
+          "disabled": null,
+          "bounds": {
+            "x": 0,
+            "y": 336,
+            "width": 69.5,
+            "height": 24
+          },
+          "font": "16px Times",
+          "background": "rgba(0, 0, 0, 0)",
+          "color": "rgba(0, 0, 0, 0)",
+          "focused": false
+        }
+      ],
+      "requestedMs": 79.45037500000035,
+      "receivedMs": 146.82279199999994,
+      "sha256": "b1e3263abb23910beba29af880812dcef4ba254d0022f1619476f79bfdd8341c",
+      "file": "approve-pending.png"
+    },
+    {
+      "state": "approve-submitting",
+      "stage": {
+        "x": 464,
+        "y": 320,
+        "width": 512,
+        "height": 360
+      },
+      "nativeRaster": {
+        "width": 1440,
+        "height": 913
+      },
+      "aria": "- text: Publish the component update? Submitting The agent has prepared the release and is waiting for your decision. Release approval-card Checks 4 passed Visibility Public registry\n- group \"Capture stage width 752 height 1000 reduced false palette source-default-a76e57c9\":\n  - group \"Publish the component update? Submitting The agent has prepared the release and is waiting for your decision. Release approval-card Checks 4 passed Visibility Public registry\":\n    - button \"Approve\" [disabled]\n    - button \"Request changes\" [disabled]\n    - button \"Reject\" [disabled]\n  - button \"Replay\"",
+      "controls": [
+        {
+          "tag": "FLT-SEMANTICS",
+          "role": "button",
+          "label": "Approve",
+          "checked": null,
+          "disabled": "true",
+          "bounds": {
+            "x": 512,
+            "y": 490,
+            "width": 70.671875,
+            "height": 32,
+            "top": 490,
+            "right": 582.671875,
+            "bottom": 522,
+            "left": 512
+          },
+          "font": "16px Times",
+          "background": "rgba(0, 0, 0, 0)",
+          "color": "rgba(0, 0, 0, 0)",
+          "focused": true
+        },
+        {
+          "tag": "FLT-SEMANTICS",
+          "role": "button",
+          "label": "Request changes",
+          "checked": null,
+          "disabled": "true",
+          "bounds": {
+            "x": 594.6802978515625,
+            "y": 490,
+            "width": 123.390625,
+            "height": 32,
+            "top": 490,
+            "right": 718.0709228515625,
+            "bottom": 522,
+            "left": 594.6802978515625
+          },
+          "font": "16px Times",
+          "background": "rgba(0, 0, 0, 0)",
+          "color": "rgba(0, 0, 0, 0)",
+          "focused": false
+        },
+        {
+          "tag": "FLT-SEMANTICS",
+          "role": "button",
+          "label": "Reject",
+          "checked": null,
+          "disabled": "true",
+          "bounds": {
+            "x": 730.0850830078125,
+            "y": 490,
+            "width": 60.09375,
+            "height": 32,
+            "top": 490,
+            "right": 790.1788330078125,
+            "bottom": 522,
+            "left": 730.0850830078125
+          },
+          "font": "16px Times",
+          "background": "rgba(0, 0, 0, 0)",
+          "color": "rgba(0, 0, 0, 0)",
+          "focused": false
+        },
+        {
+          "tag": "FLT-SEMANTICS",
+          "role": "button",
+          "label": "Replay",
+          "checked": null,
+          "disabled": null,
+          "bounds": {
+            "x": 464,
+            "y": 656,
+            "width": 69.5,
+            "height": 24,
+            "top": 656,
+            "right": 533.5,
+            "bottom": 680,
+            "left": 464
+          },
+          "font": "16px Times",
+          "background": "rgba(0, 0, 0, 0)",
+          "color": "rgba(0, 0, 0, 0)",
+          "focused": false
+        }
+      ],
+      "localControls": [
+        {
+          "tag": "FLT-SEMANTICS",
+          "role": "button",
+          "label": "Approve",
+          "checked": null,
+          "disabled": "true",
+          "bounds": {
+            "x": 48,
+            "y": 170,
+            "width": 70.671875,
+            "height": 32
+          },
+          "font": "16px Times",
+          "background": "rgba(0, 0, 0, 0)",
+          "color": "rgba(0, 0, 0, 0)",
+          "focused": true
+        },
+        {
+          "tag": "FLT-SEMANTICS",
+          "role": "button",
+          "label": "Request changes",
+          "checked": null,
+          "disabled": "true",
+          "bounds": {
+            "x": 130.6802978515625,
+            "y": 170,
+            "width": 123.390625,
+            "height": 32
+          },
+          "font": "16px Times",
+          "background": "rgba(0, 0, 0, 0)",
+          "color": "rgba(0, 0, 0, 0)",
+          "focused": false
+        },
+        {
+          "tag": "FLT-SEMANTICS",
+          "role": "button",
+          "label": "Reject",
+          "checked": null,
+          "disabled": "true",
+          "bounds": {
+            "x": 266.0850830078125,
+            "y": 170,
+            "width": 60.09375,
+            "height": 32
+          },
+          "font": "16px Times",
+          "background": "rgba(0, 0, 0, 0)",
+          "color": "rgba(0, 0, 0, 0)",
+          "focused": false
+        },
+        {
+          "tag": "FLT-SEMANTICS",
+          "role": "button",
+          "label": "Replay",
+          "checked": null,
+          "disabled": null,
+          "bounds": {
+            "x": 0,
+            "y": 336,
+            "width": 69.5,
+            "height": 24
+          },
+          "font": "16px Times",
+          "background": "rgba(0, 0, 0, 0)",
+          "color": "rgba(0, 0, 0, 0)",
+          "focused": false
+        }
+      ],
+      "requestedMs": 477.9547080000002,
+      "receivedMs": 535.7624169999999,
+      "sha256": "7ff05198db22221cb376163300f41f22e8e768af55e95209c273b79eff541a4e",
+      "file": "approve-submitting.png"
+    },
+    {
+      "state": "approve-outcome",
+      "stage": {
+        "x": 464,
+        "y": 320,
+        "width": 512,
+        "height": 360
+      },
+      "nativeRaster": {
+        "width": 1440,
+        "height": 913
+      },
+      "aria": "- group \"Capture stage width 752 height 1000 reduced false palette source-default-a76e57c9\":\n  - text: Publish the component update? Approved Publishing was approved.\n  - button \"Replay\"",
+      "controls": [
+        {
+          "tag": "FLT-SEMANTICS",
+          "role": "button",
+          "label": "Replay",
+          "checked": null,
+          "disabled": null,
+          "bounds": {
+            "x": 464,
+            "y": 656,
+            "width": 69.5,
+            "height": 24,
+            "top": 656,
+            "right": 533.5,
+            "bottom": 680,
+            "left": 464
+          },
+          "font": "16px Times",
+          "background": "rgba(0, 0, 0, 0)",
+          "color": "rgba(0, 0, 0, 0)",
+          "focused": false
+        }
+      ],
+      "localControls": [
+        {
+          "tag": "FLT-SEMANTICS",
+          "role": "button",
+          "label": "Replay",
+          "checked": null,
+          "disabled": null,
+          "bounds": {
+            "x": 0,
+            "y": 336,
+            "width": 69.5,
+            "height": 24
+          },
+          "font": "16px Times",
+          "background": "rgba(0, 0, 0, 0)",
+          "color": "rgba(0, 0, 0, 0)",
+          "focused": false
+        }
+      ],
+      "requestedMs": 1533.319042,
+      "receivedMs": 1616.6822080000002,
+      "sha256": "3b3cace9c998ddf64fc001881ab1a3dd14b88e0b25f3afbf49db6922ba59adb4",
+      "file": "approve-outcome.png"
+    },
+    {
+      "state": "request-changes-pending",
+      "stage": {
+        "x": 464,
+        "y": 320,
+        "width": 512,
+        "height": 360
+      },
+      "nativeRaster": {
+        "width": 1440,
+        "height": 913
+      },
+      "aria": "- group \"Capture stage width 752 height 1000 reduced false palette source-default-a76e57c9\":\n  - group \"Publish the component update? Input required The agent has prepared the release and is waiting for your decision. Release approval-card Checks 4 passed Visibility Public registry\":\n    - button \"Approve\"\n    - button \"Request changes\"\n    - button \"Reject\"\n  - button \"Replay\"",
+      "controls": [
+        {
+          "tag": "FLT-SEMANTICS",
+          "role": "button",
+          "label": "Approve",
+          "checked": null,
+          "disabled": null,
+          "bounds": {
+            "x": 512,
+            "y": 490,
+            "width": 70.671875,
+            "height": 32,
+            "top": 490,
+            "right": 582.671875,
+            "bottom": 522,
+            "left": 512
+          },
+          "font": "16px Times",
+          "background": "rgba(0, 0, 0, 0)",
+          "color": "rgba(0, 0, 0, 0)",
+          "focused": false
+        },
+        {
+          "tag": "FLT-SEMANTICS",
+          "role": "button",
+          "label": "Request changes",
+          "checked": null,
+          "disabled": null,
+          "bounds": {
+            "x": 594.6802978515625,
+            "y": 490,
+            "width": 123.390625,
+            "height": 32,
+            "top": 490,
+            "right": 718.0709228515625,
+            "bottom": 522,
+            "left": 594.6802978515625
+          },
+          "font": "16px Times",
+          "background": "rgba(0, 0, 0, 0)",
+          "color": "rgba(0, 0, 0, 0)",
+          "focused": false
+        },
+        {
+          "tag": "FLT-SEMANTICS",
+          "role": "button",
+          "label": "Reject",
+          "checked": null,
+          "disabled": null,
+          "bounds": {
+            "x": 730.0850830078125,
+            "y": 490,
+            "width": 60.09375,
+            "height": 32,
+            "top": 490,
+            "right": 790.1788330078125,
+            "bottom": 522,
+            "left": 730.0850830078125
+          },
+          "font": "16px Times",
+          "background": "rgba(0, 0, 0, 0)",
+          "color": "rgba(0, 0, 0, 0)",
+          "focused": false
+        },
+        {
+          "tag": "FLT-SEMANTICS",
+          "role": "button",
+          "label": "Replay",
+          "checked": null,
+          "disabled": null,
+          "bounds": {
+            "x": 464,
+            "y": 656,
+            "width": 69.5,
+            "height": 24,
+            "top": 656,
+            "right": 533.5,
+            "bottom": 680,
+            "left": 464
+          },
+          "font": "16px Times",
+          "background": "rgba(0, 0, 0, 0)",
+          "color": "rgba(0, 0, 0, 0)",
+          "focused": true
+        }
+      ],
+      "localControls": [
+        {
+          "tag": "FLT-SEMANTICS",
+          "role": "button",
+          "label": "Approve",
+          "checked": null,
+          "disabled": null,
+          "bounds": {
+            "x": 48,
+            "y": 170,
+            "width": 70.671875,
+            "height": 32
+          },
+          "font": "16px Times",
+          "background": "rgba(0, 0, 0, 0)",
+          "color": "rgba(0, 0, 0, 0)",
+          "focused": false
+        },
+        {
+          "tag": "FLT-SEMANTICS",
+          "role": "button",
+          "label": "Request changes",
+          "checked": null,
+          "disabled": null,
+          "bounds": {
+            "x": 130.6802978515625,
+            "y": 170,
+            "width": 123.390625,
+            "height": 32
+          },
+          "font": "16px Times",
+          "background": "rgba(0, 0, 0, 0)",
+          "color": "rgba(0, 0, 0, 0)",
+          "focused": false
+        },
+        {
+          "tag": "FLT-SEMANTICS",
+          "role": "button",
+          "label": "Reject",
+          "checked": null,
+          "disabled": null,
+          "bounds": {
+            "x": 266.0850830078125,
+            "y": 170,
+            "width": 60.09375,
+            "height": 32
+          },
+          "font": "16px Times",
+          "background": "rgba(0, 0, 0, 0)",
+          "color": "rgba(0, 0, 0, 0)",
+          "focused": false
+        },
+        {
+          "tag": "FLT-SEMANTICS",
+          "role": "button",
+          "label": "Replay",
+          "checked": null,
+          "disabled": null,
+          "bounds": {
+            "x": 0,
+            "y": 336,
+            "width": 69.5,
+            "height": 24
+          },
+          "font": "16px Times",
+          "background": "rgba(0, 0, 0, 0)",
+          "color": "rgba(0, 0, 0, 0)",
+          "focused": true
+        }
+      ],
+      "requestedMs": 2129.0315419999997,
+      "receivedMs": 2207.903792,
+      "sha256": "c48498469b8c706c38d4a30d646024ee00133ed0e4485fc9bdb61c5065c2d542",
+      "file": "request-changes-pending.png"
+    },
+    {
+      "state": "request-changes-submitting",
+      "stage": {
+        "x": 464,
+        "y": 320,
+        "width": 512,
+        "height": 360
+      },
+      "nativeRaster": {
+        "width": 1440,
+        "height": 913
+      },
+      "aria": "- text: Publish the component update? Publish the component update? Submitting The agent has prepared the release and is waiting for your decision. Release approval-card Checks 4 passed Visibility Public registry\n- group \"Capture stage width 752 height 1000 reduced false palette source-default-a76e57c9\":\n  - group \"Publish the component update? Publish the component update? Submitting The agent has prepared the release and is waiting for your decision. Release approval-card Checks 4 passed Visibility Public registry\":\n    - button \"Approve\" [disabled]\n    - button \"Request changes\" [disabled]\n    - button \"Reject\" [disabled]\n  - button \"Replay\"",
+      "controls": [
+        {
+          "tag": "FLT-SEMANTICS",
+          "role": "button",
+          "label": "Approve",
+          "checked": null,
+          "disabled": "true",
+          "bounds": {
+            "x": 512,
+            "y": 490,
+            "width": 70.671875,
+            "height": 32,
+            "top": 490,
+            "right": 582.671875,
+            "bottom": 522,
+            "left": 512
+          },
+          "font": "16px Times",
+          "background": "rgba(0, 0, 0, 0)",
+          "color": "rgba(0, 0, 0, 0)",
+          "focused": false
+        },
+        {
+          "tag": "FLT-SEMANTICS",
+          "role": "button",
+          "label": "Request changes",
+          "checked": null,
+          "disabled": "true",
+          "bounds": {
+            "x": 594.6802978515625,
+            "y": 490,
+            "width": 123.390625,
+            "height": 32,
+            "top": 490,
+            "right": 718.0709228515625,
+            "bottom": 522,
+            "left": 594.6802978515625
+          },
+          "font": "16px Times",
+          "background": "rgba(0, 0, 0, 0)",
+          "color": "rgba(0, 0, 0, 0)",
+          "focused": false
+        },
+        {
+          "tag": "FLT-SEMANTICS",
+          "role": "button",
+          "label": "Reject",
+          "checked": null,
+          "disabled": "true",
+          "bounds": {
+            "x": 730.0850830078125,
+            "y": 490,
+            "width": 60.09375,
+            "height": 32,
+            "top": 490,
+            "right": 790.1788330078125,
+            "bottom": 522,
+            "left": 730.0850830078125
+          },
+          "font": "16px Times",
+          "background": "rgba(0, 0, 0, 0)",
+          "color": "rgba(0, 0, 0, 0)",
+          "focused": false
+        },
+        {
+          "tag": "FLT-SEMANTICS",
+          "role": "button",
+          "label": "Replay",
+          "checked": null,
+          "disabled": null,
+          "bounds": {
+            "x": 464,
+            "y": 656,
+            "width": 69.5,
+            "height": 24,
+            "top": 656,
+            "right": 533.5,
+            "bottom": 680,
+            "left": 464
+          },
+          "font": "16px Times",
+          "background": "rgba(0, 0, 0, 0)",
+          "color": "rgba(0, 0, 0, 0)",
+          "focused": true
+        }
+      ],
+      "localControls": [
+        {
+          "tag": "FLT-SEMANTICS",
+          "role": "button",
+          "label": "Approve",
+          "checked": null,
+          "disabled": "true",
+          "bounds": {
+            "x": 48,
+            "y": 170,
+            "width": 70.671875,
+            "height": 32
+          },
+          "font": "16px Times",
+          "background": "rgba(0, 0, 0, 0)",
+          "color": "rgba(0, 0, 0, 0)",
+          "focused": false
+        },
+        {
+          "tag": "FLT-SEMANTICS",
+          "role": "button",
+          "label": "Request changes",
+          "checked": null,
+          "disabled": "true",
+          "bounds": {
+            "x": 130.6802978515625,
+            "y": 170,
+            "width": 123.390625,
+            "height": 32
+          },
+          "font": "16px Times",
+          "background": "rgba(0, 0, 0, 0)",
+          "color": "rgba(0, 0, 0, 0)",
+          "focused": false
+        },
+        {
+          "tag": "FLT-SEMANTICS",
+          "role": "button",
+          "label": "Reject",
+          "checked": null,
+          "disabled": "true",
+          "bounds": {
+            "x": 266.0850830078125,
+            "y": 170,
+            "width": 60.09375,
+            "height": 32
+          },
+          "font": "16px Times",
+          "background": "rgba(0, 0, 0, 0)",
+          "color": "rgba(0, 0, 0, 0)",
+          "focused": false
+        },
+        {
+          "tag": "FLT-SEMANTICS",
+          "role": "button",
+          "label": "Replay",
+          "checked": null,
+          "disabled": null,
+          "bounds": {
+            "x": 0,
+            "y": 336,
+            "width": 69.5,
+            "height": 24
+          },
+          "font": "16px Times",
+          "background": "rgba(0, 0, 0, 0)",
+          "color": "rgba(0, 0, 0, 0)",
+          "focused": true
+        }
+      ],
+      "requestedMs": 2376.350042,
+      "receivedMs": 2454.0795,
+      "sha256": "06d6170d74dacaf7fe81473484e2d275f9f0c9a40ebf181cba708ab72b2c6086",
+      "file": "request-changes-submitting.png"
+    },
+    {
+      "state": "request-changes-outcome",
+      "stage": {
+        "x": 464,
+        "y": 320,
+        "width": 512,
+        "height": 360
+      },
+      "nativeRaster": {
+        "width": 1440,
+        "height": 913
+      },
+      "aria": "- group \"Capture stage width 752 height 1000 reduced false palette source-default-a76e57c9\":\n  - text: Publish the component update? Changes requested The agent will wait for revision notes.\n  - button \"Replay\"",
+      "controls": [
+        {
+          "tag": "FLT-SEMANTICS",
+          "role": "button",
+          "label": "Replay",
+          "checked": null,
+          "disabled": null,
+          "bounds": {
+            "x": 464,
+            "y": 656,
+            "width": 69.5,
+            "height": 24,
+            "top": 656,
+            "right": 533.5,
+            "bottom": 680,
+            "left": 464
+          },
+          "font": "16px Times",
+          "background": "rgba(0, 0, 0, 0)",
+          "color": "rgba(0, 0, 0, 0)",
+          "focused": true
+        }
+      ],
+      "localControls": [
+        {
+          "tag": "FLT-SEMANTICS",
+          "role": "button",
+          "label": "Replay",
+          "checked": null,
+          "disabled": null,
+          "bounds": {
+            "x": 0,
+            "y": 336,
+            "width": 69.5,
+            "height": 24
+          },
+          "font": "16px Times",
+          "background": "rgba(0, 0, 0, 0)",
+          "color": "rgba(0, 0, 0, 0)",
+          "focused": true
+        }
+      ],
+      "requestedMs": 3488.9389169999995,
+      "receivedMs": 3547.249667,
+      "sha256": "b8fa81f91e75e6eaefba2a590fdd45aa96a693a1e61d9878b8296d5824dd87fb",
+      "file": "request-changes-outcome.png"
+    },
+    {
+      "state": "reject-pending",
+      "stage": {
+        "x": 464,
+        "y": 320,
+        "width": 512,
+        "height": 360
+      },
+      "nativeRaster": {
+        "width": 1440,
+        "height": 913
+      },
+      "aria": "- group \"Capture stage width 752 height 1000 reduced false palette source-default-a76e57c9\":\n  - group \"Publish the component update? Input required The agent has prepared the release and is waiting for your decision. Release approval-card Checks 4 passed Visibility Public registry\":\n    - button \"Approve\"\n    - button \"Request changes\"\n    - button \"Reject\"\n  - button \"Replay\"",
+      "controls": [
+        {
+          "tag": "FLT-SEMANTICS",
+          "role": "button",
+          "label": "Approve",
+          "checked": null,
+          "disabled": null,
+          "bounds": {
+            "x": 512,
+            "y": 490,
+            "width": 70.671875,
+            "height": 32,
+            "top": 490,
+            "right": 582.671875,
+            "bottom": 522,
+            "left": 512
+          },
+          "font": "16px Times",
+          "background": "rgba(0, 0, 0, 0)",
+          "color": "rgba(0, 0, 0, 0)",
+          "focused": false
+        },
+        {
+          "tag": "FLT-SEMANTICS",
+          "role": "button",
+          "label": "Request changes",
+          "checked": null,
+          "disabled": null,
+          "bounds": {
+            "x": 594.6802978515625,
+            "y": 490,
+            "width": 123.390625,
+            "height": 32,
+            "top": 490,
+            "right": 718.0709228515625,
+            "bottom": 522,
+            "left": 594.6802978515625
+          },
+          "font": "16px Times",
+          "background": "rgba(0, 0, 0, 0)",
+          "color": "rgba(0, 0, 0, 0)",
+          "focused": false
+        },
+        {
+          "tag": "FLT-SEMANTICS",
+          "role": "button",
+          "label": "Reject",
+          "checked": null,
+          "disabled": null,
+          "bounds": {
+            "x": 730.0850830078125,
+            "y": 490,
+            "width": 60.09375,
+            "height": 32,
+            "top": 490,
+            "right": 790.1788330078125,
+            "bottom": 522,
+            "left": 730.0850830078125
+          },
+          "font": "16px Times",
+          "background": "rgba(0, 0, 0, 0)",
+          "color": "rgba(0, 0, 0, 0)",
+          "focused": false
+        },
+        {
+          "tag": "FLT-SEMANTICS",
+          "role": "button",
+          "label": "Replay",
+          "checked": null,
+          "disabled": null,
+          "bounds": {
+            "x": 464,
+            "y": 656,
+            "width": 69.5,
+            "height": 24,
+            "top": 656,
+            "right": 533.5,
+            "bottom": 680,
+            "left": 464
+          },
+          "font": "16px Times",
+          "background": "rgba(0, 0, 0, 0)",
+          "color": "rgba(0, 0, 0, 0)",
+          "focused": true
+        }
+      ],
+      "localControls": [
+        {
+          "tag": "FLT-SEMANTICS",
+          "role": "button",
+          "label": "Approve",
+          "checked": null,
+          "disabled": null,
+          "bounds": {
+            "x": 48,
+            "y": 170,
+            "width": 70.671875,
+            "height": 32
+          },
+          "font": "16px Times",
+          "background": "rgba(0, 0, 0, 0)",
+          "color": "rgba(0, 0, 0, 0)",
+          "focused": false
+        },
+        {
+          "tag": "FLT-SEMANTICS",
+          "role": "button",
+          "label": "Request changes",
+          "checked": null,
+          "disabled": null,
+          "bounds": {
+            "x": 130.6802978515625,
+            "y": 170,
+            "width": 123.390625,
+            "height": 32
+          },
+          "font": "16px Times",
+          "background": "rgba(0, 0, 0, 0)",
+          "color": "rgba(0, 0, 0, 0)",
+          "focused": false
+        },
+        {
+          "tag": "FLT-SEMANTICS",
+          "role": "button",
+          "label": "Reject",
+          "checked": null,
+          "disabled": null,
+          "bounds": {
+            "x": 266.0850830078125,
+            "y": 170,
+            "width": 60.09375,
+            "height": 32
+          },
+          "font": "16px Times",
+          "background": "rgba(0, 0, 0, 0)",
+          "color": "rgba(0, 0, 0, 0)",
+          "focused": false
+        },
+        {
+          "tag": "FLT-SEMANTICS",
+          "role": "button",
+          "label": "Replay",
+          "checked": null,
+          "disabled": null,
+          "bounds": {
+            "x": 0,
+            "y": 336,
+            "width": 69.5,
+            "height": 24
+          },
+          "font": "16px Times",
+          "background": "rgba(0, 0, 0, 0)",
+          "color": "rgba(0, 0, 0, 0)",
+          "focused": true
+        }
+      ],
+      "requestedMs": 4028.05825,
+      "receivedMs": 4098.359042,
+      "sha256": "8ac94371998bf847153feca98b107e1f62da393554ac1d9a86b09b4626e49542",
+      "file": "reject-pending.png"
+    },
+    {
+      "state": "reject-submitting",
+      "stage": {
+        "x": 464,
+        "y": 320,
+        "width": 512,
+        "height": 360
+      },
+      "nativeRaster": {
+        "width": 1440,
+        "height": 913
+      },
+      "aria": "- text: Publish the component update? Publish the component update? Submitting The agent has prepared the release and is waiting for your decision. Release approval-card Checks 4 passed Visibility Public registry\n- group \"Capture stage width 752 height 1000 reduced false palette source-default-a76e57c9\":\n  - group \"Publish the component update? Publish the component update? Submitting The agent has prepared the release and is waiting for your decision. Release approval-card Checks 4 passed Visibility Public registry\":\n    - button \"Approve\" [disabled]\n    - button \"Request changes\" [disabled]\n    - button \"Reject\" [disabled]\n  - button \"Replay\"",
+      "controls": [
+        {
+          "tag": "FLT-SEMANTICS",
+          "role": "button",
+          "label": "Approve",
+          "checked": null,
+          "disabled": "true",
+          "bounds": {
+            "x": 512,
+            "y": 490,
+            "width": 70.671875,
+            "height": 32,
+            "top": 490,
+            "right": 582.671875,
+            "bottom": 522,
+            "left": 512
+          },
+          "font": "16px Times",
+          "background": "rgba(0, 0, 0, 0)",
+          "color": "rgba(0, 0, 0, 0)",
+          "focused": false
+        },
+        {
+          "tag": "FLT-SEMANTICS",
+          "role": "button",
+          "label": "Request changes",
+          "checked": null,
+          "disabled": "true",
+          "bounds": {
+            "x": 594.6802978515625,
+            "y": 490,
+            "width": 123.390625,
+            "height": 32,
+            "top": 490,
+            "right": 718.0709228515625,
+            "bottom": 522,
+            "left": 594.6802978515625
+          },
+          "font": "16px Times",
+          "background": "rgba(0, 0, 0, 0)",
+          "color": "rgba(0, 0, 0, 0)",
+          "focused": false
+        },
+        {
+          "tag": "FLT-SEMANTICS",
+          "role": "button",
+          "label": "Reject",
+          "checked": null,
+          "disabled": "true",
+          "bounds": {
+            "x": 730.0850830078125,
+            "y": 490,
+            "width": 60.09375,
+            "height": 32,
+            "top": 490,
+            "right": 790.1788330078125,
+            "bottom": 522,
+            "left": 730.0850830078125
+          },
+          "font": "16px Times",
+          "background": "rgba(0, 0, 0, 0)",
+          "color": "rgba(0, 0, 0, 0)",
+          "focused": false
+        },
+        {
+          "tag": "FLT-SEMANTICS",
+          "role": "button",
+          "label": "Replay",
+          "checked": null,
+          "disabled": null,
+          "bounds": {
+            "x": 464,
+            "y": 656,
+            "width": 69.5,
+            "height": 24,
+            "top": 656,
+            "right": 533.5,
+            "bottom": 680,
+            "left": 464
+          },
+          "font": "16px Times",
+          "background": "rgba(0, 0, 0, 0)",
+          "color": "rgba(0, 0, 0, 0)",
+          "focused": true
+        }
+      ],
+      "localControls": [
+        {
+          "tag": "FLT-SEMANTICS",
+          "role": "button",
+          "label": "Approve",
+          "checked": null,
+          "disabled": "true",
+          "bounds": {
+            "x": 48,
+            "y": 170,
+            "width": 70.671875,
+            "height": 32
+          },
+          "font": "16px Times",
+          "background": "rgba(0, 0, 0, 0)",
+          "color": "rgba(0, 0, 0, 0)",
+          "focused": false
+        },
+        {
+          "tag": "FLT-SEMANTICS",
+          "role": "button",
+          "label": "Request changes",
+          "checked": null,
+          "disabled": "true",
+          "bounds": {
+            "x": 130.6802978515625,
+            "y": 170,
+            "width": 123.390625,
+            "height": 32
+          },
+          "font": "16px Times",
+          "background": "rgba(0, 0, 0, 0)",
+          "color": "rgba(0, 0, 0, 0)",
+          "focused": false
+        },
+        {
+          "tag": "FLT-SEMANTICS",
+          "role": "button",
+          "label": "Reject",
+          "checked": null,
+          "disabled": "true",
+          "bounds": {
+            "x": 266.0850830078125,
+            "y": 170,
+            "width": 60.09375,
+            "height": 32
+          },
+          "font": "16px Times",
+          "background": "rgba(0, 0, 0, 0)",
+          "color": "rgba(0, 0, 0, 0)",
+          "focused": false
+        },
+        {
+          "tag": "FLT-SEMANTICS",
+          "role": "button",
+          "label": "Replay",
+          "checked": null,
+          "disabled": null,
+          "bounds": {
+            "x": 0,
+            "y": 336,
+            "width": 69.5,
+            "height": 24
+          },
+          "font": "16px Times",
+          "background": "rgba(0, 0, 0, 0)",
+          "color": "rgba(0, 0, 0, 0)",
+          "focused": true
+        }
+      ],
+      "requestedMs": 4323.911833,
+      "receivedMs": 4364.821250000001,
+      "sha256": "7c8bfc3472150d9ac530bfb31fbd05fee94776734d2e0123dd53e83bf84c43e1",
+      "file": "reject-submitting.png"
+    },
+    {
+      "state": "reject-outcome",
+      "stage": {
+        "x": 464,
+        "y": 320,
+        "width": 512,
+        "height": 360
+      },
+      "nativeRaster": {
+        "width": 1440,
+        "height": 913
+      },
+      "aria": "- group \"Capture stage width 752 height 1000 reduced false palette source-default-a76e57c9\":\n  - text: Publish the component update? Rejected Publishing was declined.\n  - button \"Replay\"",
+      "controls": [
+        {
+          "tag": "FLT-SEMANTICS",
+          "role": "button",
+          "label": "Replay",
+          "checked": null,
+          "disabled": null,
+          "bounds": {
+            "x": 464,
+            "y": 656,
+            "width": 69.5,
+            "height": 24,
+            "top": 656,
+            "right": 533.5,
+            "bottom": 680,
+            "left": 464
+          },
+          "font": "16px Times",
+          "background": "rgba(0, 0, 0, 0)",
+          "color": "rgba(0, 0, 0, 0)",
+          "focused": true
+        }
+      ],
+      "localControls": [
+        {
+          "tag": "FLT-SEMANTICS",
+          "role": "button",
+          "label": "Replay",
+          "checked": null,
+          "disabled": null,
+          "bounds": {
+            "x": 0,
+            "y": 336,
+            "width": 69.5,
+            "height": 24
+          },
+          "font": "16px Times",
+          "background": "rgba(0, 0, 0, 0)",
+          "color": "rgba(0, 0, 0, 0)",
+          "focused": true
+        }
+      ],
+      "requestedMs": 5383.780667000001,
+      "receivedMs": 5445.604832999999,
+      "sha256": "23ec5635d4838b0976d381e71b3f10fe125d4c978a27b861671fc5364dda70d9",
+      "file": "reject-outcome.png"
+    }
+  ],
+  "frames": [
+    {
+      "file": "frames/000000.png",
+      "requestedMs": 0.015124999999898137,
+      "receivedMs": 72.25054199999977,
+      "sha256": "b1e3263abb23910beba29af880812dcef4ba254d0022f1619476f79bfdd8341c"
+    },
+    {
+      "file": "frames/000001.png",
+      "requestedMs": 73.22108300000036,
+      "receivedMs": 134.8165829999998,
+      "sha256": "b1e3263abb23910beba29af880812dcef4ba254d0022f1619476f79bfdd8341c"
+    },
+    {
+      "file": "frames/000002.png",
+      "requestedMs": 135.78658300000006,
+      "receivedMs": 174.0687079999998,
+      "sha256": "b1e3263abb23910beba29af880812dcef4ba254d0022f1619476f79bfdd8341c"
+    },
+    {
+      "file": "frames/000003.png",
+      "requestedMs": 181.96762500000023,
+      "receivedMs": 216.33187499999985,
+      "sha256": "b1e3263abb23910beba29af880812dcef4ba254d0022f1619476f79bfdd8341c"
+    },
+    {
+      "file": "frames/000004.png",
+      "requestedMs": 217.75366699999995,
+      "receivedMs": 315.8805000000002,
+      "sha256": "4ef0638a57d893ee1b59d67d6f5770e75c23436f004400e8eb999a501b4c9b5e"
+    },
+    {
+      "file": "frames/000005.png",
+      "requestedMs": 316.9536250000001,
+      "receivedMs": 472.0947500000002,
+      "sha256": "5be36d6c2a5282412100449fe79b2b06f24f74dca25482016b1ff26d195fc4b3"
+    },
+    {
+      "file": "frames/000006.png",
+      "requestedMs": 472.699208,
+      "receivedMs": 519.542625,
+      "sha256": "7ff05198db22221cb376163300f41f22e8e768af55e95209c273b79eff541a4e"
+    },
+    {
+      "file": "frames/000007.png",
+      "requestedMs": 520.144875,
+      "receivedMs": 628.109708,
+      "sha256": "0deb3461c387dca666ba32da48548d6dbb1672f3afebe5a34dbf7270410744a6"
+    },
+    {
+      "file": "frames/000008.png",
+      "requestedMs": 628.7726670000002,
+      "receivedMs": 670.0727500000003,
+      "sha256": "e02e7166b8715fbc0f1347007e5ff2bbb66a1e7378b4a3c2565389005207ca59"
+    },
+    {
+      "file": "frames/000009.png",
+      "requestedMs": 678.918208,
+      "receivedMs": 746.2306669999998,
+      "sha256": "c4ec2a27137a24f2588a1242498a634a903622bbb835bf69b1b6dd35d2dce314"
+    },
+    {
+      "file": "frames/000010.png",
+      "requestedMs": 747.1934579999997,
+      "receivedMs": 800.4282499999999,
+      "sha256": "f4b71f41bc641adc1faf3c0f24021254a5a36eca2aa2a3b06d3a979e5fb4f31d"
+    },
+    {
+      "file": "frames/000011.png",
+      "requestedMs": 800.991833,
+      "receivedMs": 848.2509580000005,
+      "sha256": "a622cd5332df2250bab1b787196f0ef031f6c9ebbdab334b237ac77218f30f0b"
+    },
+    {
+      "file": "frames/000012.png",
+      "requestedMs": 848.9282499999999,
+      "receivedMs": 910.9404999999997,
+      "sha256": "f8774812c0570797c7ccf8620ba6172f336ee60912b71b9ff6750d501133941f"
+    },
+    {
+      "file": "frames/000013.png",
+      "requestedMs": 913.9409580000001,
+      "receivedMs": 1177.3624170000003,
+      "sha256": "d9a37b4c8d3828e0af6a5607f99763a955b7332185668bb224b2d950aa2a6474"
+    },
+    {
+      "file": "frames/000014.png",
+      "requestedMs": 1183.2758329999997,
+      "receivedMs": 1249.402333,
+      "sha256": "3b3cace9c998ddf64fc001881ab1a3dd14b88e0b25f3afbf49db6922ba59adb4"
+    },
+    {
+      "file": "frames/000015.png",
+      "requestedMs": 1251.3396250000005,
+      "receivedMs": 1293.708125,
+      "sha256": "3b3cace9c998ddf64fc001881ab1a3dd14b88e0b25f3afbf49db6922ba59adb4"
+    },
+    {
+      "file": "frames/000016.png",
+      "requestedMs": 1294.1887500000003,
+      "receivedMs": 1326.5099579999996,
+      "sha256": "3b3cace9c998ddf64fc001881ab1a3dd14b88e0b25f3afbf49db6922ba59adb4"
+    },
+    {
+      "file": "frames/000017.png",
+      "requestedMs": 1327.073625,
+      "receivedMs": 1363.970875,
+      "sha256": "3b3cace9c998ddf64fc001881ab1a3dd14b88e0b25f3afbf49db6922ba59adb4"
+    },
+    {
+      "file": "frames/000018.png",
+      "requestedMs": 1365.4984999999997,
+      "receivedMs": 1416.653875,
+      "sha256": "3b3cace9c998ddf64fc001881ab1a3dd14b88e0b25f3afbf49db6922ba59adb4"
+    },
+    {
+      "file": "frames/000019.png",
+      "requestedMs": 1418.25875,
+      "receivedMs": 1508.5412919999999,
+      "sha256": "3b3cace9c998ddf64fc001881ab1a3dd14b88e0b25f3afbf49db6922ba59adb4"
+    },
+    {
+      "file": "frames/000020.png",
+      "requestedMs": 1509.8267919999998,
+      "receivedMs": 1550.359042,
+      "sha256": "3b3cace9c998ddf64fc001881ab1a3dd14b88e0b25f3afbf49db6922ba59adb4"
+    },
+    {
+      "file": "frames/000021.png",
+      "requestedMs": 1551.5475830000005,
+      "receivedMs": 1627.5916669999997,
+      "sha256": "3b3cace9c998ddf64fc001881ab1a3dd14b88e0b25f3afbf49db6922ba59adb4"
+    },
+    {
+      "file": "frames/000022.png",
+      "requestedMs": 1630.0392499999998,
+      "receivedMs": 1664.6526670000003,
+      "sha256": "3b3cace9c998ddf64fc001881ab1a3dd14b88e0b25f3afbf49db6922ba59adb4"
+    },
+    {
+      "file": "frames/000023.png",
+      "requestedMs": 1666.4323750000003,
+      "receivedMs": 1719.8108330000005,
+      "sha256": "d3b921394e4371d9e15d899601aa5097c47183a6943af2dc820a8271a66da2b5"
+    },
+    {
+      "file": "frames/000024.png",
+      "requestedMs": 1720.8199999999997,
+      "receivedMs": 1799.4070419999998,
+      "sha256": "fcfb7d0a0e46ab8c374c06e5bd534125f1fad18eeffd280764be1edd9e427131"
+    },
+    {
+      "file": "frames/000025.png",
+      "requestedMs": 1800.9741249999997,
+      "receivedMs": 1848.3265419999998,
+      "sha256": "a57beb657d73a52b08fa6bf9def2275b210a01f4979f8f4cc6d069003c66f4fd"
+    },
+    {
+      "file": "frames/000026.png",
+      "requestedMs": 1850.7662499999997,
+      "receivedMs": 1895.093167,
+      "sha256": "21522d1ca30e1979a8af3e30ff4ddd399d16f56c2134c214102a13f05d08aa04"
+    },
+    {
+      "file": "frames/000027.png",
+      "requestedMs": 1895.646667,
+      "receivedMs": 1933.0772500000003,
+      "sha256": "31bf7d7fc1980be9f2ed3c0d64fbc1254f2b34e17f5e32bf0287e3fc05982b8d"
+    },
+    {
+      "file": "frames/000028.png",
+      "requestedMs": 1942.1523749999997,
+      "receivedMs": 2006.192083,
+      "sha256": "a4a3c51fe681f4ae4fbd2c33251c199d85baea36c2302224bde7fe54ac147977"
+    },
+    {
+      "file": "frames/000029.png",
+      "requestedMs": 2006.972167,
+      "receivedMs": 2061.365167,
+      "sha256": "a4a3c51fe681f4ae4fbd2c33251c199d85baea36c2302224bde7fe54ac147977"
+    },
+    {
+      "file": "frames/000030.png",
+      "requestedMs": 2068.894333,
+      "receivedMs": 2146.9379580000004,
+      "sha256": "11a98a74c492b73e199775b4d0ca552cb786eefb8f563ab759ed7667b7f90494"
+    },
+    {
+      "file": "frames/000031.png",
+      "requestedMs": 2147.405167,
+      "receivedMs": 2223.6407500000005,
+      "sha256": "c48498469b8c706c38d4a30d646024ee00133ed0e4485fc9bdb61c5065c2d542"
+    },
+    {
+      "file": "frames/000032.png",
+      "requestedMs": 2224.9623330000004,
+      "receivedMs": 2276.1823750000003,
+      "sha256": "3f107c8aef572bed286da6043b87c551fb3970eb1f9a0c5f593561fedbe6b6f7"
+    },
+    {
+      "file": "frames/000033.png",
+      "requestedMs": 2277.8242499999997,
+      "receivedMs": 2321.734208,
+      "sha256": "b864c413f621f762d4446ee22348dfd634c763fb3c6f9b0deed1b591931cf620"
+    },
+    {
+      "file": "frames/000034.png",
+      "requestedMs": 2323.0787920000002,
+      "receivedMs": 2401.8077080000003,
+      "sha256": "07168c63da9fbe733d42b45f9831a9df87d8d471808ff18e7660f55679056e44"
+    },
+    {
+      "file": "frames/000035.png",
+      "requestedMs": 2405.284417,
+      "receivedMs": 2468.7183750000004,
+      "sha256": "06d6170d74dacaf7fe81473484e2d275f9f0c9a40ebf181cba708ab72b2c6086"
+    },
+    {
+      "file": "frames/000036.png",
+      "requestedMs": 2469.0918330000004,
+      "receivedMs": 2512.6397500000003,
+      "sha256": "56c51501a601e25ab0bcfe5c25694384692aeda18430dd37cc73c392c11a2979"
+    },
+    {
+      "file": "frames/000037.png",
+      "requestedMs": 2513.04425,
+      "receivedMs": 2549.024875,
+      "sha256": "51fd791dab6dad703129e6b998701bd1ab94691d22c327fd7b1131ff73df6340"
+    },
+    {
+      "file": "frames/000038.png",
+      "requestedMs": 2549.9450420000003,
+      "receivedMs": 2619.6887500000003,
+      "sha256": "85445faa76326db01308f65a0d20bcd8d6546d5643f7261cb578770296035971"
+    },
+    {
+      "file": "frames/000039.png",
+      "requestedMs": 2620.4795830000003,
+      "receivedMs": 2669.658625,
+      "sha256": "fa739566301dc2723b012c2e986733da1f12e727425526ccea351bc7664a22b0"
+    },
+    {
+      "file": "frames/000040.png",
+      "requestedMs": 2670.5078750000002,
+      "receivedMs": 2729.6269170000005,
+      "sha256": "9f8a6e36cb10651bda70cd137e247f4c11de8f1e33dcf3cc58b19e1236aae885"
+    },
+    {
+      "file": "frames/000041.png",
+      "requestedMs": 2733.9303330000002,
+      "receivedMs": 2795.836333,
+      "sha256": "6e41401bc547e0faecd9798c016db59d7531a07fbbccc4214233fafe3fa5135c"
+    },
+    {
+      "file": "frames/000042.png",
+      "requestedMs": 2800.283542,
+      "receivedMs": 2852.9427080000005,
+      "sha256": "f0474e5f51b4180bf8ed343311aa568e3791f798c8b666b6f166d466b8675af6"
+    },
+    {
+      "file": "frames/000043.png",
+      "requestedMs": 2854.5788330000005,
+      "receivedMs": 2898.4294580000005,
+      "sha256": "b5c5ba3949cb879edef0cb6219ad78595aec8a49f8337988c6e43166b890baf6"
+    },
+    {
+      "file": "frames/000044.png",
+      "requestedMs": 2899.0705420000004,
+      "receivedMs": 3069.571833,
+      "sha256": "04fd659cd8c3b6b49767c28f5adfaa55c6ea5b98d35e97eb2f6a36be97607957"
+    },
+    {
+      "file": "frames/000045.png",
+      "requestedMs": 3070.6367499999997,
+      "receivedMs": 3120.2028329999994,
+      "sha256": "79b27a2adda50085e0c95b290d5914ce19dbe6f7fc2fb681bc351bd6c74634e7"
+    },
+    {
+      "file": "frames/000046.png",
+      "requestedMs": 3120.9039169999996,
+      "receivedMs": 3219.2039999999997,
+      "sha256": "b88a36e0ec9b381af59cecd92268b32ab264743a56878b935a375abd581d0e62"
+    },
+    {
+      "file": "frames/000047.png",
+      "requestedMs": 3219.7484170000007,
+      "receivedMs": 3262.793125,
+      "sha256": "cb66f71ae540dc6d94dd745c7ec57d08f6c6a13cf64d7bcb43bd27a207c4c114"
+    },
+    {
+      "file": "frames/000048.png",
+      "requestedMs": 3263.746583,
+      "receivedMs": 3316.2373750000006,
+      "sha256": "b8fa81f91e75e6eaefba2a590fdd45aa96a693a1e61d9878b8296d5824dd87fb"
+    },
+    {
+      "file": "frames/000049.png",
+      "requestedMs": 3316.836083,
+      "receivedMs": 3365.2700000000004,
+      "sha256": "b8fa81f91e75e6eaefba2a590fdd45aa96a693a1e61d9878b8296d5824dd87fb"
+    },
+    {
+      "file": "frames/000050.png",
+      "requestedMs": 3367.612792,
+      "receivedMs": 3419.610917,
+      "sha256": "b8fa81f91e75e6eaefba2a590fdd45aa96a693a1e61d9878b8296d5824dd87fb"
+    },
+    {
+      "file": "frames/000051.png",
+      "requestedMs": 3423.335083,
+      "receivedMs": 3474.010708,
+      "sha256": "b8fa81f91e75e6eaefba2a590fdd45aa96a693a1e61d9878b8296d5824dd87fb"
+    },
+    {
+      "file": "frames/000052.png",
+      "requestedMs": 3475.8028329999997,
+      "receivedMs": 3519.806375,
+      "sha256": "b8fa81f91e75e6eaefba2a590fdd45aa96a693a1e61d9878b8296d5824dd87fb"
+    },
+    {
+      "file": "frames/000053.png",
+      "requestedMs": 3520.709500000001,
+      "receivedMs": 3592.691500000001,
+      "sha256": "b8fa81f91e75e6eaefba2a590fdd45aa96a693a1e61d9878b8296d5824dd87fb"
+    },
+    {
+      "file": "frames/000054.png",
+      "requestedMs": 3593.0777500000004,
+      "receivedMs": 3617.8794579999994,
+      "sha256": "b8fa81f91e75e6eaefba2a590fdd45aa96a693a1e61d9878b8296d5824dd87fb"
+    },
+    {
+      "file": "frames/000055.png",
+      "requestedMs": 3618.3799579999995,
+      "receivedMs": 3666.891917000001,
+      "sha256": "2cb639f10a17b725f34471ea5641498be3d3ad3749232e339e378bf3bb19ae10"
+    },
+    {
+      "file": "frames/000056.png",
+      "requestedMs": 3668.184625,
+      "receivedMs": 3711.165166999999,
+      "sha256": "237ea4045135b1337d488dd52d9eda1f066b8385069f9cab480ae0af5c9dfb6a"
+    },
+    {
+      "file": "frames/000057.png",
+      "requestedMs": 3713.4722920000004,
+      "receivedMs": 3763.1989169999997,
+      "sha256": "3337dad2467ed5cabdab2fac375d507481b55aaf2d911f30bf6463554df3995a"
+    },
+    {
+      "file": "frames/000058.png",
+      "requestedMs": 3765.740417000001,
+      "receivedMs": 3835.1582080000007,
+      "sha256": "21522d1ca30e1979a8af3e30ff4ddd399d16f56c2134c214102a13f05d08aa04"
+    },
+    {
+      "file": "frames/000059.png",
+      "requestedMs": 3836.03975,
+      "receivedMs": 3876.346375000001,
+      "sha256": "31bf7d7fc1980be9f2ed3c0d64fbc1254f2b34e17f5e32bf0287e3fc05982b8d"
+    },
+    {
+      "file": "frames/000060.png",
+      "requestedMs": 3877.5363749999997,
+      "receivedMs": 3909.5316669999993,
+      "sha256": "a4a3c51fe681f4ae4fbd2c33251c199d85baea36c2302224bde7fe54ac147977"
+    },
+    {
+      "file": "frames/000061.png",
+      "requestedMs": 3913.8752079999995,
+      "receivedMs": 3965.3695000000007,
+      "sha256": "a4a3c51fe681f4ae4fbd2c33251c199d85baea36c2302224bde7fe54ac147977"
+    },
+    {
+      "file": "frames/000062.png",
+      "requestedMs": 3972.737000000001,
+      "receivedMs": 4042.0188749999998,
+      "sha256": "11a98a74c492b73e199775b4d0ca552cb786eefb8f563ab759ed7667b7f90494"
+    },
+    {
+      "file": "frames/000063.png",
+      "requestedMs": 4053.9363329999996,
+      "receivedMs": 4219.25,
+      "sha256": "8ac94371998bf847153feca98b107e1f62da393554ac1d9a86b09b4626e49542"
+    },
+    {
+      "file": "frames/000064.png",
+      "requestedMs": 4219.786667,
+      "receivedMs": 4250.116667,
+      "sha256": "b1e3263abb23910beba29af880812dcef4ba254d0022f1619476f79bfdd8341c"
+    },
+    {
+      "file": "frames/000065.png",
+      "requestedMs": 4250.7864580000005,
+      "receivedMs": 4316.062042,
+      "sha256": "4ef0638a57d893ee1b59d67d6f5770e75c23436f004400e8eb999a501b4c9b5e"
+    },
+    {
+      "file": "frames/000066.png",
+      "requestedMs": 4316.584333000001,
+      "receivedMs": 4352.5165,
+      "sha256": "7c8bfc3472150d9ac530bfb31fbd05fee94776734d2e0123dd53e83bf84c43e1"
+    },
+    {
+      "file": "frames/000067.png",
+      "requestedMs": 4353.060292,
+      "receivedMs": 4414.7540420000005,
+      "sha256": "06d6170d74dacaf7fe81473484e2d275f9f0c9a40ebf181cba708ab72b2c6086"
+    },
+    {
+      "file": "frames/000068.png",
+      "requestedMs": 4416.192917,
+      "receivedMs": 4472.83675,
+      "sha256": "56c51501a601e25ab0bcfe5c25694384692aeda18430dd37cc73c392c11a2979"
+    },
+    {
+      "file": "frames/000069.png",
+      "requestedMs": 4473.474125000001,
+      "receivedMs": 4523.426375000001,
+      "sha256": "82da5d37328518dae02d56c272b6b467c3acd3e358d857d7850170f98e4c6622"
+    },
+    {
+      "file": "frames/000070.png",
+      "requestedMs": 4524.1085,
+      "receivedMs": 4552.9985830000005,
+      "sha256": "85445faa76326db01308f65a0d20bcd8d6546d5643f7261cb578770296035971"
+    },
+    {
+      "file": "frames/000071.png",
+      "requestedMs": 4554.3369170000005,
+      "receivedMs": 4584.335832999999,
+      "sha256": "6ab31fb029211a571fe70cc5108516de65550b127898938fdb040978ffcabd1f"
+    },
+    {
+      "file": "frames/000072.png",
+      "requestedMs": 4586.769792000001,
+      "receivedMs": 4621.871917,
+      "sha256": "28fdf76202dd75c376bdf5eb3dd85ccd57ff0f5d947e7f86910471f07f88890f"
+    },
+    {
+      "file": "frames/000073.png",
+      "requestedMs": 4622.585792,
+      "receivedMs": 4654.434083,
+      "sha256": "63b2b959df4a0cc2e439ed1e231eb16dedef8904388c5e832c5eec2f3494858f"
+    },
+    {
+      "file": "frames/000074.png",
+      "requestedMs": 4655.091,
+      "receivedMs": 4682.786583000001,
+      "sha256": "e02e7166b8715fbc0f1347007e5ff2bbb66a1e7378b4a3c2565389005207ca59"
+    },
+    {
+      "file": "frames/000075.png",
+      "requestedMs": 4685.558333000001,
+      "receivedMs": 4715.978917,
+      "sha256": "c9b9befb8904df65f69439dd9bd2fef269cd292ac50813d3173cfddaf5706e5c"
+    },
+    {
+      "file": "frames/000076.png",
+      "requestedMs": 4716.369917,
+      "receivedMs": 4747.8908329999995,
+      "sha256": "e2b9353faf10ba2701f1696f90f931a826963e29b7583400272e370a3bf1e8eb"
+    },
+    {
+      "file": "frames/000077.png",
+      "requestedMs": 4748.664583,
+      "receivedMs": 4785.033125,
+      "sha256": "8b9963314942334b6e4b338761e23725a618bbbd68bbaf30e46ed0217e795d11"
+    },
+    {
+      "file": "frames/000078.png",
+      "requestedMs": 4785.597207999999,
+      "receivedMs": 4815.808166999999,
+      "sha256": "f4b71f41bc641adc1faf3c0f24021254a5a36eca2aa2a3b06d3a979e5fb4f31d"
+    },
+    {
+      "file": "frames/000079.png",
+      "requestedMs": 4816.480458,
+      "receivedMs": 4852.240833,
+      "sha256": "b5c5ba3949cb879edef0cb6219ad78595aec8a49f8337988c6e43166b890baf6"
+    },
+    {
+      "file": "frames/000080.png",
+      "requestedMs": 4853.664208,
+      "receivedMs": 4891.9905,
+      "sha256": "3bb6a70f41721808d743830e6ef055012858352a13ccae816cab3ea6432cddec"
+    },
+    {
+      "file": "frames/000081.png",
+      "requestedMs": 4893.061958,
+      "receivedMs": 4942.205833,
+      "sha256": "ea54fa84725e4992cc197a0ae595a89ca09e1f71da373cbdf747c0b653c9dcfc"
+    },
+    {
+      "file": "frames/000082.png",
+      "requestedMs": 4945.0939579999995,
+      "receivedMs": 5012.234958000001,
+      "sha256": "0fd1c9ce904329a1f445177c3d8c3b4fbd0dcb96baffabd501dc4529ff253e33"
+    },
+    {
+      "file": "frames/000083.png",
+      "requestedMs": 5014.2658329999995,
+      "receivedMs": 5086.065667000001,
+      "sha256": "f424862c361100e38136be416d40f6e4a9f915ca7943d77e7fe17f2a539c0dcd"
+    },
+    {
+      "file": "frames/000084.png",
+      "requestedMs": 5086.995333000001,
+      "receivedMs": 5148.927167,
+      "sha256": "97fef8586d44dd1492b9ef890a2e769d59950c306c276370b896a7e2cf37d0b8"
+    },
+    {
+      "file": "frames/000085.png",
+      "requestedMs": 5151.331708,
+      "receivedMs": 5213.576625,
+      "sha256": "ec9883f4d3f69acf544d50b9e2b18e5cc7b83044e846f70fb319241c0bbcda60"
+    },
+    {
+      "file": "frames/000086.png",
+      "requestedMs": 5214.842542,
+      "receivedMs": 5298.274125,
+      "sha256": "23ec5635d4838b0976d381e71b3f10fe125d4c978a27b861671fc5364dda70d9"
+    },
+    {
+      "file": "frames/000087.png",
+      "requestedMs": 5299.241292000001,
+      "receivedMs": 5398.846667,
+      "sha256": "23ec5635d4838b0976d381e71b3f10fe125d4c978a27b861671fc5364dda70d9"
+    },
+    {
+      "file": "frames/000088.png",
+      "requestedMs": 5399.393667,
+      "receivedMs": 5462.650417000001,
+      "sha256": "23ec5635d4838b0976d381e71b3f10fe125d4c978a27b861671fc5364dda70d9"
+    }
+  ],
+  "keyboardTraversal": [],
+  "url": "http://127.0.0.1:18117/agents-round3-after6/?slug=approval-card&theme=light&previewWidth=752&captureProbe=1&palette=source-default-a76e57c9&example=review",
+  "environment": {
+    "viewport": {
+      "width": 1440,
+      "height": 1000,
+      "dpr": 1
+    },
+    "browserReducedMotion": false,
+    "probe": {
+      "disableAnimations": false,
+      "platformDisableAnimations": false,
+      "motionOverride": null,
+      "backgroundArgb": 4294769916,
+      "constraints": {
+        "minWidth": 752,
+        "maxWidth": 752,
+        "minHeight": 0,
+        "maxHeight": 1000
+      },
+      "rect": {
+        "x": 344,
+        "y": 0,
+        "width": 752,
+        "height": 1000
+      }
+    },
+    "fonts": [],
+    "colors": {
+      "background": "",
+      "foreground": "",
+      "muted": "",
+      "muted-foreground": "",
+      "primary": "",
+      "primary-foreground": ""
+    },
+    "htmlClass": "",
+    "dataTheme": null,
+    "browser": "155.0.8059.86"
+  },
+  "cadence": {
+    "samples": 89,
+    "decodedFrames": 89,
+    "width": 1440,
+    "height": 913,
+    "measuredFps": 16.325319464356063,
+    "maxGapMs": 266.4219170000006,
+    "interpolated": false,
+    "temporalEquivalence": false
+  }
+}

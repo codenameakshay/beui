@@ -1,0 +1,61 @@
+[
+  {
+    "name": "idle",
+    "atMs": 1560.137625,
+    "aria": "- group \"Capture stage width 752 height 1000 reduced false\":\n  - group \"How focused should the first release be? 1/3 Question 1 of 3\":\n    - radio \"A focused starter set Ship a few polished pieces first.\"\n    - radio \"A broader collection Cover more ground with lighter depth.\"\n    - radio \"One flagship experience Pour everything into a single showcase.\"\n    - textbox \"Describe another scope…\"\n    - button \"Previous question\" [disabled]\n    - button \"Next question\" [disabled]\n  - button \"Replay\""
+  },
+  {
+    "name": "all source option descriptions",
+    "atMs": 1563.1879580000002,
+    "expected": "Ship a few polished pieces first.",
+    "aria": "- group \"Capture stage width 752 height 1000 reduced false\":\n  - group \"How focused should the first release be? 1/3 Question 1 of 3\":\n    - radio \"A focused starter set Ship a few polished pieces first.\"\n    - radio \"A broader collection Cover more ground with lighter depth.\"\n    - radio \"One flagship experience Pour everything into a single showcase.\"\n    - textbox \"Describe another scope…\"\n    - button \"Previous question\" [disabled]\n    - button \"Next question\" [disabled]\n  - button \"Replay\""
+  },
+  {
+    "name": "second description",
+    "atMs": 1564.945375,
+    "expected": "Cover more ground with lighter depth.",
+    "aria": "- group \"Capture stage width 752 height 1000 reduced false\":\n  - group \"How focused should the first release be? 1/3 Question 1 of 3\":\n    - radio \"A focused starter set Ship a few polished pieces first.\"\n    - radio \"A broader collection Cover more ground with lighter depth.\"\n    - radio \"One flagship experience Pour everything into a single showcase.\"\n    - textbox \"Describe another scope…\"\n    - button \"Previous question\" [disabled]\n    - button \"Next question\" [disabled]\n  - button \"Replay\""
+  },
+  {
+    "name": "third description",
+    "atMs": 1574.8606670000001,
+    "expected": "Pour everything into a single showcase.",
+    "aria": "- group \"Capture stage width 752 height 1000 reduced false\":\n  - group \"How focused should the first release be? 1/3 Question 1 of 3\":\n    - radio \"A focused starter set Ship a few polished pieces first.\"\n    - radio \"A broader collection Cover more ground with lighter depth.\"\n    - radio \"One flagship experience Pour everything into a single showcase.\"\n    - textbox \"Describe another scope…\"\n    - button \"Previous question\" [disabled]\n    - button \"Next question\" [disabled]\n  - button \"Replay\""
+  },
+  {
+    "action": "select focused scope",
+    "beforeMs": 1574.9115,
+    "afterMs": 1608.3330830000002
+  },
+  {
+    "name": "auto-advanced second question",
+    "atMs": 2114.077875,
+    "expected": "Which checks should block publishing?",
+    "aria": "- group \"Capture stage width 752 height 1000 reduced false\":\n  - group \"Which checks should block publishing? 2/3 Select every check the agent must pass before it can continue. Question 2 of 3\":\n    - checkbox \"Type safety\"\n    - checkbox \"Accessibility\"\n    - checkbox \"Registry validation\"\n    - button \"Previous question\"\n    - button \"Next question\" [disabled]\n  - button \"Replay\""
+  },
+  {
+    "action": "select two checks",
+    "beforeMs": 2114.0880829999996,
+    "afterMs": 2207.5003749999996
+  },
+  {
+    "action": "continue",
+    "beforeMs": 2207.505625,
+    "afterMs": 2242.1639999999998
+  },
+  {
+    "name": "freeform question",
+    "atMs": 2547.461333,
+    "expected": "Anything the agent should preserve?",
+    "aria": "- group \"Capture stage width 752 height 1000 reduced false\":\n  - group \"Anything the agent should preserve? 3/3 Question 3 of 3\":\n    - textbox \"Add a final constraint…\"\n    - button \"Previous question\"\n    - button \"Submit response Submit response Submit response\" [disabled]\n  - button \"Replay\""
+  },
+  {
+    "action": "submit responses",
+    "beforeMs": 2553.172042
+  },
+  {
+    "failure": "TimeoutError: locator.click: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('button', { name: /^Submit response(?: Submit response)?$/ })\u001b[22m\n\u001b[2m    - locator resolved to <flt-semantics tabindex=\"0\" role=\"button\" aria-disabled=\"true\" id=\"flt-semantic-node-15\" aria-owns=\"flt-semantic-node-26\">Submit response↵Submit response</flt-semantics>\u001b[22m\n\u001b[2m  - attempting click action\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is not enabled\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m    - waiting 20ms\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is not enabled\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m      - waiting 100ms\u001b[22m\n\u001b[2m    56 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m       - element is not enabled\u001b[22m\n\u001b[2m     - retrying click action\u001b[22m\n\u001b[2m       - waiting 500ms\u001b[22m\n",
+    "atMs": 32558.750375,
+    "aria": "- group \"Capture stage width 752 height 1000 reduced false\":\n  - group \"Anything the agent should preserve? 3/3 Question 3 of 3\":\n    - textbox \"Add a final constraint…\"\n    - button \"Previous question\"\n    - button \"Submit response Submit response\" [disabled]\n  - button \"Replay\""
+  }
+]

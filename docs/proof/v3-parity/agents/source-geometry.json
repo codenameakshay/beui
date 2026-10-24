@@ -1,0 +1,2083 @@
+{
+  "referenceRevision": "a76e57c9bbc2837e96420b2610e9c82a3271bb05",
+  "liveDeploymentRevision": "unknown",
+  "timing": "Supplemental measurements after captures. Not measurements at original recording time.",
+  "candidateCondition": "Unchanged visual_harness.dart, 48px outer padding. previewWidth is ignored. No matched-stage-width verdict.",
+  "measurements": [
+    {
+      "route": "agents/prompt-input",
+      "url": "https://beui.dev/components/agents/prompt-input",
+      "measuredAt": "2026-10-23T07:55:47.674Z",
+      "viewport": {
+        "width": 1440,
+        "height": 1000,
+        "dpr": 1
+      },
+      "dark": true,
+      "stages": [
+        {
+          "id": "preview-stage",
+          "tag": "DIV",
+          "slot": null,
+          "className": "flex min-h-[320px] items-center justify-center py-10",
+          "rect": {
+            "x": 304,
+            "y": 344,
+            "width": 752,
+            "height": 440,
+            "top": 344,
+            "right": 1056,
+            "bottom": 784,
+            "left": 304
+          },
+          "children": [
+            {
+              "tag": "DIV",
+              "slot": null,
+              "className": "flex h-[360px] w-full max-w-xl flex-col justify-center",
+              "rect": {
+                "x": 392,
+                "y": 384,
+                "width": 576,
+                "height": 360,
+                "top": 384,
+                "right": 968,
+                "bottom": 744,
+                "left": 392
+              },
+              "children": [
+                {
+                  "tag": "FORM",
+                  "slot": null,
+                  "className": "relative w-full rounded-2xl border border-border/80 bg-background p-2 transition-colors focus-within:border-foreground/25",
+                  "rect": {
+                    "x": 392,
+                    "y": 497,
+                    "width": 576,
+                    "height": 102,
+                    "top": 497,
+                    "right": 968,
+                    "bottom": 599,
+                    "left": 392
+                  }
+                },
+                {
+                  "tag": "DIV",
+                  "slot": null,
+                  "className": "h-8 px-2 pt-2 text-xs text-muted-foreground",
+                  "rect": {
+                    "x": 392,
+                    "y": 599,
+                    "width": 576,
+                    "height": 32,
+                    "top": 599,
+                    "right": 968,
+                    "bottom": 631,
+                    "left": 392
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "route": "agents/message",
+      "url": "https://beui.dev/components/agents/message",
+      "measuredAt": "2026-10-23T07:55:50.377Z",
+      "viewport": {
+        "width": 1440,
+        "height": 1000,
+        "dpr": 1
+      },
+      "dark": true,
+      "stages": [
+        {
+          "id": "preview-stage",
+          "tag": "DIV",
+          "slot": null,
+          "className": "flex min-h-[320px] items-center justify-center py-10",
+          "rect": {
+            "x": 304,
+            "y": 344,
+            "width": 752,
+            "height": 520,
+            "top": 344,
+            "right": 1056,
+            "bottom": 864,
+            "left": 304
+          },
+          "children": [
+            {
+              "tag": "DIV",
+              "slot": null,
+              "className": "flex h-[440px] w-full max-w-xl flex-col overflow-hidden rounded-2xl border border-border/70 bg-background",
+              "rect": {
+                "x": 392,
+                "y": 384,
+                "width": 576,
+                "height": 440,
+                "top": 384,
+                "right": 968,
+                "bottom": 824,
+                "left": 392
+              },
+              "children": [
+                {
+                  "tag": "DIV",
+                  "slot": "message-scroller",
+                  "className": "min-h-0 flex-1",
+                  "rect": {
+                    "x": 393,
+                    "y": 385,
+                    "width": 574,
+                    "height": 345,
+                    "top": 385,
+                    "right": 967,
+                    "bottom": 730,
+                    "left": 393
+                  }
+                },
+                {
+                  "tag": "DIV",
+                  "slot": null,
+                  "className": "shrink-0 border-t border-border/60 p-2",
+                  "rect": {
+                    "x": 393,
+                    "y": 730,
+                    "width": 574,
+                    "height": 93,
+                    "top": 730,
+                    "right": 967,
+                    "bottom": 823,
+                    "left": 393
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "route": "agents/message-bubble",
+      "url": "https://beui.dev/components/agents/message-bubble",
+      "measuredAt": "2026-10-23T07:55:55.027Z",
+      "viewport": {
+        "width": 1440,
+        "height": 1000,
+        "dpr": 1
+      },
+      "dark": true,
+      "stages": [
+        {
+          "id": "surfaces-stage",
+          "tag": "DIV",
+          "slot": null,
+          "className": "flex min-h-[260px] items-center justify-center py-10",
+          "rect": {
+            "x": 304,
+            "y": 452,
+            "width": 752,
+            "height": 520,
+            "top": 452,
+            "right": 1056,
+            "bottom": 972,
+            "left": 304
+          },
+          "children": [
+            {
+              "tag": "DIV",
+              "slot": null,
+              "className": "flex h-[440px] w-full max-w-xl flex-col overflow-hidden rounded-2xl border border-border/70 bg-background",
+              "rect": {
+                "x": 392,
+                "y": 492,
+                "width": 576,
+                "height": 440,
+                "top": 492,
+                "right": 968,
+                "bottom": 932,
+                "left": 392
+              },
+              "children": [
+                {
+                  "tag": "DIV",
+                  "slot": "message-scroller",
+                  "className": "min-h-0 flex-1",
+                  "rect": {
+                    "x": 393,
+                    "y": 493,
+                    "width": 574,
+                    "height": 345,
+                    "top": 493,
+                    "right": 967,
+                    "bottom": 838,
+                    "left": 393
+                  }
+                },
+                {
+                  "tag": "DIV",
+                  "slot": null,
+                  "className": "shrink-0 border-t border-border/60 p-2",
+                  "rect": {
+                    "x": 393,
+                    "y": 838,
+                    "width": 574,
+                    "height": 93,
+                    "top": 838,
+                    "right": 967,
+                    "bottom": 931,
+                    "left": 393
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "avatars-stage",
+          "tag": "DIV",
+          "slot": null,
+          "className": "flex min-h-[260px] items-center justify-center py-10",
+          "rect": {
+            "x": 304,
+            "y": 1156,
+            "width": 752,
+            "height": 490,
+            "top": 1156,
+            "right": 1056,
+            "bottom": 1646,
+            "left": 304
+          },
+          "children": [
+            {
+              "tag": "DIV",
+              "slot": null,
+              "className": "flex h-[410px] w-full max-w-xl flex-col justify-center px-3",
+              "rect": {
+                "x": 392,
+                "y": 1196,
+                "width": 576,
+                "height": 410,
+                "top": 1196,
+                "right": 968,
+                "bottom": 1606,
+                "left": 392
+              },
+              "children": [
+                {
+                  "tag": "DIV",
+                  "slot": "message-group",
+                  "className": "flex w-full flex-col gap-4",
+                  "rect": {
+                    "x": 404,
+                    "y": 1255,
+                    "width": 552,
+                    "height": 248,
+                    "top": 1255,
+                    "right": 956,
+                    "bottom": 1503,
+                    "left": 404
+                  }
+                },
+                {
+                  "tag": "DIV",
+                  "slot": null,
+                  "className": "flex h-11 items-end justify-center",
+                  "rect": {
+                    "x": 404,
+                    "y": 1503,
+                    "width": 552,
+                    "height": 44,
+                    "top": 1503,
+                    "right": 956,
+                    "bottom": 1547,
+                    "left": 404
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "show-more-stage",
+          "tag": "DIV",
+          "slot": null,
+          "className": "flex min-h-[260px] items-center justify-center py-10",
+          "rect": {
+            "x": 304,
+            "y": 1830,
+            "width": 752,
+            "height": 490,
+            "top": 1830,
+            "right": 1056,
+            "bottom": 2320,
+            "left": 304
+          },
+          "children": [
+            {
+              "tag": "DIV",
+              "slot": null,
+              "className": "flex h-[410px] w-full max-w-xl items-start px-3 pt-14",
+              "rect": {
+                "x": 392,
+                "y": 1870,
+                "width": 576,
+                "height": 410,
+                "top": 1870,
+                "right": 968,
+                "bottom": 2280,
+                "left": 392
+              },
+              "children": [
+                {
+                  "tag": "ARTICLE",
+                  "slot": "message",
+                  "className": "group/message flex w-full items-start gap-2 flex-row",
+                  "rect": {
+                    "x": 404,
+                    "y": 1926,
+                    "width": 552,
+                    "height": 181,
+                    "top": 1926,
+                    "right": 956,
+                    "bottom": 2107,
+                    "left": 404
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "route": "agents/message-scroller",
+      "url": "https://beui.dev/components/agents/message-scroller",
+      "measuredAt": "2026-10-23T07:55:57.223Z",
+      "viewport": {
+        "width": 1440,
+        "height": 1000,
+        "dpr": 1
+      },
+      "dark": true,
+      "stages": [
+        {
+          "id": "preview-stage",
+          "tag": "DIV",
+          "slot": null,
+          "className": "flex min-h-[320px] items-center justify-center py-10",
+          "rect": {
+            "x": 304,
+            "y": 344,
+            "width": 752,
+            "height": 520,
+            "top": 344,
+            "right": 1056,
+            "bottom": 864,
+            "left": 304
+          },
+          "children": [
+            {
+              "tag": "DIV",
+              "slot": null,
+              "className": "flex h-[440px] w-full max-w-xl flex-col overflow-hidden rounded-2xl border border-border/70 bg-background",
+              "rect": {
+                "x": 392,
+                "y": 384,
+                "width": 576,
+                "height": 440,
+                "top": 384,
+                "right": 968,
+                "bottom": 824,
+                "left": 392
+              },
+              "children": [
+                {
+                  "tag": "DIV",
+                  "slot": "message-scroller",
+                  "className": "min-h-0 flex-1",
+                  "rect": {
+                    "x": 393,
+                    "y": 385,
+                    "width": 574,
+                    "height": 345,
+                    "top": 385,
+                    "right": 967,
+                    "bottom": 730,
+                    "left": 393
+                  }
+                },
+                {
+                  "tag": "DIV",
+                  "slot": null,
+                  "className": "shrink-0 border-t border-border/60 p-2",
+                  "rect": {
+                    "x": 393,
+                    "y": 730,
+                    "width": 574,
+                    "height": 93,
+                    "top": 730,
+                    "right": 967,
+                    "bottom": 823,
+                    "left": 393
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "route": "agents/streaming-response",
+      "url": "https://beui.dev/components/agents/streaming-response",
+      "measuredAt": "2026-10-23T07:55:59.399Z",
+      "viewport": {
+        "width": 1440,
+        "height": 1000,
+        "dpr": 1
+      },
+      "dark": true,
+      "stages": [
+        {
+          "id": "preview-stage",
+          "tag": "DIV",
+          "slot": null,
+          "className": "flex min-h-[320px] items-center justify-center py-10",
+          "rect": {
+            "x": 304,
+            "y": 344,
+            "width": 752,
+            "height": 580,
+            "top": 344,
+            "right": 1056,
+            "bottom": 924,
+            "left": 304
+          },
+          "children": [
+            {
+              "tag": "DIV",
+              "slot": null,
+              "className": "relative h-[500px] w-full max-w-xl",
+              "rect": {
+                "x": 392,
+                "y": 384,
+                "width": 576,
+                "height": 500,
+                "top": 384,
+                "right": 968,
+                "bottom": 884,
+                "left": 392
+              },
+              "children": [
+                {
+                  "tag": "DIV",
+                  "slot": null,
+                  "className": "w-full",
+                  "rect": {
+                    "x": 392,
+                    "y": 384,
+                    "width": 576,
+                    "height": 120,
+                    "top": 384,
+                    "right": 968,
+                    "bottom": 504,
+                    "left": 392
+                  }
+                },
+                {
+                  "tag": "BUTTON",
+                  "slot": null,
+                  "className": "absolute bottom-0 left-0 inline-flex items-center gap-1.5 rounded-md px-2 py-1 text-xs font-medium text-muted-foreground outline-none transition-colors hover:bg-muted hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring",
+                  "rect": {
+                    "x": 392,
+                    "y": 860,
+                    "width": 72.5,
+                    "height": 24,
+                    "top": 860,
+                    "right": 464.5,
+                    "bottom": 884,
+                    "left": 392
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "route": "agents/image-generation",
+      "url": "https://beui.dev/components/agents/image-generation",
+      "measuredAt": "2026-10-23T07:56:02.647Z",
+      "viewport": {
+        "width": 1440,
+        "height": 1000,
+        "dpr": 1
+      },
+      "dark": true,
+      "stages": [
+        {
+          "id": "preview-stage",
+          "tag": "DIV",
+          "slot": null,
+          "className": "flex min-h-[320px] items-center justify-center py-10",
+          "rect": {
+            "x": 304,
+            "y": 344,
+            "width": 752,
+            "height": 394,
+            "top": 344,
+            "right": 1056,
+            "bottom": 738,
+            "left": 304
+          },
+          "children": [
+            {
+              "tag": "DIV",
+              "slot": null,
+              "className": "w-full max-w-xl",
+              "rect": {
+                "x": 392,
+                "y": 384,
+                "width": 576,
+                "height": 314,
+                "top": 384,
+                "right": 968,
+                "bottom": 698,
+                "left": 392
+              },
+              "children": [
+                {
+                  "tag": "DIV",
+                  "slot": null,
+                  "className": "flex w-full flex-col items-center",
+                  "rect": {
+                    "x": 392,
+                    "y": 384,
+                    "width": 576,
+                    "height": 314,
+                    "top": 384,
+                    "right": 968,
+                    "bottom": 698,
+                    "left": 392
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "route": "agents/citations",
+      "url": "https://beui.dev/components/agents/citations",
+      "measuredAt": "2026-10-23T07:56:04.696Z",
+      "viewport": {
+        "width": 1440,
+        "height": 1000,
+        "dpr": 1
+      },
+      "dark": true,
+      "stages": [
+        {
+          "id": "preview-stage",
+          "tag": "DIV",
+          "slot": null,
+          "className": "flex min-h-[320px] items-center justify-center py-10",
+          "rect": {
+            "x": 304,
+            "y": 344,
+            "width": 752,
+            "height": 490,
+            "top": 344,
+            "right": 1056,
+            "bottom": 834,
+            "left": 304
+          },
+          "children": [
+            {
+              "tag": "DIV",
+              "slot": null,
+              "className": "relative h-[410px] w-full max-w-lg",
+              "rect": {
+                "x": 424,
+                "y": 384,
+                "width": 512,
+                "height": 410,
+                "top": 384,
+                "right": 936,
+                "bottom": 794,
+                "left": 424
+              },
+              "children": [
+                {
+                  "tag": "DIV",
+                  "slot": null,
+                  "className": "space-y-4",
+                  "rect": {
+                    "x": 424,
+                    "y": 384,
+                    "width": 512,
+                    "height": 182,
+                    "top": 384,
+                    "right": 936,
+                    "bottom": 566,
+                    "left": 424
+                  }
+                },
+                {
+                  "tag": "BUTTON",
+                  "slot": null,
+                  "className": "absolute bottom-0 left-0 inline-flex items-center gap-1.5 rounded-md px-2 py-1 text-xs font-medium text-muted-foreground outline-none transition-colors hover:bg-muted hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring",
+                  "rect": {
+                    "x": 424,
+                    "y": 770,
+                    "width": 72.5,
+                    "height": 24,
+                    "top": 770,
+                    "right": 496.5,
+                    "bottom": 794,
+                    "left": 424
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "route": "agents/loading-states",
+      "url": "https://beui.dev/components/agents/loading-states",
+      "measuredAt": "2026-10-23T07:56:06.897Z",
+      "viewport": {
+        "width": 1440,
+        "height": 1000,
+        "dpr": 1
+      },
+      "dark": true,
+      "stages": [
+        {
+          "id": "reasoning-text-stage",
+          "tag": "DIV",
+          "slot": null,
+          "className": "flex min-h-[260px] items-center justify-center py-10",
+          "rect": {
+            "x": 304,
+            "y": 432,
+            "width": 752,
+            "height": 281.5,
+            "top": 432,
+            "right": 1056,
+            "bottom": 713.5,
+            "left": 304
+          },
+          "children": [
+            {
+              "tag": "DIV",
+              "slot": null,
+              "className": "grid w-full max-w-sm gap-7",
+              "rect": {
+                "x": 488,
+                "y": 472,
+                "width": 384,
+                "height": 201.5,
+                "top": 472,
+                "right": 872,
+                "bottom": 673.5,
+                "left": 488
+              },
+              "children": [
+                {
+                  "tag": "DIV",
+                  "slot": null,
+                  "className": "grid gap-2",
+                  "rect": {
+                    "x": 488,
+                    "y": 472,
+                    "width": 384,
+                    "height": 48.5,
+                    "top": 472,
+                    "right": 872,
+                    "bottom": 520.5,
+                    "left": 488
+                  }
+                },
+                {
+                  "tag": "DIV",
+                  "slot": null,
+                  "className": "grid gap-2",
+                  "rect": {
+                    "x": 488,
+                    "y": 548.5,
+                    "width": 384,
+                    "height": 48.5,
+                    "top": 548.5,
+                    "right": 872,
+                    "bottom": 597,
+                    "left": 488
+                  }
+                },
+                {
+                  "tag": "DIV",
+                  "slot": null,
+                  "className": "grid gap-2",
+                  "rect": {
+                    "x": 488,
+                    "y": 625,
+                    "width": 384,
+                    "height": 48.5,
+                    "top": 625,
+                    "right": 872,
+                    "bottom": 673.5,
+                    "left": 488
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "thinking-shimmer-stage",
+          "tag": "DIV",
+          "slot": null,
+          "className": "flex min-h-[260px] items-center justify-center py-10",
+          "rect": {
+            "x": 304,
+            "y": 1786.0625,
+            "width": 752,
+            "height": 260,
+            "top": 1786.0625,
+            "right": 1056,
+            "bottom": 2046.0625,
+            "left": 304
+          },
+          "children": [
+            {
+              "tag": "STYLE",
+              "slot": null,
+              "className": "",
+              "rect": {
+                "x": 0,
+                "y": 0,
+                "width": 0,
+                "height": 0,
+                "top": 0,
+                "right": 0,
+                "bottom": 0,
+                "left": 0
+              },
+              "children": []
+            },
+            {
+              "tag": "SPAN",
+              "slot": null,
+              "className": "inline-block beui-text-shimmer bg-[length:200%_100%] bg-clip-text text-transparent bg-[linear-gradient(110deg,var(--muted-foreground)_30%,var(--foreground)_50%,var(--muted-foreground)_70%)] font-medium text-lg",
+              "rect": {
+                "x": 638.640625,
+                "y": 1902.0625,
+                "width": 82.703125,
+                "height": 28,
+                "top": 1902.0625,
+                "right": 721.34375,
+                "bottom": 1930.0625,
+                "left": 638.640625
+              },
+              "children": []
+            }
+          ]
+        },
+        {
+          "id": "agent-progress-stage",
+          "tag": "DIV",
+          "slot": null,
+          "className": "flex min-h-[260px] items-center justify-center py-10",
+          "rect": {
+            "x": 304,
+            "y": 2769.625,
+            "width": 752,
+            "height": 260,
+            "top": 2769.625,
+            "right": 1056,
+            "bottom": 3029.625,
+            "left": 304
+          },
+          "children": [
+            {
+              "tag": "SPAN",
+              "slot": null,
+              "className": "inline-flex items-center gap-3 font-mono text-muted-foreground text-base",
+              "rect": {
+                "x": 585.46875,
+                "y": 2887.625,
+                "width": 189.0625,
+                "height": 24,
+                "top": 2887.625,
+                "right": 774.53125,
+                "bottom": 2911.625,
+                "left": 585.46875
+              },
+              "children": [
+                {
+                  "tag": "SPAN",
+                  "slot": null,
+                  "className": "grid size-5 shrink-0 grid-cols-3 gap-[2px]",
+                  "rect": {
+                    "x": 585.46875,
+                    "y": 2889.625,
+                    "width": 20,
+                    "height": 20,
+                    "top": 2889.625,
+                    "right": 605.46875,
+                    "bottom": 2909.625,
+                    "left": 585.46875
+                  }
+                },
+                {
+                  "tag": "SPAN",
+                  "slot": null,
+                  "className": "font-sans font-medium",
+                  "rect": {
+                    "x": 617.46875,
+                    "y": 2887.625,
+                    "width": 68.25,
+                    "height": 24,
+                    "top": 2887.625,
+                    "right": 685.71875,
+                    "bottom": 2911.625,
+                    "left": 617.46875
+                  }
+                },
+                {
+                  "tag": "SPAN",
+                  "slot": null,
+                  "className": "tabular-nums text-muted-foreground/70",
+                  "rect": {
+                    "x": 697.71875,
+                    "y": 2887.625,
+                    "width": 76.8125,
+                    "height": 24,
+                    "top": 2887.625,
+                    "right": 774.53125,
+                    "bottom": 2911.625,
+                    "left": 697.71875
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "route": "agents/todo-list",
+      "url": "https://beui.dev/components/agents/todo-list",
+      "measuredAt": "2026-10-23T07:56:09.927Z",
+      "viewport": {
+        "width": 1440,
+        "height": 1000,
+        "dpr": 1
+      },
+      "dark": true,
+      "stages": [
+        {
+          "id": "preview-stage",
+          "tag": "DIV",
+          "slot": null,
+          "className": "flex min-h-[320px] items-center justify-center py-10",
+          "rect": {
+            "x": 304,
+            "y": 344,
+            "width": 752,
+            "height": 410,
+            "top": 344,
+            "right": 1056,
+            "bottom": 754,
+            "left": 304
+          },
+          "children": [
+            {
+              "tag": "DIV",
+              "slot": null,
+              "className": "relative h-[330px] w-full max-w-lg",
+              "rect": {
+                "x": 424,
+                "y": 384,
+                "width": 512,
+                "height": 330,
+                "top": 384,
+                "right": 936,
+                "bottom": 714,
+                "left": 424
+              },
+              "children": [
+                {
+                  "tag": "SECTION",
+                  "slot": null,
+                  "className": "w-full overflow-hidden rounded-2xl border border-border/70",
+                  "rect": {
+                    "x": 424,
+                    "y": 384,
+                    "width": 512,
+                    "height": 198,
+                    "top": 384,
+                    "right": 936,
+                    "bottom": 582,
+                    "left": 424
+                  }
+                },
+                {
+                  "tag": "BUTTON",
+                  "slot": null,
+                  "className": "absolute bottom-0 left-0 inline-flex items-center gap-1.5 rounded-full px-2 py-1 text-xs font-medium text-muted-foreground outline-none transition-colors hover:bg-muted hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring",
+                  "rect": {
+                    "x": 424,
+                    "y": 690,
+                    "width": 72.5,
+                    "height": 24,
+                    "top": 690,
+                    "right": 496.5,
+                    "bottom": 714,
+                    "left": 424
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "route": "agents/agent-activity",
+      "url": "https://beui.dev/components/agents/agent-activity",
+      "measuredAt": "2026-10-23T07:56:12.316Z",
+      "viewport": {
+        "width": 1440,
+        "height": 1000,
+        "dpr": 1
+      },
+      "dark": true,
+      "stages": [
+        {
+          "id": "streaming-text-stage",
+          "tag": "DIV",
+          "slot": null,
+          "className": "flex min-h-[260px] items-center justify-center py-10",
+          "rect": {
+            "x": 304,
+            "y": 452,
+            "width": 752,
+            "height": 410,
+            "top": 452,
+            "right": 1056,
+            "bottom": 862,
+            "left": 304
+          },
+          "children": [
+            {
+              "tag": "DIV",
+              "slot": null,
+              "className": "relative h-[330px] w-full max-w-lg",
+              "rect": {
+                "x": 424,
+                "y": 492,
+                "width": 512,
+                "height": 330,
+                "top": 492,
+                "right": 936,
+                "bottom": 822,
+                "left": 424
+              },
+              "children": [
+                {
+                  "tag": "DIV",
+                  "slot": null,
+                  "className": "w-full text-sm",
+                  "rect": {
+                    "x": 424,
+                    "y": 492,
+                    "width": 512,
+                    "height": 208,
+                    "top": 492,
+                    "right": 936,
+                    "bottom": 700,
+                    "left": 424
+                  }
+                },
+                {
+                  "tag": "BUTTON",
+                  "slot": null,
+                  "className": "absolute bottom-0 left-0 inline-flex items-center gap-1.5 rounded-md px-2 py-1 text-xs font-medium text-muted-foreground outline-none transition-colors hover:bg-muted hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring",
+                  "rect": {
+                    "x": 424,
+                    "y": 798,
+                    "width": 72.5,
+                    "height": 24,
+                    "top": 798,
+                    "right": 496.5,
+                    "bottom": 822,
+                    "left": 424
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "reasoning-steps-stage",
+          "tag": "DIV",
+          "slot": null,
+          "className": "flex min-h-[260px] items-center justify-center py-10",
+          "rect": {
+            "x": 304,
+            "y": 1046,
+            "width": 752,
+            "height": 410,
+            "top": 1046,
+            "right": 1056,
+            "bottom": 1456,
+            "left": 304
+          },
+          "children": [
+            {
+              "tag": "DIV",
+              "slot": null,
+              "className": "relative h-[330px] w-full max-w-lg",
+              "rect": {
+                "x": 424,
+                "y": 1086,
+                "width": 512,
+                "height": 330,
+                "top": 1086,
+                "right": 936,
+                "bottom": 1416,
+                "left": 424
+              },
+              "children": [
+                {
+                  "tag": "DIV",
+                  "slot": null,
+                  "className": "w-full text-sm",
+                  "rect": {
+                    "x": 424,
+                    "y": 1086,
+                    "width": 512,
+                    "height": 248,
+                    "top": 1086,
+                    "right": 936,
+                    "bottom": 1334,
+                    "left": 424
+                  }
+                },
+                {
+                  "tag": "BUTTON",
+                  "slot": null,
+                  "className": "absolute bottom-0 left-0 inline-flex items-center gap-1.5 rounded-md px-2 py-1 text-xs font-medium text-muted-foreground outline-none transition-colors hover:bg-muted hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring",
+                  "rect": {
+                    "x": 424,
+                    "y": 1392,
+                    "width": 72.5,
+                    "height": 24,
+                    "top": 1392,
+                    "right": 496.5,
+                    "bottom": 1416,
+                    "left": 424
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "web-search-stage",
+          "tag": "DIV",
+          "slot": null,
+          "className": "flex min-h-[260px] items-center justify-center py-10",
+          "rect": {
+            "x": 304,
+            "y": 1640,
+            "width": 752,
+            "height": 410,
+            "top": 1640,
+            "right": 1056,
+            "bottom": 2050,
+            "left": 304
+          },
+          "children": [
+            {
+              "tag": "DIV",
+              "slot": null,
+              "className": "relative h-[330px] w-full max-w-lg",
+              "rect": {
+                "x": 424,
+                "y": 1680,
+                "width": 512,
+                "height": 330,
+                "top": 1680,
+                "right": 936,
+                "bottom": 2010,
+                "left": 424
+              },
+              "children": [
+                {
+                  "tag": "DIV",
+                  "slot": null,
+                  "className": "w-full text-sm",
+                  "rect": {
+                    "x": 424,
+                    "y": 1680,
+                    "width": 512,
+                    "height": 248,
+                    "top": 1680,
+                    "right": 936,
+                    "bottom": 1928,
+                    "left": 424
+                  }
+                },
+                {
+                  "tag": "BUTTON",
+                  "slot": null,
+                  "className": "absolute bottom-0 left-0 inline-flex items-center gap-1.5 rounded-md px-2 py-1 text-xs font-medium text-muted-foreground outline-none transition-colors hover:bg-muted hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring",
+                  "rect": {
+                    "x": 424,
+                    "y": 1986,
+                    "width": 72.5,
+                    "height": 24,
+                    "top": 1986,
+                    "right": 496.5,
+                    "bottom": 2010,
+                    "left": 424
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "tool-calls-stage",
+          "tag": "DIV",
+          "slot": null,
+          "className": "flex min-h-[260px] items-center justify-center py-10",
+          "rect": {
+            "x": 304,
+            "y": 2234,
+            "width": 752,
+            "height": 410,
+            "top": 2234,
+            "right": 1056,
+            "bottom": 2644,
+            "left": 304
+          },
+          "children": [
+            {
+              "tag": "DIV",
+              "slot": null,
+              "className": "relative h-[330px] w-full max-w-lg",
+              "rect": {
+                "x": 424,
+                "y": 2274,
+                "width": 512,
+                "height": 330,
+                "top": 2274,
+                "right": 936,
+                "bottom": 2604,
+                "left": 424
+              },
+              "children": [
+                {
+                  "tag": "DIV",
+                  "slot": null,
+                  "className": "w-full text-sm",
+                  "rect": {
+                    "x": 424,
+                    "y": 2274,
+                    "width": 512,
+                    "height": 248,
+                    "top": 2274,
+                    "right": 936,
+                    "bottom": 2522,
+                    "left": 424
+                  }
+                },
+                {
+                  "tag": "BUTTON",
+                  "slot": null,
+                  "className": "absolute bottom-0 left-0 inline-flex items-center gap-1.5 rounded-md px-2 py-1 text-xs font-medium text-muted-foreground outline-none transition-colors hover:bg-muted hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring",
+                  "rect": {
+                    "x": 424,
+                    "y": 2580,
+                    "width": 72.5,
+                    "height": 24,
+                    "top": 2580,
+                    "right": 496.5,
+                    "bottom": 2604,
+                    "left": 424
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "mixed-activity-stage",
+          "tag": "DIV",
+          "slot": null,
+          "className": "flex min-h-[260px] items-center justify-center py-10",
+          "rect": {
+            "x": 304,
+            "y": 2828,
+            "width": 752,
+            "height": 410,
+            "top": 2828,
+            "right": 1056,
+            "bottom": 3238,
+            "left": 304
+          },
+          "children": [
+            {
+              "tag": "DIV",
+              "slot": null,
+              "className": "relative h-[330px] w-full max-w-xl",
+              "rect": {
+                "x": 392,
+                "y": 2868,
+                "width": 576,
+                "height": 330,
+                "top": 2868,
+                "right": 968,
+                "bottom": 3198,
+                "left": 392
+              },
+              "children": [
+                {
+                  "tag": "DIV",
+                  "slot": null,
+                  "className": "w-full text-sm",
+                  "rect": {
+                    "x": 392,
+                    "y": 2868,
+                    "width": 576,
+                    "height": 248,
+                    "top": 2868,
+                    "right": 968,
+                    "bottom": 3116,
+                    "left": 392
+                  }
+                },
+                {
+                  "tag": "BUTTON",
+                  "slot": null,
+                  "className": "absolute bottom-0 left-0 inline-flex items-center gap-1.5 rounded-md px-2 py-1 text-xs font-medium text-muted-foreground outline-none transition-colors hover:bg-muted hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring",
+                  "rect": {
+                    "x": 392,
+                    "y": 3174,
+                    "width": 72.5,
+                    "height": 24,
+                    "top": 3174,
+                    "right": 464.5,
+                    "bottom": 3198,
+                    "left": 392
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "agent-trace-stage",
+          "tag": "DIV",
+          "slot": null,
+          "className": "flex min-h-[260px] items-center justify-center py-10",
+          "rect": {
+            "x": 304,
+            "y": 3442,
+            "width": 752,
+            "height": 380,
+            "top": 3442,
+            "right": 1056,
+            "bottom": 3822,
+            "left": 304
+          },
+          "children": [
+            {
+              "tag": "DIV",
+              "slot": null,
+              "className": "relative h-[300px] w-full max-w-xl",
+              "rect": {
+                "x": 392,
+                "y": 3482,
+                "width": 576,
+                "height": 300,
+                "top": 3482,
+                "right": 968,
+                "bottom": 3782,
+                "left": 392
+              },
+              "children": [
+                {
+                  "tag": "DIV",
+                  "slot": null,
+                  "className": "w-full text-sm",
+                  "rect": {
+                    "x": 392,
+                    "y": 3482,
+                    "width": 576,
+                    "height": 218,
+                    "top": 3482,
+                    "right": 968,
+                    "bottom": 3700,
+                    "left": 392
+                  }
+                },
+                {
+                  "tag": "BUTTON",
+                  "slot": null,
+                  "className": "absolute bottom-0 left-0 inline-flex items-center gap-1.5 rounded-md px-2 py-1 text-xs font-medium text-muted-foreground outline-none transition-colors hover:bg-muted hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring",
+                  "rect": {
+                    "x": 392,
+                    "y": 3758,
+                    "width": 72.5,
+                    "height": 24,
+                    "top": 3758,
+                    "right": 464.5,
+                    "bottom": 3782,
+                    "left": 392
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "route": "agents/tool-result",
+      "url": "https://beui.dev/components/agents/tool-result",
+      "measuredAt": "2026-10-23T07:56:14.379Z",
+      "viewport": {
+        "width": 1440,
+        "height": 1000,
+        "dpr": 1
+      },
+      "dark": true,
+      "stages": [
+        {
+          "id": "terminal-output-stage",
+          "tag": "DIV",
+          "slot": null,
+          "className": "flex min-h-[260px] items-center justify-center py-10",
+          "rect": {
+            "x": 304,
+            "y": 452,
+            "width": 752,
+            "height": 410,
+            "top": 452,
+            "right": 1056,
+            "bottom": 862,
+            "left": 304
+          },
+          "children": [
+            {
+              "tag": "DIV",
+              "slot": null,
+              "className": "relative h-[330px] w-full max-w-lg",
+              "rect": {
+                "x": 424,
+                "y": 492,
+                "width": 512,
+                "height": 330,
+                "top": 492,
+                "right": 936,
+                "bottom": 822,
+                "left": 424
+              },
+              "children": [
+                {
+                  "tag": "DIV",
+                  "slot": null,
+                  "className": "w-full text-sm",
+                  "rect": {
+                    "x": 424,
+                    "y": 492,
+                    "width": 512,
+                    "height": 180,
+                    "top": 492,
+                    "right": 936,
+                    "bottom": 672,
+                    "left": 424
+                  }
+                },
+                {
+                  "tag": "BUTTON",
+                  "slot": null,
+                  "className": "absolute bottom-0 left-0 inline-flex items-center gap-1.5 rounded-md px-2 py-1 text-xs font-medium text-muted-foreground outline-none transition-colors hover:bg-muted hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring",
+                  "rect": {
+                    "x": 424,
+                    "y": 798,
+                    "width": 72.5,
+                    "height": 24,
+                    "top": 798,
+                    "right": 496.5,
+                    "bottom": 822,
+                    "left": 424
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "request-result-stage",
+          "tag": "DIV",
+          "slot": null,
+          "className": "flex min-h-[260px] items-center justify-center py-10",
+          "rect": {
+            "x": 304,
+            "y": 1046,
+            "width": 752,
+            "height": 410,
+            "top": 1046,
+            "right": 1056,
+            "bottom": 1456,
+            "left": 304
+          },
+          "children": [
+            {
+              "tag": "DIV",
+              "slot": null,
+              "className": "relative h-[330px] w-full max-w-lg",
+              "rect": {
+                "x": 424,
+                "y": 1086,
+                "width": 512,
+                "height": 330,
+                "top": 1086,
+                "right": 936,
+                "bottom": 1416,
+                "left": 424
+              },
+              "children": [
+                {
+                  "tag": "DIV",
+                  "slot": null,
+                  "className": "w-full text-sm",
+                  "rect": {
+                    "x": 424,
+                    "y": 1086,
+                    "width": 512,
+                    "height": 200,
+                    "top": 1086,
+                    "right": 936,
+                    "bottom": 1286,
+                    "left": 424
+                  }
+                },
+                {
+                  "tag": "BUTTON",
+                  "slot": null,
+                  "className": "absolute bottom-0 left-0 inline-flex items-center gap-1.5 rounded-md px-2 py-1 text-xs font-medium text-muted-foreground outline-none transition-colors hover:bg-muted hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring",
+                  "rect": {
+                    "x": 424,
+                    "y": 1392,
+                    "width": 72.5,
+                    "height": 24,
+                    "top": 1392,
+                    "right": 496.5,
+                    "bottom": 1416,
+                    "left": 424
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "route": "agents/code-block",
+      "url": "https://beui.dev/components/agents/code-block",
+      "measuredAt": "2026-10-23T07:56:16.847Z",
+      "viewport": {
+        "width": 1440,
+        "height": 1000,
+        "dpr": 1
+      },
+      "dark": true,
+      "stages": [
+        {
+          "id": "preview-stage",
+          "tag": "DIV",
+          "slot": null,
+          "className": "flex min-h-[320px] items-center justify-center py-10",
+          "rect": {
+            "x": 304,
+            "y": 344,
+            "width": 752,
+            "height": 420,
+            "top": 344,
+            "right": 1056,
+            "bottom": 764,
+            "left": 304
+          },
+          "children": [
+            {
+              "tag": "DIV",
+              "slot": null,
+              "className": "relative h-[340px] w-full max-w-xl",
+              "rect": {
+                "x": 392,
+                "y": 384,
+                "width": 576,
+                "height": 340,
+                "top": 384,
+                "right": 968,
+                "bottom": 724,
+                "left": 392
+              },
+              "children": [
+                {
+                  "tag": "DIV",
+                  "slot": null,
+                  "className": "w-full overflow-hidden rounded-2xl bg-muted/80 text-sm",
+                  "rect": {
+                    "x": 392,
+                    "y": 384,
+                    "width": 576,
+                    "height": 217,
+                    "top": 384,
+                    "right": 968,
+                    "bottom": 601,
+                    "left": 392
+                  }
+                },
+                {
+                  "tag": "BUTTON",
+                  "slot": null,
+                  "className": "absolute bottom-0 left-0 inline-flex items-center gap-1.5 rounded-full px-2 py-1 text-xs font-medium text-muted-foreground outline-none transition-colors hover:bg-muted hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring",
+                  "rect": {
+                    "x": 392,
+                    "y": 700,
+                    "width": 72.5,
+                    "height": 24,
+                    "top": 700,
+                    "right": 464.5,
+                    "bottom": 724,
+                    "left": 392
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "route": "agents/file-diff",
+      "url": "https://beui.dev/components/agents/file-diff",
+      "measuredAt": "2026-10-23T07:56:18.975Z",
+      "viewport": {
+        "width": 1440,
+        "height": 1000,
+        "dpr": 1
+      },
+      "dark": true,
+      "stages": [
+        {
+          "id": "preview-stage",
+          "tag": "DIV",
+          "slot": null,
+          "className": "flex min-h-[320px] items-center justify-center py-10",
+          "rect": {
+            "x": 304,
+            "y": 344,
+            "width": 752,
+            "height": 380,
+            "top": 344,
+            "right": 1056,
+            "bottom": 724,
+            "left": 304
+          },
+          "children": [
+            {
+              "tag": "DIV",
+              "slot": null,
+              "className": "relative h-[300px] w-full max-w-lg",
+              "rect": {
+                "x": 424,
+                "y": 384,
+                "width": 512,
+                "height": 300,
+                "top": 384,
+                "right": 936,
+                "bottom": 684,
+                "left": 424
+              },
+              "children": [
+                {
+                  "tag": "DIV",
+                  "slot": null,
+                  "className": "w-full text-sm",
+                  "rect": {
+                    "x": 424,
+                    "y": 384,
+                    "width": 512,
+                    "height": 180,
+                    "top": 384,
+                    "right": 936,
+                    "bottom": 564,
+                    "left": 424
+                  }
+                },
+                {
+                  "tag": "BUTTON",
+                  "slot": null,
+                  "className": "absolute bottom-0 left-0 inline-flex items-center gap-1.5 rounded-md px-2 py-1 text-xs font-medium text-muted-foreground outline-none transition-colors hover:bg-muted hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring",
+                  "rect": {
+                    "x": 424,
+                    "y": 660,
+                    "width": 72.5,
+                    "height": 24,
+                    "top": 660,
+                    "right": 496.5,
+                    "bottom": 684,
+                    "left": 424
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "route": "agents/tool-approval",
+      "url": "https://beui.dev/components/agents/tool-approval",
+      "measuredAt": "2026-10-23T07:56:20.997Z",
+      "viewport": {
+        "width": 1440,
+        "height": 1000,
+        "dpr": 1
+      },
+      "dark": true,
+      "stages": [
+        {
+          "id": "preview-stage",
+          "tag": "DIV",
+          "slot": null,
+          "className": "flex min-h-[320px] items-center justify-center py-10",
+          "rect": {
+            "x": 304,
+            "y": 344,
+            "width": 752,
+            "height": 440,
+            "top": 344,
+            "right": 1056,
+            "bottom": 784,
+            "left": 304
+          },
+          "children": [
+            {
+              "tag": "DIV",
+              "slot": null,
+              "className": "relative h-[360px] w-full max-w-lg",
+              "rect": {
+                "x": 424,
+                "y": 384,
+                "width": 512,
+                "height": 360,
+                "top": 384,
+                "right": 936,
+                "bottom": 744,
+                "left": 424
+              },
+              "children": [
+                {
+                  "tag": "DIV",
+                  "slot": null,
+                  "className": "w-full overflow-hidden rounded-2xl border border-border/60 bg-muted/20 text-sm",
+                  "rect": {
+                    "x": 424,
+                    "y": 384,
+                    "width": 512,
+                    "height": 304,
+                    "top": 384,
+                    "right": 936,
+                    "bottom": 688,
+                    "left": 424
+                  }
+                },
+                {
+                  "tag": "BUTTON",
+                  "slot": null,
+                  "className": "absolute bottom-0 left-0 inline-flex items-center gap-1.5 rounded-md px-2 py-1 text-xs font-medium text-muted-foreground outline-none transition-colors hover:bg-muted hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring",
+                  "rect": {
+                    "x": 424,
+                    "y": 720,
+                    "width": 72.5,
+                    "height": 24,
+                    "top": 720,
+                    "right": 496.5,
+                    "bottom": 744,
+                    "left": 424
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "route": "agents/approval-card",
+      "url": "https://beui.dev/components/agents/approval-card",
+      "measuredAt": "2026-10-23T07:56:23.110Z",
+      "viewport": {
+        "width": 1440,
+        "height": 1000,
+        "dpr": 1
+      },
+      "dark": true,
+      "stages": [
+        {
+          "id": "questions-stage",
+          "tag": "DIV",
+          "slot": null,
+          "className": "flex min-h-[260px] items-center justify-center py-10",
+          "rect": {
+            "x": 304,
+            "y": 452,
+            "width": 752,
+            "height": 550,
+            "top": 452,
+            "right": 1056,
+            "bottom": 1002,
+            "left": 304
+          },
+          "children": [
+            {
+              "tag": "DIV",
+              "slot": null,
+              "className": "relative h-[470px] w-full max-w-lg",
+              "rect": {
+                "x": 424,
+                "y": 492,
+                "width": 512,
+                "height": 470,
+                "top": 492,
+                "right": 936,
+                "bottom": 962,
+                "left": 424
+              },
+              "children": [
+                {
+                  "tag": "DIV",
+                  "slot": null,
+                  "className": "w-full overflow-hidden rounded-2xl bg-muted p-4 text-sm",
+                  "rect": {
+                    "x": 424,
+                    "y": 492,
+                    "width": 512,
+                    "height": 292,
+                    "top": 492,
+                    "right": 936,
+                    "bottom": 784,
+                    "left": 424
+                  }
+                },
+                {
+                  "tag": "BUTTON",
+                  "slot": null,
+                  "className": "absolute bottom-0 left-0 inline-flex items-center gap-1.5 rounded-full px-2 py-1 text-xs font-medium text-muted-foreground outline-none transition-colors hover:bg-muted hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring",
+                  "rect": {
+                    "x": 424,
+                    "y": 938,
+                    "width": 72.5,
+                    "height": 24,
+                    "top": 938,
+                    "right": 496.5,
+                    "bottom": 962,
+                    "left": 424
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "review-stage",
+          "tag": "DIV",
+          "slot": null,
+          "className": "flex min-h-[260px] items-center justify-center py-10",
+          "rect": {
+            "x": 304,
+            "y": 1186,
+            "width": 752,
+            "height": 440,
+            "top": 1186,
+            "right": 1056,
+            "bottom": 1626,
+            "left": 304
+          },
+          "children": [
+            {
+              "tag": "DIV",
+              "slot": null,
+              "className": "relative h-[360px] w-full max-w-lg",
+              "rect": {
+                "x": 424,
+                "y": 1226,
+                "width": 512,
+                "height": 360,
+                "top": 1226,
+                "right": 936,
+                "bottom": 1586,
+                "left": 424
+              },
+              "children": [
+                {
+                  "tag": "DIV",
+                  "slot": null,
+                  "className": "w-full overflow-hidden rounded-2xl bg-muted p-4 text-sm",
+                  "rect": {
+                    "x": 424,
+                    "y": 1226,
+                    "width": 512,
+                    "height": 217.703125,
+                    "top": 1226,
+                    "right": 936,
+                    "bottom": 1443.703125,
+                    "left": 424
+                  }
+                },
+                {
+                  "tag": "BUTTON",
+                  "slot": null,
+                  "className": "absolute bottom-0 left-0 inline-flex items-center gap-1.5 rounded-full px-2 py-1 text-xs font-medium text-muted-foreground outline-none transition-colors hover:bg-muted hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring",
+                  "rect": {
+                    "x": 424,
+                    "y": 1562,
+                    "width": 72.5,
+                    "height": 24,
+                    "top": 1562,
+                    "right": 496.5,
+                    "bottom": 1586,
+                    "left": 424
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "route": "agents/ai-sidebar",
+      "url": "https://beui.dev/components/agents/ai-sidebar",
+      "measuredAt": "2026-10-23T07:56:26.006Z",
+      "viewport": {
+        "width": 1440,
+        "height": 1000,
+        "dpr": 1
+      },
+      "dark": true,
+      "stages": [
+        {
+          "id": "preview-stage",
+          "tag": "DIV",
+          "slot": null,
+          "className": "flex min-h-[320px] items-center justify-center py-10",
+          "rect": {
+            "x": 304,
+            "y": 344,
+            "width": 752,
+            "height": 824,
+            "top": 344,
+            "right": 1056,
+            "bottom": 1168,
+            "left": 304
+          },
+          "children": [
+            {
+              "tag": "DIV",
+              "slot": null,
+              "className": "w-full px-0 py-2 sm:p-3",
+              "rect": {
+                "x": 304,
+                "y": 384,
+                "width": 752,
+                "height": 744,
+                "top": 384,
+                "right": 1056,
+                "bottom": 1128,
+                "left": 304
+              },
+              "children": [
+                {
+                  "tag": "DIV",
+                  "slot": "sidebar-wrapper",
+                  "className": "group/sidebar-wrapper flex min-w-0 h-[720px] min-h-0 w-full overflow-hidden rounded-2xl border border-foreground/[0.08] bg-background",
+                  "rect": {
+                    "x": 316,
+                    "y": 396,
+                    "width": 728,
+                    "height": 720,
+                    "top": 396,
+                    "right": 1044,
+                    "bottom": 1116,
+                    "left": 316
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "route": "agents/chat-app",
+      "url": "https://beui.dev/components/agents/chat-app",
+      "measuredAt": "2026-10-23T07:56:29.195Z",
+      "viewport": {
+        "width": 1440,
+        "height": 1000,
+        "dpr": 1
+      },
+      "dark": true,
+      "stages": [
+        {
+          "id": "preview-stage",
+          "tag": "DIV",
+          "slot": null,
+          "className": "flex min-h-[320px] items-center justify-center py-10",
+          "rect": {
+            "x": 304,
+            "y": 344,
+            "width": 752,
+            "height": 864,
+            "top": 344,
+            "right": 1056,
+            "bottom": 1208,
+            "left": 304
+          },
+          "children": [
+            {
+              "tag": "DIV",
+              "slot": null,
+              "className": "relative w-full bg-background px-0 py-2 sm:p-3",
+              "rect": {
+                "x": 304,
+                "y": 384,
+                "width": 752,
+                "height": 784,
+                "top": 384,
+                "right": 1056,
+                "bottom": 1168,
+                "left": 304
+              },
+              "children": [
+                {
+                  "tag": "BUTTON",
+                  "slot": null,
+                  "className": "absolute top-5 right-24 z-50 grid size-10 place-items-center rounded-full border border-border/80 bg-background/90 text-muted-foreground backdrop-blur-sm transition-colors hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
+                  "rect": {
+                    "x": 920,
+                    "y": 404,
+                    "width": 40,
+                    "height": 40,
+                    "top": 404,
+                    "right": 960,
+                    "bottom": 444,
+                    "left": 920
+                  }
+                },
+                {
+                  "tag": "DIV",
+                  "slot": "sidebar-wrapper",
+                  "className": "group/sidebar-wrapper flex min-w-0 min-h-0 w-full overflow-hidden rounded-2xl border border-border bg-background h-[760px]",
+                  "rect": {
+                    "x": 316,
+                    "y": 396,
+                    "width": 728,
+                    "height": 760,
+                    "top": 396,
+                    "right": 1044,
+                    "bottom": 1156,
+                    "left": 316
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        null
+      ]
+    },
+    {
+      "route": "agents/voice-orb",
+      "url": "https://beui.dev/components/agents/voice-orb",
+      "measuredAt": "2026-10-23T07:56:31.369Z",
+      "viewport": {
+        "width": 1440,
+        "height": 1000,
+        "dpr": 1
+      },
+      "dark": true,
+      "stages": [
+        {
+          "id": "preview-stage",
+          "tag": "DIV",
+          "slot": null,
+          "className": "flex min-h-[320px] items-center justify-center py-10",
+          "rect": {
+            "x": 304,
+            "y": 368,
+            "width": 752,
+            "height": 368,
+            "top": 368,
+            "right": 1056,
+            "bottom": 736,
+            "left": 304
+          },
+          "children": [
+            {
+              "tag": "DIV",
+              "slot": "voice-orb",
+              "className": "relative aspect-square shrink-0 w-64 sm:w-72",
+              "rect": {
+                "x": 536,
+                "y": 408,
+                "width": 288,
+                "height": 288,
+                "top": 408,
+                "right": 824,
+                "bottom": 696,
+                "left": 536
+              },
+              "children": [
+                {
+                  "tag": "DIV",
+                  "slot": null,
+                  "className": "size-full",
+                  "rect": {
+                    "x": 535.0634765625,
+                    "y": 408.09625244140625,
+                    "width": 289.873046875,
+                    "height": 287.15716552734375,
+                    "top": 408.09625244140625,
+                    "right": 824.9365234375,
+                    "bottom": 695.25341796875,
+                    "left": 535.0634765625
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

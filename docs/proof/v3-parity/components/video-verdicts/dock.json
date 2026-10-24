@@ -1,0 +1,110 @@
+{
+  "id": "components/dock",
+  "owner": "components",
+  "newBadge": false,
+  "demoChanged": true,
+  "sourceUrl": "https://beui.dev/components/motion/dock",
+  "sourceFiles": [
+    {
+      "path": "components/motion/dock.tsx",
+      "sha256": "83cabddbfa41622000b1acb3122c7273dfbf396aab55724dea99f79e5af388de"
+    }
+  ],
+  "sourcePreviews": [
+    "components/previews/motion/dock.preview.tsx"
+  ],
+  "sourceExamples": [],
+  "widgetParts": [
+    "BeuiDock"
+  ],
+  "states": [
+    "rest",
+    "hover-exit",
+    "keyboard",
+    "reduced-motion",
+    "grouped actions separators active pill selection",
+    "pointer traverse hover exit keyboard and narrow layout"
+  ],
+  "themes": [
+    "dark",
+    "light"
+  ],
+  "verdict": "Inconclusive",
+  "implementation": "not changed in this repair checkpoint",
+  "missing": "No complete matched-width 60 FPS reference/before/after state set or independent visual verdict.",
+  "captures": [
+    {
+      "id": "candidate-light-dock",
+      "slug": "dock",
+      "origin": "candidate",
+      "theme": "light",
+      "code": 0,
+      "configPath": "/Users/codenameakshay/.t3/worktrees/beui/t3-48d38279/docs/proof/v3-parity/components/release-recordings-run2/configs/candidate-light-dock.json",
+      "runDirectory": "/Users/codenameakshay/.t3/worktrees/beui/t3-48d38279/docs/proof/v3-parity/components/release-recordings-run2/candidate-light-dock",
+      "missingTargets": [],
+      "stats": {
+        "originEpochMs": 1792743535888,
+        "backend": "screenshots",
+        "startMs": 5170.320458,
+        "sequenceStartMs": 5170.421916,
+        "stopMs": 8335.620083000002,
+        "frames": 179,
+        "durationMs": 3146.312952041626,
+        "measuredFps": 56.57415607194978,
+        "medianIntervalMs": 16.72673225402832,
+        "maxIntervalMs": 46.75149917602539,
+        "reorderedDeliveries": 0,
+        "fastMotionVerdict": "inconclusive; inspect per-event gaps, not nominal frame rate",
+        "errors": [],
+        "video": {
+          "width": 1280,
+          "height": 913,
+          "decodedFrames": 179
+        }
+      },
+      "video": {
+        "path": "release-recordings-run2/candidate-light-dock/capture.mp4",
+        "bytes": 890031,
+        "sha256": "14ee5b5b4179193fb848fde47af0bff53590373788af707b7608e3315f4d01ac"
+      }
+    },
+    {
+      "id": "candidate-dark-dock",
+      "slug": "dock",
+      "origin": "candidate",
+      "theme": "dark",
+      "code": 0,
+      "configPath": "/Users/codenameakshay/.t3/worktrees/beui/t3-48d38279/docs/proof/v3-parity/components/release-recordings-run2/configs/candidate-dark-dock.json",
+      "runDirectory": "/Users/codenameakshay/.t3/worktrees/beui/t3-48d38279/docs/proof/v3-parity/components/release-recordings-run2/candidate-dark-dock",
+      "missingTargets": [],
+      "stats": {
+        "originEpochMs": 1792743817301,
+        "backend": "screenshots",
+        "startMs": 5157.2785,
+        "sequenceStartMs": 5157.428959,
+        "stopMs": 8313.049542,
+        "frames": 142,
+        "durationMs": 3127.8555393218994,
+        "measuredFps": 45.07880822097301,
+        "medianIntervalMs": 17.366647720336914,
+        "maxIntervalMs": 45.859575271606445,
+        "reorderedDeliveries": 0,
+        "fastMotionVerdict": "inconclusive; inspect per-event gaps, not nominal frame rate",
+        "errors": [],
+        "video": {
+          "width": 1280,
+          "height": 913,
+          "decodedFrames": 142
+        }
+      },
+      "video": {
+        "path": "release-recordings-run2/candidate-dark-dock/capture.mp4",
+        "bytes": 744179,
+        "sha256": "9191dd775f5756d5b82624f5c00e403eec497a7ddb911ca447ccd7858b6cb9b0"
+      }
+    }
+  ],
+  "changeVideos": [],
+  "knownGaps": null,
+  "coverage": "Default preview recording only. No complete state or example parity certificate."
+}

@@ -1,0 +1,26 @@
+00:00 +0: loading /private/tmp/beui-scheduler-copy-recovery-20261024/candidate/test/motion/availability_scheduler_test.dart
+00:00 +0: copy menu keyboard reduce=false accept=false all=false key=Enter
+00:00 +1: copy menu keyboard reduce=false accept=false all=false key= 
+00:00 +2: copy menu keyboard reduce=false accept=false all=true key=Enter
+00:01 +3: copy menu keyboard reduce=false accept=false all=true key= 
+00:01 +4: copy menu keyboard reduce=false accept=true all=false key=Enter
+00:01 +5: copy menu keyboard reduce=false accept=true all=false key= 
+00:01 +6: copy menu keyboard reduce=false accept=true all=true key=Enter
+00:01 +7: copy menu keyboard reduce=false accept=true all=true key= 
+00:01 +8: copy menu keyboard reduce=true accept=false all=false key=Enter
+00:02 +9: copy menu keyboard reduce=true accept=false all=false key= 
+00:02 +10: copy menu keyboard reduce=true accept=false all=true key=Enter
+00:02 +11: copy menu keyboard reduce=true accept=false all=true key= 
+00:02 +12: copy menu keyboard reduce=true accept=true all=false key=Enter
+00:02 +13: copy menu keyboard reduce=true accept=true all=false key= 
+00:02 +14: copy menu keyboard reduce=true accept=true all=true key=Enter
+00:02 +15: copy menu keyboard reduce=true accept=true all=true key= 
+00:02 +16: copy menu keyboard pointer once, empty Apply, Escape and reopen policy
+00:02 +17: BeuiAvailabilityScheduler interaction renders one toggle per weekday
+00:03 +18: BeuiAvailabilityScheduler interaction default week marks the weekend unavailable
+00:03 +19: BeuiAvailabilityScheduler interaction disabling a day adds an Unavailable line
+00:03 +20: BeuiAvailabilityScheduler interaction add button appends a range to the day
+00:03 +21: BeuiAvailabilityScheduler interaction removing the only range marks the day unavailable
+00:03 +22: BeuiAvailabilityScheduler motion fidelity a newly added range blurs in under normal motion
+00:03 +23: BeuiAvailabilityScheduler motion fidelity reduced motion drops the range blur
+00:03 +24: All tests passed!

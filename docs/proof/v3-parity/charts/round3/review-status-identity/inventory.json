@@ -1,0 +1,720 @@
+[
+  {
+    "name": "after-status-bar-identity-dark-no-preference",
+    "config": {
+      "slug": "status-bar",
+      "revision": "1a9fa600 plus dc7d3332 chart behavior and shared dependencies",
+      "pinnedSource": "a76e57c9bbc2837e96420b2610e9c82a3271bb05",
+      "chartRevision": "dc7d333255e309c5439bda109f676ec011f597a5",
+      "effectiveDependencies": [
+        "11ee280",
+        "8ccb169",
+        "1dde262aa3ab172e4255233a524d712a48952f0a",
+        "62d8ab9",
+        "a88d982",
+        "d831524",
+        "d53695ffca9e4c9d1403e75712a9ff8e2ceed8ed",
+        "7dfd8bd8",
+        "82f12dbe002f3f588c97d7730592d49ae4dc3319",
+        "12155d8e1fa7776086e6f1b9334fecbf1ccd414e"
+      ],
+      "recorderRevision": "d53695ffca9e4c9d1403e75712a9ff8e2ceed8ed",
+      "recorderSha256": "2aa405da2051b7a59a3010f7b0e3291108e3c51c65f6e1e76bf73bca120709ca",
+      "wrapperRevision": "d831524",
+      "observedProbeTargets": [
+        {
+          "name": "API status: inspect period",
+          "rect": {
+            "x": 476.5,
+            "y": 405,
+            "width": 592,
+            "height": 44,
+            "top": 405,
+            "right": 1068.5,
+            "bottom": 449,
+            "left": 476.5
+          }
+        },
+        {
+          "name": "API status: inspect period",
+          "rect": {
+            "x": 476.5,
+            "y": 405,
+            "width": 592,
+            "height": 44,
+            "top": 405,
+            "right": 1068.5,
+            "bottom": 449,
+            "left": 476.5
+          }
+        }
+      ],
+      "timerOverrides": "none",
+      "keyboardMethod": "Actual native Tab/R/I/ArrowRight/Escape. R/I update only the consumer data list.",
+      "effectiveDependencyCopies": [
+        {
+          "upstream": "11ee280fc037db9c8139903f2c4588ca5050f45e",
+          "local": "2625a31"
+        },
+        {
+          "upstream": "8ccb169aa6d6786c451456f756af2087d2672c89",
+          "local": "c580bf2"
+        },
+        {
+          "upstream": "1dde262aa3ab172e4255233a524d712a48952f0a",
+          "local": "1fb1113"
+        },
+        {
+          "upstream": "62d8ab9f783b2150c920874b7f672cfec1daa897",
+          "local": "1efa708"
+        },
+        {
+          "upstream": "a88d982f38da93ccf69c9aa1406f2d6a016ae7d3",
+          "local": "61f44d2"
+        },
+        {
+          "upstream": "d831524e86ecb1703362b1dccd149325f05c50cc",
+          "local": "193a69c"
+        },
+        {
+          "upstream": "d53695ffca9e4c9d1403e75712a9ff8e2ceed8ed",
+          "local": "141bbda"
+        },
+        {
+          "upstream": "7dfd8bd85822de6e7e56660d0d3a8256ceabb75b",
+          "local": "7f1247d5"
+        },
+        {
+          "upstream": "82f12dbe002f3f588c97d7730592d49ae4dc3319",
+          "local": "5170c05d"
+        },
+        {
+          "upstream": "12155d8e1fa7776086e6f1b9334fecbf1ccd414e",
+          "local": "bb961d33"
+        }
+      ],
+      "fixtureSource": false,
+      "fixtureRevision": "1a9fa600",
+      "fixtureScope": "Behavior-only wrapper. Exact source chart and Tooltip imports, not a source pixel baseline. No inspector blur or direct state/focus injection."
+    },
+    "requested": {
+      "viewport": {
+        "width": 1280,
+        "height": 1000
+      },
+      "reducedMotion": "no-preference"
+    },
+    "effective": {
+      "viewport": {
+        "width": 1280,
+        "height": 1000
+      },
+      "dpr": 1,
+      "browserReduce": false,
+      "flutter": {
+        "disableAnimations": false,
+        "platformDisableAnimations": false,
+        "motionOverride": null,
+        "backgroundArgb": 4279571733,
+        "constraints": {
+          "minWidth": 480,
+          "maxWidth": 480,
+          "minHeight": 0,
+          "maxHeight": 1000
+        },
+        "rect": {
+          "x": 400,
+          "y": 336,
+          "width": 480,
+          "height": 328
+        }
+      },
+      "nativeVideo": {
+        "width": 1280,
+        "height": 913
+      }
+    },
+    "stats": {
+      "originEpochMs": 1792751203406,
+      "backend": "screenshots",
+      "startMs": 3188.405625,
+      "sequenceStartMs": 3188.4859589999996,
+      "stopMs": 7091.685917000001,
+      "frames": 180,
+      "durationMs": 3914.785861968994,
+      "measuredFps": 45.724084614418615,
+      "medianIntervalMs": 17.302274703979492,
+      "maxIntervalMs": 50.4913330078125,
+      "reorderedDeliveries": 0,
+      "fastMotionVerdict": "inconclusive; inspect per-event gaps, not nominal frame rate",
+      "errors": [],
+      "video": {
+        "width": 1280,
+        "height": 913,
+        "decodedFrames": 180
+      }
+    },
+    "framesHashed": 180,
+    "videoSha256": "ab5930aa1e879ceab59936025bad68195ae5834a3ec4f17592f4942e7828dd38",
+    "stills": [
+      {
+        "atMs": 650,
+        "frame": "original-frames/frame_000021.png"
+      },
+      {
+        "atMs": 1150,
+        "frame": "original-frames/frame_000049.png"
+      },
+      {
+        "atMs": 1280,
+        "frame": "original-frames/frame_000057.png"
+      },
+      {
+        "atMs": 1750,
+        "frame": "original-frames/frame_000085.png"
+      },
+      {
+        "atMs": 2300,
+        "frame": "original-frames/frame_000118.png"
+      },
+      {
+        "atMs": 3200,
+        "frame": "original-frames/frame_000158.png"
+      },
+      {
+        "atMs": 3700,
+        "frame": "original-frames/frame_000173.png"
+      }
+    ]
+  },
+  {
+    "name": "after-status-bar-identity-light-reduce",
+    "config": {
+      "slug": "status-bar",
+      "revision": "1a9fa600 plus dc7d3332 chart behavior and shared dependencies",
+      "pinnedSource": "a76e57c9bbc2837e96420b2610e9c82a3271bb05",
+      "chartRevision": "dc7d333255e309c5439bda109f676ec011f597a5",
+      "effectiveDependencies": [
+        "11ee280",
+        "8ccb169",
+        "1dde262aa3ab172e4255233a524d712a48952f0a",
+        "62d8ab9",
+        "a88d982",
+        "d831524",
+        "d53695ffca9e4c9d1403e75712a9ff8e2ceed8ed",
+        "7dfd8bd8",
+        "82f12dbe002f3f588c97d7730592d49ae4dc3319",
+        "12155d8e1fa7776086e6f1b9334fecbf1ccd414e"
+      ],
+      "recorderRevision": "d53695ffca9e4c9d1403e75712a9ff8e2ceed8ed",
+      "recorderSha256": "2aa405da2051b7a59a3010f7b0e3291108e3c51c65f6e1e76bf73bca120709ca",
+      "wrapperRevision": "d831524",
+      "observedProbeTargets": [
+        {
+          "name": "API status: inspect period",
+          "rect": {
+            "x": 476.5,
+            "y": 405,
+            "width": 592,
+            "height": 44,
+            "top": 405,
+            "right": 1068.5,
+            "bottom": 449,
+            "left": 476.5
+          }
+        },
+        {
+          "name": "API status: inspect period",
+          "rect": {
+            "x": 476.5,
+            "y": 405,
+            "width": 592,
+            "height": 44,
+            "top": 405,
+            "right": 1068.5,
+            "bottom": 449,
+            "left": 476.5
+          }
+        }
+      ],
+      "timerOverrides": "none",
+      "keyboardMethod": "Actual native Tab/R/I/ArrowRight/Escape. R/I update only the consumer data list.",
+      "effectiveDependencyCopies": [
+        {
+          "upstream": "11ee280fc037db9c8139903f2c4588ca5050f45e",
+          "local": "2625a31"
+        },
+        {
+          "upstream": "8ccb169aa6d6786c451456f756af2087d2672c89",
+          "local": "c580bf2"
+        },
+        {
+          "upstream": "1dde262aa3ab172e4255233a524d712a48952f0a",
+          "local": "1fb1113"
+        },
+        {
+          "upstream": "62d8ab9f783b2150c920874b7f672cfec1daa897",
+          "local": "1efa708"
+        },
+        {
+          "upstream": "a88d982f38da93ccf69c9aa1406f2d6a016ae7d3",
+          "local": "61f44d2"
+        },
+        {
+          "upstream": "d831524e86ecb1703362b1dccd149325f05c50cc",
+          "local": "193a69c"
+        },
+        {
+          "upstream": "d53695ffca9e4c9d1403e75712a9ff8e2ceed8ed",
+          "local": "141bbda"
+        },
+        {
+          "upstream": "7dfd8bd85822de6e7e56660d0d3a8256ceabb75b",
+          "local": "7f1247d5"
+        },
+        {
+          "upstream": "82f12dbe002f3f588c97d7730592d49ae4dc3319",
+          "local": "5170c05d"
+        },
+        {
+          "upstream": "12155d8e1fa7776086e6f1b9334fecbf1ccd414e",
+          "local": "bb961d33"
+        }
+      ],
+      "fixtureSource": false,
+      "fixtureRevision": "1a9fa600",
+      "fixtureScope": "Behavior-only wrapper. Exact source chart and Tooltip imports, not a source pixel baseline. No inspector blur or direct state/focus injection."
+    },
+    "requested": {
+      "viewport": {
+        "width": 1280,
+        "height": 1000
+      },
+      "reducedMotion": "reduce"
+    },
+    "effective": {
+      "viewport": {
+        "width": 1280,
+        "height": 1000
+      },
+      "dpr": 1,
+      "browserReduce": true,
+      "flutter": {
+        "disableAnimations": true,
+        "platformDisableAnimations": true,
+        "motionOverride": null,
+        "backgroundArgb": 4294769916,
+        "constraints": {
+          "minWidth": 480,
+          "maxWidth": 480,
+          "minHeight": 0,
+          "maxHeight": 1000
+        },
+        "rect": {
+          "x": 400,
+          "y": 336,
+          "width": 480,
+          "height": 328
+        }
+      },
+      "nativeVideo": {
+        "width": 1280,
+        "height": 913
+      }
+    },
+    "stats": {
+      "originEpochMs": 1792751211797,
+      "backend": "screenshots",
+      "startMs": 3141.282792,
+      "sequenceStartMs": 3141.355125,
+      "stopMs": 7045.276584,
+      "frames": 122,
+      "durationMs": 3882.545232772827,
+      "measuredFps": 31.165123068916444,
+      "medianIntervalMs": 33.22410583496094,
+      "maxIntervalMs": 49.25823211669922,
+      "reorderedDeliveries": 0,
+      "fastMotionVerdict": "inconclusive; inspect per-event gaps, not nominal frame rate",
+      "errors": [],
+      "video": {
+        "width": 1280,
+        "height": 913,
+        "decodedFrames": 122
+      }
+    },
+    "framesHashed": 122,
+    "videoSha256": "e83ffacb8bef23ae6878a0bbf2228c1d153a69087d2609c3e9a0f21b333df027",
+    "stills": [
+      {
+        "atMs": 650,
+        "frame": "original-frames/frame_000024.png"
+      },
+      {
+        "atMs": 1150,
+        "frame": "original-frames/frame_000039.png"
+      },
+      {
+        "atMs": 1280,
+        "frame": "original-frames/frame_000043.png"
+      },
+      {
+        "atMs": 1750,
+        "frame": "original-frames/frame_000057.png"
+      },
+      {
+        "atMs": 2300,
+        "frame": "original-frames/frame_000073.png"
+      },
+      {
+        "atMs": 3200,
+        "frame": "original-frames/frame_000100.png"
+      },
+      {
+        "atMs": 3700,
+        "frame": "original-frames/frame_000115.png"
+      }
+    ]
+  },
+  {
+    "name": "source-status-bar-identity-dark-no-preference",
+    "config": {
+      "slug": "status-bar",
+      "revision": "a76e57c9bbc2837e96420b2610e9c82a3271bb05 plus isolated ownership fixture",
+      "pinnedSource": "a76e57c9bbc2837e96420b2610e9c82a3271bb05",
+      "chartRevision": "dc7d333255e309c5439bda109f676ec011f597a5",
+      "effectiveDependencies": [
+        "11ee280",
+        "8ccb169",
+        "1dde262aa3ab172e4255233a524d712a48952f0a",
+        "62d8ab9",
+        "a88d982",
+        "d831524",
+        "d53695ffca9e4c9d1403e75712a9ff8e2ceed8ed",
+        "7dfd8bd8",
+        "82f12dbe002f3f588c97d7730592d49ae4dc3319",
+        "12155d8e1fa7776086e6f1b9334fecbf1ccd414e"
+      ],
+      "recorderRevision": "d53695ffca9e4c9d1403e75712a9ff8e2ceed8ed",
+      "recorderSha256": "2aa405da2051b7a59a3010f7b0e3291108e3c51c65f6e1e76bf73bca120709ca",
+      "wrapperRevision": "d831524",
+      "observedProbeTargets": [
+        {
+          "name": "API status: inspect period",
+          "rect": {
+            "x": 476.5,
+            "y": 405,
+            "width": 592,
+            "height": 44,
+            "top": 405,
+            "right": 1068.5,
+            "bottom": 449,
+            "left": 476.5
+          }
+        },
+        {
+          "name": "API status: inspect period",
+          "rect": {
+            "x": 476.5,
+            "y": 405,
+            "width": 592,
+            "height": 44,
+            "top": 405,
+            "right": 1068.5,
+            "bottom": 449,
+            "left": 476.5
+          }
+        }
+      ],
+      "timerOverrides": "none",
+      "keyboardMethod": "Actual native Tab/R/I/ArrowRight/Escape. R/I update only the consumer data list.",
+      "effectiveDependencyCopies": [
+        {
+          "upstream": "11ee280fc037db9c8139903f2c4588ca5050f45e",
+          "local": "2625a31"
+        },
+        {
+          "upstream": "8ccb169aa6d6786c451456f756af2087d2672c89",
+          "local": "c580bf2"
+        },
+        {
+          "upstream": "1dde262aa3ab172e4255233a524d712a48952f0a",
+          "local": "1fb1113"
+        },
+        {
+          "upstream": "62d8ab9f783b2150c920874b7f672cfec1daa897",
+          "local": "1efa708"
+        },
+        {
+          "upstream": "a88d982f38da93ccf69c9aa1406f2d6a016ae7d3",
+          "local": "61f44d2"
+        },
+        {
+          "upstream": "d831524e86ecb1703362b1dccd149325f05c50cc",
+          "local": "193a69c"
+        },
+        {
+          "upstream": "d53695ffca9e4c9d1403e75712a9ff8e2ceed8ed",
+          "local": "141bbda"
+        },
+        {
+          "upstream": "7dfd8bd85822de6e7e56660d0d3a8256ceabb75b",
+          "local": "7f1247d5"
+        },
+        {
+          "upstream": "82f12dbe002f3f588c97d7730592d49ae4dc3319",
+          "local": "5170c05d"
+        },
+        {
+          "upstream": "12155d8e1fa7776086e6f1b9334fecbf1ccd414e",
+          "local": "bb961d33"
+        }
+      ],
+      "fixtureSource": true,
+      "fixtureRevision": "1a9fa600",
+      "fixtureScope": "Behavior-only wrapper. Exact source chart and Tooltip imports, not a source pixel baseline. No inspector blur or direct state/focus injection."
+    },
+    "requested": {
+      "viewport": {
+        "width": 1280,
+        "height": 1000
+      },
+      "reducedMotion": "no-preference"
+    },
+    "effective": {
+      "viewport": {
+        "width": 1280,
+        "height": 1000
+      },
+      "dpr": 1,
+      "browserReduce": false,
+      "flutter": null,
+      "nativeVideo": {
+        "width": 1280,
+        "height": 913
+      }
+    },
+    "stats": {
+      "originEpochMs": 1792751220719,
+      "backend": "screenshots",
+      "startMs": 3231.5978750000004,
+      "sequenceStartMs": 3231.683417,
+      "stopMs": 7138.021667,
+      "frames": 117,
+      "durationMs": 3898.301601409912,
+      "measuredFps": 29.756548328134972,
+      "medianIntervalMs": 33.36644172668457,
+      "maxIntervalMs": 49.9265193939209,
+      "reorderedDeliveries": 0,
+      "fastMotionVerdict": "inconclusive; inspect per-event gaps, not nominal frame rate",
+      "errors": [],
+      "video": {
+        "width": 1280,
+        "height": 913,
+        "decodedFrames": 117
+      }
+    },
+    "framesHashed": 117,
+    "videoSha256": "cad15e66c9eb99c591b498120611bc0986585c0230d21d1b174c62360cf2439a",
+    "stills": [
+      {
+        "atMs": 650,
+        "frame": "original-frames/frame_000018.png"
+      },
+      {
+        "atMs": 1150,
+        "frame": "original-frames/frame_000033.png"
+      },
+      {
+        "atMs": 1280,
+        "frame": "original-frames/frame_000037.png"
+      },
+      {
+        "atMs": 1750,
+        "frame": "original-frames/frame_000051.png"
+      },
+      {
+        "atMs": 2300,
+        "frame": "original-frames/frame_000068.png"
+      },
+      {
+        "atMs": 3200,
+        "frame": "original-frames/frame_000095.png"
+      },
+      {
+        "atMs": 3700,
+        "frame": "original-frames/frame_000110.png"
+      }
+    ]
+  },
+  {
+    "name": "source-status-bar-identity-light-reduce",
+    "config": {
+      "slug": "status-bar",
+      "revision": "a76e57c9bbc2837e96420b2610e9c82a3271bb05 plus isolated ownership fixture",
+      "pinnedSource": "a76e57c9bbc2837e96420b2610e9c82a3271bb05",
+      "chartRevision": "dc7d333255e309c5439bda109f676ec011f597a5",
+      "effectiveDependencies": [
+        "11ee280",
+        "8ccb169",
+        "1dde262aa3ab172e4255233a524d712a48952f0a",
+        "62d8ab9",
+        "a88d982",
+        "d831524",
+        "d53695ffca9e4c9d1403e75712a9ff8e2ceed8ed",
+        "7dfd8bd8",
+        "82f12dbe002f3f588c97d7730592d49ae4dc3319",
+        "12155d8e1fa7776086e6f1b9334fecbf1ccd414e"
+      ],
+      "recorderRevision": "d53695ffca9e4c9d1403e75712a9ff8e2ceed8ed",
+      "recorderSha256": "2aa405da2051b7a59a3010f7b0e3291108e3c51c65f6e1e76bf73bca120709ca",
+      "wrapperRevision": "d831524",
+      "observedProbeTargets": [
+        {
+          "name": "API status: inspect period",
+          "rect": {
+            "x": 476.5,
+            "y": 405,
+            "width": 592,
+            "height": 44,
+            "top": 405,
+            "right": 1068.5,
+            "bottom": 449,
+            "left": 476.5
+          }
+        },
+        {
+          "name": "API status: inspect period",
+          "rect": {
+            "x": 476.5,
+            "y": 405,
+            "width": 592,
+            "height": 44,
+            "top": 405,
+            "right": 1068.5,
+            "bottom": 449,
+            "left": 476.5
+          }
+        }
+      ],
+      "timerOverrides": "none",
+      "keyboardMethod": "Actual native Tab/R/I/ArrowRight/Escape. R/I update only the consumer data list.",
+      "effectiveDependencyCopies": [
+        {
+          "upstream": "11ee280fc037db9c8139903f2c4588ca5050f45e",
+          "local": "2625a31"
+        },
+        {
+          "upstream": "8ccb169aa6d6786c451456f756af2087d2672c89",
+          "local": "c580bf2"
+        },
+        {
+          "upstream": "1dde262aa3ab172e4255233a524d712a48952f0a",
+          "local": "1fb1113"
+        },
+        {
+          "upstream": "62d8ab9f783b2150c920874b7f672cfec1daa897",
+          "local": "1efa708"
+        },
+        {
+          "upstream": "a88d982f38da93ccf69c9aa1406f2d6a016ae7d3",
+          "local": "61f44d2"
+        },
+        {
+          "upstream": "d831524e86ecb1703362b1dccd149325f05c50cc",
+          "local": "193a69c"
+        },
+        {
+          "upstream": "d53695ffca9e4c9d1403e75712a9ff8e2ceed8ed",
+          "local": "141bbda"
+        },
+        {
+          "upstream": "7dfd8bd85822de6e7e56660d0d3a8256ceabb75b",
+          "local": "7f1247d5"
+        },
+        {
+          "upstream": "82f12dbe002f3f588c97d7730592d49ae4dc3319",
+          "local": "5170c05d"
+        },
+        {
+          "upstream": "12155d8e1fa7776086e6f1b9334fecbf1ccd414e",
+          "local": "bb961d33"
+        }
+      ],
+      "fixtureSource": true,
+      "fixtureRevision": "1a9fa600",
+      "fixtureScope": "Behavior-only wrapper. Exact source chart and Tooltip imports, not a source pixel baseline. No inspector blur or direct state/focus injection."
+    },
+    "requested": {
+      "viewport": {
+        "width": 1280,
+        "height": 1000
+      },
+      "reducedMotion": "reduce"
+    },
+    "effective": {
+      "viewport": {
+        "width": 1280,
+        "height": 1000
+      },
+      "dpr": 1,
+      "browserReduce": true,
+      "flutter": null,
+      "nativeVideo": {
+        "width": 1280,
+        "height": 913
+      }
+    },
+    "stats": {
+      "originEpochMs": 1792751229137,
+      "backend": "screenshots",
+      "startMs": 3295.9416250000004,
+      "sequenceStartMs": 3296.0855,
+      "stopMs": 7199.606667,
+      "frames": 118,
+      "durationMs": 3906.5089225769043,
+      "measuredFps": 29.95001478783816,
+      "medianIntervalMs": 33.342838287353516,
+      "maxIntervalMs": 43.677330017089844,
+      "reorderedDeliveries": 0,
+      "fastMotionVerdict": "inconclusive; inspect per-event gaps, not nominal frame rate",
+      "errors": [],
+      "video": {
+        "width": 1280,
+        "height": 913,
+        "decodedFrames": 118
+      }
+    },
+    "framesHashed": 118,
+    "videoSha256": "99f0293e7572169aeac51c727c4d29b3f5158ee768d0207b03415f4c3e5818a8",
+    "stills": [
+      {
+        "atMs": 650,
+        "frame": "original-frames/frame_000019.png"
+      },
+      {
+        "atMs": 1150,
+        "frame": "original-frames/frame_000034.png"
+      },
+      {
+        "atMs": 1280,
+        "frame": "original-frames/frame_000038.png"
+      },
+      {
+        "atMs": 1750,
+        "frame": "original-frames/frame_000052.png"
+      },
+      {
+        "atMs": 2300,
+        "frame": "original-frames/frame_000069.png"
+      },
+      {
+        "atMs": 3200,
+        "frame": "original-frames/frame_000096.png"
+      },
+      {
+        "atMs": 3700,
+        "frame": "original-frames/frame_000111.png"
+      }
+    ]
+  }
+]

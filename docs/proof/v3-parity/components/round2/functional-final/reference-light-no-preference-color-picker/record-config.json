@@ -1,0 +1,105 @@
+{
+  "url": "https://beui.dev/components/motion/color-picker",
+  "viewport": {
+    "width": 1280,
+    "height": 1000
+  },
+  "theme": "light",
+  "reducedMotion": "no-preference",
+  "reference": true,
+  "backend": "screenshots",
+  "loadWaitMs": 3000,
+  "finalHoldMs": 650,
+  "requireFlutterProbe": false,
+  "targets": {
+    "outside": {
+      "x": 10,
+      "y": 10
+    },
+    "target1": {
+      "x": 600,
+      "y": 460,
+      "measuredBox": {
+        "x": 540.5,
+        "y": 440,
+        "width": 119,
+        "height": 40
+      }
+    },
+    "target2": {
+      "x": 763.3951293945313,
+      "y": 502.94705352783205
+    },
+    "target3": {
+      "x": 766.0951293945312,
+      "y": 501.14705657958984
+    },
+    "target4": {
+      "x": 576.5,
+      "y": 742,
+      "measuredBox": {
+        "x": 552.5,
+        "y": 724,
+        "width": 48,
+        "height": 36
+      }
+    },
+    "target5": {
+      "x": 576.5,
+      "y": 742,
+      "measuredBox": {
+        "x": 552.5,
+        "y": 724,
+        "width": 48,
+        "height": 36
+      }
+    }
+  },
+  "events": [
+    {
+      "atMs": 400,
+      "type": "click",
+      "target": "target1"
+    },
+    {
+      "atMs": 1200,
+      "type": "down",
+      "target": "target2"
+    },
+    {
+      "atMs": 2000,
+      "type": "move",
+      "target": "target3"
+    },
+    {
+      "atMs": 2800,
+      "type": "up"
+    },
+    {
+      "atMs": 3600,
+      "type": "click",
+      "target": "target4"
+    },
+    {
+      "atMs": 4400,
+      "type": "click",
+      "target": "target5"
+    },
+    {
+      "atMs": 5200,
+      "type": "key",
+      "key": "Escape"
+    }
+  ],
+  "provenance": {
+    "revision": "2e2aa803c55dbcec7eba6a0e110565d61dc5daad",
+    "jsHash": "37b90f6d43ec0b4d2f5ef5235e036a6a8306f5938b49a726b550ce265132ddb2",
+    "recorderHash": "2aa405da2051b7a59a3010f7b0e3291108e3c51c65f6e1e76bf73bca120709ca",
+    "recorderRevision": "53bfc2c5a79736d9febb5ebe6f5071b1be108eaf",
+    "wrapperRevision": "69721029ca661be73dd58ba972d058b84ebe5af6",
+    "sourceRevision": "a76e57c9bbc2837e96420b2610e9c82a3271bb05",
+    "liveDeploymentRevision": "unknown",
+    "observationRun": "observed.json and unscaled screenshots replay the same coordinate events separately; video dispatch alone is not an outcome assertion",
+    "fastMotionVerdict": "inconclusive; native60fps unavailable"
+  }
+}

@@ -1,0 +1,132 @@
+{
+  "id": "components/table",
+  "owner": "components",
+  "newBadge": false,
+  "demoChanged": true,
+  "sourceUrl": "https://beui.dev/components/motion/table",
+  "sourceFiles": [
+    {
+      "path": "components/motion/table/index.tsx",
+      "sha256": "b5ee4311cf527d5e3a0cb7d16717c836b6b77b913fca66e64f92b0106285de92"
+    }
+  ],
+  "sourcePreviews": [
+    "components/previews/motion/table.preview.tsx",
+    "components/previews/motion/table-editable.preview.tsx",
+    "components/previews/motion/table-async.preview.tsx"
+  ],
+  "sourceExamples": [
+    {
+      "slug": "data",
+      "installSlug": "table",
+      "preview": "components/previews/motion/table.preview.tsx"
+    },
+    {
+      "slug": "editable",
+      "installSlug": "table-editable",
+      "preview": "components/previews/motion/table-editable.preview.tsx"
+    },
+    {
+      "slug": "async",
+      "installSlug": "table-async",
+      "preview": "components/previews/motion/table-async.preview.tsx"
+    }
+  ],
+  "widgetParts": [
+    "BeuiTable"
+  ],
+  "states": [
+    "rest",
+    "hover-exit",
+    "keyboard",
+    "reduced-motion",
+    "base editable async preview bands",
+    "sort resize reorder select virtual scroll",
+    "edit commit cancel loading end-reached empty",
+    "example/table/data",
+    "example/table-editable/editable",
+    "example/table-async/async"
+  ],
+  "themes": [
+    "dark",
+    "light"
+  ],
+  "verdict": "Inconclusive",
+  "implementation": "not changed in this repair checkpoint",
+  "missing": "No complete matched-width 60 FPS reference/before/after state set or independent visual verdict.",
+  "captures": [
+    {
+      "id": "candidate-light-table",
+      "slug": "table",
+      "origin": "candidate",
+      "theme": "light",
+      "code": 0,
+      "configPath": "/Users/codenameakshay/.t3/worktrees/beui/t3-48d38279/docs/proof/v3-parity/components/release-recordings-run2/configs/candidate-light-table.json",
+      "runDirectory": "/Users/codenameakshay/.t3/worktrees/beui/t3-48d38279/docs/proof/v3-parity/components/release-recordings-run2/candidate-light-table",
+      "missingTargets": [],
+      "stats": {
+        "originEpochMs": 1792743575319,
+        "backend": "screenshots",
+        "startMs": 5196.67825,
+        "sequenceStartMs": 5196.837791,
+        "stopMs": 8353.865,
+        "frames": 122,
+        "durationMs": 3133.574962615967,
+        "measuredFps": 38.61404352649887,
+        "medianIntervalMs": 18.776655197143555,
+        "maxIntervalMs": 60.46342849731445,
+        "reorderedDeliveries": 0,
+        "fastMotionVerdict": "inconclusive; inspect per-event gaps, not nominal frame rate",
+        "errors": [],
+        "video": {
+          "width": 1280,
+          "height": 913,
+          "decodedFrames": 122
+        }
+      },
+      "video": {
+        "path": "release-recordings-run2/candidate-light-table/capture.mp4",
+        "bytes": 637266,
+        "sha256": "31b45eb655e30aa37414e28d9fa08d0dc1833301a5e798f5686013ff7588a5be"
+      }
+    },
+    {
+      "id": "candidate-dark-table",
+      "slug": "table",
+      "origin": "candidate",
+      "theme": "dark",
+      "code": 0,
+      "configPath": "/Users/codenameakshay/.t3/worktrees/beui/t3-48d38279/docs/proof/v3-parity/components/release-recordings-run2/configs/candidate-dark-table.json",
+      "runDirectory": "/Users/codenameakshay/.t3/worktrees/beui/t3-48d38279/docs/proof/v3-parity/components/release-recordings-run2/candidate-dark-table",
+      "missingTargets": [],
+      "stats": {
+        "originEpochMs": 1792743857176,
+        "backend": "screenshots",
+        "startMs": 5185.090042,
+        "sequenceStartMs": 5185.22675,
+        "stopMs": 8340.347624999999,
+        "frames": 116,
+        "durationMs": 3144.726276397705,
+        "measuredFps": 36.56916052221019,
+        "medianIntervalMs": 30.5783748626709,
+        "maxIntervalMs": 81.45999908447266,
+        "reorderedDeliveries": 0,
+        "fastMotionVerdict": "inconclusive; inspect per-event gaps, not nominal frame rate",
+        "errors": [],
+        "video": {
+          "width": 1280,
+          "height": 913,
+          "decodedFrames": 116
+        }
+      },
+      "video": {
+        "path": "release-recordings-run2/candidate-dark-table/capture.mp4",
+        "bytes": 610474,
+        "sha256": "e0883d969b1ec5b3a056a8625e48e46dd4ffb3551a1f1ec9e6f49875c9881860"
+      }
+    }
+  ],
+  "changeVideos": [],
+  "knownGaps": null,
+  "coverage": "Default preview recording only. No complete state or example parity certificate."
+}

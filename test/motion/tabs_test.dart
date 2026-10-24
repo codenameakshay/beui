@@ -1,4 +1,5 @@
 import 'package:beui/beui.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -97,6 +98,148 @@ void main() {
       await tester.sendKeyEvent(LogicalKeyboardKey.arrowLeft);
       await tester.pump();
       expect(changed, 'three');
+    });
+
+    testWidgets('Home jumps to the first tab and End to the last', (
+      tester,
+    ) async {
+      String? changed;
+      await tester.pumpWidget(
+        _app(value: 'two', onChanged: (v) => changed = v),
+      );
+      await tester.pumpAndSettle();
+      await tester.sendKeyEvent(LogicalKeyboardKey.tab);
+      await tester.pumpAndSettle();
+      await tester.sendKeyEvent(LogicalKeyboardKey.home);
+      await tester.pump();
+      expect(changed, 'one');
+      await tester.sendKeyEvent(LogicalKeyboardKey.end);
+      await tester.pump();
+      expect(changed, 'three');
+    });
+  });
+
+  group('BeuiTabs icons', () {
+    testWidgets('selected mode shows the icon only on the active tab', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        beuiTestApp(
+          BeuiTabs<String>(
+            value: 'home',
+            icons: BeuiTabsIcons.selected,
+            tabs: const [
+              BeuiTab(
+                value: 'home',
+                icon: Icon(LucideIcons.house),
+                label: Text('Home'),
+              ),
+              BeuiTab(
+                value: 'stats',
+                icon: Icon(LucideIcons.chart_column),
+                label: Text('Stats'),
+              ),
+            ],
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+      expect(find.byIcon(LucideIcons.house), findsOneWidget);
+      final homeWidth = tester
+          .getSize(
+            find.ancestor(
+              of: find.text('Home'),
+              matching: find.byType(FocusableActionDetector),
+            ),
+          )
+          .width;
+      final statsWidth = tester
+          .getSize(
+            find.ancestor(
+              of: find.text('Stats'),
+              matching: find.byType(FocusableActionDetector),
+            ),
+          )
+          .width;
+      expect(homeWidth, greaterThan(statsWidth));
+    });
+  });
+
+  group('BeuiTabs overflow', () {
+    testWidgets('clips overflow and reveals later tabs with the chevron', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        beuiTestApp(
+          BeuiTabs<String>(
+            value: 'Overview',
+            tabs: const [
+              BeuiTab(value: 'Overview', label: Text('Account Overview')),
+              BeuiTab(value: 'Activity', label: Text('Recent Activity')),
+              BeuiTab(value: 'Analytics', label: Text('Usage Analytics')),
+              BeuiTab(value: 'Members', label: Text('Team Members')),
+              BeuiTab(value: 'Billing', label: Text('Billing')),
+              BeuiTab(value: 'Settings', label: Text('Settings')),
+            ],
+          ),
+          width: 320,
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      expect(tester.takeException(), isNull);
+      final viewport = tester.getRect(find.byType(SingleChildScrollView));
+      expect(
+        tester.getCenter(find.text('Settings')).dx,
+        greaterThan(viewport.right),
+      );
+
+      for (var i = 0; i < 10; i++) {
+        if (tester.getCenter(find.text('Settings')).dx < viewport.right) break;
+        await tester.tap(find.byTooltip('Scroll tabs right'));
+        await tester.pumpAndSettle();
+      }
+
+      expect(tester.takeException(), isNull);
+      expect(
+        tester.getCenter(find.text('Settings')).dx,
+        lessThan(viewport.right),
+      );
+    });
+
+    testWidgets('unselected tab text uses foreground while hovered', (
+      tester,
+    ) async {
+      await tester.pumpWidget(_app(value: 'one'));
+      await tester.pumpAndSettle();
+
+      Color textColor() => tester
+          .widget<AnimatedDefaultTextStyle>(
+            find
+                .ancestor(
+                  of: find.text('Two'),
+                  matching: find.byType(AnimatedDefaultTextStyle),
+                )
+                .first,
+          )
+          .style
+          .color!;
+
+      final colors = BeuiColors.light();
+      expect(textColor(), colors.mutedForeground);
+
+      final previousStrategy = FocusManager.instance.highlightStrategy;
+      FocusManager.instance.highlightStrategy =
+          FocusHighlightStrategy.alwaysTraditional;
+      addTearDown(() {
+        FocusManager.instance.highlightStrategy = previousStrategy;
+      });
+      final mouse = await tester.createGesture(kind: PointerDeviceKind.mouse);
+      await mouse.addPointer(location: Offset.zero);
+      await mouse.moveTo(tester.getCenter(find.text('Two')));
+      await tester.pumpAndSettle();
+
+      expect(textColor(), colors.foreground);
     });
   });
 

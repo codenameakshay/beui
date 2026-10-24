@@ -13,7 +13,7 @@ Widget chatAppDemo(BuildContext context) => const _ChatAppDemo();
 // ---------------------------------------------------------------------------
 
 const _reply =
-    "I'll keep the patch focused, preserve the current checkout layout, "
+    'I’ll keep the patch focused, preserve the current checkout layout, '
     'and run the same validation path before preparing the release.';
 
 const _diffLines = <BeuiFileDiffLine>[
@@ -177,6 +177,8 @@ class _ChatAppDemoState extends State<_ChatAppDemo> {
   List<BeuiSidebarResource> _items = List.of(_resources);
   String _activeResource = 'checkout';
   bool _sidebarVisible = true;
+  bool _sidebarMobile = false;
+  final _sidebarTrigger = FocusNode();
   _SidebarNav? _activeNav;
 
   bool _pending = false;
@@ -196,6 +198,7 @@ class _ChatAppDemoState extends State<_ChatAppDemo> {
 
   @override
   void dispose() {
+    _sidebarTrigger.dispose();
     _clearToolTimers();
     _clearChatTimers();
     _clearApprovalTimers();
@@ -307,14 +310,12 @@ class _ChatAppDemoState extends State<_ChatAppDemo> {
       return;
     }
 
-    final startedAt = DateTime.now();
     _streamTimer = Timer.periodic(const Duration(milliseconds: 16), (timer) {
       if (!mounted) {
         timer.cancel();
         return;
       }
-      final elapsed = DateTime.now().difference(startedAt).inMilliseconds;
-      final cursor = (startCursor + elapsed / 1000 * 92).floor().clamp(
+      final cursor = (startCursor + timer.tick * 0.016 * 92).floor().clamp(
         0,
         _reply.length,
       );
@@ -355,19 +356,6 @@ class _ChatAppDemoState extends State<_ChatAppDemo> {
           content: value,
         ),
       );
-      // The assistant turn is created now, empty and streaming, rather than
-      // after the think delay. Its typing indicator is the streaming
-      // response's own `placeholder`, so it cross-fades into the first token
-      // instead of a separate shimmer row unmounting and a blank bubble
-      // taking its place — the pattern agents_chat_preview already uses.
-      _messages.add(
-        _AddedMessage(
-          id: assistantId,
-          from: BeuiMessageFrom.assistant,
-          content: '',
-          streaming: true,
-        ),
-      );
       _pending = true;
     });
 
@@ -375,6 +363,14 @@ class _ChatAppDemoState extends State<_ChatAppDemo> {
       Timer(Duration(milliseconds: reduce ? 0 : 420), () {
         if (!mounted) return;
         setState(() {
+          _messages.add(
+            _AddedMessage(
+              id: assistantId,
+              from: BeuiMessageFrom.assistant,
+              content: '',
+              streaming: true,
+            ),
+          );
           _pending = false;
           _activeReplyId = assistantId;
         });
@@ -519,17 +515,31 @@ class _ChatAppDemoState extends State<_ChatAppDemo> {
     final colors = Theme.of(context).extension<BeuiColors>()!;
 
     return Padding(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(12),
       child: Center(
         child: ConstrainedBox(
           constraints: const BoxConstraints(maxWidth: 1100),
           child: SizedBox(
             height: 760,
-            child: BeuiChatApp(
-              sidebar: _sidebarVisible ? _buildSidebar(colors) : null,
-              header: _buildHeader(colors),
-              body: _buildBody(),
-              prompt: _buildPrompt(),
+            child: LayoutBuilder(
+              builder: (context, constraints) {
+                final narrow =
+                    constraints.maxWidth <
+                    BeuiChatApp.kBeuiChatAppSidebarBreakpoint;
+                return BeuiChatApp(
+                  sidebar: narrow || _sidebarVisible
+                      ? _buildSidebar(colors)
+                      : null,
+                  sidebarOpen: _sidebarMobile,
+                  onSidebarDismiss: () {
+                    setState(() => _sidebarMobile = false);
+                    _sidebarTrigger.requestFocus();
+                  },
+                  header: _buildHeader(colors, narrow: narrow),
+                  body: _buildBody(),
+                  prompt: _buildPrompt(),
+                );
+              },
             ),
           ),
         ),
@@ -618,7 +628,7 @@ class _ChatAppDemoState extends State<_ChatAppDemo> {
     );
   }
 
-  Widget _buildHeader(BeuiColors colors) {
+  Widget _buildHeader(BeuiColors colors, {required bool narrow}) {
     final working =
         _busy ||
         _toolStatus == BeuiToolApprovalStatus.approving ||
@@ -635,9 +645,17 @@ class _ChatAppDemoState extends State<_ChatAppDemo> {
         child: Row(
           children: [
             IconButton(
-              tooltip: _sidebarVisible ? 'Hide sidebar' : 'Show sidebar',
-              onPressed: () =>
-                  setState(() => _sidebarVisible = !_sidebarVisible),
+              focusNode: _sidebarTrigger,
+              tooltip: (narrow ? _sidebarMobile : _sidebarVisible)
+                  ? 'Hide sidebar'
+                  : 'Show sidebar',
+              onPressed: () => setState(() {
+                if (narrow) {
+                  _sidebarMobile = !_sidebarMobile;
+                } else {
+                  _sidebarVisible = !_sidebarVisible;
+                }
+              }),
               icon: Icon(
                 LucideIcons.panel_left,
                 size: 16,
@@ -742,6 +760,19 @@ class _ChatAppDemoState extends State<_ChatAppDemo> {
                 _releaseApproval(),
               ],
               ..._liveTurns(),
+              if (_pending)
+                const BeuiMessage(
+                  key: ValueKey('chat-app-pending'),
+                  from: BeuiMessageFrom.assistant,
+                  children: [
+                    BeuiMessageAvatar(child: Icon(LucideIcons.bot)),
+                    BeuiMessageContent(
+                      children: [
+                        BeuiThinkingShimmer(text: 'Reviewing your direction'),
+                      ],
+                    ),
+                  ],
+                ),
             ],
           ),
         ),
@@ -1084,6 +1115,15 @@ class _ChatAppDemoState extends State<_ChatAppDemo> {
                               : BeuiStreamingResponseStatus.complete,
                           showActions: !message.streaming,
                           copyText: message.content,
+                          onRetry:
+                              Uri.base.queryParameters['example'] ==
+                                      'api-specimens' &&
+                                  !_busy
+                              ? () {
+                                  setState(() => message.content = '');
+                                  _continueStream(message.id);
+                                }
+                              : null,
                           onContinue: message.stopped
                               ? () => _continueStream(message.id)
                               : null,

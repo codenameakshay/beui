@@ -1,0 +1,18 @@
+00:00 +0: loading /Users/codenameakshay/.t3/worktrees/beui/t3-9240cacb/test/motion/agents_round3_test.dart
+lib/src/motion/file_diff.dart:1266:67: Error: The getter '_rowBarWidth' isn't defined for the type '_HunkSeparatorState'.
+ - '_HunkSeparatorState' is from 'package:beui/src/motion/file_diff.dart' ('lib/src/motion/file_diff.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named '_rowBarWidth'.
+                  _DiffLines._gutterW * 2 + _DiffLines._markerW + _rowBarWidth,
+                                                                  ^^^^^^^^^^^^
+00:00 +0 -1: loading /Users/codenameakshay/.t3/worktrees/beui/t3-9240cacb/test/motion/agents_round3_test.dart [E]
+  Failed to load "/Users/codenameakshay/.t3/worktrees/beui/t3-9240cacb/test/motion/agents_round3_test.dart":
+  Compilation failed for testPath=/Users/codenameakshay/.t3/worktrees/beui/t3-9240cacb/test/motion/agents_round3_test.dart: lib/src/motion/file_diff.dart:1266:67: Error: The getter '_rowBarWidth' isn't defined for the type '_HunkSeparatorState'.
+   - '_HunkSeparatorState' is from 'package:beui/src/motion/file_diff.dart' ('lib/src/motion/file_diff.dart').
+  Try correcting the name to the name of an existing getter, or defining a getter or field named '_rowBarWidth'.
+                    _DiffLines._gutterW * 2 + _DiffLines._markerW + _rowBarWidth,
+                                                                    ^^^^^^^^^^^^
+  .
+00:00 +0 -1: Some tests failed.
+
+Failing tests:
+  /Users/codenameakshay/.t3/worktrees/beui/t3-9240cacb/test/motion/agents_round3_test.dart: loading /Users/codenameakshay/.t3/worktrees/beui/t3-9240cacb/test/motion/agents_round3_test.dart

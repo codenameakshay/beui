@@ -1,0 +1,198 @@
+{
+  "overallAcceptance": false,
+  "reason": "Initial native editor delivery loses characters before Dart callback; final build reproduces it.",
+  "rapid": [
+    {
+      "file": "captures/final2-retry-pro-1/combobox-no-preference/results.json",
+      "preference": "no-preference",
+      "query": "Pro",
+      "actual": "Pro",
+      "options": [
+        "Design studio",
+        "Product team",
+        "Playground",
+        "Component archive"
+      ],
+      "pass": true
+    },
+    {
+      "file": "captures/final2-retry-pro-1/combobox-reduce/results.json",
+      "preference": "reduce",
+      "query": "Pro",
+      "actual": "Pro",
+      "options": [
+        "Design studio",
+        "Product team",
+        "Playground",
+        "Component archive"
+      ],
+      "pass": true
+    },
+    {
+      "file": "captures/final2-retry-product-1/combobox-no-preference/results.json",
+      "preference": "no-preference",
+      "query": "Product",
+      "actual": "Product",
+      "options": [
+        "Product team"
+      ],
+      "pass": true
+    },
+    {
+      "file": "captures/final2-retry-product-1/combobox-reduce/results.json",
+      "preference": "reduce",
+      "query": "Product",
+      "actual": "Product",
+      "options": [
+        "Product team"
+      ],
+      "pass": true
+    },
+    {
+      "file": "captures/final2-retry-product-2/combobox-no-preference/results.json",
+      "preference": "no-preference",
+      "query": "Product",
+      "actual": "Product",
+      "options": [
+        "Product team"
+      ],
+      "pass": true
+    },
+    {
+      "file": "captures/final2-retry-product-2/combobox-reduce/results.json",
+      "preference": "reduce",
+      "query": "Product",
+      "actual": "Product",
+      "options": [
+        "Product team"
+      ],
+      "pass": true
+    }
+  ],
+  "initial": [
+    {
+      "file": "captures/final2-retry-initial-pro-1/combobox-no-preference/results.json",
+      "preference": "no-preference",
+      "query": "Pro",
+      "actual": "Pro",
+      "options": [
+        "Design studio",
+        "Product team",
+        "Playground",
+        "Component archive"
+      ],
+      "pass": true
+    },
+    {
+      "file": "captures/final2-retry-initial-pro-1/combobox-reduce/results.json",
+      "preference": "reduce",
+      "query": "Pro",
+      "actual": "Pro",
+      "options": [
+        "Design studio",
+        "Product team",
+        "Playground",
+        "Component archive"
+      ],
+      "pass": true
+    },
+    {
+      "file": "captures/final2-retry-initial-pro-2/combobox-no-preference/results.json",
+      "preference": "no-preference",
+      "query": "Pro",
+      "actual": "Pro",
+      "options": [
+        "Design studio",
+        "Product team",
+        "Playground",
+        "Component archive"
+      ],
+      "pass": true
+    },
+    {
+      "file": "captures/final2-retry-initial-pro-2/combobox-reduce/results.json",
+      "preference": "reduce",
+      "query": "Pro",
+      "actual": "Pro",
+      "options": [
+        "Design studio",
+        "Product team",
+        "Playground",
+        "Component archive"
+      ],
+      "pass": true
+    },
+    {
+      "file": "captures/final2-retry-initial-product-1/combobox-no-preference/results.json",
+      "preference": "no-preference",
+      "query": "Product",
+      "actual": "Product",
+      "options": [
+        "Product team"
+      ],
+      "pass": true
+    },
+    {
+      "file": "captures/final2-retry-initial-product-1/combobox-reduce/results.json",
+      "preference": "reduce",
+      "query": "Product",
+      "actual": "duct",
+      "options": [
+        "Design studio",
+        "Product team"
+      ],
+      "pass": false
+    }
+  ],
+  "arrowControls": [
+    {
+      "file": "captures/final2-retry-initial-pro-1/combobox-no-preference/results.json",
+      "pass": true
+    },
+    {
+      "file": "captures/final2-retry-initial-pro-1/combobox-reduce/results.json",
+      "pass": true
+    },
+    {
+      "file": "captures/final2-retry-initial-pro-2/combobox-no-preference/results.json",
+      "pass": true
+    },
+    {
+      "file": "captures/final2-retry-initial-pro-2/combobox-reduce/results.json",
+      "pass": true
+    },
+    {
+      "file": "captures/final2-retry-initial-product-1/combobox-no-preference/results.json",
+      "pass": true
+    },
+    {
+      "file": "captures/final2-retry-initial-product-1/combobox-reduce/results.json",
+      "pass": true
+    },
+    {
+      "file": "captures/final2-retry-pro-1/combobox-no-preference/results.json",
+      "pass": true
+    },
+    {
+      "file": "captures/final2-retry-pro-1/combobox-reduce/results.json",
+      "pass": true
+    },
+    {
+      "file": "captures/final2-retry-product-1/combobox-no-preference/results.json",
+      "pass": true
+    },
+    {
+      "file": "captures/final2-retry-product-1/combobox-reduce/results.json",
+      "pass": true
+    },
+    {
+      "file": "captures/final2-retry-product-2/combobox-no-preference/results.json",
+      "pass": true
+    },
+    {
+      "file": "captures/final2-retry-product-2/combobox-reduce/results.json",
+      "pass": true
+    }
+  ],
+  "finalMainDartJsSha256": "67e0df9436486b4e733caa45b726f70867e1bb0cbe778d154acb450b0b07fe2c"
+}

@@ -7,7 +7,7 @@
 Spring-physics UI primitives and composed blocks, built on the [`motor`](https://pub.dev/packages/motor) motion engine so the original's *exact* spring feel carries over — not just its look.
 
 [![Live gallery](https://img.shields.io/badge/demo-live%20gallery-14b8a6?style=flat-square)](https://codenameakshay.github.io/beui/)
-[![Flutter](https://img.shields.io/badge/Flutter-%3E%3D3.44-02569B?style=flat-square&logo=flutter)](https://flutter.dev)
+[![Flutter](https://img.shields.io/badge/Flutter-%3E%3D3.44.2-02569B?style=flat-square&logo=flutter)](https://flutter.dev)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square)](LICENSE)
 
 <br/>
@@ -20,7 +20,7 @@ Spring-physics UI primitives and composed blocks, built on the [`motor`](https:/
 
 ## What this is
 
-beUI is a Flutter widget library that ports the [beUI](https://beui.dev) React motion library. It covers all **72 catalog entries** across the source's three groups — expressive **Components** (motion primitives with composable APIs), product-ready **Blocks** (composed patterns like a command palette, wallet card, or availability scheduler), and **AI Agents** (conversational and agent-reasoning surfaces).
+beUI is a Flutter widget library that ports the [beUI](https://beui.dev) React motion library. Version **3.0.0** covers four families — expressive **[Components](https://beui.dev/components/motion)** (motion primitives with composable APIs), product-ready **[Blocks](https://beui.dev/components/blocks)**, **[AI Agents](https://beui.dev/components/agents)** (conversational and agent-reasoning surfaces), and **[Charts](https://beui.dev/charts)** (animated data visualizations).
 
 The port's defining goal is **motion fidelity**. Framer Motion springs are parameterized by `stiffness`, `damping`, and `mass` — the exact same physical parameters as Flutter's `SpringDescription` — so the source's spring tokens carry over unchanged (trajectories validated within tolerance, not pixel-matched to Framer). Components don't approximate the feel with `Curves.elasticOut`; they use the real physics through [`motor`](https://pub.dev/packages/motor).
 
@@ -30,7 +30,7 @@ The port's defining goal is **motion fidelity**. Framer Motion springs are param
 - 🧩 **Native APIs** — controlled/uncontrolled `value` + `onChanged` pairs, framework-native `IconData`/`Widget` icon props, variants as Dart enums.
 - 🪟 **One overlay foundation** — every floating surface (tooltip, drawer, sheet, modal, command palette) builds on a shared `BeuiOverlay`.
 
-> **Status:** actively developed. All 72 beui.dev catalog entries are ported. 1.2.0 remediates the chat/agent UX audit — honest failure states, keyboard and screen-reader contracts, AA contrast, composer attachments — and adds `BeuiColors.focusRing` plus localizable `BeuiAgentStrings`.
+> **Status:** 3.0.0. Remaining motion widgets, six catalog blocks, Voice Orb, and the charts family ship in this release. 1.2.0 remediates the chat/agent UX audit — honest failure states, keyboard and screen-reader contracts, AA contrast, composer attachments — and adds `BeuiColors.focusRing` plus localizable `BeuiAgentStrings`.
 
 ## What's new in 1.2.0
 
@@ -172,27 +172,47 @@ Mirrors the [beui.dev](https://beui.dev) sidebar order. ✨ marks entries added 
 
 | Component | Widget(s) | What it does |
 | --- | --- | --- |
+| Timeline ✨ | `BeuiTimeline` | Draggable dated-event track around a focused card |
+| Animated Alert ✨ | `BeuiAlert` | Composable dismissible feedback with five variants |
+| Animated Collapsible ✨ | `BeuiCollapsible` | Height-spring disclosure with a rotating chevron |
+| Aspect Ratio ✨ | `BeuiAspectRatio`, `BeuiAspectRatioImage` | Media frame that morphs between ratios |
+| Arc Picker ✨ | `BeuiArcPicker` | Radial text picker with a growing selection bracket |
+| Sortable List ✨ | `BeuiSortableList` | Composable sortable list with group, item, handle and undo |
+| Image Viewer ✨ | `BeuiImageViewer` | Gallery lightbox with zoom, pan and keyboard navigation |
+| Date Range Picker ✨ | `BeuiDateRangePicker` | Composable calendar with presets and keyboard navigation |
+| Card ✨ | `BeuiCard` | Outlined or muted composable card with optional press |
+| Color Picker ✨ | `BeuiColorPicker` | Saturation area, hue, alpha, hex, channels and presets |
+| Animated Color Selector ✨ | `BeuiColorSelector` | Swatches with a spring-gliding selection ring |
+| Animated Breadcrumb ✨ | `BeuiBreadcrumb` | Path trail with overflow ellipsis and custom separators |
+| Tilt Card | `BeuiTiltCard` | 3D perspective tilt on hover with a cursor-tracked glare |
+| Button | `BeuiButton`, `BeuiStatefulButton`, `BeuiMagneticButton`, `BeuiMetallicButton` | Spring-pressed Button plus Stateful, Magnetic and Metallic variants |
+| Animated CTA Buttons | `BeuiExpandingArrowButton`, `BeuiHoldActionButton`, `BeuiSlideActionButton` | CTA buttons with expanding, hold-to-confirm and slide-to-confirm interactions |
+| Expandable Control ✨ | `BeuiExpandableButton`, `BeuiExpandableChip` | Icon button and chip that expand with layout continuity |
+| Adaptive Stepper ✨ | `BeuiAdaptiveStepper` | Quantity stepper whose footprint adapts at min/max |
 | Marquee | `BeuiMarquee` | Infinite horizontal/vertical scroll with pause-on-hover |
-| Tabs | `BeuiTabs` | Pill, segment or underline tabs with a spring layout indicator |
+| Tabs | `BeuiTabs` | Pill, segment or underline tabs with a spring indicator and optional icons |
 | Switch | `BeuiSwitch` | Toggle with a spring-driven thumb and press feedback |
-| Input | `BeuiInput` | Text field with icons, left-aligned announced errors, error-shake replay and a success check draw |
-| Select ✨ | `BeuiSelect`, `BeuiMorphSelect` | Panel that bouncily unfolds from the trigger, plus a Morph variant |
-| Checkbox ✨ | `BeuiCheckbox` | Draw-on checkmark with spring press feedback and indeterminate |
-| Radio Group ✨ | `BeuiRadioGroup` | Single-select with a gliding indicator dot and spring feedback |
+| Input | `BeuiInput` | Text field with icons, optional stable error row, error-shake replay and a success check draw |
+| Select | `BeuiSelect`, `BeuiMorphSelect` | Panel that bouncily unfolds from the trigger, plus a Morph variant |
+| Combobox ✨ | `BeuiCombobox` | Searchable grouped picker with a morphing panel |
+| Multi Select ✨ | `BeuiMultiSelect` | Searchable options that become removable tokens |
+| Checkbox | `BeuiCheckbox` | Draw-on checkmark with spring press feedback and indeterminate |
+| Radio Group | `BeuiRadioGroup` | Single-select with a gliding indicator dot and spring feedback |
 | Bottom Sheet | `BeuiBottomSheet` | Draggable sheet with snap points, inertia and a glass surface |
-| Pull to Refresh ✨ | `BeuiPullToRefresh` | Pull-to-refresh with drag resistance and async handling |
+| Pull to Refresh | `BeuiPullToRefresh` | Pull-to-refresh with drag resistance and async handling |
 | Shared Layout Background | `BeuiSharedLayoutBg` | A pill that glides between hovered items with a blur enter/exit |
-| Bounce Sidebar ✨ | `BeuiBounceSidebar` | Vertical rail whose active dot jumps between destinations on a curved path |
-| Animated Sidebar ✨ | `BeuiAnimatedSidebar` | App sidebar that folds to an icon rail, in sidebar, floating or inset chrome |
-| Preview Rail ✨ | `BeuiPreviewRail` | Navigation rail of ticks that reveal a destination preview — hover on pointer, tap-to-preview on touch |
+| Bounce Sidebar | `BeuiBounceSidebar` | Vertical rail whose active dot jumps between destinations on a curved path |
+| Animated Sidebar | `BeuiAnimatedSidebar` | App sidebar that folds to an icon rail, in sidebar, floating or inset chrome |
+| File Tree ✨ | `BeuiFileTree` | File and folder tree with springing branches and keyboard navigation |
+| Preview Rail | `BeuiPreviewRail` | Navigation rail of ticks that reveal a destination preview — hover on pointer, tap-to-preview on touch |
 | Dock | `BeuiDock` | macOS-style dock with separator-grouped actions and a gliding active pill |
-| Tooltip | `BeuiTooltip` | Hover or focus tooltip with a blur enter/exit and spring spawn |
-| Context Menu ✨ | `BeuiContextMenu` | Pointer-origin clip morph with checkbox/radio rows, keyboard nav and typeahead |
-| Popover ✨ | `BeuiPopover`, `BeuiMorphPopover` | Gooey popover that oozes from the trigger, plus a Morph variant |
+| Tooltip | `BeuiTooltip`, `BeuiTooltipProvider` | Hover or focus tooltip with arrow, `followCursor`, collision flip and a shared warm window |
+| Context Menu | `BeuiContextMenu` | Pointer-origin clip morph with checkbox/radio rows, keyboard nav and typeahead |
+| Popover | `BeuiPopover`, `BeuiMorphPopover` | Gooey popover that oozes from the trigger, plus a Morph variant |
 | Morphing Modal | `BeuiMorphingModal` | A panel that morphs its height between inner views, blur cross-fade |
-| Center Morph Modal ✨ | `BeuiCenterMorphModal` | A surface that unfolds from its exact center toward every edge |
-| Text Animation | `BeuiTextReveal`, `BeuiTextShimmer`, `BeuiTextCascade`, `BeuiChromaticTextReveal` | Reveal sequences, shimmer loading states, letter-cascade swaps and a chromatic sweep over cycling words |
-| Number Animation | `BeuiAnimatedNumber`, `BeuiNumberTicker` | Count-up values and rolling digit tickers |
+| Center Morph Modal | `BeuiCenterMorphModal` | A surface that unfolds from its exact center toward every edge |
+| Text Animation | `BeuiTextScramble`, `BeuiTextReveal`, `BeuiTextShimmer`, `BeuiTextCascade`, `BeuiChromaticTextReveal` | Scramble, reveal, shimmer, letter-cascade and a chromatic sweep over cycling words |
+| Number Animation | `BeuiDigitSwap`, `BeuiAnimatedNumber`, `BeuiNumberTicker` | Fixed-slot digit swap, count-up values and rolling digit tickers |
 | Animated Badge | `BeuiAnimatedBadge` | Status badge with animated state icons and pulse feedback |
 | Action Swap | `BeuiActionSwapButton` | Swap a button's text and icons with blur, roll or cascade motion |
 | Animated Toast Stack | `BeuiAnimatedToastStack` | Stacked toasts with status morphs, swipe dismissal and actions |
@@ -200,62 +220,83 @@ Mirrors the [beui.dev](https://beui.dev) sidebar order. ✨ marks entries added 
 | Bouncy Accordion | `BeuiBouncyAccordion` | Single-open accordion with a weighted spring layout |
 | Drawer | `BeuiDrawer` | Side panel that springs in with a backdrop blur and esc-to-close |
 | Scroll Animation | `BeuiSmoothScroll`, `BeuiScrollProgress`, `BeuiScrollReveal`, `BeuiScrollTo`, `BeuiParallax` | Smooth-scroll provider (vertical or horizontal), reading-progress indicator, reveal, scroll-to and parallax |
-| Range Slider ✨ | `BeuiRangeSlider`, `BeuiFluidSlider`, `BeuiWaveSlider`, `BeuiBubbleSlider`, `BeuiRulerSlider` | Five sliders: ticked bar thumb, thumbless liquid fill, equalizer wave, velocity-leaning bubble, and a scale that scrolls under a fixed needle |
-| Wheel Picker ✨ | `BeuiWheelPicker` | iOS-style 3D picker drum with momentum snap |
-| Table ✨ | `BeuiTable` | Virtualized table smooth at 10k+ rows: sort, select, resize, reorder |
-| Shader Background ✨ | `BeuiShaderBackground` | 21 GPU shader backgrounds (mesh, grain, warp, waves, voronoi…) |
-| Cylinder Carousel ✨ | `BeuiCylinderCarousel` | Items line the inside of a cylinder; drag or scroll with springy snap |
-| Loader ✨ | `BeuiLoader` | Loading indicator with seventeen variants from one size prop |
-| Tilt Card | `BeuiTiltCard` | 3D perspective tilt on hover with a cursor-tracked glare |
-| Button | `BeuiButton`, `BeuiStatefulButton`, `BeuiMagneticButton` | Spring-pressed Button, StatefulButton and MagneticButton |
-| Animated CTA Buttons ✨ | `BeuiExpandingArrowButton`, `BeuiHoldActionButton`, `BeuiSlideActionButton` | CTA buttons with expanding, hold-to-confirm and slide-to-confirm interactions |
+| Range Slider | `BeuiInlineSlider`, `BeuiRangeSlider`, `BeuiFluidSlider`, `BeuiWaveSlider`, `BeuiBubbleSlider`, `BeuiRulerSlider` | Six sliders: inline label/value, ticked bar thumb, thumbless liquid fill, equalizer wave, velocity-leaning bubble, and a scale that scrolls under a fixed needle |
+| Wheel Picker | `BeuiWheelPicker` | iOS-style 3D picker drum with momentum snap |
+| Table | `BeuiTable` | Virtualized table smooth at 10k+ rows: sort, select, resize, reorder, edit, async |
+| Shader Background | `BeuiShaderBackground` | 21 GPU shader backgrounds (mesh, grain, warp, waves, voronoi…) |
+| Cylinder Carousel | `BeuiCylinderCarousel` | Items line the inside of a cylinder; drag or scroll with springy snap |
+| Loader | `BeuiLoader` | Loading indicator with seventeen variants from one size prop |
+
 
 ### Blocks — composed patterns
 
 | Block | Widget | What it does |
 | --- | --- | --- |
+| Infinite Masonry ✨ | `BeuiInfiniteMasonry` | Masonry grid that lazily appends tiles as you scroll |
+| Notification Stack ✨ | `BeuiNotificationStack` | Collapsed notification stack that expands with layout-aware motion |
+| Project Folder ✨ | `BeuiProjectFolder` | Folder that fans file previews on hover or focus, then morphs into an overlay grid |
+| Card Folder ✨ | `BeuiCardFolder` | Landscape card tucked in a stitched purse pocket, with DigitSwap details |
+| Fixtures ✨ | `BeuiKnockoutBracket`, `BeuiKnockoutWheel` | Tournament fixtures: a paging knockout bracket and a wheel around the champion |
 | Availability Scheduler ✨ | `BeuiAvailabilityScheduler` | Weekly availability grid with per-day time ranges |
 | Multi-chain Swap | `BeuiMultiChainSwap` | Token swap card with chain switching and an animated quote |
 | Dynamic Island | `BeuiDynamicIsland` | iOS-style island that morphs between compact and expanded views |
 | Command Palette | `BeuiCommandPalette` | ⌘K palette with fuzzy search and spring-animated results |
+| Morphing Search ✨ | `BeuiMorphingSearch`, `BeuiMorphingSearchChips` | Search field or icon that morphs into results, plus a chip search bar (`morphing-search-chips`) |
 | Expandable Action Bar | `BeuiExpandableActionBar` | Icon rail whose segments expand to reveal a label on hover |
 | Overflow Actions | `BeuiOverflowActions` | Primary actions with an overflow that fans out from a ⋯ toggle |
 | Expandable Tabs | `BeuiExpandableTabs` | Icon tabs where the active tab expands to show its label |
+| Morphing Tabs ✨ | `BeuiMorphingTabs` | Reorderable tabs whose selected item grows into a cream content surface |
 | Swipeable List | `BeuiSwipeableList` | List rows with spring-backed swipe-to-reveal actions |
-| File Upload | `BeuiFileUpload` | Drop zone with real progress, cancel-in-flight, size limits and inline rejection |
-| Attachment Upload | `BeuiAttachmentUpload` | Mixed attachment workspace — image previews, seekable audio, retry and cancel |
-| Prediction Market | `BeuiPredictionMarket` | Market card with a gliding outcome pill and animated odds |
+| File Upload | `BeuiAttachmentUpload`, `BeuiFileUpload` | Attachment workspace plus a progress queue with retry and removal |
+| Prediction Market | `BeuiPredictionMarketCard`, `BeuiPredictionMarket` | Listing cards with percent-to-Yes/No odds pills and bookmarks, plus a trade ticket |
 | Wallet Card ✨ | `BeuiWalletCard` | Wallet card with an account switcher and morphing search |
 | OTP Input | `BeuiOtpInput` | One-time-code field with per-cell focus and a success check |
+| Sign Up Form ✨ | `BeuiSignUpForm` | Registration form with punish-late errors, strength meter, and stateful submit |
 | Bloom Menu ✨ | `BeuiBloomMenu` | Radial action menu that blooms open from a floating trigger |
 | Feedback Widget ✨ | `BeuiFeedbackWidget` | Feedback popover that keeps drafts, validates inline and morphs to a success state |
 | 404 / Not Found | `BeuiNotFoundGlitch`, `…Magnetic`, `…Spotlight`, `…Stacked`, `…Terminal` | Five expressive 404 treatments |
-| Infinite Masonry ✨ | `BeuiInfiniteMasonry` | Masonry grid that lazily appends tiles as you scroll |
-| Notification Stack ✨ | `BeuiNotificationStack` | Collapsed notification stack that expands with layout-aware motion |
-| Knockout Bracket ✨ | `BeuiKnockoutBracket`, `BeuiKnockoutWheel` | Tournament fixtures in two styles: a paging bracket with a third-place playoff, and a wheel wrapping the same tree around the champion |
 
 ### AI Agents — conversational and agent-reasoning interfaces
 
 | Component | Widget(s) | What it does |
 | --- | --- | --- |
-| Message Bubble | `BeuiMessageBubble` | Conversational surface with tones, alignment, grouping and expandable content |
-| Message | `BeuiMessage` | Primitives for rows, avatars, metadata, live markers and a mount-only pop-up |
-| Message Scroller | `BeuiMessageScroller` | Viewport that follows streamed output, releases when the reader scrolls away, and offers a jump-to-latest pill |
 | Prompt Input | `BeuiPromptInput` | Auto-growing composer with attachment chips, a keyboarded model picker and animated send/stop |
-| Todo List | `BeuiTodoList` | Collapsible task plan with morphing status marks and a completion count |
-| Code Block | `BeuiCodeBlock` | Highlighted code that stays stable while streaming, with copy feedback |
-| Approval Card | `BeuiApprovalCard` | Human-in-the-loop surface for approvals, questions, and compact-to-expanded proposals |
-| File Diff | `BeuiFileDiff` | Change disclosure with wrap or horizontal scroll, hunk-gap markers and live counts |
-| Tool Result | `BeuiToolResult` | Execution disclosure for terminal or request output that collapses when done |
+| Message | `BeuiMessage` | Primitives for rows, avatars, metadata, live markers and a mount-only pop-up |
+| Message Bubble | `BeuiMessageBubble` | Conversational surface with tones, alignment, grouping and expandable content |
+| Message Scroller | `BeuiMessageScroller` | Viewport that follows streamed output, releases when the reader scrolls away, and offers a jump-to-latest pill |
 | Streaming Response | `BeuiStreamingResponse` | Response surface with completion actions, a visible failed state and a stopped/continue path |
 | Image Generation | `BeuiImageGeneration` | Queued → refining → complete image surface with determinate progress and cancel |
-| Tool Approval | `BeuiToolApproval` | Permission card: allow once, remember access, or deny — with a destructive severity tier |
 | Citations | `BeuiCitations` | Inline markers plus a collapsible, progressively rendered reference list |
-| Agent Activity | `BeuiAgentActivity` | One adaptive stream for reasoning, searches, tool calls and traces — including failed and cancelled runs |
 | Agent Loading States | `BeuiThinkingShimmer`, `BeuiAgentProgress`, `BeuiReasoningText` | Shimmering status text, live progress and cycling reasoning phrases |
+| Todo List | `BeuiTodoList` | Collapsible task plan with morphing status marks and a completion count |
+| Agent Activity | `BeuiAgentActivity` | One adaptive stream for reasoning, searches, tool calls and traces — including failed and cancelled runs |
+| Tool Result | `BeuiToolResult` | Execution disclosure for terminal or request output that collapses when done |
+| Code Block | `BeuiCodeBlock` | Highlighted code that stays stable while streaming, with copy feedback |
+| File Diff | `BeuiFileDiff` | Change disclosure with wrap or horizontal scroll, hunk-gap markers and live counts |
+| Tool Approval | `BeuiToolApproval` | Permission card: allow once, remember access, or deny — with a destructive severity tier |
+| Approval Card | `BeuiApprovalCard` | Human-in-the-loop surface for approvals, questions, and compact-to-expanded proposals |
 | AI Sidebar | `BeuiAiSidebar` | Workspace sidebar for folders, projects, files and bookmarks with inline rename |
 | Chat App | `BeuiChatApp` | A complete conversation workspace composing the widgets above, with a responsive sidebar |
+| Voice Orb | `BeuiVoiceOrb` | Breathing liquid voice visualization with custom pigments, a voice-reactive silhouette, and a `size` override |
 | Agent Theme | — | Gallery route that installs a custom `BeuiAgentTheme` on the real widgets |
+
+### Charts — animated data visualizations
+
+| Chart | Widget(s) | What it does |
+| --- | --- | --- |
+| Treemap | `BeuiTreemap`, `BeuiTreemapPlot`, `BeuiTreemapTooltip`, `BeuiTreemapLegend` | Proportional tiles that morph with the data, with value and share tooltips |
+| Candlestick Chart | `BeuiCandlestickChart`, `BeuiCandlestickPlot`, `BeuiCandlestickLegend` | OHLC candles with a live last price and volume |
+| Donut Chart | `BeuiDonutChart`, `BeuiDonutPlot`, `BeuiDonutCenter`, `BeuiDonutLegend` | Round-capped ring with a live center and sweep-in motion |
+| Volume Profile | `BeuiVolumeProfile`, `BeuiVolumeProfilePlot`, `BeuiVolumeProfileSummary` | Volume-by-price with POC and a value-area highlight |
+| Status Bar | `BeuiStatusBar`, `BeuiStatusBarPlot`, `BeuiStatusBarLegend` | Proportional incident bar with operational / degraded / outage statuses |
+| Composition Chart | `BeuiCompositionChart`, `BeuiCompositionPlot`, `BeuiCompositionLegend` | 100% stacked bar or area composition across periods |
+| Funnel Chart | `BeuiFunnelChart`, `BeuiFunnelPlot`, `BeuiFunnelSummary` | Conversion funnel with curved morphs and drop-off |
+| Liquidity Heatmap | `BeuiLiquidityHeatmap`, `BeuiLiquidityPlot`, `BeuiLiquidityLegend` | Order-book liquidity bands over time with a price trace |
+| Bump Chart | `BeuiBumpChart`, `BeuiBumpPlot`, `BeuiBumpLegend` | Ranking bump chart with curved series that break on missing periods |
+| Order Book | `BeuiOrderBook`, `BeuiOrderBookSide`, `BeuiOrderBookSpread` | Live bid/ask depth tables, spread, and a balance bar |
+| Heat Calendar | `BeuiHeatCalendar`, `BeuiHeatCalendarGrid`, `BeuiHeatCalendarLegend` | GitHub-style contribution heatmap with range selection and filter fade |
+| Returns Calendar | `BeuiReturnsCalendar`, `BeuiReturnsCalendarGrid` | Monthly returns grid with gain/loss tint and compounded totals |
+| Price Target Fan | `BeuiPriceTargetFan`, `BeuiPriceTargetPlot`, `BeuiPriceTargetTooltip` | High/mean/low target fan over a history path |
 
 Also exported as standalone primitives: `BeuiMagnetic` (cursor-follow pull) and the `BeuiOverlay` foundation.
 

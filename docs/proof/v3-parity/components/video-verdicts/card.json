@@ -1,0 +1,364 @@
+{
+  "id": "components/card",
+  "owner": "components",
+  "newBadge": true,
+  "demoChanged": true,
+  "sourceUrl": "https://beui.dev/components/motion/card",
+  "sourceFiles": [
+    {
+      "path": "components/motion/card.tsx",
+      "sha256": "bb8bfb95302743d4bcce54aa80b55dbad2788f48d98e97c9d3c2040df777f6e4"
+    }
+  ],
+  "sourcePreviews": [
+    "components/previews/motion/card.preview.tsx"
+  ],
+  "sourceExamples": [],
+  "widgetParts": [
+    "BeuiCard",
+    "BeuiCardHeader",
+    "BeuiCardTitle",
+    "BeuiCardDescription",
+    "BeuiCardAction",
+    "BeuiCardContent",
+    "BeuiCardFooter",
+    "BeuiCardTarget"
+  ],
+  "states": [
+    "rest",
+    "hover-exit",
+    "keyboard",
+    "reduced-motion",
+    "outlined muted standard compact",
+    "interactive hover press selected and unselected",
+    "header title description action content footer",
+    "checkbox radio switch controls and full-card hit target"
+  ],
+  "themes": [
+    "dark",
+    "light"
+  ],
+  "verdict": "Known mismatch or failed visual gate",
+  "implementation": "repaired subset, see CHANGE_MANIFEST.md",
+  "missing": "No complete matched-width 60 FPS reference/before/after state set or independent visual verdict.",
+  "captures": [
+    {
+      "id": "reference-light-card",
+      "slug": "card",
+      "origin": "reference",
+      "theme": "light",
+      "code": 0,
+      "configPath": "/Users/codenameakshay/.t3/worktrees/beui/t3-48d38279/docs/proof/v3-parity/components/release-recordings-run2/configs/reference-light-card.json",
+      "runDirectory": "/Users/codenameakshay/.t3/worktrees/beui/t3-48d38279/docs/proof/v3-parity/components/release-recordings-run2/reference-light-card",
+      "missingTargets": [],
+      "stats": {
+        "originEpochMs": 1792743208020,
+        "backend": "screenshots",
+        "startMs": 2368.812375,
+        "sequenceStartMs": 2368.9227499999997,
+        "stopMs": 5524.359875,
+        "frames": 50,
+        "durationMs": 3113.727331161499,
+        "measuredFps": 15.736766514401813,
+        "medianIntervalMs": 66.4520263671875,
+        "maxIntervalMs": 76.31611824035645,
+        "reorderedDeliveries": 0,
+        "fastMotionVerdict": "inconclusive; inspect per-event gaps, not nominal frame rate",
+        "errors": [],
+        "video": {
+          "width": 1280,
+          "height": 913,
+          "decodedFrames": 50
+        }
+      },
+      "video": {
+        "path": "release-recordings-run2/reference-light-card/capture.mp4",
+        "bytes": 844154,
+        "sha256": "5b9768bfc359aaa571b30e0a6c5757360c4d19bde9164e5f956b063b0609da10"
+      }
+    },
+    {
+      "id": "reference-dark-card",
+      "slug": "card",
+      "origin": "reference",
+      "theme": "dark",
+      "code": 0,
+      "configPath": "/Users/codenameakshay/.t3/worktrees/beui/t3-48d38279/docs/proof/v3-parity/components/release-recordings-run2/configs/reference-dark-card.json",
+      "runDirectory": "/Users/codenameakshay/.t3/worktrees/beui/t3-48d38279/docs/proof/v3-parity/components/release-recordings-run2/reference-dark-card",
+      "missingTargets": [],
+      "stats": {
+        "originEpochMs": 1792743272936,
+        "backend": "screenshots",
+        "startMs": 2367.649375,
+        "sequenceStartMs": 2367.7515000000003,
+        "stopMs": 5522.671542,
+        "frames": 44,
+        "durationMs": 3075.749635696411,
+        "measuredFps": 13.98033165669674,
+        "medianIntervalMs": 67.07024574279785,
+        "maxIntervalMs": 269.52481269836426,
+        "reorderedDeliveries": 0,
+        "fastMotionVerdict": "inconclusive; inspect per-event gaps, not nominal frame rate",
+        "errors": [],
+        "video": {
+          "width": 1280,
+          "height": 913,
+          "decodedFrames": 44
+        }
+      },
+      "video": {
+        "path": "release-recordings-run2/reference-dark-card/capture.mp4",
+        "bytes": 780580,
+        "sha256": "540fd9f3a2d9dfcbdc2b466e66d217569fccd230f0ba7b178ce05ddf9aa7c286"
+      }
+    },
+    {
+      "id": "candidate-light-card",
+      "slug": "card",
+      "origin": "candidate",
+      "theme": "light",
+      "code": 0,
+      "configPath": "/Users/codenameakshay/.t3/worktrees/beui/t3-48d38279/docs/proof/v3-parity/components/release-recordings-run2/configs/candidate-light-card.json",
+      "runDirectory": "/Users/codenameakshay/.t3/worktrees/beui/t3-48d38279/docs/proof/v3-parity/components/release-recordings-run2/candidate-light-card",
+      "missingTargets": [],
+      "stats": {
+        "originEpochMs": 1792743393222,
+        "backend": "screenshots",
+        "startMs": 5182.807791,
+        "sequenceStartMs": 5183.094833,
+        "stopMs": 8339.494625,
+        "frames": 109,
+        "durationMs": 3141.841411590576,
+        "measuredFps": 34.37474584222389,
+        "medianIntervalMs": 32.75346755981445,
+        "maxIntervalMs": 45.02272605895996,
+        "reorderedDeliveries": 0,
+        "fastMotionVerdict": "inconclusive; inspect per-event gaps, not nominal frame rate",
+        "errors": [],
+        "video": {
+          "width": 1280,
+          "height": 913,
+          "decodedFrames": 109
+        }
+      },
+      "video": {
+        "path": "release-recordings-run2/candidate-light-card/capture.mp4",
+        "bytes": 587352,
+        "sha256": "6a3c72c6cc38fa50dd8208b30439c5220587eb6d68c730313f7f741db8b90c5b"
+      }
+    },
+    {
+      "id": "candidate-dark-card",
+      "slug": "card",
+      "origin": "candidate",
+      "theme": "dark",
+      "code": 0,
+      "configPath": "/Users/codenameakshay/.t3/worktrees/beui/t3-48d38279/docs/proof/v3-parity/components/release-recordings-run2/configs/candidate-dark-card.json",
+      "runDirectory": "/Users/codenameakshay/.t3/worktrees/beui/t3-48d38279/docs/proof/v3-parity/components/release-recordings-run2/candidate-dark-card",
+      "missingTargets": [],
+      "stats": {
+        "originEpochMs": 1792743678601,
+        "backend": "screenshots",
+        "startMs": 5182.350959,
+        "sequenceStartMs": 5182.527834,
+        "stopMs": 8338.846125,
+        "frames": 148,
+        "durationMs": 3156.7070484161377,
+        "measuredFps": 46.56751410421709,
+        "medianIntervalMs": 16.94202423095703,
+        "maxIntervalMs": 36.296844482421875,
+        "reorderedDeliveries": 0,
+        "fastMotionVerdict": "inconclusive; inspect per-event gaps, not nominal frame rate",
+        "errors": [],
+        "video": {
+          "width": 1280,
+          "height": 913,
+          "decodedFrames": 148
+        }
+      },
+      "video": {
+        "path": "release-recordings-run2/candidate-dark-card/capture.mp4",
+        "bytes": 747775,
+        "sha256": "a3d2377084b99039210c6bbcf2f8ffea3c5d3ca003a9640612a86edb717adbb7"
+      }
+    }
+  ],
+  "changeVideos": [
+    {
+      "slug": "card",
+      "theme": "light",
+      "before": "/Users/codenameakshay/.t3/worktrees/beui/t3-48d38279/docs/proof/v3-parity/components/before-verified/candidate/light/card/recording.webm",
+      "after": "/Users/codenameakshay/.t3/worktrees/beui/t3-48d38279/docs/proof/v3-parity/components/release-recordings-run2/candidate-light-card/capture.mp4",
+      "video": "/Users/codenameakshay/.t3/worktrees/beui/t3-48d38279/docs/proof/v3-parity/components/change-videos/card-light-before-after.mp4",
+      "change": "Restore full-card checkbox activation, source spacing and copy, transparent muted border, and the true Studio media card.",
+      "frameProof": [
+        {
+          "phase": "BEFORE",
+          "original": {
+            "programs": [],
+            "stream_groups": [],
+            "streams": [
+              {
+                "width": 1440,
+                "height": 1000,
+                "nb_read_frames": "62"
+              }
+            ],
+            "format": {
+              "duration": "2.480000"
+            }
+          },
+          "presentation": {
+            "programs": [],
+            "stream_groups": [],
+            "streams": [
+              {
+                "width": 1440,
+                "height": 1120,
+                "nb_read_frames": "62"
+              }
+            ],
+            "format": {
+              "duration": "2.480000"
+            }
+          }
+        },
+        {
+          "phase": "AFTER",
+          "original": {
+            "programs": [],
+            "stream_groups": [],
+            "streams": [
+              {
+                "width": 1280,
+                "height": 913,
+                "nb_read_frames": "109"
+              }
+            ],
+            "format": {
+              "duration": "3.141843"
+            }
+          },
+          "presentation": {
+            "programs": [],
+            "stream_groups": [],
+            "streams": [
+              {
+                "width": 1440,
+                "height": 1120,
+                "nb_read_frames": "109"
+              }
+            ],
+            "format": {
+              "duration": "3.166667"
+            }
+          }
+        }
+      ],
+      "decoded": {
+        "programs": [],
+        "stream_groups": [],
+        "streams": [
+          {
+            "width": 1440,
+            "height": 1120,
+            "nb_read_frames": "171"
+          }
+        ],
+        "format": {
+          "duration": "5.646667"
+        }
+      },
+      "comparison": "Presentation only. Different original viewport widths are labeled. No rescaling or interpolation."
+    },
+    {
+      "slug": "card",
+      "theme": "dark",
+      "before": "/Users/codenameakshay/.t3/worktrees/beui/t3-48d38279/docs/proof/v3-parity/components/before-verified/candidate/dark/card/recording.webm",
+      "after": "/Users/codenameakshay/.t3/worktrees/beui/t3-48d38279/docs/proof/v3-parity/components/release-recordings-run2/candidate-dark-card/capture.mp4",
+      "video": "/Users/codenameakshay/.t3/worktrees/beui/t3-48d38279/docs/proof/v3-parity/components/change-videos/card-dark-before-after.mp4",
+      "change": "Restore full-card checkbox activation, source spacing and copy, transparent muted border, and the true Studio media card.",
+      "frameProof": [
+        {
+          "phase": "BEFORE",
+          "original": {
+            "programs": [],
+            "stream_groups": [],
+            "streams": [
+              {
+                "width": 1440,
+                "height": 1000,
+                "nb_read_frames": "87"
+              }
+            ],
+            "format": {
+              "duration": "3.480000"
+            }
+          },
+          "presentation": {
+            "programs": [],
+            "stream_groups": [],
+            "streams": [
+              {
+                "width": 1440,
+                "height": 1120,
+                "nb_read_frames": "87"
+              }
+            ],
+            "format": {
+              "duration": "3.480000"
+            }
+          }
+        },
+        {
+          "phase": "AFTER",
+          "original": {
+            "programs": [],
+            "stream_groups": [],
+            "streams": [
+              {
+                "width": 1280,
+                "height": 913,
+                "nb_read_frames": "148"
+              }
+            ],
+            "format": {
+              "duration": "3.156709"
+            }
+          },
+          "presentation": {
+            "programs": [],
+            "stream_groups": [],
+            "streams": [
+              {
+                "width": 1440,
+                "height": 1120,
+                "nb_read_frames": "148"
+              }
+            ],
+            "format": {
+              "duration": "3.166667"
+            }
+          }
+        }
+      ],
+      "decoded": {
+        "programs": [],
+        "stream_groups": [],
+        "streams": [
+          {
+            "width": 1440,
+            "height": 1120,
+            "nb_read_frames": "235"
+          }
+        ],
+        "format": {
+          "duration": "6.646667"
+        }
+      },
+      "comparison": "Presentation only. Different original viewport widths are labeled. No rescaling or interpolation."
+    }
+  ],
+  "knownGaps": "Existing golden comparison fails. Reference pixel parity remains unverified.",
+  "coverage": "Default preview recording only. No complete state or example parity certificate."
+}

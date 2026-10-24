@@ -1,0 +1,68 @@
+{
+  "url": "http://127.0.0.1:8103/?slug=feedback-widget&theme=dark&previewWidth=592",
+  "viewport": {
+    "width": 1280,
+    "height": 900
+  },
+  "theme": "dark",
+  "reference": false,
+  "backend": "screenshots",
+  "loadWaitMs": 3500,
+  "finalHoldMs": 800,
+  "provenance": {
+    "target": "candidate",
+    "expectedCandidateJsSha256": "aea97a92218d9462a95d601dde72b6bc9e4fee1c060ea4730967aa05fdaf1bbb",
+    "sourceCheckout": "a76e57c9bbc2837e96420b2610e9c82a3271bb05",
+    "liveDeploymentRevision": null,
+    "baselineWrapperApplied": false,
+    "candidatePreviewInnerWidth": 592,
+    "limitations": "Route first example only. Coordinates measured from rest screenshot. Inspect observed states and actual captured dimensions. No 60 FPS or parity certification."
+  },
+  "targets": {
+    "0": {
+      "x": 955.5,
+      "y": 596,
+      "measuredBounds": {
+        "tag": "FLT-SEMANTICS",
+        "role": "button",
+        "slot": null,
+        "label": "Help us improve",
+        "text": "",
+        "x": 931.5,
+        "y": 572,
+        "width": 48,
+        "height": 48
+      }
+    },
+    "outside": {
+      "x": 1100,
+      "y": 100
+    },
+    "stage": {
+      "x": 770,
+      "y": 500
+    }
+  },
+  "events": [
+    {
+      "atMs": 600,
+      "type": "click",
+      "target": "0"
+    },
+    {
+      "atMs": 1500,
+      "type": "key",
+      "key": "Escape"
+    },
+    {
+      "atMs": 2300,
+      "type": "click",
+      "target": "0"
+    },
+    {
+      "atMs": 3300,
+      "type": "key",
+      "key": "Tab"
+    }
+  ]
+}

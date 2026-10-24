@@ -1,0 +1,938 @@
+{
+  "example": {
+    "key": "fluid",
+    "id": "example/range-slider-fluid/fluid",
+    "preview": "range-slider-fluid",
+    "family": "range-slider",
+    "seed": 35,
+    "min": 0,
+    "max": 100,
+    "step": 1,
+    "flows": [
+      "tap",
+      "drag",
+      "hold",
+      "keyboard",
+      "bounds",
+      "reduced-motion"
+    ]
+  },
+  "origin": "source",
+  "theme": "light",
+  "motion": "reduce",
+  "checks": [
+    {
+      "name": "seed",
+      "actual": 35,
+      "expected": 35,
+      "pass": true
+    },
+    {
+      "name": "drag publishes value",
+      "actual": 85,
+      "expected": "different from seed",
+      "pass": true
+    },
+    {
+      "name": "key Home",
+      "actual": 0,
+      "expected": 0,
+      "pass": true
+    },
+    {
+      "name": "key End",
+      "actual": 100,
+      "expected": 100,
+      "pass": true
+    },
+    {
+      "name": "key ArrowLeft",
+      "actual": 99,
+      "expected": 99,
+      "pass": true
+    },
+    {
+      "name": "key Home",
+      "actual": 0,
+      "expected": 0,
+      "pass": true
+    },
+    {
+      "name": "key PageUp",
+      "actual": 10,
+      "expected": 10,
+      "pass": true
+    },
+    {
+      "name": "key PageDown",
+      "actual": 0,
+      "expected": 0,
+      "pass": true
+    },
+    {
+      "name": "key ArrowRight",
+      "actual": 1,
+      "expected": 1,
+      "pass": true
+    },
+    {
+      "name": "key ArrowDown",
+      "actual": 0,
+      "expected": 0,
+      "pass": true
+    },
+    {
+      "name": "key ArrowUp",
+      "actual": 1,
+      "expected": 1,
+      "pass": true
+    }
+  ],
+  "observations": [
+    {
+      "label": "rest",
+      "atMs": 2.029624999995576,
+      "observed": {
+        "url": "http://127.0.0.1:18120/source/?example=fluid&theme=light&captureProbe=1",
+        "reduce": true,
+        "active": {
+          "tag": "BODY",
+          "role": null,
+          "name": "Brightness35%Brightness35%"
+        },
+        "probe": null,
+        "stage": {
+          "x": 344,
+          "y": 0,
+          "width": 592,
+          "height": 360,
+          "top": 0,
+          "right": 936,
+          "bottom": 360,
+          "left": 344
+        },
+        "controls": [
+          {
+            "tag": "MAIN",
+            "role": null,
+            "name": "Brightness\n35%\nBrightness\n35%",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 344,
+              "y": 0,
+              "width": 592,
+              "height": 360,
+              "top": 0,
+              "right": 936,
+              "bottom": 360,
+              "left": 344
+            }
+          },
+          {
+            "tag": "BUTTON",
+            "role": "slider",
+            "name": "Brightness",
+            "value": "35%",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 448,
+              "y": 156,
+              "width": 384,
+              "height": 48,
+              "top": 156,
+              "right": 832,
+              "bottom": 204,
+              "left": 448
+            }
+          }
+        ]
+      }
+    },
+    {
+      "label": "drag-held",
+      "atMs": 431.6612909999967,
+      "observed": {
+        "url": "http://127.0.0.1:18120/source/?example=fluid&theme=light&captureProbe=1",
+        "reduce": true,
+        "active": {
+          "tag": "BUTTON",
+          "role": "slider",
+          "name": "Brightness"
+        },
+        "probe": null,
+        "stage": {
+          "x": 344,
+          "y": 0,
+          "width": 592,
+          "height": 360,
+          "top": 0,
+          "right": 936,
+          "bottom": 360,
+          "left": 344
+        },
+        "controls": [
+          {
+            "tag": "MAIN",
+            "role": null,
+            "name": "Brightness\n70%\nBrightness\n70%",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 344,
+              "y": 0,
+              "width": 592,
+              "height": 360,
+              "top": 0,
+              "right": 936,
+              "bottom": 360,
+              "left": 344
+            }
+          },
+          {
+            "tag": "BUTTON",
+            "role": "slider",
+            "name": "Brightness",
+            "value": "70%",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 448,
+              "y": 156,
+              "width": 384,
+              "height": 48,
+              "top": 156,
+              "right": 832,
+              "bottom": 204,
+              "left": 448
+            }
+          }
+        ]
+      }
+    },
+    {
+      "label": "released",
+      "atMs": 1098.9713750000083,
+      "observed": {
+        "url": "http://127.0.0.1:18120/source/?example=fluid&theme=light&captureProbe=1",
+        "reduce": true,
+        "active": {
+          "tag": "BUTTON",
+          "role": "slider",
+          "name": "Brightness"
+        },
+        "probe": null,
+        "stage": {
+          "x": 344,
+          "y": 0,
+          "width": 592,
+          "height": 360,
+          "top": 0,
+          "right": 936,
+          "bottom": 360,
+          "left": 344
+        },
+        "controls": [
+          {
+            "tag": "MAIN",
+            "role": null,
+            "name": "Brightness\n85%\nBrightness\n85%",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 344,
+              "y": 0,
+              "width": 592,
+              "height": 360,
+              "top": 0,
+              "right": 936,
+              "bottom": 360,
+              "left": 344
+            }
+          },
+          {
+            "tag": "BUTTON",
+            "role": "slider",
+            "name": "Brightness",
+            "value": "85%",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 448,
+              "y": 156,
+              "width": 384,
+              "height": 48,
+              "top": 156,
+              "right": 832,
+              "bottom": 204,
+              "left": 448
+            }
+          }
+        ]
+      }
+    },
+    {
+      "label": "key-Home-3",
+      "atMs": 1368.5533330000035,
+      "observed": {
+        "url": "http://127.0.0.1:18120/source/?example=fluid&theme=light&captureProbe=1",
+        "reduce": true,
+        "active": {
+          "tag": "BUTTON",
+          "role": "slider",
+          "name": "Brightness"
+        },
+        "probe": null,
+        "stage": {
+          "x": 344,
+          "y": 0,
+          "width": 592,
+          "height": 360,
+          "top": 0,
+          "right": 936,
+          "bottom": 360,
+          "left": 344
+        },
+        "controls": [
+          {
+            "tag": "MAIN",
+            "role": null,
+            "name": "Brightness\n0%\nBrightness\n0%",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 344,
+              "y": 0,
+              "width": 592,
+              "height": 360,
+              "top": 0,
+              "right": 936,
+              "bottom": 360,
+              "left": 344
+            }
+          },
+          {
+            "tag": "BUTTON",
+            "role": "slider",
+            "name": "Brightness",
+            "value": "0%",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 448,
+              "y": 156,
+              "width": 384,
+              "height": 48,
+              "top": 156,
+              "right": 832,
+              "bottom": 204,
+              "left": 448
+            }
+          }
+        ]
+      }
+    },
+    {
+      "label": "key-End-4",
+      "atMs": 1632.9772499999963,
+      "observed": {
+        "url": "http://127.0.0.1:18120/source/?example=fluid&theme=light&captureProbe=1",
+        "reduce": true,
+        "active": {
+          "tag": "BUTTON",
+          "role": "slider",
+          "name": "Brightness"
+        },
+        "probe": null,
+        "stage": {
+          "x": 344,
+          "y": 0,
+          "width": 592,
+          "height": 360,
+          "top": 0,
+          "right": 936,
+          "bottom": 360,
+          "left": 344
+        },
+        "controls": [
+          {
+            "tag": "MAIN",
+            "role": null,
+            "name": "Brightness\n100%\nBrightness\n100%",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 344,
+              "y": 0,
+              "width": 592,
+              "height": 360,
+              "top": 0,
+              "right": 936,
+              "bottom": 360,
+              "left": 344
+            }
+          },
+          {
+            "tag": "BUTTON",
+            "role": "slider",
+            "name": "Brightness",
+            "value": "100%",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 448,
+              "y": 156,
+              "width": 384,
+              "height": 48,
+              "top": 156,
+              "right": 832,
+              "bottom": 204,
+              "left": 448
+            }
+          }
+        ]
+      }
+    },
+    {
+      "label": "key-ArrowLeft-5",
+      "atMs": 1900.4451249999984,
+      "observed": {
+        "url": "http://127.0.0.1:18120/source/?example=fluid&theme=light&captureProbe=1",
+        "reduce": true,
+        "active": {
+          "tag": "BUTTON",
+          "role": "slider",
+          "name": "Brightness"
+        },
+        "probe": null,
+        "stage": {
+          "x": 344,
+          "y": 0,
+          "width": 592,
+          "height": 360,
+          "top": 0,
+          "right": 936,
+          "bottom": 360,
+          "left": 344
+        },
+        "controls": [
+          {
+            "tag": "MAIN",
+            "role": null,
+            "name": "Brightness\n99%\nBrightness\n99%",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 344,
+              "y": 0,
+              "width": 592,
+              "height": 360,
+              "top": 0,
+              "right": 936,
+              "bottom": 360,
+              "left": 344
+            }
+          },
+          {
+            "tag": "BUTTON",
+            "role": "slider",
+            "name": "Brightness",
+            "value": "99%",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 448,
+              "y": 156,
+              "width": 384,
+              "height": 48,
+              "top": 156,
+              "right": 832,
+              "bottom": 204,
+              "left": 448
+            }
+          }
+        ]
+      }
+    },
+    {
+      "label": "key-Home-6",
+      "atMs": 2173.3536250000034,
+      "observed": {
+        "url": "http://127.0.0.1:18120/source/?example=fluid&theme=light&captureProbe=1",
+        "reduce": true,
+        "active": {
+          "tag": "BUTTON",
+          "role": "slider",
+          "name": "Brightness"
+        },
+        "probe": null,
+        "stage": {
+          "x": 344,
+          "y": 0,
+          "width": 592,
+          "height": 360,
+          "top": 0,
+          "right": 936,
+          "bottom": 360,
+          "left": 344
+        },
+        "controls": [
+          {
+            "tag": "MAIN",
+            "role": null,
+            "name": "Brightness\n0%\nBrightness\n0%",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 344,
+              "y": 0,
+              "width": 592,
+              "height": 360,
+              "top": 0,
+              "right": 936,
+              "bottom": 360,
+              "left": 344
+            }
+          },
+          {
+            "tag": "BUTTON",
+            "role": "slider",
+            "name": "Brightness",
+            "value": "0%",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 448,
+              "y": 156,
+              "width": 384,
+              "height": 48,
+              "top": 156,
+              "right": 832,
+              "bottom": 204,
+              "left": 448
+            }
+          }
+        ]
+      }
+    },
+    {
+      "label": "key-PageUp-7",
+      "atMs": 2450.4098749999976,
+      "observed": {
+        "url": "http://127.0.0.1:18120/source/?example=fluid&theme=light&captureProbe=1",
+        "reduce": true,
+        "active": {
+          "tag": "BUTTON",
+          "role": "slider",
+          "name": "Brightness"
+        },
+        "probe": null,
+        "stage": {
+          "x": 344,
+          "y": 0,
+          "width": 592,
+          "height": 360,
+          "top": 0,
+          "right": 936,
+          "bottom": 360,
+          "left": 344
+        },
+        "controls": [
+          {
+            "tag": "MAIN",
+            "role": null,
+            "name": "Brightness\n10%\nBrightness\n10%",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 344,
+              "y": 0,
+              "width": 592,
+              "height": 360,
+              "top": 0,
+              "right": 936,
+              "bottom": 360,
+              "left": 344
+            }
+          },
+          {
+            "tag": "BUTTON",
+            "role": "slider",
+            "name": "Brightness",
+            "value": "10%",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 448,
+              "y": 156,
+              "width": 384,
+              "height": 48,
+              "top": 156,
+              "right": 832,
+              "bottom": 204,
+              "left": 448
+            }
+          }
+        ]
+      }
+    },
+    {
+      "label": "key-PageDown-8",
+      "atMs": 2719.560540999999,
+      "observed": {
+        "url": "http://127.0.0.1:18120/source/?example=fluid&theme=light&captureProbe=1",
+        "reduce": true,
+        "active": {
+          "tag": "BUTTON",
+          "role": "slider",
+          "name": "Brightness"
+        },
+        "probe": null,
+        "stage": {
+          "x": 344,
+          "y": 0,
+          "width": 592,
+          "height": 360,
+          "top": 0,
+          "right": 936,
+          "bottom": 360,
+          "left": 344
+        },
+        "controls": [
+          {
+            "tag": "MAIN",
+            "role": null,
+            "name": "Brightness\n0%\nBrightness\n0%",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 344,
+              "y": 0,
+              "width": 592,
+              "height": 360,
+              "top": 0,
+              "right": 936,
+              "bottom": 360,
+              "left": 344
+            }
+          },
+          {
+            "tag": "BUTTON",
+            "role": "slider",
+            "name": "Brightness",
+            "value": "0%",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 448,
+              "y": 156,
+              "width": 384,
+              "height": 48,
+              "top": 156,
+              "right": 832,
+              "bottom": 204,
+              "left": 448
+            }
+          }
+        ]
+      }
+    },
+    {
+      "label": "key-ArrowRight-9",
+      "atMs": 2981.821291,
+      "observed": {
+        "url": "http://127.0.0.1:18120/source/?example=fluid&theme=light&captureProbe=1",
+        "reduce": true,
+        "active": {
+          "tag": "BUTTON",
+          "role": "slider",
+          "name": "Brightness"
+        },
+        "probe": null,
+        "stage": {
+          "x": 344,
+          "y": 0,
+          "width": 592,
+          "height": 360,
+          "top": 0,
+          "right": 936,
+          "bottom": 360,
+          "left": 344
+        },
+        "controls": [
+          {
+            "tag": "MAIN",
+            "role": null,
+            "name": "Brightness\n1%\nBrightness\n1%",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 344,
+              "y": 0,
+              "width": 592,
+              "height": 360,
+              "top": 0,
+              "right": 936,
+              "bottom": 360,
+              "left": 344
+            }
+          },
+          {
+            "tag": "BUTTON",
+            "role": "slider",
+            "name": "Brightness",
+            "value": "1%",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 448,
+              "y": 156,
+              "width": 384,
+              "height": 48,
+              "top": 156,
+              "right": 832,
+              "bottom": 204,
+              "left": 448
+            }
+          }
+        ]
+      }
+    },
+    {
+      "label": "key-ArrowDown-10",
+      "atMs": 3248.571624999997,
+      "observed": {
+        "url": "http://127.0.0.1:18120/source/?example=fluid&theme=light&captureProbe=1",
+        "reduce": true,
+        "active": {
+          "tag": "BUTTON",
+          "role": "slider",
+          "name": "Brightness"
+        },
+        "probe": null,
+        "stage": {
+          "x": 344,
+          "y": 0,
+          "width": 592,
+          "height": 360,
+          "top": 0,
+          "right": 936,
+          "bottom": 360,
+          "left": 344
+        },
+        "controls": [
+          {
+            "tag": "MAIN",
+            "role": null,
+            "name": "Brightness\n0%\nBrightness\n0%",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 344,
+              "y": 0,
+              "width": 592,
+              "height": 360,
+              "top": 0,
+              "right": 936,
+              "bottom": 360,
+              "left": 344
+            }
+          },
+          {
+            "tag": "BUTTON",
+            "role": "slider",
+            "name": "Brightness",
+            "value": "0%",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 448,
+              "y": 156,
+              "width": 384,
+              "height": 48,
+              "top": 156,
+              "right": 832,
+              "bottom": 204,
+              "left": 448
+            }
+          }
+        ]
+      }
+    },
+    {
+      "label": "key-ArrowUp-11",
+      "atMs": 3514.740791000004,
+      "observed": {
+        "url": "http://127.0.0.1:18120/source/?example=fluid&theme=light&captureProbe=1",
+        "reduce": true,
+        "active": {
+          "tag": "BUTTON",
+          "role": "slider",
+          "name": "Brightness"
+        },
+        "probe": null,
+        "stage": {
+          "x": 344,
+          "y": 0,
+          "width": 592,
+          "height": 360,
+          "top": 0,
+          "right": 936,
+          "bottom": 360,
+          "left": 344
+        },
+        "controls": [
+          {
+            "tag": "MAIN",
+            "role": null,
+            "name": "Brightness\n1%\nBrightness\n1%",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 344,
+              "y": 0,
+              "width": 592,
+              "height": 360,
+              "top": 0,
+              "right": 936,
+              "bottom": 360,
+              "left": 344
+            }
+          },
+          {
+            "tag": "BUTTON",
+            "role": "slider",
+            "name": "Brightness",
+            "value": "1%",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 448,
+              "y": 156,
+              "width": 384,
+              "height": 48,
+              "top": 156,
+              "right": 832,
+              "bottom": 204,
+              "left": 448
+            }
+          }
+        ]
+      }
+    },
+    {
+      "label": "exit",
+      "atMs": 3766.5601659999957,
+      "observed": {
+        "url": "http://127.0.0.1:18120/source/?example=fluid&theme=light&captureProbe=1",
+        "reduce": true,
+        "active": {
+          "tag": "BUTTON",
+          "role": "slider",
+          "name": "Brightness"
+        },
+        "probe": null,
+        "stage": {
+          "x": 344,
+          "y": 0,
+          "width": 592,
+          "height": 360,
+          "top": 0,
+          "right": 936,
+          "bottom": 360,
+          "left": 344
+        },
+        "controls": [
+          {
+            "tag": "MAIN",
+            "role": null,
+            "name": "Brightness\n1%\nBrightness\n1%",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 344,
+              "y": 0,
+              "width": 592,
+              "height": 360,
+              "top": 0,
+              "right": 936,
+              "bottom": 360,
+              "left": 344
+            }
+          },
+          {
+            "tag": "BUTTON",
+            "role": "slider",
+            "name": "Brightness",
+            "value": "1%",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 448,
+              "y": 156,
+              "width": 384,
+              "height": 48,
+              "top": 156,
+              "right": 832,
+              "bottom": 204,
+              "left": 448
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

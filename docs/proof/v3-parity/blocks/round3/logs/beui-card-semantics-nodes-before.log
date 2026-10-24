@@ -1,0 +1,108 @@
+00:00 +0: loading /Users/codenameakshay/.t3/worktrees/beui/t3-5c0570f2/test/motion/card_folder_test.dart
+00:00 +0: privacy has one accessible toggle node after reveal
+SemanticsNode#0
+ │ Rect.fromLTRB(0.0, 0.0, 2400.0, 1800.0)
+ │
+ └─SemanticsNode#1
+   │ Rect.fromLTRB(0.0, 0.0, 800.0, 600.0) scaled by 3.0x
+   │ textDirection: ltr
+   │
+   └─SemanticsNode#2
+     │ Rect.fromLTRB(0.0, 0.0, 800.0, 600.0)
+     │ sortKey: OrdinalSortKey#c417b(order: 0.0)
+     │
+     └─SemanticsNode#3
+       │ Rect.fromLTRB(0.0, 0.0, 800.0, 600.0)
+       │ flags: scopesRoute
+       │
+       └─SemanticsNode#4
+         │ Rect.fromLTRB(208.0, 189.5, 592.0, 410.5)
+         │ flags: isButton, hasEnabledState, isEnabled, hasExpandedState
+         │ label: "Open Travel Card, card ending in 0806, expires 08/29"
+         │ textDirection: ltr
+         │
+         └─SemanticsNode#5
+           │ Rect.fromLTRB(0.0, 0.0, 384.0, 220.9)
+           │ actions: focus, tap
+           │ flags: isFocusable
+           │ label:
+           │   "•••• •••• •••• 0806
+           │   EXPIRY
+           │   08/29
+           │   CVV
+           │   123
+           │   Travel Card
+           │   3745 6987 4096 0806"
+           │ textDirection: ltr
+           │
+           └─SemanticsNode#6
+             │ Rect.fromLTRB(0.0, 0.0, 48.0, 48.0) with transform
+             │ [[1.0,0.0,-0.16,19.200000000000003];
+             │ [0.0,1.0,-0.1841010689990282,126.46064139941691];
+             │ [0.0,0.0,1.0,0.0]; [0.0,0.0,-0.0008333333333333334,1.0]]
+             │ actions: longPress
+             │ flags: isButton, hasToggledState, isToggled
+             │ traversalParentIdentifier: _OverlayPortalState#45fe0
+             │ label: "Hide card details"
+             │ textDirection: ltr
+             │
+             ├─SemanticsNode#7
+             │ │ merge boundary ⛔️
+             │ │ Rect.fromLTRB(0.0, 0.0, 48.0, 48.0)
+             │ │ tooltip: "Hide card details"
+             │ │ textDirection: ltr
+             │ │
+             │ └─SemanticsNode#8
+             │     merged up ⬆️
+             │     Rect.fromLTRB(0.0, 0.0, 48.0, 48.0)
+             │     actions: focus, tap
+             │     flags: isButton, hasEnabledState, isEnabled, isFocusable
+             │
+             └─SemanticsNode#9
+               │ Rect.fromLTRB(0.0, 0.0, 800.0, 600.0)
+               │ traversalChildIdentifier: _OverlayPortalState#45fe0
+               │
+               └─SemanticsNode#10
+                   Rect.fromLTRB(0.0, 0.0, 800.0, 600.0)
+                   actions: focus
+                   flags: isFocusable
+                   label: "Hide card details"
+                   textDirection: ltr
+
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test:
+Expected: an object with length of <1>
+  Actual: [
+            SemanticsNode:SemanticsNode#6(Rect.fromLTRB(0.0, 0.0, 48.0, 48.0) with transform
+[[1.0,0.0,-0.16,19.200000000000003]; [0.0,1.0,-0.1841010689990282,126.46064139941691];
+[0.0,0.0,1.0,0.0]; [0.0,0.0,-0.0008333333333333334,1.0]], actions: [longPress], flags: [isButton,
+hasToggledState, isToggled], traversalParentIdentifier: _OverlayPortalState#45fe0, label: "Hide card
+details", textDirection: ltr),
+            SemanticsNode:SemanticsNode#10(Rect.fromLTRB(0.0, 0.0, 800.0, 600.0), actions: [focus],
+flags: [isFocusable], label: "Hide card details", textDirection: ltr)
+          ]
+   Which: has length of <2>
+
+When the exception was thrown, this was the stack:
+#4      main.<anonymous closure> (file:///Users/codenameakshay/.t3/worktrees/beui/t3-5c0570f2/test/motion/card_folder_test.dart:70:5)
+<asynchronous suspension>
+#5      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#6      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+This was caught by the test expectation on the following line:
+  file:///Users/codenameakshay/.t3/worktrees/beui/t3-5c0570f2/test/motion/card_folder_test.dart line 70
+The test description was:
+  privacy has one accessible toggle node after reveal
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:00 +0 -1: privacy has one accessible toggle node after reveal [E]
+  Test failed. See exception logs above.
+  The test description was: privacy has one accessible toggle node after reveal
+  
+00:00 +0 -1: Some tests failed.
+
+Failing tests:
+  /Users/codenameakshay/.t3/worktrees/beui/t3-5c0570f2/test/motion/card_folder_test.dart: privacy has one accessible toggle node after reveal

@@ -21,6 +21,12 @@ class BeuiInputStyle {
     this.successColor,
     this.height,
     this.borderRadius,
+    this.borderWidth,
+    this.textStyle,
+    this.contentPadding,
+    this.placeholderColor,
+    this.backgroundColor,
+    this.focusedBackgroundColor,
   });
 
   /// Idle field border. Defaults to `BeuiColors.border`.
@@ -42,6 +48,26 @@ class BeuiInputStyle {
   /// Corner radius. Defaults to half the [height] (source `rounded-full`).
   final double? borderRadius;
 
+  /// Field border width. Defaults to 1.
+  final double? borderWidth;
+
+  /// Overrides merged into the field's 16px, 1.5-height foreground text style.
+  /// Applies to entered text and the placeholder, which keeps its muted color.
+  final TextStyle? textStyle;
+
+  /// Padding around the editable text, inside the border and icon slots.
+  /// Defaults to 14px horizontally, or zero on a side with an icon slot.
+  final EdgeInsetsGeometry? contentPadding;
+
+  /// Placeholder color. Defaults to the full-strength muted foreground.
+  final Color? placeholderColor;
+
+  /// Field fill, including in the disabled field's opacity. Defaults to none.
+  final Color? backgroundColor;
+
+  /// Focused field fill. Defaults to [backgroundColor].
+  final Color? focusedBackgroundColor;
+
   /// Returns a copy with the given fields replaced.
   BeuiInputStyle copyWith({
     Color? borderColor,
@@ -50,6 +76,12 @@ class BeuiInputStyle {
     Color? successColor,
     double? height,
     double? borderRadius,
+    double? borderWidth,
+    TextStyle? textStyle,
+    EdgeInsetsGeometry? contentPadding,
+    Color? placeholderColor,
+    Color? backgroundColor,
+    Color? focusedBackgroundColor,
   }) {
     return BeuiInputStyle(
       borderColor: borderColor ?? this.borderColor,
@@ -58,6 +90,13 @@ class BeuiInputStyle {
       successColor: successColor ?? this.successColor,
       height: height ?? this.height,
       borderRadius: borderRadius ?? this.borderRadius,
+      borderWidth: borderWidth ?? this.borderWidth,
+      textStyle: textStyle ?? this.textStyle,
+      contentPadding: contentPadding ?? this.contentPadding,
+      placeholderColor: placeholderColor ?? this.placeholderColor,
+      backgroundColor: backgroundColor ?? this.backgroundColor,
+      focusedBackgroundColor:
+          focusedBackgroundColor ?? this.focusedBackgroundColor,
     );
   }
 }
@@ -90,6 +129,7 @@ class BeuiInput extends StatefulWidget {
     this.onSubmitted,
     this.placeholder,
     this.error,
+    this.reserveErrorLine = false,
     this.success = false,
     this.leftIcon,
     this.rightIcon,
@@ -139,6 +179,10 @@ class BeuiInput extends StatefulWidget {
   /// Truthy error triggers the shake + red border/ring. A [String] also shows
   /// an alert message below the field; `true` shakes without a message.
   final Object? error;
+
+  /// Reserve one 16px message line so validation does not shift nearby content
+  /// (source `reserveErrorLine`, `min-h-4`).
+  final bool reserveErrorLine;
 
   /// Shows the success check at the right edge (replaces [rightIcon]).
   final bool success;
@@ -304,7 +348,7 @@ class _BeuiInputState extends State<BeuiInput>
       fontSize: 16,
       height: 1.5,
       color: colors.foreground,
-    );
+    ).merge(s?.textStyle);
 
     final height = s?.height ?? 44.0;
     final radius = s?.borderRadius ?? height / 2;
@@ -339,8 +383,11 @@ class _BeuiInputState extends State<BeuiInput>
       curve: Curves.ease,
       height: height,
       decoration: BoxDecoration(
+        color: _focused && widget.enabled
+            ? s?.focusedBackgroundColor ?? s?.backgroundColor
+            : s?.backgroundColor,
         borderRadius: BorderRadius.circular(radius),
-        border: Border.all(color: borderColor),
+        border: Border.all(color: borderColor, width: s?.borderWidth ?? 1),
       ),
       child: Row(
         children: [
@@ -357,48 +404,51 @@ class _BeuiInputState extends State<BeuiInput>
             ),
           Expanded(
             child: Padding(
-              padding: EdgeInsets.only(
-                left: hasLeft ? 0 : 14,
-                right: hasRight ? 0 : 14,
-              ),
-              // Full-strength `mutedForeground` (5.9:1) keeps the 4.5:1 AA
-              // floor on placeholder text that is often the field's only
-              // label.
-              child: TextField(
-                controller: _controller,
-                focusNode: _focusNode,
-                enabled: widget.enabled,
-                obscureText: widget.obscureText,
-                keyboardType: widget.keyboardType,
-                onChanged: widget.onChanged,
-                onSubmitted: widget.onSubmitted,
-                cursorColor: colors.foreground,
-                style: fieldTextStyle,
-                autofillHints: widget.autofillHints,
-                textInputAction: widget.textInputAction,
-                textCapitalization: widget.textCapitalization,
-                maxLength: widget.maxLength,
-                inputFormatters: widget.inputFormatters,
-                onEditingComplete: widget.onEditingComplete,
-                readOnly: widget.readOnly,
-                enableSuggestions: widget.enableSuggestions,
-                autofocus: widget.autofocus,
-                decoration: InputDecoration(
-                  isDense: true,
-                  isCollapsed: true,
-                  border: InputBorder.none,
-                  enabledBorder: InputBorder.none,
-                  focusedBorder: InputBorder.none,
-                  hintText: widget.placeholder,
-                  hintStyle: fieldTextStyle.copyWith(
-                    color: colors.mutedForeground,
+              padding:
+                  s?.contentPadding ??
+                  EdgeInsets.only(
+                    left: hasLeft ? 0 : 14,
+                    right: hasRight ? 0 : 14,
                   ),
-                  // Material would append a character counter under the
-                  // field when `maxLength` is set. The pill is a
-                  // fixed-height single line with no room for one, and the
-                  // source has no counter — suppress it and leave the
-                  // remaining-character affordance to the caller.
-                  counterText: '',
+              child: Semantics(
+                label: widget.semanticLabel ?? widget.label,
+                hint: _errorMessage,
+                child: TextField(
+                  controller: _controller,
+                  focusNode: _focusNode,
+                  enabled: widget.enabled,
+                  obscureText: widget.obscureText,
+                  keyboardType: widget.keyboardType,
+                  onChanged: widget.onChanged,
+                  onSubmitted: widget.onSubmitted,
+                  cursorColor: colors.foreground,
+                  style: fieldTextStyle,
+                  autofillHints: widget.autofillHints,
+                  textInputAction: widget.textInputAction,
+                  textCapitalization: widget.textCapitalization,
+                  maxLength: widget.maxLength,
+                  inputFormatters: widget.inputFormatters,
+                  onEditingComplete: widget.onEditingComplete,
+                  readOnly: widget.readOnly,
+                  enableSuggestions: widget.enableSuggestions,
+                  autofocus: widget.autofocus,
+                  decoration: InputDecoration(
+                    isDense: true,
+                    isCollapsed: true,
+                    border: InputBorder.none,
+                    enabledBorder: InputBorder.none,
+                    focusedBorder: InputBorder.none,
+                    hintText: widget.placeholder,
+                    hintStyle: fieldTextStyle.copyWith(
+                      color: s?.placeholderColor ?? colors.mutedForeground,
+                    ),
+                    // Material would append a character counter under the
+                    // field when `maxLength` is set. The pill is a
+                    // fixed-height single line with no room for one, and the
+                    // source has no counter — suppress it and leave the
+                    // remaining-character affordance to the caller.
+                    counterText: '',
+                  ),
                 ),
               ),
             ),
@@ -477,50 +527,28 @@ class _BeuiInputState extends State<BeuiInput>
       crossAxisAlignment: CrossAxisAlignment.stretch,
       mainAxisSize: MainAxisSize.min,
       children: [
-        // The visible label and the field are one semantics node, so a screen
-        // reader announces "Email, edit box, hello" instead of a stray "Email"
-        // followed by an anonymous text field — the association a `<label for>`
-        // gives you for free on the web and Flutter gives you not at all.
-        // `semanticLabel` names the field when there is no visible label.
-        MergeSemantics(
-          child: Semantics(
-            label: widget.semanticLabel ?? widget.label,
-            // Read after the value on focus, so a user who tabs back into a
-            // rejected field hears why it was rejected. The live region below
-            // covers the moment the error *arrives*; this covers every visit
-            // afterwards.
-            hint: _errorMessage,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                if (widget.label != null)
-                  // Excluded because the name is supplied above; left in the
-                  // tree it would be read twice.
-                  ExcludeSemantics(
-                    child: Padding(
-                      padding: const EdgeInsets.only(left: 4, bottom: 6),
-                      child: Text(
-                        widget.label!,
-                        style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w500,
-                          color: colors.foreground,
-                        ),
-                      ),
-                    ),
-                  ),
-                field,
-              ],
+        if (widget.label != null)
+          ExcludeSemantics(
+            child: Padding(
+              padding: const EdgeInsets.only(left: 4, bottom: 6),
+              child: Text(
+                widget.label!,
+                style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w500,
+                  color: colors.foreground,
+                ),
+              ),
             ),
           ),
-        ),
+        field,
         // Error message reveal / removal — slide-down + unblur, opacity-only
         // under reduced motion.
         _ErrorMessage(
           message: _errorMessage,
           color: errorColor,
           reduce: reduce,
+          reserveErrorLine: widget.reserveErrorLine,
         ),
       ],
     );
@@ -627,76 +655,95 @@ class _ErrorMessage extends StatelessWidget {
     required this.message,
     required this.color,
     required this.reduce,
+    required this.reserveErrorLine,
   });
   final String? message;
   final Color color;
   final bool reduce;
+  final bool reserveErrorLine;
 
   @override
   Widget build(BuildContext context) {
+    Widget body = AnimatedSwitcher(
+      duration: const Duration(milliseconds: 200),
+      switchInCurve: beuiEaseOut,
+      switchOutCurve: beuiEaseOut,
+      // Left-aligns the message under the field (AnimatedSwitcher's default
+      // layout builder centres children); directional so RTL still starts
+      // at the correct edge.
+      layoutBuilder: (currentChild, previousChildren) => Stack(
+        alignment: AlignmentDirectional.topStart,
+        children: [...previousChildren, ?currentChild],
+      ),
+      transitionBuilder: (child, animation) {
+        if (reduce) return FadeTransition(opacity: animation, child: child);
+        // y: -4 → 0, blur(4px) → 0 (σ2 → 0).
+        return FadeTransition(
+          opacity: animation,
+          child: AnimatedBuilder(
+            animation: animation,
+            builder: (context, inner) {
+              final t = animation.value;
+              final blur = beuiBlurSigma(4) * (1 - t);
+              Widget body = Transform.translate(
+                offset: Offset(0, -4 * (1 - t)),
+                child: inner,
+              );
+              if (blur > 0.05) {
+                body = ImageFiltered(
+                  imageFilter: ImageFilter.blur(
+                    sigmaX: blur,
+                    sigmaY: blur,
+                    tileMode: TileMode.decal,
+                  ),
+                  child: body,
+                );
+              }
+              return body;
+            },
+            child: child,
+          ),
+        );
+      },
+      child: message == null
+          ? const SizedBox(width: double.infinity)
+          : Semantics(
+              key: ValueKey(message),
+              // Announced the moment validation fails, without stealing
+              // focus — the error is otherwise invisible to a screen-reader
+              // user until they happen to tab back into the field.
+              liveRegion: true,
+              container: true,
+              child: Padding(
+                padding: EdgeInsetsDirectional.only(
+                  start: 4,
+                  top: reserveErrorLine ? 0 : 6,
+                ),
+                child: Text(
+                  message!,
+                  style: TextStyle(
+                    fontSize: 12,
+                    height: reserveErrorLine ? 16 / 12 : null,
+                    color: color,
+                  ),
+                ),
+              ),
+            ),
+    );
+    if (reserveErrorLine) {
+      return Padding(
+        padding: const EdgeInsets.only(top: 6),
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(minHeight: 16),
+          child: body,
+        ),
+      );
+    }
     return AnimatedSize(
       duration: const Duration(milliseconds: 200),
       curve: beuiEaseOut,
       alignment: Alignment.topCenter,
-      child: AnimatedSwitcher(
-        duration: const Duration(milliseconds: 200),
-        switchInCurve: beuiEaseOut,
-        switchOutCurve: beuiEaseOut,
-        // Left-aligns the message under the field (AnimatedSwitcher's default
-        // layout builder centres children); directional so RTL still starts
-        // at the correct edge.
-        layoutBuilder: (currentChild, previousChildren) => Stack(
-          alignment: AlignmentDirectional.topStart,
-          children: [...previousChildren, ?currentChild],
-        ),
-        transitionBuilder: (child, animation) {
-          if (reduce) return FadeTransition(opacity: animation, child: child);
-          // y: -4 → 0, blur(4px) → 0 (σ2 → 0).
-          return FadeTransition(
-            opacity: animation,
-            child: AnimatedBuilder(
-              animation: animation,
-              builder: (context, inner) {
-                final t = animation.value;
-                final blur = beuiBlurSigma(4) * (1 - t);
-                Widget body = Transform.translate(
-                  offset: Offset(0, -4 * (1 - t)),
-                  child: inner,
-                );
-                if (blur > 0.05) {
-                  body = ImageFiltered(
-                    imageFilter: ImageFilter.blur(
-                      sigmaX: blur,
-                      sigmaY: blur,
-                      tileMode: TileMode.decal,
-                    ),
-                    child: body,
-                  );
-                }
-                return body;
-              },
-              child: child,
-            ),
-          );
-        },
-        child: message == null
-            ? const SizedBox(width: double.infinity)
-            : Semantics(
-                key: ValueKey(message),
-                // Announced the moment validation fails, without stealing
-                // focus — the error is otherwise invisible to a screen-reader
-                // user until they happen to tab back into the field.
-                liveRegion: true,
-                container: true,
-                child: Padding(
-                  padding: const EdgeInsetsDirectional.only(start: 4, top: 6),
-                  child: Text(
-                    message!,
-                    style: TextStyle(fontSize: 12, color: color),
-                  ),
-                ),
-              ),
-      ),
+      child: body,
     );
   }
 }

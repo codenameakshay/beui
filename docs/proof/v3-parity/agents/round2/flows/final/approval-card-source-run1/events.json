@@ -1,0 +1,34 @@
+[
+  {
+    "name": "idle",
+    "atMs": 1561.4896670000003,
+    "aria": "- group \"Capture stage width 752 height 1000 reduced false\":\n  - group \"How focused should the first release be? 1/3 Question 1 of 3\":\n    - radio \"A focused starter set Ship a few polished pieces first.\"\n    - radio \"A broader collection Cover more ground with lighter depth.\"\n    - radio \"One flagship experience Pour everything into a single showcase.\"\n    - textbox \"Describe another scope…\"\n    - button \"Previous question\" [disabled]\n    - button \"Next question\" [disabled]\n  - button \"Replay\""
+  },
+  {
+    "name": "all source option descriptions",
+    "atMs": 1564.4305840000002,
+    "expected": "Ship a few polished pieces first.",
+    "aria": "- group \"Capture stage width 752 height 1000 reduced false\":\n  - group \"How focused should the first release be? 1/3 Question 1 of 3\":\n    - radio \"A focused starter set Ship a few polished pieces first.\"\n    - radio \"A broader collection Cover more ground with lighter depth.\"\n    - radio \"One flagship experience Pour everything into a single showcase.\"\n    - textbox \"Describe another scope…\"\n    - button \"Previous question\" [disabled]\n    - button \"Next question\" [disabled]\n  - button \"Replay\""
+  },
+  {
+    "name": "second description",
+    "atMs": 1566.653334,
+    "expected": "Cover more ground with lighter depth.",
+    "aria": "- group \"Capture stage width 752 height 1000 reduced false\":\n  - group \"How focused should the first release be? 1/3 Question 1 of 3\":\n    - radio \"A focused starter set Ship a few polished pieces first.\"\n    - radio \"A broader collection Cover more ground with lighter depth.\"\n    - radio \"One flagship experience Pour everything into a single showcase.\"\n    - textbox \"Describe another scope…\"\n    - button \"Previous question\" [disabled]\n    - button \"Next question\" [disabled]\n  - button \"Replay\""
+  },
+  {
+    "name": "third description",
+    "atMs": 1568.507834,
+    "expected": "Pour everything into a single showcase.",
+    "aria": "- group \"Capture stage width 752 height 1000 reduced false\":\n  - group \"How focused should the first release be? 1/3 Question 1 of 3\":\n    - radio \"A focused starter set Ship a few polished pieces first.\"\n    - radio \"A broader collection Cover more ground with lighter depth.\"\n    - radio \"One flagship experience Pour everything into a single showcase.\"\n    - textbox \"Describe another scope…\"\n    - button \"Previous question\" [disabled]\n    - button \"Next question\" [disabled]\n  - button \"Replay\""
+  },
+  {
+    "action": "select focused scope",
+    "beforeMs": 1568.551292
+  },
+  {
+    "failure": "TimeoutError: locator.click: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByText('A focused starter set', { exact: true })\u001b[22m\n",
+    "atMs": 31569.938709,
+    "aria": "- group \"Capture stage width 752 height 1000 reduced false\":\n  - group \"How focused should the first release be? 1/3 Question 1 of 3\":\n    - radio \"A focused starter set Ship a few polished pieces first.\"\n    - radio \"A broader collection Cover more ground with lighter depth.\"\n    - radio \"One flagship experience Pour everything into a single showcase.\"\n    - textbox \"Describe another scope…\"\n    - button \"Previous question\" [disabled]\n    - button \"Next question\" [disabled]\n  - button \"Replay\""
+  }
+]

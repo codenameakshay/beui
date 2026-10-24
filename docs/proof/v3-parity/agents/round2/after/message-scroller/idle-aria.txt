@@ -1,0 +1,29 @@
+- group "Capture stage width 752 height 1000 reduced false":
+  - group "Conversation":
+    - text: Use the rail to jump between turns without losing your place.
+    - group "Conversation":
+      - group:
+        - group "user message": What should the first release include?
+        - group "assistant message": Response Start with the smallest workflow that still feels complete.
+        - group "user message": Include streaming and recovery states too.
+        - group "assistant message": Response Yes. Those states make the first version feel dependable.
+        - group "user message": How should we present tool results?
+        - group "assistant message": Response Keep results close to the action that produced them.
+        - group "user message": What about actions that need confirmation?
+        - group "assistant message": Response Pause the run, explain the impact, and ask before continuing.
+        - group "user message": Can the transcript stay easy to navigate?
+        - group "assistant message": Response Use the rail to jump between turns without losing your place.
+  - group "Message navigation":
+    - 'button "Go to user message: You"'
+    - 'button "Go to assistant message: Assistant"'
+    - 'button "Go to user message: You"'
+    - 'button "Go to assistant message: Assistant"'
+    - 'button "Go to user message: You"'
+    - 'button "Go to assistant message: Assistant"'
+    - 'button "Go to user message: You"'
+    - 'button "Go to assistant message: Assistant"'
+    - 'button "Go to user message: You"'
+    - 'button "Go to assistant message: Assistant"'
+  - textbox "Prompt Send another message…"
+  - button "Send prompt" [disabled]:
+    - button [disabled]

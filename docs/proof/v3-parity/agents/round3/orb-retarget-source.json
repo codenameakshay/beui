@@ -1,0 +1,152 @@
+{
+  "sourceRevision": "a76e57c9bbc2837e96420b2610e9c82a3271bb05",
+  "runtime": "12.43.0",
+  "springRuntimeSha256": "eca94c286f2047f2ab1e442faba2873dcdb7d7dc9527ec71a38cc1f658a49bc1",
+  "physics": {
+    "stiffness": 700,
+    "damping": 50,
+    "mass": 0.5,
+    "restDelta": 0.001,
+    "restSpeed": 0.01
+  },
+  "segments": [
+    {
+      "target": 0.25,
+      "from": 0,
+      "inheritedVelocity": 0,
+      "samples": [
+        {
+          "timeMs": 16,
+          "value": 0.027333441228057448,
+          "velocity": 2.6360118117600675
+        },
+        {
+          "timeMs": 32,
+          "value": 0.07153143805218307,
+          "velocity": 2.7103110687005794
+        },
+        {
+          "timeMs": 80,
+          "value": 0.16855579206383142,
+          "velocity": 1.365583734905034
+        }
+      ]
+    },
+    {
+      "target": 0.75,
+      "from": 0.16855579206383142,
+      "inheritedVelocity": 1.365583734905034,
+      "samples": [
+        {
+          "timeMs": 16,
+          "value": 0.24241211884720815,
+          "velocity": 6.31857027953123
+        },
+        {
+          "timeMs": 48,
+          "value": 0.43657548591687584,
+          "velocity": 5.120608539644503
+        },
+        {
+          "timeMs": 96,
+          "value": 0.609292590536286,
+          "velocity": 2.365762595946907
+        }
+      ]
+    },
+    {
+      "target": 1,
+      "from": 0.609292590536286,
+      "inheritedVelocity": 2.365762595946907,
+      "samples": [
+        {
+          "timeMs": 16,
+          "value": 0.6698277544398759,
+          "velocity": 4.444977064815836
+        },
+        {
+          "timeMs": 64,
+          "value": 0.8456594079346713,
+          "velocity": 2.5775806895038476
+        },
+        {
+          "timeMs": 160,
+          "value": 0.9692735615634256,
+          "velocity": 0.517234242025885
+        }
+      ]
+    },
+    {
+      "target": 0,
+      "from": 0.9692735615634256,
+      "inheritedVelocity": 0.517234242025885,
+      "samples": [
+        {
+          "timeMs": 16,
+          "value": 0.8671947640518874,
+          "velocity": -10.148936173835795
+        },
+        {
+          "timeMs": 80,
+          "value": 0.31778494617442793,
+          "velocity": -5.327801528182748
+        },
+        {
+          "timeMs": 240,
+          "value": 0.021520457092636374,
+          "velocity": -0.36227000358307077
+        },
+        {
+          "timeMs": 640,
+          "value": 0,
+          "velocity": -0.0004312311966641338
+        }
+      ]
+    },
+    {
+      "target": 0.6,
+      "from": 0,
+      "inheritedVelocity": -0.0004312311966641338,
+      "samples": [
+        {
+          "timeMs": 16,
+          "value": 0.06559701114582928,
+          "velocity": 6.326369045308634
+        },
+        {
+          "timeMs": 80,
+          "value": 0.4045322184323149,
+          "velocity": 3.2774287307271233
+        },
+        {
+          "timeMs": 160,
+          "value": 0.5491085636041235,
+          "velocity": 0.8566770218520523
+        }
+      ]
+    },
+    {
+      "target": 0,
+      "from": 0.5491085636041235,
+      "inheritedVelocity": 0.8566770218520523,
+      "samples": [
+        {
+          "timeMs": 16,
+          "value": 0.49552448770963947,
+          "velocity": -5.672016411647251
+        },
+        {
+          "timeMs": 80,
+          "value": 0.18222931729798625,
+          "velocity": -3.0545762829285885
+        },
+        {
+          "timeMs": 640,
+          "value": 0,
+          "velocity": -0.0002472952636533606
+        }
+      ]
+    }
+  ],
+  "scope": "Analytical source spring and Flutter rendered silhouette under repeated retargets. Not native-frame material or synchronized browser equivalence."
+}

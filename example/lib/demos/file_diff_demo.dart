@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:beui/beui.dart';
 import 'package:flutter/material.dart';
 
-import '../explorer/widgets.dart';
+import 'agents_replay_button.dart';
 
 /// Gallery route for [BeuiFileDiff], mirroring the source
 /// `agents/file-diff.preview.tsx` exactly: five diff rows streamed at the
@@ -46,10 +46,7 @@ class _FileDiffDemoState extends State<_FileDiffDemo> {
       newLine: 20,
       content: '  return normalize(result);',
     ),
-    // A discontinuous jump from line 20/21 to 40/41 — the widget infers a
-    // 20-line hidden context gap from this, rendered as an "Expand N hidden
-    // lines" separator between the two rows.
-    BeuiFileDiffLine(id: '5', oldLine: 40, newLine: 41, content: '}'),
+    BeuiFileDiffLine(id: '5', oldLine: 20, newLine: 21, content: '}'),
   ];
 
   static const _interval = Duration(milliseconds: 360);
@@ -60,12 +57,6 @@ class _FileDiffDemoState extends State<_FileDiffDemo> {
   int _run = 0;
   BeuiFileDiffStatus _status = BeuiFileDiffStatus.streaming;
   final List<Timer> _timers = [];
-
-  // The consumer owns the file; the widget only detects the gap. These rows
-  // are generated on demand when the reader expands the hunk separator, and
-  // spliced back in right after the row the gap follows.
-  final List<BeuiFileDiffLine> _extraContext = [];
-  String? _extraContextAfterId;
 
   @override
   void initState() {
@@ -103,70 +94,23 @@ class _FileDiffDemoState extends State<_FileDiffDemo> {
       );
     }
     _timers.add(
-      Timer(
-        _startDelay +
-            _interval * _diffLines.length +
-            _completeDelay -
-            _startDelay,
-        () {
-          if (!mounted) return;
-          setState(() => _status = BeuiFileDiffStatus.complete);
-        },
-      ),
+      Timer(_interval * _diffLines.length + _completeDelay, () {
+        if (!mounted) return;
+        setState(() => _status = BeuiFileDiffStatus.complete);
+      }),
     );
   }
 
   void _replay() {
     setState(() {
       _run++;
-      _extraContext.clear();
-      _extraContextAfterId = null;
     });
     _startStream();
   }
 
-  /// The consumer owns the file; the widget only detects the gap — it hands
-  /// back a [BeuiFileDiffHunkGap] describing what's missing and leaves
-  /// fetching / generating the real lines to us.
-  void _expandContext(BeuiFileDiffHunkGap gap) {
-    final afterOld = gap.after.oldLine;
-    final afterNew = gap.after.newLine;
-    final generated = <BeuiFileDiffLine>[
-      for (var i = 0; i < gap.hiddenCount; i++)
-        BeuiFileDiffLine(
-          id: 'ctx-${gap.before.id}-$i',
-          content: '  // ...',
-          oldLine: afterOld == null ? null : afterOld - gap.hiddenCount + i,
-          newLine: afterNew == null ? null : afterNew - gap.hiddenCount + i,
-        ),
-    ];
-    setState(() {
-      _extraContextAfterId = gap.before.id;
-      _extraContext
-        ..clear()
-        ..addAll(generated);
-    });
-  }
-
-  /// [_diffLines] with any expanded [_extraContext] spliced back in right
-  /// after the row the gap followed.
-  List<BeuiFileDiffLine> get _mergedLines {
-    if (_extraContext.isEmpty) return _diffLines;
-    final merged = <BeuiFileDiffLine>[];
-    for (final line in _diffLines) {
-      merged.add(line);
-      if (line.id == _extraContextAfterId) merged.addAll(_extraContext);
-    }
-    return merged;
-  }
-
   @override
   Widget build(BuildContext context) {
-    // While streaming, reveal rows progressively from the raw list; once the
-    // full diff has arrived, fold in any expanded context.
-    final lines = _visible >= _diffLines.length
-        ? _mergedLines
-        : _diffLines.take(_visible).toList(growable: false);
+    final lines = _diffLines.take(_visible).toList(growable: false);
 
     return Align(
       child: SizedBox(
@@ -182,17 +126,15 @@ class _FileDiffDemoState extends State<_FileDiffDemo> {
                 file: 'src/runner.ts',
                 lines: lines,
                 status: _status,
-                // copyText now defaults to the widget's own serialised diff,
-                // so there is no reason to hand-roll it here.
+                copyText: _diffLines.map((line) => line.content).join('\n'),
                 maxHeight: 150,
                 language: BeuiCodeLanguage.typescript,
-                onExpandContext: _expandContext,
               ),
             ),
             Positioned(
               left: 0,
               bottom: 0,
-              child: ReplayButton(onPressed: _replay),
+              child: AgentReplayButton(onPressed: _replay, pill: false),
             ),
           ],
         ),

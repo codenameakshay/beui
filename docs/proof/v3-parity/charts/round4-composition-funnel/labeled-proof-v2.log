@@ -1,0 +1,21 @@
+node:internal/modules/run_main:111
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: [in#6 @ 0x7a68804f00] Error opening input: No such file or directory
+Error opening input file docs/proof/v3-parity/charts/round4-composition-funnel/captures-before/composition-chart-reduce/captions.srt.
+Error opening input files: No such file or directory
+
+
+254 !== 0
+
+    at file:///Users/codenameakshay/.t3/worktrees/beui/t3-9c42f0c0/docs/proof/v3-parity/charts/round4-composition-funnel/make-proof.mjs:25:10 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: 254,
+  expected: 0,
+  operator: 'strictEqual',
+  diff: 'simple'
+}
+
+Node.js v26.12.1

@@ -1,0 +1,3372 @@
+[
+  {
+    "identity": "charts/bump_chart_test.dart: controlled selection follows its owner and reduced-motion golden matches",
+    "file": "test/charts/bump_chart_test.dart",
+    "golden": "test/charts/goldens/beui_bump_chart.png",
+    "author_commit": "44452dc6e70b1a0d358b4118b3e8b3e86a492b7a",
+    "date": "2026-10-22 14:26:01 +0530",
+    "subject": "feat(charts): port beui.dev charts family",
+    "changes": [
+      "059b4dbdb fix(bump): match computed rank border width",
+      "7eeee00de style(bump): brace label pointer guards",
+      "eaeb9fc98 fix(bump): align grid and focused plot visuals",
+      "cfaf09675 fix(bump): focus the labeled native controls",
+      "57c6213a1 fix(bump): validate source seeds and demo sizing",
+      "05405414d fix(bump): bound readouts and native hit targets",
+      "a3bafd063 fix(bump): toggle from current chart ownership",
+      "5189cd7ef fix(bump): match repeated keys and reduced entrance",
+      "a60f47946 fix(bump): retain button roles and align labels",
+      "bcd5ef640 fix(bump): match source legend and native keys",
+      "8e77b9021 fix(charts): control anchored tooltip visibility",
+      "0444124ce fix(charts): restore motion and price-range parity",
+      "ae09b802a fix(charts): align plots and source demo behavior",
+      "c08b427e7 fix(charts): tighten parity interactions"
+    ],
+    "author_vs_current3444": {
+      "pixels": 169220,
+      "size": [
+        2400,
+        1800
+      ]
+    },
+    "author_render_vs_golden": {
+      "pixels": 0,
+      "size": [
+        2400,
+        1800
+      ]
+    },
+    "current3444_vs_golden": {
+      "pixels": 169220,
+      "size": [
+        2400,
+        1800
+      ]
+    },
+    "number": 1,
+    "classification": "intentional visual change",
+    "causal_commits": [
+      "5189cd7ef",
+      "eaeb9fc98",
+      "059b4dbdb"
+    ],
+    "reason": "Grid, labels, rank border and reduced-motion entrance changed; initial capture omits fading paths. Forty timed frames restore paths. Fix the rest-state fixture timing before an intentional reference update.",
+    "fixture_timing_repair_required": true,
+    "author_control": "author-44452dc6e",
+    "before_sha256": "6cfea473312e9753c57112cf54abe4a46af9cc2edbd44a7efe9132afe9040f15",
+    "before_dimensions": [
+      2400,
+      1800
+    ],
+    "after_sha256": "62147de90cba691e3d45244af74626665ffdc1717f66f1b04b5e5a74cf9aac1d",
+    "after_dimensions": [
+      2400,
+      1800
+    ],
+    "visual_review": "Both ranking series have visible nodes and end labels; the dimmed Studio path is present. Canvas has a null middle rank, so no invented connecting path. Dotted grid and rank rings match the intended change.",
+    "original_resolution_reviewed": true,
+    "contact_sheet_reviewed": true,
+    "causal_commit_full_hashes": [
+      "5189cd7ef84ccac3c38a21c8d46dc33b1e883d44",
+      "eaeb9fc985f1b294a2ff16e071f3fe030e56803d",
+      "059b4dbdb2f0e7b770182dd69c12afab13cc8e69"
+    ],
+    "comparison_exit": 0
+  },
+  {
+    "identity": "charts/candlestick_chart_test.dart: rest-state golden",
+    "file": "test/charts/candlestick_chart_test.dart",
+    "golden": "test/charts/goldens/beui_candlestick-chart.png",
+    "author_commit": "44452dc6e70b1a0d358b4118b3e8b3e86a492b7a",
+    "date": "2026-10-22 14:26:01 +0530",
+    "subject": "feat(charts): port beui.dev charts family",
+    "changes": [
+      "742101cd6 fix(charts): retain native volume focus",
+      "31eac9a54 fix(charts): match native volume geometry and touch",
+      "1583ca671 test(charts): cover candle and volume source behavior",
+      "2420167cc fix(charts): match candle legend and inspection",
+      "0444124ce fix(charts): restore motion and price-range parity",
+      "ae09b802a fix(charts): align plots and source demo behavior",
+      "25254ce94 style: format charts files that failed CI",
+      "c08b427e7 fix(charts): tighten parity interactions"
+    ],
+    "author_vs_current3444": {
+      "pixels": 56885,
+      "size": [
+        640,
+        420
+      ]
+    },
+    "author_render_vs_golden": {
+      "pixels": 0,
+      "size": [
+        640,
+        420
+      ]
+    },
+    "current3444_vs_golden": {
+      "pixels": 56885,
+      "size": [
+        640,
+        420
+      ]
+    },
+    "number": 2,
+    "classification": "intentional visual change",
+    "causal_commits": [
+      "0444124ce",
+      "2420167cc"
+    ],
+    "reason": "Added staggered candle entrance, axes and inspection layout. First-frame capture has no candles; forty timed frames restores all three. Fix rest-state timing before an intentional reference update.",
+    "fixture_timing_repair_required": true,
+    "author_control": "author-44452dc6e",
+    "before_sha256": "69a9244a765362a963ef8919d917deaf0ba647605cd8aef96a45eb6174acdc25",
+    "before_dimensions": [
+      640,
+      420
+    ],
+    "after_sha256": "4c167f84a7ac11416472a8e7a29d4d71541f5df956a3394d162f24cf8800731d",
+    "after_dimensions": [
+      640,
+      420
+    ],
+    "visual_review": "Three candle bodies, three wicks and three volume bars are visible. New right-hand labels and green/pink palette fit the 640x420 capture.",
+    "original_resolution_reviewed": true,
+    "contact_sheet_reviewed": true,
+    "causal_commit_full_hashes": [
+      "0444124cecf4cc977cd841000016dc4a0e33e01f",
+      "2420167cc35284788b335ac509d1f5e960886ffd"
+    ],
+    "comparison_exit": 0
+  },
+  {
+    "identity": "charts/composition_chart_test.dart: resting composition chart matches its golden",
+    "file": "test/charts/composition_chart_test.dart",
+    "golden": "test/charts/goldens/beui_composition_chart.png",
+    "author_commit": "44452dc6e70b1a0d358b4118b3e8b3e86a492b7a",
+    "date": "2026-10-22 14:26:01 +0530",
+    "subject": "feat(charts): port beui.dev charts family",
+    "changes": [
+      "8eed11643 fix(composition): allow measured percentage text to grow",
+      "bb41eecc7 fix(charts): retain touch release across deferred focus",
+      "0f81fada6 fix(charts): omit spacing for absent empty parts",
+      "834e3ca39 fix(charts): align owned tooltip anchors and focus ink",
+      "dd34a7745 fix(charts): match native inspection focus and fade curves",
+      "09cff48a8 fix(charts): preserve composition height and focus outlines",
+      "ce3a48f47 fix(charts): match composition geometry and input",
+      "8e77b9021 fix(charts): control anchored tooltip visibility",
+      "0444124ce fix(charts): restore motion and price-range parity",
+      "c08b427e7 fix(charts): tighten parity interactions"
+    ],
+    "author_vs_current3444": {
+      "size_a": [
+        640,
+        420
+      ],
+      "size_b": [
+        640,
+        520
+      ],
+      "pixels": null
+    },
+    "author_render_vs_golden": {
+      "pixels": 0,
+      "size": [
+        640,
+        420
+      ]
+    },
+    "current3444_vs_golden": {
+      "size_a": [
+        640,
+        520
+      ],
+      "size_b": [
+        640,
+        420
+      ],
+      "pixels": null
+    },
+    "number": 3,
+    "classification": "intentional visual change",
+    "causal_commits": [
+      "ce3a48f47",
+      "09cff48a8"
+    ],
+    "reason": "Source bar geometry, chart height, legend and percentage layout changed; image dimensions change.",
+    "fixture_timing_repair_required": false,
+    "author_control": "author-44452dc6e",
+    "before_sha256": "564e737d445438bf1410724aea01646997f4cd2bb3e8ac4f1f5e78f41e98715c",
+    "before_dimensions": [
+      640,
+      420
+    ],
+    "after_sha256": "b5cd077547a2e100b93473417308a7b35424840df3e005750a48242f78be8a7a",
+    "after_dimensions": [
+      640,
+      520
+    ],
+    "visual_review": "Two stacked bars, endpoint labels and two legend entries fit the intentionally taller 640x520 capture. The empty third period remains empty.",
+    "original_resolution_reviewed": true,
+    "contact_sheet_reviewed": true,
+    "causal_commit_full_hashes": [
+      "ce3a48f47d32baf6c2358700b9566e8e4c474cb2",
+      "09cff48a8dc4bc332a3caeba838ecfb3a0ce56d0"
+    ],
+    "comparison_exit": 0
+  },
+  {
+    "identity": "charts/donut_chart_test.dart: rest-state golden",
+    "file": "test/charts/donut_chart_test.dart",
+    "golden": "test/charts/goldens/beui_donut-chart.png",
+    "author_commit": "44452dc6e70b1a0d358b4118b3e8b3e86a492b7a",
+    "date": "2026-10-22 14:26:01 +0530",
+    "subject": "feat(charts): port beui.dev charts family",
+    "changes": [
+      "edb2b3cdc fix(charts): retain controlled donut focus destination",
+      "1406647f8 fix(charts): preserve intrinsic donut center digits",
+      "8e25cf5d7 test(charts): pin intrinsic donut center readout",
+      "97329fccc fix(charts): match native donut legend inspection",
+      "784a2f58d fix(charts): use directional donut digit swaps",
+      "0444124ce fix(charts): restore motion and price-range parity",
+      "ae09b802a fix(charts): align plots and source demo behavior",
+      "c08b427e7 fix(charts): tighten parity interactions"
+    ],
+    "author_vs_current3444": {
+      "size_a": [
+        640,
+        200
+      ],
+      "size_b": [
+        640,
+        256
+      ],
+      "pixels": null
+    },
+    "author_render_vs_golden": {
+      "pixels": 0,
+      "size": [
+        640,
+        200
+      ]
+    },
+    "current3444_vs_golden": {
+      "size_a": [
+        640,
+        256
+      ],
+      "size_b": [
+        640,
+        200
+      ],
+      "pixels": null
+    },
+    "number": 4,
+    "classification": "intentional visual change",
+    "causal_commits": [
+      "0444124ce",
+      "97329fccc",
+      "784a2f58d"
+    ],
+    "reason": "Ring entrance, gaps, legend tracks and center digits changed. First-frame capture contains only the track; forty timed frames restores colored arcs. Fix rest-state timing first.",
+    "fixture_timing_repair_required": true,
+    "author_control": "author-44452dc6e",
+    "before_sha256": "1ceaaa074456c9a86c63f5bc51a5aed04a03b2dcedd42dea7b16fdb711922021",
+    "before_dimensions": [
+      640,
+      200
+    ],
+    "after_sha256": "65ee642056057fa1c72094c7ac639432a3beea921ff21aeffa6b8053b15913d1",
+    "after_dimensions": [
+      640,
+      256
+    ],
+    "visual_review": "All three colored arcs, ring gaps, total readout and three legend tracks are visible within the intentionally taller 640x256 boundary.",
+    "original_resolution_reviewed": true,
+    "contact_sheet_reviewed": true,
+    "causal_commit_full_hashes": [
+      "0444124cecf4cc977cd841000016dc4a0e33e01f",
+      "97329fccc9ca72d7f3b20f814846330c87c68b4d",
+      "784a2f58dac661f3be1e024a0f0507991f3321ed"
+    ],
+    "comparison_exit": 0
+  },
+  {
+    "identity": "charts/funnel_chart_test.dart: resting funnel matches its golden",
+    "file": "test/charts/funnel_chart_test.dart",
+    "golden": "test/charts/goldens/beui_funnel_chart.png",
+    "author_commit": "44452dc6e70b1a0d358b4118b3e8b3e86a492b7a",
+    "date": "2026-10-22 14:26:01 +0530",
+    "subject": "feat(charts): port beui.dev charts family",
+    "changes": [
+      "0f81fada6 fix(charts): omit spacing for absent empty parts",
+      "6d3824f83 fix(charts): preserve source tint under reduced motion",
+      "0219e2845 fix(charts): match funnel hover tint timing",
+      "834e3ca39 fix(charts): align owned tooltip anchors and focus ink",
+      "dd34a7745 fix(charts): match native inspection focus and fade curves",
+      "8d2eb9232 fix(charts): retain finite funnel counts at decimal extremes",
+      "ca0562e0a fix(charts): match funnel paths and stage inspection",
+      "25254ce94 style: format charts files that failed CI",
+      "c08b427e7 fix(charts): tighten parity interactions"
+    ],
+    "author_vs_current3444": {
+      "pixels": 57773,
+      "size": [
+        640,
+        420
+      ]
+    },
+    "author_render_vs_golden": {
+      "pixels": 0,
+      "size": [
+        640,
+        420
+      ]
+    },
+    "current3444_vs_golden": {
+      "pixels": 57773,
+      "size": [
+        640,
+        420
+      ]
+    },
+    "number": 5,
+    "classification": "intentional visual change",
+    "causal_commits": [
+      "ca0562e0a",
+      "0219e2845"
+    ],
+    "reason": "Stage paths, labels, hover tint and legend geometry changed.",
+    "fixture_timing_repair_required": false,
+    "author_control": "author-44452dc6e",
+    "before_sha256": "14f0a8dd1c135da3e9e010a744414854e12504202c47878ba710b65704c5e979",
+    "before_dimensions": [
+      640,
+      420
+    ],
+    "after_sha256": "4a7c1658f1ac92710b6625c3d806f075e12cf8b3023576711f4075e60a441a04",
+    "after_dimensions": [
+      640,
+      420
+    ],
+    "visual_review": "Three shaped stages, inset readout pills, horizontal legend and bottom summary remain visible. Stage and legend geometry matches the causal change.",
+    "original_resolution_reviewed": true,
+    "contact_sheet_reviewed": true,
+    "causal_commit_full_hashes": [
+      "ca0562e0ab008b00f7fffc5e3cd07d82a53739f6",
+      "0219e2845e2bfada0afd87bef9d6f9daf3638a52"
+    ],
+    "comparison_exit": 0
+  },
+  {
+    "identity": "charts/heat_calendar_test.dart: reduced motion renders a stable rest state and golden",
+    "file": "test/charts/heat_calendar_test.dart",
+    "golden": "test/charts/goldens/beui_heat_calendar.png",
+    "author_commit": "44452dc6e70b1a0d358b4118b3e8b3e86a492b7a",
+    "date": "2026-10-22 14:26:01 +0530",
+    "subject": "feat(charts): port beui.dev charts family",
+    "changes": [
+      "d74fae552 fix(charts): preserve heat calendar focus and range lifecycle",
+      "a35bb4dd0 fix(charts): constrain returns and sort heat spans",
+      "bf12ab39c fix(charts): match native calendar inspection",
+      "4d30d67cf fix(charts): wrap heat legend and apply filters",
+      "ec0513ce8 fix(charts): match rest bars, heat legend, and returns rounding",
+      "c08b427e7 fix(charts): tighten parity interactions"
+    ],
+    "author_vs_current3444": {
+      "pixels": 15830,
+      "size": [
+        640,
+        480
+      ]
+    },
+    "author_render_vs_golden": {
+      "pixels": 0,
+      "size": [
+        640,
+        480
+      ]
+    },
+    "current3444_vs_golden": {
+      "pixels": 15830,
+      "size": [
+        640,
+        480
+      ]
+    },
+    "number": 6,
+    "classification": "intentional visual change",
+    "causal_commits": [
+      "ec0513ce8",
+      "4d30d67cf",
+      "bf12ab39c"
+    ],
+    "reason": "Added/reflowed legend, heading and inspection layout; cells remain present.",
+    "fixture_timing_repair_required": false,
+    "author_control": "author-44452dc6e",
+    "before_sha256": "95c29d438dce4672307d028538b9826aa63048103222ab5ccb3e71bb56f410b3",
+    "before_dimensions": [
+      640,
+      480
+    ],
+    "after_sha256": "8440fe862e7d4d8d1d30dbbb6c2a20d4a830c4aa0238ad96cf1ac0f53109c38d",
+    "after_dimensions": [
+      640,
+      480
+    ],
+    "visual_review": "All calendar cells remain visible; heading and expanded legend fit without clipping.",
+    "original_resolution_reviewed": true,
+    "contact_sheet_reviewed": true,
+    "causal_commit_full_hashes": [
+      "ec0513ce863ad82d5652e80832eee0181ca11da7",
+      "4d30d67cfd0c6fb5d2a82217ec55e47ba7304c43",
+      "bf12ab39c5cd8ffa4b543a414e99a0a591a914c9"
+    ],
+    "comparison_exit": 0
+  },
+  {
+    "identity": "charts/liquidity_heatmap_test.dart: renders under reduced motion and matches rest-state golden",
+    "file": "test/charts/liquidity_heatmap_test.dart",
+    "golden": "test/charts/goldens/beui_liquidity_heatmap.png",
+    "author_commit": "44452dc6e70b1a0d358b4118b3e8b3e86a492b7a",
+    "date": "2026-10-22 14:26:01 +0530",
+    "subject": "feat(charts): port beui.dev charts family",
+    "changes": [
+      "ffb962872 fix(charts): match liquidity grid and trace",
+      "8eedf6248 fix(charts): correct liquidity trace and readouts",
+      "ec0513ce8 fix(charts): match rest bars, heat legend, and returns rounding",
+      "c08b427e7 fix(charts): tighten parity interactions"
+    ],
+    "author_vs_current3444": {
+      "pixels": 279166,
+      "size": [
+        2400,
+        1800
+      ]
+    },
+    "author_render_vs_golden": {
+      "pixels": 0,
+      "size": [
+        2400,
+        1800
+      ]
+    },
+    "current3444_vs_golden": {
+      "pixels": 279166,
+      "size": [
+        2400,
+        1800
+      ]
+    },
+    "number": 7,
+    "classification": "intentional visual change",
+    "causal_commits": [
+      "8eedf6248",
+      "ffb962872"
+    ],
+    "reason": "Moved price labels to source side and corrected trace/grid geometry.",
+    "fixture_timing_repair_required": false,
+    "author_control": "author-44452dc6e",
+    "before_sha256": "a48e5911ab046086beb85ed33ceac376f817d4f545ab8f565907ae481600b13c",
+    "before_dimensions": [
+      2400,
+      1800
+    ],
+    "after_sha256": "02944bf0644b6ab31b211a6ebf8b0dee6bf3d997409f0184f9ca70f7a169d2a1",
+    "after_dimensions": [
+      2400,
+      1800
+    ],
+    "visual_review": "Four data cells, descending trace, right-hand price labels and color scale remain visible.",
+    "original_resolution_reviewed": true,
+    "contact_sheet_reviewed": true,
+    "causal_commit_full_hashes": [
+      "8eedf624892767b8bd72ebd3e0e1c9355c792446",
+      "ffb96287201f087b4fdcd2a01caef111cd48d9d5"
+    ],
+    "comparison_exit": 0
+  },
+  {
+    "identity": "charts/order_book_test.dart: reduced-motion bars render and rest state matches golden",
+    "file": "test/charts/order_book_test.dart",
+    "golden": "test/charts/goldens/beui_order_book.png",
+    "author_commit": "44452dc6e70b1a0d358b4118b3e8b3e86a492b7a",
+    "date": "2026-10-22 14:26:01 +0530",
+    "subject": "feat(charts): port beui.dev charts family",
+    "changes": [
+      "7d5cfaeef fix(charts): spring depth and focus price buttons",
+      "ec0513ce8 fix(charts): match rest bars, heat legend, and returns rounding",
+      "c08b427e7 fix(charts): tighten parity interactions"
+    ],
+    "author_vs_current3444": {
+      "pixels": 357181,
+      "size": [
+        2400,
+        1800
+      ]
+    },
+    "author_render_vs_golden": {
+      "pixels": 0,
+      "size": [
+        2400,
+        1800
+      ]
+    },
+    "current3444_vs_golden": {
+      "pixels": 357181,
+      "size": [
+        2400,
+        1800
+      ]
+    },
+    "number": 8,
+    "classification": "intentional visual change",
+    "causal_commits": [
+      "ec0513ce8",
+      "7d5cfaeef"
+    ],
+    "reason": "Depth bars, native price buttons and opacity entrance changed. Reduced motion retains nonmovement fades; forty timed frames restores depth fills. Fix rest-state timing first.",
+    "fixture_timing_repair_required": true,
+    "author_control": "author-44452dc6e",
+    "before_sha256": "c35616ffdfb05b726dd55a58b2a6be69e3ff101abea79a8b61f3f239dac5610b",
+    "before_dimensions": [
+      2400,
+      1800
+    ],
+    "after_sha256": "aa63cf412a6eb93b1161ebbac455554f32a72ee5a4ee2e375f4695f1980ec3d9",
+    "after_dimensions": [
+      2400,
+      1800
+    ],
+    "visual_review": "Both ask fills and all three bid fills are visible, with full row height, balance bar and depth summary.",
+    "original_resolution_reviewed": true,
+    "contact_sheet_reviewed": true,
+    "causal_commit_full_hashes": [
+      "ec0513ce863ad82d5652e80832eee0181ca11da7",
+      "7d5cfaeef8fd6b72adefef8e8d83700eab308646"
+    ],
+    "comparison_exit": 0
+  },
+  {
+    "identity": "charts/price_target_fan_test.dart: reduced-motion rest state matches golden",
+    "file": "test/charts/price_target_fan_test.dart",
+    "golden": "test/charts/goldens/beui_price_target_fan.png",
+    "author_commit": "44452dc6e70b1a0d358b4118b3e8b3e86a492b7a",
+    "date": "2026-10-22 14:26:01 +0530",
+    "subject": "feat(charts): port beui.dev charts family",
+    "changes": [
+      "d97f0d923 fix(charts): retain native fan target focus",
+      "27b51b2eb test(charts): reproduce native fan mouse focus loss",
+      "d62463332 fix(charts): ignore web touch hover after fan taps",
+      "db7840709 test(charts): reproduce web touch-up hover ordering",
+      "dcdc8f8e5 fix(charts): toggle fan targets on touch pointer down",
+      "84e984a3c fix(charts): land fan now marker and target labels",
+      "f55abfc33 fix(charts): match fan axes and static readout",
+      "00aa71fab fix(charts): inspect the full fan projection",
+      "e8335ba42 fix(charts): restore fan slider and reveal",
+      "25254ce94 style: format charts files that failed CI",
+      "c08b427e7 fix(charts): tighten parity interactions",
+      "c13194a45 fix(charts): keep price-target plot width cap under tight parents"
+    ],
+    "author_vs_current3444": {
+      "pixels": 23426,
+      "size": [
+        800,
+        640
+      ]
+    },
+    "author_render_vs_golden": {
+      "pixels": 0,
+      "size": [
+        800,
+        640
+      ]
+    },
+    "current3444_vs_golden": {
+      "pixels": 23426,
+      "size": [
+        800,
+        640
+      ]
+    },
+    "number": 9,
+    "classification": "intentional visual change",
+    "causal_commits": [
+      "e8335ba42",
+      "f55abfc33",
+      "84e984a3c"
+    ],
+    "reason": "Projection, now marker, axes, target labels and controls were deliberately rebuilt.",
+    "fixture_timing_repair_required": false,
+    "author_control": "author-44452dc6e",
+    "before_sha256": "373d0ea5db3ca251d1d336dd0ed4d53864aa9deea538f94ee707719d9dc80757",
+    "before_dimensions": [
+      800,
+      640
+    ],
+    "after_sha256": "f2a3e46e2225dcb2db8cee77805383eb8535a02e8a5dc65cf07afb18be06a2d3",
+    "after_dimensions": [
+      800,
+      640
+    ],
+    "visual_review": "Historical trace joins the now marker and three dashed target projections. Axis and target labels fit.",
+    "original_resolution_reviewed": true,
+    "contact_sheet_reviewed": true,
+    "causal_commit_full_hashes": [
+      "e8335ba42a0e55e9a89f4095f5bfb13971971008",
+      "f55abfc331b01a02c31dcd6caf3f62330d61c21c",
+      "84e984a3ccef43286c28a5c462b2dc01e0eee613"
+    ],
+    "comparison_exit": 0
+  },
+  {
+    "identity": "charts/returns_calendar_test.dart: reduced motion rest state matches golden",
+    "file": "test/charts/returns_calendar_test.dart",
+    "golden": "test/charts/goldens/beui_returns_calendar.png",
+    "author_commit": "44452dc6e70b1a0d358b4118b3e8b3e86a492b7a",
+    "date": "2026-10-22 14:26:01 +0530",
+    "subject": "feat(charts): port beui.dev charts family",
+    "changes": [
+      "d8688c53f fix(charts): preserve returns calendar identity and focus ownership",
+      "28943b965 fix(charts): preserve source readout ink and spacing",
+      "a35bb4dd0 fix(charts): constrain returns and sort heat spans",
+      "bf12ab39c fix(charts): match native calendar inspection",
+      "ec0513ce8 fix(charts): match rest bars, heat legend, and returns rounding",
+      "c08b427e7 fix(charts): tighten parity interactions"
+    ],
+    "author_vs_current3444": {
+      "pixels": 39085,
+      "size": [
+        640,
+        480
+      ]
+    },
+    "author_render_vs_golden": {
+      "pixels": 0,
+      "size": [
+        640,
+        480
+      ]
+    },
+    "current3444_vs_golden": {
+      "pixels": 39085,
+      "size": [
+        640,
+        480
+      ]
+    },
+    "number": 10,
+    "classification": "intentional visual change",
+    "causal_commits": [
+      "ec0513ce8",
+      "bf12ab39c",
+      "28943b965"
+    ],
+    "reason": "Cell tint/rounding, header and readout ink/spacing changed.",
+    "fixture_timing_repair_required": false,
+    "author_control": "author-44452dc6e",
+    "before_sha256": "49f866f0a53b90a65990f01e1b2fbce906cb1352e511a57623a42837ecec28cf",
+    "before_dimensions": [
+      640,
+      480
+    ],
+    "after_sha256": "9c94ab8e4259fbf5c474a3a4d24d988cad1917d3eb907be39b72a01f3ce59a61",
+    "after_dimensions": [
+      640,
+      480
+    ],
+    "visual_review": "Both year rows and all month cells fit, with revised tint and readout ink.",
+    "original_resolution_reviewed": true,
+    "contact_sheet_reviewed": true,
+    "causal_commit_full_hashes": [
+      "ec0513ce863ad82d5652e80832eee0181ca11da7",
+      "bf12ab39c5cd8ffa4b543a414e99a0a591a914c9",
+      "28943b965ff5896d4645453ba6f49f4e20398143"
+    ],
+    "comparison_exit": 0
+  },
+  {
+    "identity": "charts/treemap_test.dart: BeuiTreemap rest-state golden",
+    "file": "test/charts/treemap_test.dart",
+    "golden": "test/charts/goldens/beui_treemap.png",
+    "author_commit": "44452dc6e70b1a0d358b4118b3e8b3e86a492b7a",
+    "date": "2026-10-22 14:26:01 +0530",
+    "subject": "feat(charts): port beui.dev charts family",
+    "changes": [
+      "28943b965 fix(charts): preserve source readout ink and spacing",
+      "a2c8b3e3d fix(charts): align status and treemap inspection",
+      "c08b427e7 fix(charts): tighten parity interactions"
+    ],
+    "author_vs_current3444": {
+      "pixels": 8466,
+      "size": [
+        640,
+        420
+      ]
+    },
+    "author_render_vs_golden": {
+      "pixels": 0,
+      "size": [
+        640,
+        420
+      ]
+    },
+    "current3444_vs_golden": {
+      "pixels": 8466,
+      "size": [
+        640,
+        420
+      ]
+    },
+    "number": 11,
+    "classification": "intentional visual change",
+    "causal_commits": [
+      "a2c8b3e3d",
+      "28943b965"
+    ],
+    "reason": "Cell readouts and legend ink changed; added second text line.",
+    "fixture_timing_repair_required": false,
+    "author_control": "author-44452dc6e",
+    "before_sha256": "bded0fd7790ac4eaef70cdf10d27d470fe73e0acab7047a7d43fc4440de304dd",
+    "before_dimensions": [
+      640,
+      420
+    ],
+    "after_sha256": "14591fc065825805fc8f6d0470adca9067882b07389f49ffa7caa59de0e0c6c7",
+    "after_dimensions": [
+      640,
+      420
+    ],
+    "visual_review": "Three rectangles now show two readout lines; legend ink is muted. All rectangles and legend fit.",
+    "original_resolution_reviewed": true,
+    "contact_sheet_reviewed": true,
+    "causal_commit_full_hashes": [
+      "a2c8b3e3dce80996ee35e067bfc20cdcb4116526",
+      "28943b965ff5896d4645453ba6f49f4e20398143"
+    ],
+    "comparison_exit": 0
+  },
+  {
+    "identity": "charts/volume_profile_test.dart: rest-state golden",
+    "file": "test/charts/volume_profile_test.dart",
+    "golden": "test/charts/goldens/beui_volume-profile.png",
+    "author_commit": "44452dc6e70b1a0d358b4118b3e8b3e86a492b7a",
+    "date": "2026-10-22 14:26:01 +0530",
+    "subject": "feat(charts): port beui.dev charts family",
+    "changes": [
+      "d24249b6c fix(volume): fit the default profile within constrained height",
+      "742101cd6 fix(charts): retain native volume focus",
+      "043c4152a fix(charts): acquire volume focus before key input",
+      "5406d9dcd fix(charts): preserve scaled volume bar corners",
+      "5fa39a88b fix(charts): match source volume tooltip spacing",
+      "31eac9a54 fix(charts): match native volume geometry and touch",
+      "af5e510a6 fix(charts): match volume tooltip and summary",
+      "0444124ce fix(charts): restore motion and price-range parity",
+      "ae09b802a fix(charts): align plots and source demo behavior",
+      "25254ce94 style: format charts files that failed CI",
+      "c08b427e7 fix(charts): tighten parity interactions"
+    ],
+    "author_vs_current3444": {
+      "pixels": 100529,
+      "size": [
+        640,
+        420
+      ]
+    },
+    "author_render_vs_golden": {
+      "pixels": 0,
+      "size": [
+        640,
+        420
+      ]
+    },
+    "current3444_vs_golden": {
+      "pixels": 100529,
+      "size": [
+        640,
+        420
+      ]
+    },
+    "number": 12,
+    "classification": "intentional visual change",
+    "causal_commits": [
+      "0444124ce",
+      "31eac9a54",
+      "d24249b6c"
+    ],
+    "reason": "Added entrance, axes, colored volume geometry and summary. Forty timed frames restores bars. Fix rest-state timing first.",
+    "fixture_timing_repair_required": true,
+    "author_control": "author-44452dc6e",
+    "before_sha256": "db97af6b5c1e1aac9cf6e84c9ef67918098b256f89ce2bffe1bebbb400ad8108",
+    "before_dimensions": [
+      640,
+      420
+    ],
+    "after_sha256": "2b423918fdc8dce121cb2f4dd545c64c3a18a96f22635e6502bc89ea2250e9c3",
+    "after_dimensions": [
+      640,
+      420
+    ],
+    "visual_review": "All four colored volume bars, left price labels, POC badge and three summary columns are present in the 640x420 capture.",
+    "original_resolution_reviewed": true,
+    "contact_sheet_reviewed": true,
+    "causal_commit_full_hashes": [
+      "0444124cecf4cc977cd841000016dc4a0e33e01f",
+      "31eac9a547fb4596ce91de9b468e8b51a6b21cfc",
+      "d24249b6c3eaa1b1c0c424dd0245df62466eeb8b"
+    ],
+    "comparison_exit": 0
+  },
+  {
+    "identity": "motion/adaptive_stepper_test.dart: rest-state golden",
+    "file": "test/motion/adaptive_stepper_test.dart",
+    "golden": "test/motion/goldens/beui_adaptive_stepper.png",
+    "author_commit": "0c80b0a48c8718d367da8af9d1acc0f8d1b3831b",
+    "date": "2026-10-22 14:50:43 +0530",
+    "subject": "feat(components): port remaining v3 motion widgets",
+    "changes": [
+      "421e9271e fix(stepper): render liquid silhouette and elastic separation",
+      "6f97bc3da fix(components): repair motion and state"
+    ],
+    "author_vs_current3444": {
+      "pixels": 10812,
+      "size": [
+        800,
+        600
+      ]
+    },
+    "author_render_vs_golden": {
+      "pixels": 0,
+      "size": [
+        800,
+        600
+      ]
+    },
+    "current3444_vs_golden": {
+      "pixels": 10812,
+      "size": [
+        800,
+        600
+      ]
+    },
+    "number": 13,
+    "classification": "intentional visual change",
+    "causal_commits": [
+      "421e9271e"
+    ],
+    "reason": "Rounded pill replaced by the source liquid silhouette and separated side controls.",
+    "fixture_timing_repair_required": false,
+    "author_control": "author-0c80b0a48",
+    "before_sha256": "09403cb4bb307d4939bdaf3d9c22cadcd95059b80721174bc405b7349f856cbe",
+    "before_dimensions": [
+      800,
+      600
+    ],
+    "after_sha256": "b1511fc607b60a06f6b249f54428a94d4e3c4514b16cd0f96246b2a56867071a",
+    "after_dimensions": [
+      800,
+      600
+    ],
+    "visual_review": "Liquid center silhouette and separated diamond-like side controls are intentional; all three controls fit.",
+    "original_resolution_reviewed": true,
+    "contact_sheet_reviewed": true,
+    "causal_commit_full_hashes": [
+      "421e9271eafb111bd9efa61c45986917fdb914bc"
+    ],
+    "comparison_exit": 0
+  },
+  {
+    "identity": "motion/agent_activity_test.dart: golden \u2014 complete summary, open stream, and a failed card",
+    "file": "test/motion/agent_activity_test.dart",
+    "golden": "test/motion/goldens/beui_agent_activity.png",
+    "author_commit": "0182784564a257449261b2be0545791ecc3c2807",
+    "date": "2026-08-18 14:55:18 +0530",
+    "subject": "feat(motion): finish the agent work-surface audit fixes",
+    "changes": [
+      "08a006498 test: extend beuiTestApp and adopt it in the a-p motion tests",
+      "53e4c398e refactor(motion): resolve reduced motion through motionFor in a-a",
+      "5eb393a0d fix(prompt-input): key the row-measurement cache on maxRows",
+      "ca170525f refactor: drop a mirrored status field, a null-check flag, and unused params",
+      "b16548109 test(approval-card+agent-activity): drop reduce test, adopt beuiTestApp",
+      "7d1612b47 refactor(agent): dedupe sidebar canContain, chevron, and stale comments",
+      "70b6de737 docs: drop audit ticket ids from comments",
+      "6252d6d67 refactor: resolve BeuiColors through one helper",
+      "d31e17854 fix(motion): make reduced-motion reveals actually arrive",
+      "68cd7801b feat(theme): fill the agent-strings gaps left by the cluster passes"
+    ],
+    "author_vs_current3444": {
+      "pixels": 0,
+      "size": [
+        420,
+        322
+      ]
+    },
+    "author_render_vs_golden": {
+      "pixels": 16,
+      "size": [
+        420,
+        322
+      ]
+    },
+    "current3444_vs_golden": {
+      "pixels": 16,
+      "size": [
+        420,
+        322
+      ]
+    },
+    "number": 14,
+    "classification": "environment/toolchain drift",
+    "reason": "Current source and author-commit rendering are pixel-identical on isolated Flutter 3.44.4 / Dart 3.12.2 on this host. Author/current retain 16 differing pixels against the historical reference. 3.47.1 fails. No source/reference edit recommended.",
+    "causal_commits": [],
+    "author_control": "author-lucide131-018278456",
+    "before_sha256": "5300bbedf5927f83ef6c6cb3da54eb9878abd9cdf7465388bf0af841b163fe1f",
+    "before_dimensions": [
+      420,
+      322
+    ],
+    "after_sha256": "5300bbedf5927f83ef6c6cb3da54eb9878abd9cdf7465388bf0af841b163fe1f",
+    "after_dimensions": [
+      420,
+      322
+    ],
+    "comparison_exit": 1
+  },
+  {
+    "identity": "motion/alert_test.dart: rest-state info alert golden",
+    "file": "test/motion/alert_test.dart",
+    "golden": "test/motion/goldens/beui_alert.png",
+    "author_commit": "0c80b0a48c8718d367da8af9d1acc0f8d1b3831b",
+    "date": "2026-10-22 14:50:43 +0530",
+    "subject": "feat(components): port remaining v3 motion widgets",
+    "changes": [
+      "6c86802ae fix(alert): align neutral close control with source margins",
+      "317cf233d fix(alert): honor controlled focus and tone overrides",
+      "7e764e018 fix(alert): match tone colors and retained layout exit",
+      "b0a025f76 fix(motion): align v3 component behavior and demos",
+      "6f97bc3da fix(components): repair motion and state"
+    ],
+    "author_vs_current3444": {
+      "pixels": 52990,
+      "size": [
+        800,
+        600
+      ]
+    },
+    "author_render_vs_golden": {
+      "pixels": 0,
+      "size": [
+        800,
+        600
+      ]
+    },
+    "current3444_vs_golden": {
+      "pixels": 52990,
+      "size": [
+        800,
+        600
+      ]
+    },
+    "number": 15,
+    "classification": "intentional visual change",
+    "causal_commits": [
+      "7e764e018",
+      "6c86802ae"
+    ],
+    "reason": "Tone colors, retained exit layout and close-control margins changed.",
+    "fixture_timing_repair_required": false,
+    "author_control": "author-0c80b0a48",
+    "before_sha256": "10f4e06f2fc73f7031ce4cff45188b3b0382275978f486fd7c59b5ea006d8d79",
+    "before_dimensions": [
+      800,
+      600
+    ],
+    "after_sha256": "aff1ae4e970a49e2b37e92290e2edd535c108d015292c23e304d875ccc062280",
+    "after_dimensions": [
+      800,
+      600
+    ],
+    "visual_review": "Info tint and close-control position change; title and body remain fully inside the alert.",
+    "original_resolution_reviewed": true,
+    "contact_sheet_reviewed": true,
+    "causal_commit_full_hashes": [
+      "7e764e0189cff2c7a7b8d35eef59550a93fc1b65",
+      "6c86802ae737985899f9aa891ddc3ab0b0d6570d"
+    ],
+    "comparison_exit": 0
+  },
+  {
+    "identity": "motion/approval_card_test.dart: BeuiApprovalCard theming golden \u2014 pending, expandable, and rejected",
+    "file": "test/motion/approval_card_test.dart",
+    "golden": "test/motion/goldens/beui_approval_card.png",
+    "author_commit": "7cda4f75388ec932ed97e781d4b38a0e6a8e0a83",
+    "date": "2026-08-18 14:48:02 +0530",
+    "subject": "fix(motion): make the approval hit targets real, and add the goldens",
+    "changes": [
+      "c729381b2 fix(agents): match approval badge and counter styles",
+      "eca6b142a fix(agents): match diff and question transitions",
+      "5a93293c9 fix(input): match approval placeholder states",
+      "4e4693e38 fix(input): support approval field styling",
+      "a3c2491fa fix(agents): match source examples and chat flow",
+      "118b24944 test: adopt beuiTestApp in more component-specific motion hosts",
+      "53e4c398e refactor(motion): resolve reduced motion through motionFor in a-a",
+      "5eb393a0d fix(prompt-input): key the row-measurement cache on maxRows",
+      "b16548109 test(approval-card+agent-activity): drop reduce test, adopt beuiTestApp",
+      "51cd68ac0 refactor(approval-card): drop aliases and duplicated spin/motion logic",
+      "70b6de737 docs: drop audit ticket ids from comments",
+      "e0f6d8dcb refactor: use stdlib and shared tokens instead of per-file copies",
+      "6252d6d67 refactor: resolve BeuiColors through one helper",
+      "e1a564946 fix(motion): resolve widget copy defaults through the strings role",
+      "018278456 feat(motion): finish the agent work-surface audit fixes"
+    ],
+    "author_vs_current3444": {
+      "pixels": 9018,
+      "size": [
+        500,
+        520
+      ]
+    },
+    "author_render_vs_golden": {
+      "pixels": 8,
+      "size": [
+        500,
+        520
+      ]
+    },
+    "current3444_vs_golden": {
+      "pixels": 9024,
+      "size": [
+        500,
+        520
+      ]
+    },
+    "number": 16,
+    "classification": "intentional visual change",
+    "causal_commits": [
+      "a3c2491fa",
+      "c729381b2"
+    ],
+    "reason": "Badge/counter styling and source example field layout changed.",
+    "fixture_timing_repair_required": false,
+    "author_control": "author-lucide131-7cda4f753",
+    "before_sha256": "ba67f0e8465168bd436990050d187ce2ed61d4a3248f0cc8a49e92a591f22dfc",
+    "before_dimensions": [
+      500,
+      520
+    ],
+    "after_sha256": "6985371c414829544beb08b1353cf916c0762ccfbfddd122dad8ca28bb4a4a69",
+    "after_dimensions": [
+      500,
+      520
+    ],
+    "visual_review": "Pending/expandable/rejected cards remain present. Badge outlines and expanded field layout match the intended changes; historical environment residual is included in this intentional refresh.",
+    "original_resolution_reviewed": true,
+    "contact_sheet_reviewed": true,
+    "causal_commit_full_hashes": [
+      "a3c2491fa871c073f40063ddf296b0d6c2971f1c",
+      "c729381b28c1e0285f89cd3a47f47d8653112c21"
+    ],
+    "comparison_exit": 0
+  },
+  {
+    "identity": "motion/availability_scheduler_test.dart: rest-state golden (default week)",
+    "file": "test/motion/availability_scheduler_test.dart",
+    "golden": "test/motion/goldens/beui_availability_scheduler.png",
+    "author_commit": "cd99fed29310ec5b24137c5d95f5c3b778d7ef62",
+    "date": "2026-08-07 15:48:42 +0530",
+    "subject": "fix(theme): pin text tracking to normal, matching the Tailwind source",
+    "changes": [
+      "ee5b75559 fix(scheduler): support safe keyboard copying",
+      "7a961c603 test: adopt beuiTestApp in animated-number, availability-scheduler and text-cascade tests",
+      "4244e5171 refactor(scheduler): hoist scroll controller, pass BeuiDayKey not label",
+      "6252d6d67 refactor: resolve BeuiColors through one helper",
+      "922145eb7 docs: resolve 15 broken dartdoc references"
+    ],
+    "author_vs_current3444": {
+      "pixels": 0,
+      "size": [
+        800,
+        600
+      ]
+    },
+    "author_render_vs_golden": {
+      "pixels": 58,
+      "size": [
+        800,
+        600
+      ]
+    },
+    "current3444_vs_golden": {
+      "pixels": 58,
+      "size": [
+        800,
+        600
+      ]
+    },
+    "number": 17,
+    "classification": "environment/toolchain drift",
+    "reason": "Current source and author-commit rendering are pixel-identical on isolated Flutter 3.44.4 / Dart 3.12.2 on this host. Author/current retain 58 differing pixels against the historical reference. 3.47.1 fails. No source/reference edit recommended.",
+    "causal_commits": [],
+    "author_control": "author-pinned-cd99fed29",
+    "before_sha256": "f99f39cc56f640608b99895ecad2440d0a5b27f2eb75fd2619903fd2ed11a63c",
+    "before_dimensions": [
+      800,
+      600
+    ],
+    "after_sha256": "f99f39cc56f640608b99895ecad2440d0a5b27f2eb75fd2619903fd2ed11a63c",
+    "after_dimensions": [
+      800,
+      600
+    ],
+    "comparison_exit": 1
+  },
+  {
+    "identity": "motion/breadcrumb_test.dart: rest-state golden",
+    "file": "test/motion/breadcrumb_test.dart",
+    "golden": "test/motion/goldens/beui_breadcrumb.png",
+    "author_commit": "0c80b0a48c8718d367da8af9d1acc0f8d1b3831b",
+    "date": "2026-10-22 14:50:43 +0530",
+    "subject": "feat(components): port remaining v3 motion widgets",
+    "changes": [
+      "240ce487a fix(breadcrumb): retain nonmodal hover ownership",
+      "8597186fa fix(breadcrumb): preserve source font and caller control metrics",
+      "0f0b2381b test(breadcrumb): cover interrupted extent and reduced-motion settling",
+      "282a61a1c fix(breadcrumb): retain hit-test extent during wrapped reflow",
+      "36bcfe0b8 fix(breadcrumb): reject held route presses after dismissal",
+      "fee57512d fix(breadcrumb): spring surviving route positions through layout",
+      "c0c1591e0 fix(breadcrumb): make retained overflow exits inert",
+      "cbe08f160 fix(breadcrumb): retain exits and morph overflow with focus",
+      "b0a025f76 fix(motion): align v3 component behavior and demos",
+      "6f97bc3da fix(components): repair motion and state"
+    ],
+    "author_vs_current3444": {
+      "pixels": 8332,
+      "size": [
+        800,
+        600
+      ]
+    },
+    "author_render_vs_golden": {
+      "pixels": 0,
+      "size": [
+        800,
+        600
+      ]
+    },
+    "current3444_vs_golden": {
+      "pixels": 8332,
+      "size": [
+        800,
+        600
+      ]
+    },
+    "number": 18,
+    "classification": "intentional visual change",
+    "causal_commits": [
+      "b0a025f76",
+      "fee57512d",
+      "8597186fa"
+    ],
+    "reason": "Inline/wrapped route layout and typography changed; current final route sits inline.",
+    "fixture_timing_repair_required": false,
+    "author_control": "author-0c80b0a48",
+    "before_sha256": "3e7a02e7cabc255244943ccf19c9e77339cb4b01dab01c88561966c634d18bd1",
+    "before_dimensions": [
+      800,
+      600
+    ],
+    "after_sha256": "216000d9f086cee78800be6792bb446af5b33b906cef71668e3c0b3d7d4d09fb",
+    "after_dimensions": [
+      800,
+      600
+    ],
+    "visual_review": "Final route now sits inline with the breadcrumb controls; nothing is clipped.",
+    "original_resolution_reviewed": true,
+    "contact_sheet_reviewed": true,
+    "causal_commit_full_hashes": [
+      "b0a025f763fbaff757bf5f9c3befed554b2a5fc2",
+      "fee57512de1106db0690fd92005c93d266304f14",
+      "8597186faa294a74a2e8c753bc50660c1ff264ff"
+    ],
+    "comparison_exit": 0
+  },
+  {
+    "identity": "motion/button_test.dart: BeuiMetallicButton rest-state golden",
+    "file": "test/motion/button_test.dart",
+    "golden": "test/motion/goldens/beui_metallic_button.png",
+    "author_commit": "0c80b0a48c8718d367da8af9d1acc0f8d1b3831b",
+    "date": "2026-10-22 14:50:43 +0530",
+    "subject": "feat(components): port remaining v3 motion widgets",
+    "changes": [
+      "ecea1d400 fix(button): match preview states and chrome layers"
+    ],
+    "author_vs_current3444": {
+      "pixels": 2309,
+      "size": [
+        800,
+        600
+      ]
+    },
+    "author_render_vs_golden": {
+      "pixels": 0,
+      "size": [
+        800,
+        600
+      ]
+    },
+    "current3444_vs_golden": {
+      "pixels": 2309,
+      "size": [
+        800,
+        600
+      ]
+    },
+    "number": 19,
+    "classification": "intentional visual change",
+    "causal_commits": [
+      "ecea1d400"
+    ],
+    "reason": "Chrome layers and preview states changed; old broad metallic bands removed.",
+    "fixture_timing_repair_required": false,
+    "author_control": "author-0c80b0a48",
+    "before_sha256": "8d80b49cd81d52afd07b0d9fd1f2442cc36087037e79beccc9fc7abb0d67a80e",
+    "before_dimensions": [
+      800,
+      600
+    ],
+    "after_sha256": "c667d556fdd33044fa4bcb4bd10c394e12cab0a39ae5662bb279a97d7057b960",
+    "after_dimensions": [
+      800,
+      600
+    ],
+    "visual_review": "Resting metallic button has the revised thin chrome outline and shadow; broad old bands are gone. Only BeuiMetallicButton was selected.",
+    "original_resolution_reviewed": true,
+    "contact_sheet_reviewed": true,
+    "causal_commit_full_hashes": [
+      "ecea1d400dd122d46dc4b77bab954255bc85dec0"
+    ],
+    "comparison_exit": 0
+  },
+  {
+    "identity": "motion/card_folder_test.dart: rest-state golden",
+    "file": "test/motion/card_folder_test.dart",
+    "golden": "test/motion/goldens/beui_card_folder.png",
+    "author_commit": "4b9137f3ee46f52c048499341f035fb2353f5b87",
+    "date": "2026-10-22 14:22:01 +0530",
+    "subject": "feat(blocks): port six missing v3 catalog blocks",
+    "changes": [
+      "fa7fed3bb test(card): cover held privacy release",
+      "a6483b8b7 fix(card): focus controls on semantic activation",
+      "ac7d684c7 fix(card): separate controls and animate privacy eye",
+      "25e2c9903 test(card): cover controls and privacy transitions",
+      "d96f9432a fix(card): expose one actionable privacy toggle",
+      "9d1ad028a test(blocks): cover integration regressions",
+      "bf736bc0b fix(blocks): isolate the card press layer",
+      "9d08a1c6f fix(blocks): align privacy and demo rendering",
+      "f0cb706cd fix(blocks): align v3 card, tab, and text behavior with source",
+      "63f73656b fix(ship): align card-folder CVV test with shared DigitSwap",
+      "e9d35c944 Merge branch 'akshay/v3-blocks' into akshay/v3-ship",
+      "aace02b0a fix(blocks): harden v3 block interactions",
+      "cc633f91f chore: beui 3.0.0 family integration"
+    ],
+    "author_vs_current3444": {
+      "pixels": 10818,
+      "size": [
+        800,
+        600
+      ]
+    },
+    "author_render_vs_golden": {
+      "pixels": 0,
+      "size": [
+        800,
+        600
+      ]
+    },
+    "current3444_vs_golden": {
+      "pixels": 10818,
+      "size": [
+        800,
+        600
+      ]
+    },
+    "number": 20,
+    "classification": "intentional visual change",
+    "causal_commits": [
+      "f0cb706cd",
+      "9d08a1c6f"
+    ],
+    "reason": "Card press/privacy rendering and text geometry changed.",
+    "fixture_timing_repair_required": false,
+    "author_control": "author-4b9137f3e",
+    "before_sha256": "82097d242774264d9a74f5bb06ed9ec98ef957a966601568faddd8eae7833272",
+    "before_dimensions": [
+      800,
+      600
+    ],
+    "after_sha256": "59061c36fed4f7e57935328787945a0443752db44f99e8927799b0411943af25",
+    "after_dimensions": [
+      800,
+      600
+    ],
+    "visual_review": "Folder mask and card geometry remain complete; privacy text and lower card position reflect the intended update.",
+    "original_resolution_reviewed": true,
+    "contact_sheet_reviewed": true,
+    "causal_commit_full_hashes": [
+      "f0cb706cd9d3cd0f336f32d3594ef22c6c44eb8b",
+      "9d08a1c6f400c740d8ef8494516d50d5d751ba8d"
+    ],
+    "comparison_exit": 0
+  },
+  {
+    "identity": "motion/card_test.dart: rest-state golden",
+    "file": "test/motion/card_test.dart",
+    "golden": "test/motion/goldens/beui_card.png",
+    "author_commit": "0c80b0a48c8718d367da8af9d1acc0f8d1b3831b",
+    "date": "2026-10-22 14:50:43 +0530",
+    "subject": "feat(components): port remaining v3 motion widgets",
+    "changes": [
+      "b0a025f76 fix(motion): align v3 component behavior and demos",
+      "6f97bc3da fix(components): repair motion and state"
+    ],
+    "author_vs_current3444": {
+      "pixels": 3909,
+      "size": [
+        800,
+        600
+      ]
+    },
+    "author_render_vs_golden": {
+      "pixels": 0,
+      "size": [
+        800,
+        600
+      ]
+    },
+    "current3444_vs_golden": {
+      "pixels": 3909,
+      "size": [
+        800,
+        600
+      ]
+    },
+    "number": 21,
+    "classification": "intentional visual change",
+    "causal_commits": [
+      "b0a025f76"
+    ],
+    "reason": "Description line metrics and muted-card border changed; inspected at full image size.",
+    "fixture_timing_repair_required": false,
+    "author_control": "author-0c80b0a48",
+    "before_sha256": "4f78d9a9bc7ca73b0232da46681294794443b8c9f111fc1e414ddb4a6c3b80cd",
+    "before_dimensions": [
+      800,
+      600
+    ],
+    "after_sha256": "86351d3fe31fdccdabd8302962642863178a91a6f09cde0176a6cf1dd5455186",
+    "after_dimensions": [
+      800,
+      600
+    ],
+    "visual_review": "Full-height card and compact muted card remain complete. Description metrics and compact-card border match the declared change.",
+    "original_resolution_reviewed": true,
+    "contact_sheet_reviewed": true,
+    "causal_commit_full_hashes": [
+      "b0a025f763fbaff757bf5f9c3befed554b2a5fc2"
+    ],
+    "comparison_exit": 0
+  },
+  {
+    "identity": "motion/checkbox_test.dart: rest-state golden (checked / unchecked / indeterminate / disabled)",
+    "file": "test/motion/checkbox_test.dart",
+    "golden": "test/motion/goldens/beui_checkbox.png",
+    "author_commit": "cd99fed29310ec5b24137c5d95f5c3b778d7ef62",
+    "date": "2026-08-07 15:48:42 +0530",
+    "subject": "fix(theme): pin text tracking to normal, matching the Tailwind source",
+    "changes": [
+      "ac90d0bcf fix(checkbox): wrap long labels within available width",
+      "118b24944 test: adopt beuiTestApp in more component-specific motion hosts",
+      "6252d6d67 refactor: resolve BeuiColors through one helper"
+    ],
+    "author_vs_current3444": {
+      "pixels": 0,
+      "size": [
+        800,
+        600
+      ]
+    },
+    "author_render_vs_golden": {
+      "pixels": 0,
+      "size": [
+        800,
+        600
+      ]
+    },
+    "current3444_vs_golden": {
+      "pixels": 0,
+      "size": [
+        800,
+        600
+      ]
+    },
+    "number": 22,
+    "classification": "environment/toolchain drift",
+    "reason": "Current source and author-commit rendering are pixel-identical on isolated Flutter 3.44.4 / Dart 3.12.2 on this host. Author/current retain 0 differing pixels against the historical reference. 3.47.1 fails. No source/reference edit recommended.",
+    "causal_commits": [],
+    "author_control": "author-pinned-cd99fed29",
+    "before_sha256": "cd6bc9b9e461752637c8850dcde550d9efeee0788f4d66ea41728b42eba9f4e7",
+    "before_dimensions": [
+      800,
+      600
+    ],
+    "after_sha256": "cd6bc9b9e461752637c8850dcde550d9efeee0788f4d66ea41728b42eba9f4e7",
+    "after_dimensions": [
+      800,
+      600
+    ],
+    "comparison_exit": 1
+  },
+  {
+    "identity": "motion/citations_test.dart: settled golden (open panel, static rows)",
+    "file": "test/motion/citations_test.dart",
+    "golden": "test/motion/goldens/beui_citations.png",
+    "author_commit": "a3465674930c0254f205a4208c58f343f6999857",
+    "date": "2026-08-18 15:12:29 +0530",
+    "subject": "test: cover the citations, rail, sidebar and image remediations",
+    "changes": [
+      "7695b5ba2 test: adopt beuiTestApp in citations, carousel, dock and file-diff tests",
+      "28e0f4fa3 feat!: remove the deprecated API for 2.0",
+      "2c00e1ed8 fix: theme the external-link glyph and cascade by grapheme",
+      "e4d7e8821 refactor(citations): share the disclosure chevron and collapse duplicate test hosts",
+      "70b6de737 docs: drop audit ticket ids from comments",
+      "6252d6d67 refactor: resolve BeuiColors through one helper"
+    ],
+    "author_vs_current3444": {
+      "pixels": 0,
+      "size": [
+        800,
+        600
+      ]
+    },
+    "author_render_vs_golden": {
+      "pixels": 10,
+      "size": [
+        800,
+        600
+      ]
+    },
+    "current3444_vs_golden": {
+      "pixels": 10,
+      "size": [
+        800,
+        600
+      ]
+    },
+    "number": 23,
+    "classification": "environment/toolchain drift",
+    "reason": "Current source and author-commit rendering are pixel-identical on isolated Flutter 3.44.4 / Dart 3.12.2 on this host. Author/current retain 10 differing pixels against the historical reference. 3.47.1 fails. No source/reference edit recommended.",
+    "causal_commits": [],
+    "author_control": "author-lucide131-a34656749",
+    "before_sha256": "c029e4dfe7f70a584d713e8d8721390616163d54ba5998af606e45b8bb8f46cc",
+    "before_dimensions": [
+      800,
+      600
+    ],
+    "after_sha256": "c029e4dfe7f70a584d713e8d8721390616163d54ba5998af606e45b8bb8f46cc",
+    "after_dimensions": [
+      800,
+      600
+    ],
+    "comparison_exit": 1
+  },
+  {
+    "identity": "motion/code_block_test.dart: settled golden (complete, line numbers, highlight)",
+    "file": "test/motion/code_block_test.dart",
+    "golden": "test/motion/goldens/beui_code_block.png",
+    "author_commit": "a3465674930c0254f205a4208c58f343f6999857",
+    "date": "2026-08-18 15:12:29 +0530",
+    "subject": "test: cover the citations, rail, sidebar and image remediations",
+    "changes": [
+      "08a006498 test: extend beuiTestApp and adopt it in the a-p motion tests",
+      "28e0f4fa3 feat!: remove the deprecated API for 2.0",
+      "9c36ae64a refactor(code-block,file-diff): share the streaming status icon and disclosure chevron",
+      "70b6de737 docs: drop audit ticket ids from comments",
+      "6252d6d67 refactor: resolve BeuiColors through one helper",
+      "e1a564946 fix(motion): resolve widget copy defaults through the strings role"
+    ],
+    "author_vs_current3444": {
+      "pixels": 182,
+      "size": [
+        800,
+        600
+      ]
+    },
+    "author_render_vs_golden": {
+      "pixels": 6,
+      "size": [
+        800,
+        600
+      ]
+    },
+    "current3444_vs_golden": {
+      "pixels": 188,
+      "size": [
+        800,
+        600
+      ]
+    },
+    "number": 24,
+    "classification": "intentional visual change",
+    "causal_commits": [
+      "4fdec936f"
+    ],
+    "reason": "Shared tokenizer now colors assignment punctuation as keyword. The current/author difference is 182 pixels on 3.44.4, plus 6 pre-existing environment pixels; inspected enlarged token crop.",
+    "fixture_timing_repair_required": false,
+    "author_control": "author-lucide131-a34656749",
+    "before_sha256": "feac7276a722128b71f07bbbd12ac2ba0d3c65930c6234da59c75af222a7ecb5",
+    "before_dimensions": [
+      800,
+      600
+    ],
+    "after_sha256": "bf0e496f7e6ec309b6d7df228b1cb03ef06a7a2f6670df65a0012dbfb2025145",
+    "after_dimensions": [
+      800,
+      600
+    ],
+    "visual_review": "Assignment punctuation uses keyword ink; line numbers, highlight and all fixture rows remain. Horizontal code viewport clipping already existed in the old reference. Historical environment residual is included.",
+    "original_resolution_reviewed": true,
+    "contact_sheet_reviewed": true,
+    "causal_commit_full_hashes": [
+      "4fdec936f1471557f13a065a851f72904274ddf3"
+    ],
+    "comparison_exit": 0
+  },
+  {
+    "identity": "motion/color_picker_test.dart: rest-state golden",
+    "file": "test/motion/color_picker_test.dart",
+    "golden": "test/motion/goldens/beui_color_picker.png",
+    "author_commit": "0c80b0a48c8718d367da8af9d1acc0f8d1b3831b",
+    "date": "2026-10-22 14:50:43 +0530",
+    "subject": "feat(components): port remaining v3 motion widgets",
+    "changes": [
+      "a487dacf1 fix(color-picker): expose assistive slider actions and source hue steps",
+      "1d3695207 fix(color-picker): preserve lowercase trigger hex text",
+      "1845409eb fix(color-picker): clamp within the root overlay coordinate space",
+      "cfe381654 fix(color-picker): match source format composition and field geometry",
+      "312220e43 fix(color-picker): handle custom triggers focus and viewport edges",
+      "7492c0b3f fix(color-picker): morph trigger chip into spectrum",
+      "6f97bc3da fix(components): repair motion and state"
+    ],
+    "author_vs_current3444": {
+      "pixels": 161662,
+      "size": [
+        800,
+        600
+      ]
+    },
+    "author_render_vs_golden": {
+      "pixels": 0,
+      "size": [
+        800,
+        600
+      ]
+    },
+    "current3444_vs_golden": {
+      "pixels": 161662,
+      "size": [
+        800,
+        600
+      ]
+    },
+    "number": 25,
+    "classification": "intentional visual change",
+    "causal_commits": [
+      "7492c0b3f",
+      "cfe381654"
+    ],
+    "reason": "Spectrum/trigger morph, field and hue-track geometry changed.",
+    "fixture_timing_repair_required": false,
+    "author_control": "author-0c80b0a48",
+    "before_sha256": "7cdd93313d04f10c539e0730d794518d256aa6be25635564945d241e97c5aa03",
+    "before_dimensions": [
+      800,
+      600
+    ],
+    "after_sha256": "b69f63d4df2d1e5553afd5289b8a03bbed3a62aeff692592ae01c6e266478149",
+    "after_dimensions": [
+      800,
+      600
+    ],
+    "visual_review": "Spectrum shading, rounded field and hue/alpha tracks change; all handles remain within the control.",
+    "original_resolution_reviewed": true,
+    "contact_sheet_reviewed": true,
+    "causal_commit_full_hashes": [
+      "7492c0b3fbfca19b5c1a802cd951657f53b884c2",
+      "cfe3816545b3d36b1c1c2ca6829b125c838a2c2b"
+    ],
+    "comparison_exit": 0
+  },
+  {
+    "identity": "motion/color_selector_test.dart: rest-state golden",
+    "file": "test/motion/color_selector_test.dart",
+    "golden": "test/motion/goldens/beui_color_selector.png",
+    "author_commit": "0c80b0a48c8718d367da8af9d1acc0f8d1b3831b",
+    "date": "2026-10-22 14:50:43 +0530",
+    "subject": "feat(components): port remaining v3 motion widgets",
+    "changes": [
+      "93ebe4787 fix(color-selector): scale selected ring on press",
+      "b0a025f76 fix(motion): align v3 component behavior and demos",
+      "6f97bc3da fix(components): repair motion and state"
+    ],
+    "author_vs_current3444": {
+      "pixels": 1220,
+      "size": [
+        800,
+        600
+      ]
+    },
+    "author_render_vs_golden": {
+      "pixels": 0,
+      "size": [
+        800,
+        600
+      ]
+    },
+    "current3444_vs_golden": {
+      "pixels": 1220,
+      "size": [
+        800,
+        600
+      ]
+    },
+    "number": 26,
+    "classification": "intentional visual change",
+    "causal_commits": [
+      "b0a025f76",
+      "93ebe4787"
+    ],
+    "reason": "Selected swatch ring changed from the old oversized oval to the source circular ring.",
+    "fixture_timing_repair_required": false,
+    "author_control": "author-0c80b0a48",
+    "before_sha256": "8464abc07ee26a1f734e96ff7aa6f5a0a73f0e524098a3e5722cc81f1b16f449",
+    "before_dimensions": [
+      800,
+      600
+    ],
+    "after_sha256": "c851f2ea832666ce8b808a82f1054693d7f708c069d3c5eaebed0d22927a281e",
+    "after_dimensions": [
+      800,
+      600
+    ],
+    "visual_review": "Selected blue swatch has a centered circular ring; red swatch and label remain intact.",
+    "original_resolution_reviewed": true,
+    "contact_sheet_reviewed": true,
+    "causal_commit_full_hashes": [
+      "b0a025f763fbaff757bf5f9c3befed554b2a5fc2",
+      "93ebe47873959475a6d55eedc9ccb062db5de137"
+    ],
+    "comparison_exit": 0
+  },
+  {
+    "identity": "motion/combobox_test.dart: rest-state golden",
+    "file": "test/motion/combobox_test.dart",
+    "golden": "test/motion/goldens/beui_combobox.png",
+    "author_commit": "0c80b0a48c8718d367da8af9d1acc0f8d1b3831b",
+    "date": "2026-10-22 14:50:43 +0530",
+    "subject": "feat(components): port remaining v3 motion widgets",
+    "changes": [
+      "21e5fd33b fix(combobox): reopen on edits after Escape",
+      "b898cbd55 fix(combobox): retain exit filtering and opacity",
+      "5b749f5a6 fix(combobox): keep search input editable",
+      "81120f68b fix(inputs): match source workspace and date triggers",
+      "6f97bc3da fix(components): repair motion and state"
+    ],
+    "author_vs_current3444": {
+      "pixels": 11658,
+      "size": [
+        800,
+        600
+      ]
+    },
+    "author_render_vs_golden": {
+      "pixels": 0,
+      "size": [
+        800,
+        600
+      ]
+    },
+    "current3444_vs_golden": {
+      "pixels": 11658,
+      "size": [
+        800,
+        600
+      ]
+    },
+    "number": 27,
+    "classification": "intentional visual change",
+    "causal_commits": [
+      "81120f68b",
+      "5b749f5a6"
+    ],
+    "reason": "Source workspace trigger and editable-input geometry changed; later reopen fix does not account for the historical mismatch.",
+    "fixture_timing_repair_required": false,
+    "author_control": "author-0c80b0a48",
+    "before_sha256": "b9bbfaca64ca71fa7ef9ca96d65b4987cab0d240a173001e9bec28b26fc23c7d",
+    "before_dimensions": [
+      800,
+      600
+    ],
+    "after_sha256": "5696b8b5afbd620d21866b4ceb1d946cdd91717439fc3fbcdd439402f1f1acc6",
+    "after_dimensions": [
+      800,
+      600
+    ],
+    "visual_review": "Closed workspace trigger is complete with source input geometry; no reopen-state claim is made.",
+    "original_resolution_reviewed": true,
+    "contact_sheet_reviewed": true,
+    "causal_commit_full_hashes": [
+      "81120f68bcf866917aa0b6820a9696d8ea8e29cc",
+      "5b749f5a6c56b4002119ca68fd7b21bf491ac8e1"
+    ],
+    "comparison_exit": 0
+  },
+  {
+    "identity": "motion/conversation_core_golden_test.dart: chat app shell",
+    "file": "test/motion/conversation_core_golden_test.dart",
+    "golden": "test/motion/goldens/beui_chat_app.png",
+    "author_commit": "c2e4dc7fe5e0c9bffa574d530e8509eb023ac32b",
+    "date": "2026-08-18 15:00:21 +0530",
+    "subject": "test(motion): add the cluster's first goldens",
+    "changes": [
+      "70b6de737 docs: drop audit ticket ids from comments"
+    ],
+    "author_vs_current3444": {
+      "pixels": 0,
+      "size": [
+        800,
+        600
+      ]
+    },
+    "author_render_vs_golden": {
+      "pixels": 0,
+      "size": [
+        800,
+        600
+      ]
+    },
+    "current3444_vs_golden": {
+      "pixels": 0,
+      "size": [
+        800,
+        600
+      ]
+    },
+    "number": 28,
+    "classification": "environment/toolchain drift",
+    "reason": "Current source and author-commit rendering are pixel-identical on isolated Flutter 3.44.4 / Dart 3.12.2 on this host. Author/current retain 0 differing pixels against the historical reference. 3.47.1 fails. No source/reference edit recommended.",
+    "causal_commits": [],
+    "author_control": "author-lucide131-c2e4dc7fe",
+    "before_sha256": "97b548fd5da0697220c5b3e0212ea73704f420219f3056d1be43e5f3f269b8b8",
+    "before_dimensions": [
+      800,
+      600
+    ],
+    "after_sha256": "97b548fd5da0697220c5b3e0212ea73704f420219f3056d1be43e5f3f269b8b8",
+    "after_dimensions": [
+      800,
+      600
+    ],
+    "comparison_exit": 1
+  },
+  {
+    "identity": "motion/conversation_core_golden_test.dart: chat app shell below the sidebar breakpoint",
+    "file": "test/motion/conversation_core_golden_test.dart",
+    "golden": "test/motion/goldens/beui_chat_app_narrow.png",
+    "author_commit": "c2e4dc7fe5e0c9bffa574d530e8509eb023ac32b",
+    "date": "2026-08-18 15:00:21 +0530",
+    "subject": "test(motion): add the cluster's first goldens",
+    "changes": [
+      "70b6de737 docs: drop audit ticket ids from comments"
+    ],
+    "author_vs_current3444": {
+      "pixels": 0,
+      "size": [
+        800,
+        600
+      ]
+    },
+    "author_render_vs_golden": {
+      "pixels": 0,
+      "size": [
+        800,
+        600
+      ]
+    },
+    "current3444_vs_golden": {
+      "pixels": 0,
+      "size": [
+        800,
+        600
+      ]
+    },
+    "number": 29,
+    "classification": "environment/toolchain drift",
+    "reason": "Current source and author-commit rendering are pixel-identical on isolated Flutter 3.44.4 / Dart 3.12.2 on this host. Author/current retain 0 differing pixels against the historical reference. 3.47.1 fails. No source/reference edit recommended.",
+    "causal_commits": [],
+    "author_control": "author-lucide131-c2e4dc7fe",
+    "before_sha256": "ef164d231ff7cd95c349e93a109fee35861e0461e0843e07670e3c586262c2bd",
+    "before_dimensions": [
+      800,
+      600
+    ],
+    "after_sha256": "ef164d231ff7cd95c349e93a109fee35861e0461e0843e07670e3c586262c2bd",
+    "after_dimensions": [
+      800,
+      600
+    ],
+    "comparison_exit": 1
+  },
+  {
+    "identity": "motion/conversation_core_golden_test.dart: message bubble variants (dark)",
+    "file": "test/motion/conversation_core_golden_test.dart",
+    "golden": "test/motion/goldens/beui_message_bubble_variants_dark.png",
+    "author_commit": "c2e4dc7fe5e0c9bffa574d530e8509eb023ac32b",
+    "date": "2026-08-18 15:00:21 +0530",
+    "subject": "test(motion): add the cluster's first goldens",
+    "changes": [
+      "70b6de737 docs: drop audit ticket ids from comments"
+    ],
+    "author_vs_current3444": {
+      "pixels": 0,
+      "size": [
+        800,
+        600
+      ]
+    },
+    "author_render_vs_golden": {
+      "pixels": 2,
+      "size": [
+        800,
+        600
+      ]
+    },
+    "current3444_vs_golden": {
+      "pixels": 2,
+      "size": [
+        800,
+        600
+      ]
+    },
+    "number": 30,
+    "classification": "environment/toolchain drift",
+    "reason": "Current source and author-commit rendering are pixel-identical on isolated Flutter 3.44.4 / Dart 3.12.2 on this host. Author/current retain 2 differing pixels against the historical reference. 3.47.1 fails. No source/reference edit recommended.",
+    "causal_commits": [],
+    "author_control": "author-lucide131-c2e4dc7fe",
+    "before_sha256": "205069917bb11db93d3b43694c387f33181d35fc7bf2ea689b173afb2a867ecf",
+    "before_dimensions": [
+      800,
+      600
+    ],
+    "after_sha256": "205069917bb11db93d3b43694c387f33181d35fc7bf2ea689b173afb2a867ecf",
+    "after_dimensions": [
+      800,
+      600
+    ],
+    "comparison_exit": 1
+  },
+  {
+    "identity": "motion/conversation_core_golden_test.dart: message bubble variants (light)",
+    "file": "test/motion/conversation_core_golden_test.dart",
+    "golden": "test/motion/goldens/beui_message_bubble_variants.png",
+    "author_commit": "c2e4dc7fe5e0c9bffa574d530e8509eb023ac32b",
+    "date": "2026-08-18 15:00:21 +0530",
+    "subject": "test(motion): add the cluster's first goldens",
+    "changes": [
+      "70b6de737 docs: drop audit ticket ids from comments"
+    ],
+    "author_vs_current3444": {
+      "pixels": 0,
+      "size": [
+        800,
+        600
+      ]
+    },
+    "author_render_vs_golden": {
+      "pixels": 2,
+      "size": [
+        800,
+        600
+      ]
+    },
+    "current3444_vs_golden": {
+      "pixels": 2,
+      "size": [
+        800,
+        600
+      ]
+    },
+    "number": 31,
+    "classification": "environment/toolchain drift",
+    "reason": "Current source and author-commit rendering are pixel-identical on isolated Flutter 3.44.4 / Dart 3.12.2 on this host. Author/current retain 2 differing pixels against the historical reference. 3.47.1 fails. No source/reference edit recommended.",
+    "causal_commits": [],
+    "author_control": "author-lucide131-c2e4dc7fe",
+    "before_sha256": "e34822cfbabd6c1b33adbeb42237a313d80e7ac1ef472810b43720324a9d8ace",
+    "before_dimensions": [
+      800,
+      600
+    ],
+    "after_sha256": "e34822cfbabd6c1b33adbeb42237a313d80e7ac1ef472810b43720324a9d8ace",
+    "after_dimensions": [
+      800,
+      600
+    ],
+    "comparison_exit": 1
+  },
+  {
+    "identity": "motion/conversation_core_golden_test.dart: streaming response endings",
+    "file": "test/motion/conversation_core_golden_test.dart",
+    "golden": "test/motion/goldens/beui_streaming_response_endings.png",
+    "author_commit": "c2e4dc7fe5e0c9bffa574d530e8509eb023ac32b",
+    "date": "2026-08-18 15:00:21 +0530",
+    "subject": "test(motion): add the cluster's first goldens",
+    "changes": [
+      "70b6de737 docs: drop audit ticket ids from comments"
+    ],
+    "author_vs_current3444": {
+      "pixels": 0,
+      "size": [
+        800,
+        600
+      ]
+    },
+    "author_render_vs_golden": {
+      "pixels": 20,
+      "size": [
+        800,
+        600
+      ]
+    },
+    "current3444_vs_golden": {
+      "pixels": 20,
+      "size": [
+        800,
+        600
+      ]
+    },
+    "number": 32,
+    "classification": "environment/toolchain drift",
+    "reason": "Current source and author-commit rendering are pixel-identical on isolated Flutter 3.44.4 / Dart 3.12.2 on this host. Author/current retain 20 differing pixels against the historical reference. 3.47.1 fails. No source/reference edit recommended.",
+    "causal_commits": [],
+    "author_control": "author-lucide131-c2e4dc7fe",
+    "before_sha256": "3f9f53bbb49f2b309875c26d168de7a952d25ef1e6e4fd0a6aef8da7c8b578ac",
+    "before_dimensions": [
+      800,
+      600
+    ],
+    "after_sha256": "3f9f53bbb49f2b309875c26d168de7a952d25ef1e6e4fd0a6aef8da7c8b578ac",
+    "after_dimensions": [
+      800,
+      600
+    ],
+    "comparison_exit": 1
+  },
+  {
+    "identity": "motion/date_range_picker_test.dart: rest-state golden shows a selected range and date controls",
+    "file": "test/motion/date_range_picker_test.dart",
+    "golden": "test/motion/goldens/beui_date_range_picker.png",
+    "author_commit": "0c80b0a48c8718d367da8af9d1acc0f8d1b3831b",
+    "date": "2026-10-22 14:50:43 +0530",
+    "subject": "feat(components): port remaining v3 motion widgets",
+    "changes": [
+      "baf7b62b0 fix(date-range): inherit Geist and match tabular trigger width",
+      "87d8456f3 fix(date-range): match source trigger dimensions and typography",
+      "3122ad6b0 fix(date-range): omit repeated year in completed range trigger",
+      "81120f68b fix(inputs): match source workspace and date triggers",
+      "6f97bc3da fix(components): repair motion and state"
+    ],
+    "author_vs_current3444": {
+      "pixels": 1996,
+      "size": [
+        800,
+        600
+      ]
+    },
+    "author_render_vs_golden": {
+      "pixels": 0,
+      "size": [
+        800,
+        600
+      ]
+    },
+    "current3444_vs_golden": {
+      "pixels": 1996,
+      "size": [
+        800,
+        600
+      ]
+    },
+    "number": 33,
+    "classification": "intentional visual change",
+    "causal_commits": [
+      "3122ad6b0",
+      "87d8456f3",
+      "baf7b62b0"
+    ],
+    "reason": "Completed trigger omits repeated year and uses source tabular widths/typography.",
+    "fixture_timing_repair_required": false,
+    "author_control": "author-0c80b0a48",
+    "before_sha256": "16833b92c9c650b450fd7ca837e3144bf92f63d4bc0798a2c9bccbe5e5de4ecd",
+    "before_dimensions": [
+      800,
+      600
+    ],
+    "after_sha256": "83d9b3dbfcaea0a141afacc92fe345442c19d58a89775732c2c91cb9a674fb12",
+    "after_dimensions": [
+      800,
+      600
+    ],
+    "visual_review": "Selected date range and controls fit the existing full-height card. Trigger text spacing reflects omitted repeated year.",
+    "original_resolution_reviewed": true,
+    "contact_sheet_reviewed": true,
+    "causal_commit_full_hashes": [
+      "3122ad6b05ee54d458227bd7ba4b3d2e373d1a94",
+      "87d8456f36ccc214993d3b6135c0097509f3ec53",
+      "baf7b62b01d4ce6aba848473dd48fa24d581d82a"
+    ],
+    "comparison_exit": 0
+  },
+  {
+    "identity": "motion/digit_swap_test.dart: rest-state golden",
+    "file": "test/motion/digit_swap_test.dart",
+    "golden": "test/motion/goldens/beui_digit_swap.png",
+    "author_commit": "0c80b0a48c8718d367da8af9d1acc0f8d1b3831b",
+    "date": "2026-10-22 14:50:43 +0530",
+    "subject": "feat(components): port remaining v3 motion widgets",
+    "changes": [
+      "9d08a1c6f fix(blocks): align privacy and demo rendering",
+      "f0cb706cd fix(blocks): align v3 card, tab, and text behavior with source",
+      "cc633f91f chore: beui 3.0.0 family integration"
+    ],
+    "author_vs_current3444": {
+      "pixels": 2145,
+      "size": [
+        800,
+        600
+      ]
+    },
+    "author_render_vs_golden": {
+      "pixels": 0,
+      "size": [
+        800,
+        600
+      ]
+    },
+    "current3444_vs_golden": {
+      "pixels": 2145,
+      "size": [
+        800,
+        600
+      ]
+    },
+    "number": 34,
+    "classification": "intentional visual change",
+    "causal_commits": [
+      "f0cb706cd",
+      "9d08a1c6f"
+    ],
+    "reason": "Source digit spacing/width changed; four separated digit cells replace contiguous cells.",
+    "fixture_timing_repair_required": false,
+    "author_control": "author-0c80b0a48",
+    "before_sha256": "2f1dfd3f30eca0d63f07525ebf45016ac5fa0ab4341127a34f76c25f02229cd4",
+    "before_dimensions": [
+      800,
+      600
+    ],
+    "after_sha256": "d9a27d017195b08b8a92bdf0f03a3785b41486cafcebd7da478a321f8a205caf",
+    "after_dimensions": [
+      800,
+      600
+    ],
+    "visual_review": "Four separated digit groups fit without cropping.",
+    "original_resolution_reviewed": true,
+    "contact_sheet_reviewed": true,
+    "causal_commit_full_hashes": [
+      "f0cb706cd9d3cd0f336f32d3594ef22c6c44eb8b",
+      "9d08a1c6f400c740d8ef8494516d50d5d751ba8d"
+    ],
+    "comparison_exit": 0
+  },
+  {
+    "identity": "motion/expandable_control_test.dart: rest-state golden (one expanded and one collapsed)",
+    "file": "test/motion/expandable_control_test.dart",
+    "golden": "test/motion/goldens/beui_expandable_control.png",
+    "author_commit": "0c80b0a48c8718d367da8af9d1acc0f8d1b3831b",
+    "date": "2026-10-22 14:50:43 +0530",
+    "subject": "feat(components): port remaining v3 motion widgets",
+    "changes": [
+      "6f97bc3da fix(components): repair motion and state"
+    ],
+    "author_vs_current3444": {
+      "pixels": 4376,
+      "size": [
+        800,
+        600
+      ]
+    },
+    "author_render_vs_golden": {
+      "pixels": 0,
+      "size": [
+        800,
+        600
+      ]
+    },
+    "current3444_vs_golden": {
+      "pixels": 4376,
+      "size": [
+        800,
+        600
+      ]
+    },
+    "number": 35,
+    "classification": "intentional visual change",
+    "causal_commits": [
+      "6f97bc3da"
+    ],
+    "reason": "Resting foreground intentionally changed to mutedForeground, with foreground reserved for hover.",
+    "fixture_timing_repair_required": false,
+    "author_control": "author-0c80b0a48",
+    "before_sha256": "c2bb94ba16bdebef03086f9bb1b20833ead4fd41414730aa4b3cf910f9d9533e",
+    "before_dimensions": [
+      800,
+      600
+    ],
+    "after_sha256": "ee6207d3fdf8ca466fe0c02dcbf320c8933f005cdaf5923391708ee9991f0d23",
+    "after_dimensions": [
+      800,
+      600
+    ],
+    "visual_review": "Both expanded and collapsed resting labels use muted foreground; outlines remain complete.",
+    "original_resolution_reviewed": true,
+    "contact_sheet_reviewed": true,
+    "causal_commit_full_hashes": [
+      "6f97bc3dac057d957baec7bc65f4f89ff535f420"
+    ],
+    "comparison_exit": 0
+  },
+  {
+    "identity": "motion/feedback_widget_test.dart: rest-state golden (collapsed trigger)",
+    "file": "test/motion/feedback_widget_test.dart",
+    "golden": "test/motion/goldens/beui_feedback_widget.png",
+    "author_commit": "c54f39ffbe77fb8b1158bee3d953f9b44304723b",
+    "date": "2026-07-14 18:23:39 +0530",
+    "subject": "feat: port 11 more beUI v2 components",
+    "changes": [
+      "cfa7e0b5e fix(feedback): reset drafts and disable empty submit",
+      "92437bddb test(feedback): pin source draft and submit policy",
+      "9d08a1c6f fix(blocks): align privacy and demo rendering",
+      "78bd313c8 feat(feedback-widget): surface submit errors instead of swallowing them",
+      "e0f6d8dcb refactor: use stdlib and shared tokens instead of per-file copies",
+      "6252d6d67 refactor: resolve BeuiColors through one helper",
+      "3ffcca79c fix(feedback): keep the draft, announce the outcome, reach the controls",
+      "cd99fed29 fix(theme): pin text tracking to normal, matching the Tailwind source",
+      "d4f0efe9e wip: visual-pass fidelity edits against beui.dev (UNVERIFIED)",
+      "c6cfb0be5 style: dart format touched barrel and test files",
+      "5428781bd test(feedback-widget): assert the morph blur on the observable view swap"
+    ],
+    "author_vs_current3444": {
+      "pixels": 0,
+      "size": [
+        800,
+        600
+      ]
+    },
+    "author_render_vs_golden": {
+      "pixels": 4,
+      "size": [
+        800,
+        600
+      ]
+    },
+    "current3444_vs_golden": {
+      "pixels": 4,
+      "size": [
+        800,
+        600
+      ]
+    },
+    "number": 36,
+    "classification": "environment/toolchain drift",
+    "reason": "Current source and author-commit rendering are pixel-identical on isolated Flutter 3.44.4 / Dart 3.12.2 on this host. Author/current retain 4 differing pixels against the historical reference. 3.47.1 fails. No source/reference edit recommended.",
+    "causal_commits": [],
+    "author_control": "author-pinned-c54f39ffb",
+    "before_sha256": "10f6f88479522e0228e97edb68f02a5b520d08dcee92b064bf94882762de9dca",
+    "before_dimensions": [
+      800,
+      600
+    ],
+    "after_sha256": "10f6f88479522e0228e97edb68f02a5b520d08dcee92b064bf94882762de9dca",
+    "after_dimensions": [
+      800,
+      600
+    ],
+    "comparison_exit": 1
+  },
+  {
+    "identity": "motion/file_diff_test.dart: settled golden (complete, open, tinted rows)",
+    "file": "test/motion/file_diff_test.dart",
+    "golden": "test/motion/goldens/beui_file_diff.png",
+    "author_commit": "a3465674930c0254f205a4208c58f343f6999857",
+    "date": "2026-08-18 15:12:29 +0530",
+    "subject": "test: cover the citations, rail, sidebar and image remediations",
+    "changes": [
+      "ad9adb944 ci: exclude proof fixtures from static gates",
+      "4e441e295 fix(agents): retain single-line diffs on narrow views",
+      "4fdec936f fix(agents): align diff tokens and replay layout",
+      "eca6b142a fix(agents): match diff and question transitions",
+      "7695b5ba2 test: adopt beuiTestApp in citations, carousel, dock and file-diff tests",
+      "28e0f4fa3 feat!: remove the deprecated API for 2.0",
+      "9c36ae64a refactor(code-block,file-diff): share the streaming status icon and disclosure chevron",
+      "229d20053 refactor: route every blur through beuiBlurSigma and share test helpers",
+      "70b6de737 docs: drop audit ticket ids from comments",
+      "6252d6d67 refactor: resolve BeuiColors through one helper",
+      "4e9517765 test: cover the unified pill, the pinned tool result, and the new strings",
+      "aa1b9e214 fix(motion): keep the tool-result scroll position across the overflow fade",
+      "be6a40cac fix(motion): theme the diff hunk copy and grow its hit target"
+    ],
+    "author_vs_current3444": {
+      "pixels": 72348,
+      "size": [
+        800,
+        600
+      ]
+    },
+    "author_render_vs_golden": {
+      "pixels": 8,
+      "size": [
+        800,
+        600
+      ]
+    },
+    "current3444_vs_golden": {
+      "pixels": 72348,
+      "size": [
+        800,
+        600
+      ]
+    },
+    "number": 37,
+    "classification": "intentional visual change",
+    "causal_commits": [
+      "eca6b142a",
+      "4fdec936f",
+      "4e441e295"
+    ],
+    "reason": "Diff token colors, replay/hunk layout and row geometry changed.",
+    "fixture_timing_repair_required": false,
+    "author_control": "author-lucide131-a34656749",
+    "before_sha256": "dca76f6b3869f89c5f1bf2aa3e41bd19adf759ddf817f3bcf11fd94cb86af8d6",
+    "before_dimensions": [
+      800,
+      600
+    ],
+    "after_sha256": "a47e28a66826859cb4cda17be97042a3789c7091af986afb16a1397baa5227d4",
+    "after_dimensions": [
+      800,
+      600
+    ],
+    "visual_review": "Diff rows, token ink and replay/footer control match the intentional layout. Horizontal code viewport remains intentional. Historical environment residual is included.",
+    "original_resolution_reviewed": true,
+    "contact_sheet_reviewed": true,
+    "causal_commit_full_hashes": [
+      "eca6b142a31040bb187aa2951d59344631315336",
+      "4fdec936f1471557f13a065a851f72904274ddf3",
+      "4e441e295f5693b44d5c072188791d923b235211"
+    ],
+    "comparison_exit": 0
+  },
+  {
+    "identity": "motion/file_tree_test.dart: rest-state golden",
+    "file": "test/motion/file_tree_test.dart",
+    "golden": "test/motion/goldens/beui_file_tree.png",
+    "author_commit": "0c80b0a48c8718d367da8af9d1acc0f8d1b3831b",
+    "date": "2026-10-22 14:50:43 +0530",
+    "subject": "feat(components): port remaining v3 motion widgets",
+    "changes": [
+      "a4bbd37ee fix(file-tree): expose disabled row actions",
+      "6f97bc3da fix(components): repair motion and state",
+      "86e2484c9 fix(components): hold demo width caps and file-tree dispose"
+    ],
+    "author_vs_current3444": {
+      "pixels": 140,
+      "size": [
+        800,
+        600
+      ]
+    },
+    "author_render_vs_golden": {
+      "pixels": 0,
+      "size": [
+        800,
+        600
+      ]
+    },
+    "current3444_vs_golden": {
+      "pixels": 140,
+      "size": [
+        800,
+        600
+      ]
+    },
+    "number": 38,
+    "classification": "intentional visual change",
+    "causal_commits": [
+      "6f97bc3da"
+    ],
+    "reason": "Selected/emphasized file icon now uses foreground instead of mutedForeground. All 140 changed pixels are localized to that icon; inspected enlarged crop.",
+    "fixture_timing_repair_required": false,
+    "author_control": "author-0c80b0a48",
+    "before_sha256": "be7f2ba661206f47827d7908f4c4ce2fc5a0c90ec4b77f120b3d76536ef1c4f8",
+    "before_dimensions": [
+      800,
+      600
+    ],
+    "after_sha256": "e0f4bcb9cfcff2e22015a972348cdcef841f1e49073e17fc6e0f82044f17ad94",
+    "after_dimensions": [
+      800,
+      600
+    ],
+    "visual_review": "Selected file icon uses foreground ink; tree indentation and rows remain unchanged in structure.",
+    "original_resolution_reviewed": true,
+    "contact_sheet_reviewed": true,
+    "causal_commit_full_hashes": [
+      "6f97bc3dac057d957baec7bc65f4f89ff535f420"
+    ],
+    "comparison_exit": 0
+  },
+  {
+    "identity": "motion/image_viewer_test.dart: rest-state golden (thumbnail gallery)",
+    "file": "test/motion/image_viewer_test.dart",
+    "golden": "test/motion/goldens/beui_image_viewer.png",
+    "author_commit": "0c80b0a48c8718d367da8af9d1acc0f8d1b3831b",
+    "date": "2026-10-22 14:50:43 +0530",
+    "subject": "feat(components): port remaining v3 motion widgets",
+    "changes": [
+      "066901f76 fix(image-viewer): match modal viewport and control spacing",
+      "4c066de99 fix(image-viewer): guard held gestures and refocus retained reopen",
+      "7c7675490 fix(image-viewer): isolate dismissed controls and accepted focus owner",
+      "1479c7d57 fix(image-viewer): restore zoom gestures focus and morph timing",
+      "b0a025f76 fix(motion): align v3 component behavior and demos",
+      "6f97bc3da fix(components): repair motion and state"
+    ],
+    "author_vs_current3444": {
+      "pixels": 4067,
+      "size": [
+        800,
+        600
+      ]
+    },
+    "author_render_vs_golden": {
+      "pixels": 0,
+      "size": [
+        800,
+        600
+      ]
+    },
+    "current3444_vs_golden": {
+      "pixels": 4067,
+      "size": [
+        800,
+        600
+      ]
+    },
+    "number": 39,
+    "classification": "intentional visual change",
+    "causal_commits": [
+      "b0a025f76",
+      "1479c7d57"
+    ],
+    "reason": "Thumbnail geometry and morph behavior changed; both thumbnails are shorter/narrower.",
+    "fixture_timing_repair_required": false,
+    "author_control": "author-0c80b0a48",
+    "before_sha256": "66af871f4f9034969bf8b030793973196e6d098259e223a090067cec352f0a80",
+    "before_dimensions": [
+      800,
+      600
+    ],
+    "after_sha256": "6a9ac7a412a199db9a67001ea319d600a100f1309824089f92fe475d8dd8b6f6",
+    "after_dimensions": [
+      800,
+      600
+    ],
+    "visual_review": "Both thumbnails retain complete rounded edges, with intentionally smaller geometry.",
+    "original_resolution_reviewed": true,
+    "contact_sheet_reviewed": true,
+    "causal_commit_full_hashes": [
+      "b0a025f763fbaff757bf5f9c3befed554b2a5fc2",
+      "1479c7d57fe6d7a8fc36b59f18f6710ab2bd33b3"
+    ],
+    "comparison_exit": 0
+  },
+  {
+    "identity": "motion/knockout_bracket_test.dart: rest-state golden",
+    "file": "test/motion/knockout_bracket_test.dart",
+    "golden": "test/motion/goldens/beui_knockout_bracket.png",
+    "author_commit": "cd99fed29310ec5b24137c5d95f5c3b778d7ef62",
+    "date": "2026-08-07 15:48:42 +0530",
+    "subject": "fix(theme): pin text tracking to normal, matching the Tailwind source",
+    "changes": [
+      "e8d0be8e1 test(knockout): sample real transforms instead of engine widget types",
+      "2d1527b87 refactor(knockout): dedupe initials, share the delayed-fade timer",
+      "e0f6d8dcb refactor: use stdlib and shared tokens instead of per-file copies",
+      "6252d6d67 refactor: resolve BeuiColors through one helper",
+      "922145eb7 docs: resolve 15 broken dartdoc references"
+    ],
+    "author_vs_current3444": {
+      "pixels": 0,
+      "size": [
+        1400,
+        1000
+      ]
+    },
+    "author_render_vs_golden": {
+      "pixels": 12,
+      "size": [
+        1400,
+        1000
+      ]
+    },
+    "current3444_vs_golden": {
+      "pixels": 12,
+      "size": [
+        1400,
+        1000
+      ]
+    },
+    "number": 40,
+    "classification": "environment/toolchain drift",
+    "reason": "Current source and author-commit rendering are pixel-identical on isolated Flutter 3.44.4 / Dart 3.12.2 on this host. Author/current retain 12 differing pixels against the historical reference. 3.47.1 fails. No source/reference edit recommended.",
+    "causal_commits": [],
+    "author_control": "author-pinned-cd99fed29",
+    "before_sha256": "3e57ba2ec4fb79b5db8c275cf0a6851702800b770c6a1ff84bca666b84733393",
+    "before_dimensions": [
+      1400,
+      1000
+    ],
+    "after_sha256": "3e57ba2ec4fb79b5db8c275cf0a6851702800b770c6a1ff84bca666b84733393",
+    "after_dimensions": [
+      1400,
+      1000
+    ],
+    "comparison_exit": 1
+  },
+  {
+    "identity": "motion/loader_test.dart: grid golden (all variants at first frame)",
+    "file": "test/motion/loader_test.dart",
+    "golden": "test/motion/goldens/beui_loader.png",
+    "author_commit": "cd99fed29310ec5b24137c5d95f5c3b778d7ef62",
+    "date": "2026-08-07 15:48:42 +0530",
+    "subject": "fix(theme): pin text tracking to normal, matching the Tailwind source",
+    "changes": [
+      "3c3832581 test: adopt beuiTestApp in image-generation, masonry, loader and scroller tests",
+      "dd8ab33a9 test: trim render-only variant loops in loader/loading_states",
+      "dfec58de3 refactor: share the glyph-scramble reveal across loader/reasoning/404",
+      "6252d6d67 refactor: resolve BeuiColors through one helper"
+    ],
+    "author_vs_current3444": {
+      "pixels": 0,
+      "size": [
+        501,
+        145
+      ]
+    },
+    "author_render_vs_golden": {
+      "pixels": 12,
+      "size": [
+        501,
+        145
+      ]
+    },
+    "current3444_vs_golden": {
+      "pixels": 12,
+      "size": [
+        501,
+        145
+      ]
+    },
+    "number": 41,
+    "classification": "environment/toolchain drift",
+    "reason": "Current source and author-commit rendering are pixel-identical on isolated Flutter 3.44.4 / Dart 3.12.2 on this host. Author/current retain 12 differing pixels against the historical reference. 3.47.1 fails. No source/reference edit recommended.",
+    "causal_commits": [],
+    "author_control": "author-pinned-cd99fed29",
+    "before_sha256": "16868f3c403e75f71db645d1edecc3205b8333b35be08968b278927e4203b139",
+    "before_dimensions": [
+      501,
+      145
+    ],
+    "after_sha256": "16868f3c403e75f71db645d1edecc3205b8333b35be08968b278927e4203b139",
+    "after_dimensions": [
+      501,
+      145
+    ],
+    "comparison_exit": 1
+  },
+  {
+    "identity": "motion/morphing_search_chips_test.dart: closed rest state matches golden",
+    "file": "test/motion/morphing_search_chips_test.dart",
+    "golden": "test/motion/goldens/beui_morphing_search_chips.png",
+    "author_commit": "4b9137f3ee46f52c048499341f035fb2353f5b87",
+    "date": "2026-10-22 14:22:01 +0530",
+    "subject": "feat(blocks): port six missing v3 catalog blocks",
+    "changes": [
+      "aace02b0a fix(blocks): harden v3 block interactions"
+    ],
+    "author_vs_current3444": {
+      "pixels": 12952,
+      "size": [
+        800,
+        600
+      ]
+    },
+    "author_render_vs_golden": {
+      "pixels": 0,
+      "size": [
+        800,
+        600
+      ]
+    },
+    "current3444_vs_golden": {
+      "pixels": 12952,
+      "size": [
+        800,
+        600
+      ]
+    },
+    "number": 42,
+    "classification": "intentional visual change",
+    "causal_commits": [
+      "aace02b0a"
+    ],
+    "reason": "Closed trigger now reserves/displays the searchable chip input layout; width and visible text changed.",
+    "fixture_timing_repair_required": false,
+    "author_control": "author-4b9137f3e",
+    "before_sha256": "0c3fd0c8e1715d02b1c24dba997b4440fe3c69f9f87f406398e9d9759ff14a72",
+    "before_dimensions": [
+      800,
+      600
+    ],
+    "after_sha256": "7cd265490b9efd06cc54d66e5d13cc75029d842042576c21e42d8afa0f1a2178",
+    "after_dimensions": [
+      800,
+      600
+    ],
+    "visual_review": "Closed trigger now includes the input alongside the existing chip; complete pill boundary is visible.",
+    "original_resolution_reviewed": true,
+    "contact_sheet_reviewed": true,
+    "causal_commit_full_hashes": [
+      "aace02b0a396618e7a7d4bcfc4c71b966de8867b"
+    ],
+    "comparison_exit": 0
+  },
+  {
+    "identity": "motion/morphing_tabs_test.dart: BeuiMorphingTabs rest state matches the reference golden",
+    "file": "test/motion/morphing_tabs_test.dart",
+    "golden": "test/motion/goldens/beui_morphing_tabs.png",
+    "author_commit": "4b9137f3ee46f52c048499341f035fb2353f5b87",
+    "date": "2026-10-22 14:22:01 +0530",
+    "subject": "feat(blocks): port six missing v3 catalog blocks",
+    "changes": [
+      "3a74c8572 fix(blocks): remove duplicate CTA focus stops",
+      "f0cb706cd fix(blocks): align v3 card, tab, and text behavior with source",
+      "aace02b0a fix(blocks): harden v3 block interactions"
+    ],
+    "author_vs_current3444": {
+      "pixels": 227686,
+      "size": [
+        800,
+        600
+      ]
+    },
+    "author_render_vs_golden": {
+      "pixels": 0,
+      "size": [
+        800,
+        600
+      ]
+    },
+    "current3444_vs_golden": {
+      "pixels": 227686,
+      "size": [
+        800,
+        600
+      ]
+    },
+    "number": 43,
+    "classification": "intentional visual change",
+    "causal_commits": [
+      "f0cb706cd"
+    ],
+    "reason": "Source card/tab colors and geometry changed, including outer dark surface.",
+    "fixture_timing_repair_required": false,
+    "author_control": "author-4b9137f3e",
+    "before_sha256": "1928ac5c13223e949e37207af2d77eec2dfc4fa30277f33e5a173a132e95ee3f",
+    "before_dimensions": [
+      800,
+      600
+    ],
+    "after_sha256": "8a03efd72f671b3516d542e527154469acf21cbb8bf18c0d2e5ae9185f4a49ac",
+    "after_dimensions": [
+      800,
+      600
+    ],
+    "visual_review": "Dark outer tab surface and light content geometry match intended colors; tab labels and content remain inside.",
+    "original_resolution_reviewed": true,
+    "contact_sheet_reviewed": true,
+    "causal_commit_full_hashes": [
+      "f0cb706cd9d3cd0f336f32d3594ef22c6c44eb8b"
+    ],
+    "comparison_exit": 0
+  },
+  {
+    "identity": "motion/popover_morph_test.dart: open-state golden",
+    "file": "test/motion/popover_morph_test.dart",
+    "golden": "test/motion/goldens/beui_popover_morph.png",
+    "author_commit": "cd99fed29310ec5b24137c5d95f5c3b778d7ef62",
+    "date": "2026-08-07 15:48:42 +0530",
+    "subject": "fix(theme): pin text tracking to normal, matching the Tailwind source",
+    "changes": [
+      "b7977d4d1 test: adopt beuiTestApp in popover and preview-rail tests",
+      "2e4a38fd0 refactor(popover): route panel-reveal motion through motionFor",
+      "1fd439ef5 test(popover-morph): read the scale matrix instead of Transform presence",
+      "e0f6d8dcb refactor: use stdlib and shared tokens instead of per-file copies",
+      "6252d6d67 refactor: resolve BeuiColors through one helper"
+    ],
+    "author_vs_current3444": {
+      "pixels": 0,
+      "size": [
+        800,
+        600
+      ]
+    },
+    "author_render_vs_golden": {
+      "pixels": 0,
+      "size": [
+        800,
+        600
+      ]
+    },
+    "current3444_vs_golden": {
+      "pixels": 0,
+      "size": [
+        800,
+        600
+      ]
+    },
+    "number": 44,
+    "classification": "environment/toolchain drift",
+    "reason": "Current source and author-commit rendering are pixel-identical on isolated Flutter 3.44.4 / Dart 3.12.2 on this host. Author/current retain 0 differing pixels against the historical reference. 3.47.1 fails. No source/reference edit recommended.",
+    "causal_commits": [],
+    "author_control": "author-pinned-cd99fed29",
+    "before_sha256": "ce03cbfaedbcda818134240fd79344cf213a23931101d5cf85b9682d0be66d42",
+    "before_dimensions": [
+      800,
+      600
+    ],
+    "after_sha256": "ce03cbfaedbcda818134240fd79344cf213a23931101d5cf85b9682d0be66d42",
+    "after_dimensions": [
+      800,
+      600
+    ],
+    "comparison_exit": 1
+  },
+  {
+    "identity": "motion/prediction_market_card_test.dart: rest-state golden",
+    "file": "test/motion/prediction_market_card_test.dart",
+    "golden": "test/motion/goldens/beui_prediction_market_card.png",
+    "author_commit": "4b9137f3ee46f52c048499341f035fb2353f5b87",
+    "date": "2026-10-22 14:22:01 +0530",
+    "subject": "feat(blocks): port six missing v3 catalog blocks",
+    "changes": [
+      "c8ef8a2cb fix(blocks): restore the CTA keyboard focus ring",
+      "a244fe35a fix(blocks): retain the clicked outcome for keyboard",
+      "3a74c8572 fix(blocks): remove duplicate CTA focus stops",
+      "f0cb706cd fix(blocks): align v3 card, tab, and text behavior with source",
+      "aace02b0a fix(blocks): harden v3 block interactions"
+    ],
+    "author_vs_current3444": {
+      "pixels": 50956,
+      "size": [
+        800,
+        600
+      ]
+    },
+    "author_render_vs_golden": {
+      "pixels": 0,
+      "size": [
+        800,
+        600
+      ]
+    },
+    "current3444_vs_golden": {
+      "pixels": 50956,
+      "size": [
+        800,
+        600
+      ]
+    },
+    "number": 45,
+    "classification": "intentional visual change",
+    "causal_commits": [
+      "f0cb706cd"
+    ],
+    "reason": "Outcome button colors/layout, sparkline and card geometry changed.",
+    "fixture_timing_repair_required": false,
+    "author_control": "author-4b9137f3e",
+    "before_sha256": "dfa111adc6952d9ef00e573580c01585af60cc0f960b07b7701b95baae7d9fe6",
+    "before_dimensions": [
+      800,
+      600
+    ],
+    "after_sha256": "c3bca3ec2814fd12c97cfe4da184a5e64edbddcd44013089c6818b1baa2b394a",
+    "after_dimensions": [
+      800,
+      600
+    ],
+    "visual_review": "Green/red outcome buttons and green sparkline appear in the complete card. Source card layout is retained.",
+    "original_resolution_reviewed": true,
+    "contact_sheet_reviewed": true,
+    "causal_commit_full_hashes": [
+      "f0cb706cd9d3cd0f336f32d3594ef22c6c44eb8b"
+    ],
+    "comparison_exit": 0
+  },
+  {
+    "identity": "motion/prompt_input_test.dart: rest-state golden",
+    "file": "test/motion/prompt_input_test.dart",
+    "golden": "test/motion/goldens/beui_prompt_input.png",
+    "author_commit": "cd99fed29310ec5b24137c5d95f5c3b778d7ef62",
+    "date": "2026-08-07 15:48:42 +0530",
+    "subject": "fix(theme): pin text tracking to normal, matching the Tailwind source",
+    "changes": [
+      "08a006498 test: extend beuiTestApp and adopt it in the a-p motion tests",
+      "701f63e3d refactor(prompt-input): drop redundant reduce ternary on pre-resolved motion",
+      "5eb393a0d fix(prompt-input): key the row-measurement cache on maxRows",
+      "a07a7bfcb refactor(prompt-input): drop dead dim branch, share composer metrics",
+      "6252d6d67 refactor: resolve BeuiColors through one helper",
+      "e1a564946 fix(motion): resolve widget copy defaults through the strings role",
+      "afc1e8ccc test(prompt-input): cover the keyboard and attachment paths",
+      "3ffcca79c fix(feedback): keep the draft, announce the outcome, reach the controls",
+      "adc04b134 fix(prompt-input): keyboard, attachments, and an Enter that does something",
+      "e2e319708 feat: add BeuiAgentTheme and expandable approval cards"
+    ],
+    "author_vs_current3444": {
+      "pixels": 0,
+      "size": [
+        800,
+        600
+      ]
+    },
+    "author_render_vs_golden": {
+      "pixels": 6,
+      "size": [
+        800,
+        600
+      ]
+    },
+    "current3444_vs_golden": {
+      "pixels": 6,
+      "size": [
+        800,
+        600
+      ]
+    },
+    "number": 46,
+    "classification": "environment/toolchain drift",
+    "reason": "Current source and author-commit rendering are pixel-identical on isolated Flutter 3.44.4 / Dart 3.12.2 on this host. Author/current retain 6 differing pixels against the historical reference. 3.47.1 fails. No source/reference edit recommended.",
+    "causal_commits": [],
+    "author_control": "author-pinned-cd99fed29",
+    "before_sha256": "d65de51d33739f09c8d58d4e3b2772a8a7c4b0bed0e9ae96683ee986c958f6b9",
+    "before_dimensions": [
+      800,
+      600
+    ],
+    "after_sha256": "d65de51d33739f09c8d58d4e3b2772a8a7c4b0bed0e9ae96683ee986c958f6b9",
+    "after_dimensions": [
+      800,
+      600
+    ],
+    "comparison_exit": 1
+  },
+  {
+    "identity": "motion/select_test.dart: rest-state golden (default + morph closed)",
+    "file": "test/motion/select_test.dart",
+    "golden": "test/motion/goldens/beui_select.png",
+    "author_commit": "cd99fed29310ec5b24137c5d95f5c3b778d7ef62",
+    "date": "2026-08-07 15:48:42 +0530",
+    "subject": "fix(theme): pin text tracking to normal, matching the Tailwind source",
+    "changes": [
+      "c750374ba refactor(select, table): route panel/chevron reduce swaps through motionFor",
+      "2b152ebf8 refactor(select): share state between BeuiSelect and BeuiMorphSelect",
+      "e0f6d8dcb refactor: use stdlib and shared tokens instead of per-file copies",
+      "6252d6d67 refactor: resolve BeuiColors through one helper",
+      "6f9f3c516 feat(select): let an option carry a leading icon"
+    ],
+    "author_vs_current3444": {
+      "pixels": 0,
+      "size": [
+        800,
+        600
+      ]
+    },
+    "author_render_vs_golden": {
+      "pixels": 4,
+      "size": [
+        800,
+        600
+      ]
+    },
+    "current3444_vs_golden": {
+      "pixels": 4,
+      "size": [
+        800,
+        600
+      ]
+    },
+    "number": 47,
+    "classification": "environment/toolchain drift",
+    "reason": "Current source and author-commit rendering are pixel-identical on isolated Flutter 3.44.4 / Dart 3.12.2 on this host. Author/current retain 4 differing pixels against the historical reference. 3.47.1 fails. No source/reference edit recommended.",
+    "causal_commits": [],
+    "author_control": "author-pinned-cd99fed29",
+    "before_sha256": "8b3feaaa3e29f91c011852f0138fd68c2a53523cfba834bf73f8067f064185e6",
+    "before_dimensions": [
+      800,
+      600
+    ],
+    "after_sha256": "8b3feaaa3e29f91c011852f0138fd68c2a53523cfba834bf73f8067f064185e6",
+    "after_dimensions": [
+      800,
+      600
+    ],
+    "comparison_exit": 1
+  },
+  {
+    "identity": "motion/signup_form_test.dart: rest-state golden",
+    "file": "test/motion/signup_form_test.dart",
+    "golden": "test/motion/goldens/beui_signup_form.png",
+    "author_commit": "4b9137f3ee46f52c048499341f035fb2353f5b87",
+    "date": "2026-10-22 14:22:01 +0530",
+    "subject": "feat(blocks): port six missing v3 catalog blocks",
+    "changes": [
+      "1dca20f4c fix(signup): retain source message exits and timing",
+      "250a649c0 fix(signup): retain the confirmation field gap",
+      "af4522f83 fix(signup): match source typography and field spacing",
+      "25b395e71 fix(signup): associate terms label with its checkbox",
+      "e81e9cc2d fix(signup): announce password reveal once",
+      "ea2024e3b fix(input): expose signup reveal as an independent action",
+      "aace02b0a fix(blocks): harden v3 block interactions"
+    ],
+    "author_vs_current3444": {
+      "pixels": 124911,
+      "size": [
+        480,
+        1000
+      ]
+    },
+    "author_render_vs_golden": {
+      "pixels": 0,
+      "size": [
+        480,
+        1000
+      ]
+    },
+    "current3444_vs_golden": {
+      "pixels": 124911,
+      "size": [
+        480,
+        1000
+      ]
+    },
+    "number": 48,
+    "classification": "intentional visual change",
+    "causal_commits": [
+      "af4522f83",
+      "250a649c0"
+    ],
+    "reason": "Typography, fields and confirmation gap changed; fixture output bounds also change. Review intended capture bounds before updating.",
+    "fixture_timing_repair_required": false,
+    "author_control": "author-4b9137f3e",
+    "before_sha256": "7eb907cfb3b90061bd33cc917bea2b27f7271889a0f30b12e74c753fe944fe34",
+    "before_dimensions": [
+      480,
+      1000
+    ],
+    "after_sha256": "9cfaaa325025be32dfc8ad4f5107ad36e8465fdf17fce6b7c864e4d16d8aa666",
+    "after_dimensions": [
+      480,
+      1000
+    ],
+    "visual_review": "Both old and new images are 480x1000. The new card spans approximately y=161..839, compared with y=217..783 before. Title, four fields, terms and submit fit. No capture-bound correction or test edit is necessary; the triage phrase about changed output bounds referred to content geometry, not PNG dimensions.",
+    "original_resolution_reviewed": true,
+    "contact_sheet_reviewed": true,
+    "causal_commit_full_hashes": [
+      "af4522f83519ef18b909075aac27ab02fb92bc79",
+      "250a649c05cdc816a263da5de285a66dc4e6a253"
+    ],
+    "comparison_exit": 0
+  },
+  {
+    "identity": "motion/sortable_list_test.dart: rest-state golden",
+    "file": "test/motion/sortable_list_test.dart",
+    "golden": "test/motion/goldens/beui_sortable_list.png",
+    "author_commit": "0c80b0a48c8718d367da8af9d1acc0f8d1b3831b",
+    "date": "2026-10-22 14:50:43 +0530",
+    "subject": "feat(components): port remaining v3 motion widgets",
+    "changes": [
+      "91819aa8e fix(sortable): correct undo and handle focus",
+      "6f97bc3da fix(components): repair motion and state"
+    ],
+    "author_vs_current3444": {
+      "pixels": 2979,
+      "size": [
+        800,
+        600
+      ]
+    },
+    "author_render_vs_golden": {
+      "pixels": 0,
+      "size": [
+        800,
+        600
+      ]
+    },
+    "current3444_vs_golden": {
+      "pixels": 2979,
+      "size": [
+        800,
+        600
+      ]
+    },
+    "number": 49,
+    "classification": "intentional visual change",
+    "causal_commits": [
+      "6f97bc3da",
+      "91819aa8e"
+    ],
+    "reason": "Handle/undo styles and focus treatment changed; retained rows and undo control shift visually.",
+    "fixture_timing_repair_required": false,
+    "author_control": "author-0c80b0a48",
+    "before_sha256": "29558eb41f5f83c781deb8ba0bf05a4bc24a9ae6169fd841abd1569b12d72fed",
+    "before_dimensions": [
+      800,
+      600
+    ],
+    "after_sha256": "caf6421c2094d8ca16c89c280d25d43d1312e0654fcb947b1df568fa482879f9",
+    "after_dimensions": [
+      800,
+      600
+    ],
+    "visual_review": "Three rows and undo control remain intact with revised handles, ink and spacing.",
+    "original_resolution_reviewed": true,
+    "contact_sheet_reviewed": true,
+    "causal_commit_full_hashes": [
+      "6f97bc3dac057d957baec7bc65f4f89ff535f420",
+      "91819aa8eb30cfb7d839b4e707309fef965944ab"
+    ],
+    "comparison_exit": 0
+  },
+  {
+    "identity": "motion/table_test.dart: rest-state golden (data table with selection + sort)",
+    "file": "test/motion/table_test.dart",
+    "golden": "test/motion/goldens/beui_table.png",
+    "author_commit": "cd99fed29310ec5b24137c5d95f5c3b778d7ef62",
+    "date": "2026-08-07 15:48:42 +0530",
+    "subject": "fix(theme): pin text tracking to normal, matching the Tailwind source",
+    "changes": [
+      "ad9adb944 ci: exclude proof fixtures from static gates",
+      "450699dec fix(table): preserve collapsed vertical grid geometry",
+      "3e1c3f4bb fix(table): sample fractional source viewport ranges",
+      "4e4065cd0 fix(table): match source intrinsic header geometry",
+      "654f5a218 feat(table): add opt-in intrinsic sizing",
+      "d0ca87794 fix(table): retain initial drag displacement",
+      "47e05f46e fix(table): preserve menus and native keyboard input",
+      "c750374ba refactor(select, table): route panel/chevron reduce swaps through motionFor",
+      "4388cb976 refactor(table): merge the row/column handle and inline text field pairs",
+      "6252d6d67 refactor: resolve BeuiColors through one helper",
+      "6193390a4 fix: pin flutter_lucide to a version the referenced glyphs exist in",
+      "922145eb7 docs: resolve 15 broken dartdoc references"
+    ],
+    "author_vs_current3444": {
+      "pixels": 0,
+      "size": [
+        800,
+        600
+      ]
+    },
+    "author_render_vs_golden": {
+      "pixels": 10,
+      "size": [
+        800,
+        600
+      ]
+    },
+    "current3444_vs_golden": {
+      "pixels": 10,
+      "size": [
+        800,
+        600
+      ]
+    },
+    "number": 50,
+    "classification": "environment/toolchain drift",
+    "reason": "Current source and author-commit rendering are pixel-identical on isolated Flutter 3.44.4 / Dart 3.12.2 on this host. Author/current retain 10 differing pixels against the historical reference. 3.47.1 fails. No source/reference edit recommended.",
+    "causal_commits": [],
+    "author_control": "author-pinned-cd99fed29",
+    "before_sha256": "23eef8f2f8a618924230fb42714f89754e4953f3c86993b86afa41a5aaf76d43",
+    "before_dimensions": [
+      800,
+      600
+    ],
+    "after_sha256": "23eef8f2f8a618924230fb42714f89754e4953f3c86993b86afa41a5aaf76d43",
+    "after_dimensions": [
+      800,
+      600
+    ],
+    "comparison_exit": 1
+  },
+  {
+    "identity": "motion/tabs_test.dart: rest-state golden (all three variants)",
+    "file": "test/motion/tabs_test.dart",
+    "golden": "test/motion/goldens/beui_tabs.png",
+    "author_commit": "0c80b0a48c8718d367da8af9d1acc0f8d1b3831b",
+    "date": "2026-10-22 14:50:43 +0530",
+    "subject": "feat(components): port remaining v3 motion widgets",
+    "changes": [
+      "aa0a372f6 fix(tabs): retain native focus without filling triggers",
+      "dfe5bd4e5 fix(tabs): paint underline inside the trigger",
+      "b0a025f76 fix(motion): align v3 component behavior and demos",
+      "6f97bc3da fix(components): repair motion and state"
+    ],
+    "author_vs_current3444": {
+      "pixels": 136,
+      "size": [
+        800,
+        600
+      ]
+    },
+    "author_render_vs_golden": {
+      "pixels": 0,
+      "size": [
+        800,
+        600
+      ]
+    },
+    "current3444_vs_golden": {
+      "pixels": 136,
+      "size": [
+        800,
+        600
+      ]
+    },
+    "number": 51,
+    "classification": "intentional visual change",
+    "causal_commits": [
+      "dfe5bd4e5",
+      "aa0a372f6"
+    ],
+    "reason": "Underline moved inside the trigger and focus fill was removed; 136 pixels differ on 3.44.4.",
+    "fixture_timing_repair_required": false,
+    "author_control": "author-0c80b0a48",
+    "before_sha256": "e2eb1d6214b68489aea42ba9e16626033b0621d62b0196f073218dac9b08a57d",
+    "before_dimensions": [
+      800,
+      600
+    ],
+    "after_sha256": "2c9ef5d32cf9f6ca88446d1d9dec76520a1d606b0dfe9ae361ea7015a4a0ab27",
+    "after_dimensions": [
+      800,
+      600
+    ],
+    "visual_review": "All three tab variants fit; the bottom underline is now inside the trigger, with revised focus fill.",
+    "original_resolution_reviewed": true,
+    "contact_sheet_reviewed": true,
+    "causal_commit_full_hashes": [
+      "dfe5bd4e5e63da2249ad4b11b05cb35e1ecbbe59",
+      "aa0a372f62d51a50d39651e4e94a2481b6b028ad"
+    ],
+    "comparison_exit": 0
+  },
+  {
+    "identity": "motion/todo_list_test.dart: golden \u2014 in-flight plan with all four row states",
+    "file": "test/motion/todo_list_test.dart",
+    "golden": "test/motion/goldens/beui_todo_list.png",
+    "author_commit": "0182784564a257449261b2be0545791ecc3c2807",
+    "date": "2026-08-18 14:55:18 +0530",
+    "subject": "feat(motion): finish the agent work-surface audit fixes",
+    "changes": [
+      "2b19e1c21 test: adopt beuiTestApp in tilt-card and todo-list tests",
+      "c89dc8a21 refactor(todo-list, tool-approval): route reduce swaps through motionFor",
+      "5eb393a0d fix(prompt-input): key the row-measurement cache on maxRows",
+      "cd6f6e952 refactor(streaming-response): move action press/hover state into _ResponseAction",
+      "2a729aa00 refactor: share the disclosure chevron and compress changelog comments",
+      "70b6de737 docs: drop audit ticket ids from comments",
+      "6252d6d67 refactor: resolve BeuiColors through one helper",
+      "d31e17854 fix(motion): make reduced-motion reveals actually arrive",
+      "68cd7801b feat(theme): fill the agent-strings gaps left by the cluster passes"
+    ],
+    "author_vs_current3444": {
+      "pixels": 0,
+      "size": [
+        380,
+        196
+      ]
+    },
+    "author_render_vs_golden": {
+      "pixels": 4,
+      "size": [
+        380,
+        196
+      ]
+    },
+    "current3444_vs_golden": {
+      "pixels": 4,
+      "size": [
+        380,
+        196
+      ]
+    },
+    "number": 52,
+    "classification": "environment/toolchain drift",
+    "reason": "Current source and author-commit rendering are pixel-identical on isolated Flutter 3.44.4 / Dart 3.12.2 on this host. Author/current retain 4 differing pixels against the historical reference. 3.47.1 fails. No source/reference edit recommended.",
+    "causal_commits": [],
+    "author_control": "author-lucide131-018278456",
+    "before_sha256": "bd875668b2d4f0690b3fd11d1f4cfcf26630a59f96645fe37c7f6cf31cbee046",
+    "before_dimensions": [
+      380,
+      196
+    ],
+    "after_sha256": "bd875668b2d4f0690b3fd11d1f4cfcf26630a59f96645fe37c7f6cf31cbee046",
+    "after_dimensions": [
+      380,
+      196
+    ],
+    "comparison_exit": 1
+  },
+  {
+    "identity": "motion/tool_approval_test.dart: BeuiToolApproval golden \u2014 pending, destructive, and approved tiers",
+    "file": "test/motion/tool_approval_test.dart",
+    "golden": "test/motion/goldens/beui_tool_approval.png",
+    "author_commit": "7cda4f75388ec932ed97e781d4b38a0e6a8e0a83",
+    "date": "2026-08-18 14:48:02 +0530",
+    "subject": "fix(motion): make the approval hit targets real, and add the goldens",
+    "changes": [
+      "4ca1c6193 test: adopt beuiTestApp throughout tool_approval_test.dart",
+      "c89dc8a21 refactor(todo-list, tool-approval): route reduce swaps through motionFor",
+      "5eb393a0d fix(prompt-input): key the row-measurement cache on maxRows",
+      "f9d9f4773 refactor(tool-approval): drop the file-wide lint ignore and share the chevron",
+      "70b6de737 docs: drop audit ticket ids from comments",
+      "6252d6d67 refactor: resolve BeuiColors through one helper",
+      "68cd7801b feat(theme): fill the agent-strings gaps left by the cluster passes"
+    ],
+    "author_vs_current3444": {
+      "pixels": 0,
+      "size": [
+        460,
+        830
+      ]
+    },
+    "author_render_vs_golden": {
+      "pixels": 8,
+      "size": [
+        460,
+        830
+      ]
+    },
+    "current3444_vs_golden": {
+      "pixels": 8,
+      "size": [
+        460,
+        830
+      ]
+    },
+    "number": 53,
+    "classification": "environment/toolchain drift",
+    "reason": "Current source and author-commit rendering are pixel-identical on isolated Flutter 3.44.4 / Dart 3.12.2 on this host. Author/current retain 8 differing pixels against the historical reference. 3.47.1 fails. No source/reference edit recommended.",
+    "causal_commits": [],
+    "author_control": "author-lucide131-7cda4f753",
+    "before_sha256": "228fdfdf998074ff0a4e4894126c3bc76d12a253c00088ad47b80fdd00ba7e87",
+    "before_dimensions": [
+      460,
+      830
+    ],
+    "after_sha256": "228fdfdf998074ff0a4e4894126c3bc76d12a253c00088ad47b80fdd00ba7e87",
+    "after_dimensions": [
+      460,
+      830
+    ],
+    "comparison_exit": 1
+  },
+  {
+    "identity": "motion/tool_result_test.dart: BeuiToolResult golden \u2014 completed result with actions",
+    "file": "test/motion/tool_result_test.dart",
+    "golden": "test/motion/goldens/beui_tool_result.png",
+    "author_commit": "0182784564a257449261b2be0545791ecc3c2807",
+    "date": "2026-08-18 14:55:18 +0530",
+    "subject": "feat(motion): finish the agent work-surface audit fixes",
+    "changes": [
+      "553917f96 test: adopt beuiTestApp throughout tool_result_test.dart",
+      "5eb393a0d fix(prompt-input): key the row-measurement cache on maxRows",
+      "cd6f6e952 refactor(streaming-response): move action press/hover state into _ResponseAction",
+      "2a729aa00 refactor: share the disclosure chevron and compress changelog comments",
+      "70b6de737 docs: drop audit ticket ids from comments",
+      "6252d6d67 refactor: resolve BeuiColors through one helper",
+      "4e9517765 test: cover the unified pill, the pinned tool result, and the new strings",
+      "aa1b9e214 fix(motion): keep the tool-result scroll position across the overflow fade",
+      "259751479 feat(motion): unify the jump pill and pin the tool-result viewport"
+    ],
+    "author_vs_current3444": {
+      "pixels": 0,
+      "size": [
+        460,
+        162
+      ]
+    },
+    "author_render_vs_golden": {
+      "pixels": 10,
+      "size": [
+        460,
+        162
+      ]
+    },
+    "current3444_vs_golden": {
+      "pixels": 10,
+      "size": [
+        460,
+        162
+      ]
+    },
+    "number": 54,
+    "classification": "environment/toolchain drift",
+    "reason": "Current source and author-commit rendering are pixel-identical on isolated Flutter 3.44.4 / Dart 3.12.2 on this host. Author/current retain 10 differing pixels against the historical reference. 3.47.1 fails. No source/reference edit recommended.",
+    "causal_commits": [],
+    "author_control": "author-lucide131-018278456",
+    "before_sha256": "60c1734382a09290f64587589116e6a26be3da87fdbf28e1825c92a81ec78605",
+    "before_dimensions": [
+      460,
+      162
+    ],
+    "after_sha256": "60c1734382a09290f64587589116e6a26be3da87fdbf28e1825c92a81ec78605",
+    "after_dimensions": [
+      460,
+      162
+    ],
+    "comparison_exit": 1
+  },
+  {
+    "identity": "motion/wallet_card_test.dart: rest-state golden",
+    "file": "test/motion/wallet_card_test.dart",
+    "golden": "test/motion/goldens/beui_wallet_card.png",
+    "author_commit": "cd99fed29310ec5b24137c5d95f5c3b778d7ef62",
+    "date": "2026-08-07 15:48:42 +0530",
+    "subject": "fix(theme): pin text tracking to normal, matching the Tailwind source",
+    "changes": [
+      "a5dafb055 test: adopt beuiTestApp in tooltip, viewport-follow, wallet-card and wheel-picker tests",
+      "fab9a0433 refactor(swap, wallet-card): route reduce swaps and active flags through motionFor",
+      "477a77db6 fix(wallet): keep search results tappable",
+      "ca0a0e7ad fix(wallet): restore the panel entrance morph",
+      "5ee8730d1 test(wallet-card): dedupe and parameterise the balance/switcher tests",
+      "73ac23ace refactor(wallet-card): port MorphPanel onto BeuiOverlay",
+      "abd436dec refactor(swap): privatise internal helpers, share formatting, add BeuiSpinner",
+      "229d20053 refactor: route every blur through beuiBlurSigma and share test helpers",
+      "e0f6d8dcb refactor: use stdlib and shared tokens instead of per-file copies",
+      "6252d6d67 refactor: resolve BeuiColors through one helper",
+      "842087063 fix(wallet-card): replace removed LucideIcons.history with rotate_ccw_clock",
+      "922145eb7 docs: resolve 15 broken dartdoc references"
+    ],
+    "author_vs_current3444": {
+      "pixels": 0,
+      "size": [
+        800,
+        600
+      ]
+    },
+    "author_render_vs_golden": {
+      "pixels": 14,
+      "size": [
+        800,
+        600
+      ]
+    },
+    "current3444_vs_golden": {
+      "pixels": 14,
+      "size": [
+        800,
+        600
+      ]
+    },
+    "number": 55,
+    "classification": "environment/toolchain drift",
+    "reason": "Current source and author-commit rendering are pixel-identical on isolated Flutter 3.44.4 / Dart 3.12.2 on this host. Author/current retain 14 differing pixels against the historical reference. 3.47.1 fails. No source/reference edit recommended.",
+    "causal_commits": [],
+    "author_control": "author-pinned-cd99fed29",
+    "before_sha256": "20803b76bc03759a025f881714aeaf35486184a5c43a17e74bad6a2513421860",
+    "before_dimensions": [
+      800,
+      600
+    ],
+    "after_sha256": "20803b76bc03759a025f881714aeaf35486184a5c43a17e74bad6a2513421860",
+    "after_dimensions": [
+      800,
+      600
+    ],
+    "comparison_exit": 1
+  },
+  {
+    "identity": "motion/wheel_picker_test.dart: rest-state golden",
+    "file": "test/motion/wheel_picker_test.dart",
+    "golden": "test/motion/goldens/beui_wheel_picker.png",
+    "author_commit": "cd99fed29310ec5b24137c5d95f5c3b778d7ef62",
+    "date": "2026-08-07 15:48:42 +0530",
+    "subject": "fix(theme): pin text tracking to normal, matching the Tailwind source",
+    "changes": [
+      "a5dafb055 test: adopt beuiTestApp in tooltip, viewport-follow, wallet-card and wheel-picker tests",
+      "8fb822cba refactor: small dead-code and stdlib cleanups across motion widgets",
+      "6252d6d67 refactor: resolve BeuiColors through one helper"
+    ],
+    "author_vs_current3444": {
+      "pixels": 0,
+      "size": [
+        800,
+        600
+      ]
+    },
+    "author_render_vs_golden": {
+      "pixels": 0,
+      "size": [
+        800,
+        600
+      ]
+    },
+    "current3444_vs_golden": {
+      "pixels": 0,
+      "size": [
+        800,
+        600
+      ]
+    },
+    "number": 56,
+    "classification": "environment/toolchain drift",
+    "reason": "Current source and author-commit rendering are pixel-identical on isolated Flutter 3.44.4 / Dart 3.12.2 on this host. Author/current retain 0 differing pixels against the historical reference. 3.47.1 fails. No source/reference edit recommended.",
+    "causal_commits": [],
+    "author_control": "author-pinned-cd99fed29",
+    "before_sha256": "ef7b58c242d8a1192863abc5ff28f74f52174181d3056d024b180c3e38f5210e",
+    "before_dimensions": [
+      800,
+      600
+    ],
+    "after_sha256": "ef7b58c242d8a1192863abc5ff28f74f52174181d3056d024b180c3e38f5210e",
+    "after_dimensions": [
+      800,
+      600
+    ],
+    "comparison_exit": 1
+  }
+]

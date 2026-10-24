@@ -1,0 +1,702 @@
+{
+  "example": {
+    "key": "magnetic",
+    "id": "example/button-magnetic/magnetic",
+    "preview": "button-magnetic",
+    "family": "button",
+    "seed": "primary .35, secondary .25, outline .5",
+    "flows": [
+      "follow",
+      "hold",
+      "release",
+      "exit-reset",
+      "keyboard",
+      "reduced-motion"
+    ]
+  },
+  "origin": "source",
+  "theme": "dark",
+  "motion": "no-preference",
+  "checks": [
+    {
+      "name": "exact preview control count",
+      "actual": 3,
+      "expected": 3,
+      "pass": true
+    }
+  ],
+  "observations": [
+    {
+      "label": "rest",
+      "atMs": 4.124000000003434,
+      "observed": {
+        "url": "http://127.0.0.1:18120/source/?example=magnetic&theme=dark&captureProbe=1",
+        "reduce": false,
+        "active": {
+          "tag": "BODY",
+          "role": null,
+          "name": "Hover meSubtle pullStrong pull"
+        },
+        "probe": null,
+        "stage": {
+          "x": 344,
+          "y": 0,
+          "width": 592,
+          "height": 360,
+          "top": 0,
+          "right": 936,
+          "bottom": 360,
+          "left": 344
+        },
+        "controls": [
+          {
+            "tag": "MAIN",
+            "role": null,
+            "name": "Hover me\nSubtle pull\nStrong pull",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 344,
+              "y": 0,
+              "width": 592,
+              "height": 360,
+              "top": 0,
+              "right": 936,
+              "bottom": 360,
+              "left": 344
+            }
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "name": "Hover me",
+            "value": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 447.46875,
+              "y": 160,
+              "width": 126.34375,
+              "height": 40,
+              "top": 160,
+              "right": 573.8125,
+              "bottom": 200,
+              "left": 447.46875
+            }
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "name": "Subtle pull",
+            "value": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 589.8125,
+              "y": 160,
+              "width": 112.6875,
+              "height": 40,
+              "top": 160,
+              "right": 702.5,
+              "bottom": 200,
+              "left": 589.8125
+            }
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "name": "Strong pull",
+            "value": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 718.5,
+              "y": 160,
+              "width": 114.03125,
+              "height": 40,
+              "top": 160,
+              "right": 832.53125,
+              "bottom": 200,
+              "left": 718.5
+            }
+          }
+        ]
+      }
+    },
+    {
+      "label": "control-0-held",
+      "atMs": 483.4669589999976,
+      "observed": {
+        "url": "http://127.0.0.1:18120/source/?example=magnetic&theme=dark&captureProbe=1",
+        "reduce": false,
+        "active": {
+          "tag": "BUTTON",
+          "role": null,
+          "name": "Hover me"
+        },
+        "probe": null,
+        "stage": {
+          "x": 344,
+          "y": 0,
+          "width": 592,
+          "height": 360,
+          "top": 0,
+          "right": 936,
+          "bottom": 360,
+          "left": 344
+        },
+        "controls": [
+          {
+            "tag": "MAIN",
+            "role": null,
+            "name": "Hover me\nSubtle pull\nStrong pull",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 344,
+              "y": 0,
+              "width": 592,
+              "height": 360,
+              "top": 0,
+              "right": 936,
+              "bottom": 360,
+              "left": 344
+            }
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "name": "Hover me",
+            "value": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 460.3994140625,
+              "y": 161.39564514160156,
+              "width": 117.5272216796875,
+              "height": 37.208709716796875,
+              "top": 161.39564514160156,
+              "right": 577.9266357421875,
+              "bottom": 198.60435485839844,
+              "left": 460.3994140625
+            }
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "name": "Subtle pull",
+            "value": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 589.8125,
+              "y": 160,
+              "width": 112.6875,
+              "height": 40,
+              "top": 160,
+              "right": 702.5,
+              "bottom": 200,
+              "left": 589.8125
+            }
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "name": "Strong pull",
+            "value": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 718.5,
+              "y": 160,
+              "width": 114.03125,
+              "height": 40,
+              "top": 160,
+              "right": 832.53125,
+              "bottom": 200,
+              "left": 718.5
+            }
+          }
+        ]
+      }
+    },
+    {
+      "label": "control-0-semantics-geometry",
+      "rect": {
+        "x": 460.3994140625,
+        "y": 161.39564514160156,
+        "width": 117.5272216796875,
+        "height": 37.208709716796875,
+        "top": 161.39564514160156,
+        "right": 577.9266357421875,
+        "bottom": 198.60435485839844,
+        "left": 460.3994140625
+      },
+      "note": "Semantics bounds are not painted transform bounds. Compare native PNGs instead."
+    },
+    {
+      "label": "control-1-held",
+      "atMs": 1142.1020419999986,
+      "observed": {
+        "url": "http://127.0.0.1:18120/source/?example=magnetic&theme=dark&captureProbe=1",
+        "reduce": false,
+        "active": {
+          "tag": "BUTTON",
+          "role": null,
+          "name": "Subtle pull"
+        },
+        "probe": null,
+        "stage": {
+          "x": 344,
+          "y": 0,
+          "width": 592,
+          "height": 360,
+          "top": 0,
+          "right": 936,
+          "bottom": 360,
+          "left": 344
+        },
+        "controls": [
+          {
+            "tag": "MAIN",
+            "role": null,
+            "name": "Hover me\nSubtle pull\nStrong pull",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 344,
+              "y": 0,
+              "width": 592,
+              "height": 360,
+              "top": 0,
+              "right": 936,
+              "bottom": 360,
+              "left": 344
+            }
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "name": "Hover me",
+            "value": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 447.46923828125,
+              "y": 160,
+              "width": 126.34375,
+              "height": 40,
+              "top": 160,
+              "right": 573.81298828125,
+              "bottom": 200,
+              "left": 447.46923828125
+            }
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "name": "Subtle pull",
+            "value": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 599.2223510742188,
+              "y": 161.40184020996094,
+              "width": 104.78900146484375,
+              "height": 37.196319580078125,
+              "top": 161.40184020996094,
+              "right": 704.0113525390625,
+              "bottom": 198.59815979003906,
+              "left": 599.2223510742188
+            }
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "name": "Strong pull",
+            "value": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 718.5,
+              "y": 160,
+              "width": 114.03125,
+              "height": 40,
+              "top": 160,
+              "right": 832.53125,
+              "bottom": 200,
+              "left": 718.5
+            }
+          }
+        ]
+      }
+    },
+    {
+      "label": "control-1-semantics-geometry",
+      "rect": {
+        "x": 599.2223510742188,
+        "y": 161.40184020996094,
+        "width": 104.78900146484375,
+        "height": 37.196319580078125,
+        "top": 161.40184020996094,
+        "right": 704.0113525390625,
+        "bottom": 198.59815979003906,
+        "left": 599.2223510742188
+      },
+      "note": "Semantics bounds are not painted transform bounds. Compare native PNGs instead."
+    },
+    {
+      "label": "control-2-held",
+      "atMs": 1706.6342500000028,
+      "observed": {
+        "url": "http://127.0.0.1:18120/source/?example=magnetic&theme=dark&captureProbe=1",
+        "reduce": false,
+        "active": {
+          "tag": "BUTTON",
+          "role": null,
+          "name": "Strong pull"
+        },
+        "probe": null,
+        "stage": {
+          "x": 344,
+          "y": 0,
+          "width": 592,
+          "height": 360,
+          "top": 0,
+          "right": 936,
+          "bottom": 360,
+          "left": 344
+        },
+        "controls": [
+          {
+            "tag": "MAIN",
+            "role": null,
+            "name": "Hover me\nSubtle pull\nStrong pull",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 344,
+              "y": 0,
+              "width": 592,
+              "height": 360,
+              "top": 0,
+              "right": 936,
+              "bottom": 360,
+              "left": 344
+            }
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "name": "Hover me",
+            "value": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 447.46875,
+              "y": 160,
+              "width": 126.34375,
+              "height": 40,
+              "top": 160,
+              "right": 573.8125,
+              "bottom": 200,
+              "left": 447.46875
+            }
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "name": "Subtle pull",
+            "value": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 589.814697265625,
+              "y": 160,
+              "width": 112.6875,
+              "height": 40,
+              "top": 160,
+              "right": 702.502197265625,
+              "bottom": 200,
+              "left": 589.814697265625
+            }
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "name": "Strong pull",
+            "value": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 733.73095703125,
+              "y": 161.40074157714844,
+              "width": 106.0447998046875,
+              "height": 37.198516845703125,
+              "top": 161.40074157714844,
+              "right": 839.7757568359375,
+              "bottom": 198.59925842285156,
+              "left": 733.73095703125
+            }
+          }
+        ]
+      }
+    },
+    {
+      "label": "control-2-semantics-geometry",
+      "rect": {
+        "x": 733.73095703125,
+        "y": 161.40074157714844,
+        "width": 106.0447998046875,
+        "height": 37.198516845703125,
+        "top": 161.40074157714844,
+        "right": 839.7757568359375,
+        "bottom": 198.59925842285156,
+        "left": 733.73095703125
+      },
+      "note": "Semantics bounds are not painted transform bounds. Compare native PNGs instead."
+    },
+    {
+      "label": "exit-reset",
+      "atMs": 2399.609292000001,
+      "observed": {
+        "url": "http://127.0.0.1:18120/source/?example=magnetic&theme=dark&captureProbe=1",
+        "reduce": false,
+        "active": {
+          "tag": "BUTTON",
+          "role": null,
+          "name": "Strong pull"
+        },
+        "probe": null,
+        "stage": {
+          "x": 344,
+          "y": 0,
+          "width": 592,
+          "height": 360,
+          "top": 0,
+          "right": 936,
+          "bottom": 360,
+          "left": 344
+        },
+        "controls": [
+          {
+            "tag": "MAIN",
+            "role": null,
+            "name": "Hover me\nSubtle pull\nStrong pull",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 344,
+              "y": 0,
+              "width": 592,
+              "height": 360,
+              "top": 0,
+              "right": 936,
+              "bottom": 360,
+              "left": 344
+            }
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "name": "Hover me",
+            "value": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 447.46875,
+              "y": 160,
+              "width": 126.34375,
+              "height": 40,
+              "top": 160,
+              "right": 573.8125,
+              "bottom": 200,
+              "left": 447.46875
+            }
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "name": "Subtle pull",
+            "value": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 589.8125,
+              "y": 160,
+              "width": 112.6875,
+              "height": 40,
+              "top": 160,
+              "right": 702.5,
+              "bottom": 200,
+              "left": 589.8125
+            }
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "name": "Strong pull",
+            "value": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 718.5,
+              "y": 160,
+              "width": 114.03125,
+              "height": 40,
+              "top": 160,
+              "right": 832.53125,
+              "bottom": 200,
+              "left": 718.5
+            }
+          }
+        ]
+      }
+    },
+    {
+      "label": "keyboard",
+      "atMs": 2674.0968340000036,
+      "observed": {
+        "url": "http://127.0.0.1:18120/source/?example=magnetic&theme=dark&captureProbe=1",
+        "reduce": false,
+        "active": {
+          "tag": "BODY",
+          "role": null,
+          "name": "Hover meSubtle pullStrong pull"
+        },
+        "probe": null,
+        "stage": {
+          "x": 344,
+          "y": 0,
+          "width": 592,
+          "height": 360,
+          "top": 0,
+          "right": 936,
+          "bottom": 360,
+          "left": 344
+        },
+        "controls": [
+          {
+            "tag": "MAIN",
+            "role": null,
+            "name": "Hover me\nSubtle pull\nStrong pull",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 344,
+              "y": 0,
+              "width": 592,
+              "height": 360,
+              "top": 0,
+              "right": 936,
+              "bottom": 360,
+              "left": 344
+            }
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "name": "Hover me",
+            "value": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 447.46875,
+              "y": 160,
+              "width": 126.34375,
+              "height": 40,
+              "top": 160,
+              "right": 573.8125,
+              "bottom": 200,
+              "left": 447.46875
+            }
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "name": "Subtle pull",
+            "value": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 589.8125,
+              "y": 160,
+              "width": 112.6875,
+              "height": 40,
+              "top": 160,
+              "right": 702.5,
+              "bottom": 200,
+              "left": 589.8125
+            }
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "name": "Strong pull",
+            "value": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 718.5,
+              "y": 160,
+              "width": 114.03125,
+              "height": 40,
+              "top": 160,
+              "right": 832.53125,
+              "bottom": 200,
+              "left": 718.5
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

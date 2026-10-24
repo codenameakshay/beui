@@ -1,0 +1,748 @@
+import 'package:beui/beui.dart';
+import 'package:flutter/gestures.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_test/flutter_test.dart';
+
+import '../support.dart';
+
+const _history = [
+  BeuiPriceHistoryPoint(date: '2025-09-14', price: 158.4),
+  BeuiPriceHistoryPoint(date: '2025-10-14', price: 164.2),
+  BeuiPriceHistoryPoint(date: '2025-11-14', price: 160.8),
+];
+const _targets = [
+  BeuiPriceTarget(key: 'High', price: 232, analysts: 9),
+  BeuiPriceTarget(key: 'Mean', price: 205, analysts: 34),
+  BeuiPriceTarget(key: 'Low', price: 168, analysts: 6),
+];
+
+Future<void> _pumpChart(
+  WidgetTester tester,
+  BeuiPriceTargetFan chart, {
+  bool reduce = false,
+}) async {
+  tester.view.physicalSize = const Size(800, 640);
+  tester.view.devicePixelRatio = 1;
+  addTearDown(() {
+    tester.view.resetPhysicalSize();
+    tester.view.resetDevicePixelRatio();
+  });
+  await tester.pumpWidget(beuiTestApp(chart, reduce: reduce, width: 640));
+  await tester.pumpAndSettle();
+}
+
+BeuiPriceTargetFan _chart({
+  BeuiPriceTargetFanActive? active,
+  BeuiPriceTargetFanActive? defaultActive,
+  ValueChanged<BeuiPriceTargetFanActive?>? onActiveChange,
+}) => BeuiPriceTargetFan(
+  current: 178.52,
+  targets: _targets,
+  history: _history,
+  dates: const BeuiPriceTargetDates(horizon: 'Sep 2027'),
+  active: active,
+  defaultActive: defaultActive,
+  onActiveChange: onActiveChange,
+);
+
+void main() {
+  testWidgets('native mouse target focus survives exit before Tab', (
+    tester,
+  ) async {
+    final changes = <BeuiPriceTargetFanActive?>[];
+    await _pumpChart(tester, _chart(onActiveChange: changes.add), reduce: true);
+    final high = find.byKey(const ValueKey('price-target-target-High'));
+    final mouse = await tester.createGesture(kind: PointerDeviceKind.mouse);
+    await mouse.addPointer(location: Offset.zero);
+    await mouse.moveTo(tester.getCenter(high));
+    await mouse.down(tester.getCenter(high));
+    await mouse.up();
+    await mouse.moveTo(Offset.zero);
+    await tester.pumpAndSettle();
+    await tester.sendKeyEvent(LogicalKeyboardKey.tab);
+    await tester.pumpAndSettle();
+    expect(changes.last, const BeuiPriceTargetFanActive.target('Mean'));
+    expect(find.text('Mean target'), findsOneWidget);
+    expect(find.text('Analysts'), findsOneWidget);
+    await tester.sendKeyEvent(LogicalKeyboardKey.escape);
+    await tester.pumpAndSettle();
+    expect(find.text('Analysts'), findsNothing);
+    await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+    await tester.pumpAndSettle();
+    expect(find.text('Mean target'), findsOneWidget);
+    expect(find.text('Analysts'), findsOneWidget);
+    await tester.sendKeyEvent(LogicalKeyboardKey.space);
+    await tester.pumpAndSettle();
+    expect(find.text('Analysts'), findsNothing);
+    await tester.sendKeyDownEvent(LogicalKeyboardKey.shiftLeft);
+    await tester.sendKeyEvent(LogicalKeyboardKey.tab);
+    await tester.sendKeyEvent(LogicalKeyboardKey.tab);
+    await tester.sendKeyUpEvent(LogicalKeyboardKey.shiftLeft);
+    await tester.pumpAndSettle();
+    expect(changes.last, const BeuiPriceTargetFanActive.history('2025-11-14'));
+    await tester.sendKeyEvent(LogicalKeyboardKey.tab);
+    await tester.pumpAndSettle();
+    expect(changes.last, const BeuiPriceTargetFanActive.target('High'));
+    await mouse.removePointer();
+  });
+
+  testWidgets('touch toggles on down while mouse activation keeps hover', (
+    tester,
+  ) async {
+    final changes = <BeuiPriceTargetFanActive?>[];
+    await _pumpChart(tester, _chart(onActiveChange: changes.add));
+    final high = find.byKey(const ValueKey('price-target-target-High'));
+    final point = tester.getCenter(high);
+    final touch = await tester.startGesture(point);
+    await tester.pump();
+    expect(changes.last, const BeuiPriceTargetFanActive.target('High'));
+    await touch.up();
+    await tester.pumpAndSettle();
+    final second = await tester.startGesture(point);
+    await tester.pump();
+    expect(changes.last, isNull);
+    await second.up();
+    // Flutter web follows touch-up with a touch-kind hover at the same point.
+    await tester.sendEventToBinding(
+      PointerHoverEvent(kind: PointerDeviceKind.touch, position: point),
+    );
+    await tester.pumpAndSettle();
+    expect(find.text('Analysts'), findsNothing);
+    final mouse = await tester.createGesture(kind: PointerDeviceKind.mouse);
+    await mouse.addPointer(location: Offset.zero);
+    await mouse.moveTo(point);
+    await tester.pumpAndSettle();
+    expect(changes.last, const BeuiPriceTargetFanActive.target('High'));
+    await mouse.down(point);
+    await mouse.up();
+    await tester.pumpAndSettle();
+    expect(changes.last, const BeuiPriceTargetFanActive.target('High'));
+    expect(find.text('Analysts'), findsOneWidget);
+    await mouse.removePointer();
+  });
+
+  testWidgets(
+    'target labels start ten pixels after dots and dim with projections',
+    (tester) async {
+      await _pumpChart(
+        tester,
+        _chart(defaultActive: const BeuiPriceTargetFanActive.target('High')),
+        reduce: true,
+      );
+      final plot = tester.getRect(find.byType(BeuiPriceTargetSvg));
+      expect(tester.getRect(find.text('232')).left - plot.left, 422);
+      final muted = tester.widget<Opacity>(
+        find
+            .ancestor(of: find.text('205'), matching: find.byType(Opacity))
+            .first,
+      );
+      expect(muted.opacity, .3);
+    },
+  );
+
+  testWidgets(
+    'now dot lands after 850ms and tail pulse is absent when reduced',
+    (tester) async {
+      Widget chart({bool reduce = false}) => beuiTestApp(
+        const BeuiPriceTargetFan(
+          current: 100,
+          targets: [
+            BeuiPriceTarget(key: 'High', price: 140),
+            BeuiPriceTarget(key: 'Mean', price: 120),
+            BeuiPriceTarget(key: 'Low', price: 80),
+          ],
+          child: BeuiPriceTargetNow(),
+        ),
+        reduce: reduce,
+      );
+      List<List<Object?>> circles() {
+        final canvas = TestRecordingCanvas();
+        final paint = tester.widget<CustomPaint>(
+          find.descendant(
+            of: find.byType(BeuiPriceTargetNow),
+            matching: find.byType(CustomPaint),
+          ),
+        );
+        paint.painter!.paint(canvas, const Size(520, 236));
+        return canvas.invocations
+            .where((call) => call.invocation.memberName == #drawCircle)
+            .map((call) => call.invocation.positionalArguments)
+            .toList();
+      }
+
+      await tester.pumpWidget(chart());
+      expect(circles().single[1], 0);
+      await tester.pump(const Duration(milliseconds: 800));
+      expect(circles().single[1], 0);
+      await tester.pump(const Duration(milliseconds: 50));
+      await tester.pump(const Duration(milliseconds: 100));
+      expect(circles().single[1] as double, inExclusiveRange(0, 3.2));
+      await tester.pump(const Duration(milliseconds: 650));
+      expect(circles(), hasLength(2));
+      await tester.pump(const Duration(milliseconds: 400));
+      final pulse = circles().last;
+      expect(pulse[1] as double, inExclusiveRange(3.2, 8.96));
+      expect((pulse[2] as Paint).color.a, inExclusiveRange(0, .45));
+      await tester.pumpWidget(chart(reduce: true));
+      expect(circles(), hasLength(1));
+      expect(circles().single[1], 3.2);
+      await tester.pump(const Duration(seconds: 4));
+      expect(circles(), hasLength(1));
+    },
+  );
+
+  testWidgets('source grid uses four nice dashed levels within the domain', (
+    tester,
+  ) async {
+    await _pumpChart(
+      tester,
+      const BeuiPriceTargetFan(
+        current: 100,
+        targets: [
+          BeuiPriceTarget(key: 'High', price: 140),
+          BeuiPriceTarget(key: 'Mean', price: 120),
+          BeuiPriceTarget(key: 'Low', price: 80),
+        ],
+      ),
+    );
+    final canvas = TestRecordingCanvas();
+    final paint = tester.widget<CustomPaint>(
+      find.descendant(
+        of: find.byType(BeuiPriceTargetAxes),
+        matching: find.byType(CustomPaint),
+      ),
+    );
+    paint.painter!.paint(canvas, const Size(520, 236));
+    final lines = canvas.invocations
+        .where((call) => call.invocation.memberName == #drawLine)
+        .map((call) => call.invocation.positionalArguments);
+    final rows = lines.map((line) => (line[0] as Offset).dy).toSet().toList()
+      ..sort();
+    expect(rows, hasLength(4));
+    for (var i = 0; i < rows.length; i++) {
+      expect(
+        rows[i],
+        closeTo([26.285714, 83.428571, 140.571429, 197.714286][i], .00001),
+      );
+    }
+    expect(lines.first[0], Offset(36, rows.last));
+    expect(lines.first[1], Offset(38, rows.last));
+    expect(lines.elementAt(1)[0], Offset(43, rows.last));
+    expect(lines.last[1], Offset(409, rows.first));
+  });
+
+  testWidgets(
+    'source tooltip has a 148px surface and static right-aligned metrics',
+    (tester) async {
+      await _pumpChart(
+        tester,
+        _chart(defaultActive: BeuiPriceTargetFanActive.target('High')),
+      );
+      final title = find.text('High target · Sep 2027');
+      final content = find.ancestor(
+        of: title,
+        matching: find.byWidgetPredicate(
+          (widget) => widget is SizedBox && widget.width == 126,
+        ),
+      );
+      expect(content, findsOneWidget);
+      expect(tester.getSize(content).width + 22, 148);
+      expect(tester.widget<Text>(title).style!.fontSize, 10);
+      expect(find.text(r'$232.00'), findsOneWidget);
+      final analysts = find.descendant(of: content, matching: find.text('9'));
+      expect(analysts, findsOneWidget);
+      expect(
+        find.descendant(of: content, matching: find.byType(BeuiNumberTicker)),
+        findsNothing,
+      );
+      expect(
+        tester.widget<Text>(find.text(r'$232.00')).style!.fontFamily,
+        'monospace',
+      );
+      expect(
+        tester.getRect(find.text(r'$232.00')).right,
+        tester.getRect(analysts).right,
+      );
+    },
+  );
+
+  testWidgets('renders accessible plot, history, and target buttons', (
+    tester,
+  ) async {
+    final semantics = tester.ensureSemantics();
+    await _pumpChart(tester, _chart());
+    expect(find.bySemanticsLabel(RegExp('Price target fan')), findsWidgets);
+    expect(find.text('232'), findsOneWidget);
+    expect(find.text('205'), findsOneWidget);
+    expect(find.bySemanticsLabel(RegExp('High target 232')), findsWidgets);
+    semantics.dispose();
+  });
+
+  testWidgets('header prices and percentage use animated tickers', (
+    tester,
+  ) async {
+    await _pumpChart(tester, _chart());
+    expect(find.byType(BeuiNumberTicker), findsNWidgets(2));
+    final tickers = tester.widgetList<BeuiNumberTicker>(
+      find.byType(BeuiNumberTicker),
+    );
+    expect(
+      tickers.map((ticker) => ticker.duration),
+      everyElement(const Duration(milliseconds: 500)),
+    );
+    expect(tickers.map((ticker) => ticker.prefix), contains(r'$'));
+    expect(tickers.map((ticker) => ticker.suffix), contains('%'));
+    expect(tickers.first.value, 20500);
+    expect(find.text('Mean target'), findsOneWidget);
+  });
+
+  testWidgets('history points sit left of the plot midpoint', (tester) async {
+    await _pumpChart(tester, _chart());
+    final plot = tester.getRect(find.byType(BeuiPriceTargetPlot));
+    final last = tester.getCenter(
+      find.byKey(const ValueKey('price-target-history-2025-11-14')),
+    );
+    expect(last.dx, lessThan(plot.left + plot.width * 0.62));
+  });
+
+  testWidgets('plot width cap remains inside Center', (tester) async {
+    await _pumpChart(tester, _chart());
+    final cappedPlot = find.descendant(
+      of: find.byType(BeuiPriceTargetPlot),
+      matching: find.byWidgetPredicate(
+        (widget) => widget is SizedBox && widget.width == 520,
+      ),
+    );
+    expect(cappedPlot, findsOneWidget);
+    expect(
+      find.ancestor(of: cappedPlot, matching: find.byType(Center)),
+      findsOneWidget,
+    );
+  });
+
+  testWidgets('current guide repaints when current changes in a boundary', (
+    tester,
+  ) async {
+    var current = 178.52;
+    var paints = 0;
+    late StateSetter update;
+    await tester.pumpWidget(
+      beuiTestApp(
+        StatefulBuilder(
+          builder: (context, setState) {
+            update = setState;
+            return BeuiPriceTargetFan(
+              current: current,
+              targets: _targets,
+              history: _history,
+              child: _PaintObserver(
+                onPaint: () => paints++,
+                child: const BeuiPriceTargetNow(),
+              ),
+            );
+          },
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+    final before = paints;
+    update(() => current = 188);
+    await tester.pump();
+    expect(paints, greaterThan(before));
+  });
+
+  testWidgets('axes repaint when current changes the price domain', (
+    tester,
+  ) async {
+    var current = 178.52;
+    var paints = 0;
+    late StateSetter update;
+    await tester.pumpWidget(
+      beuiTestApp(
+        StatefulBuilder(
+          builder: (context, setState) {
+            update = setState;
+            return BeuiPriceTargetFan(
+              current: current,
+              targets: _targets,
+              history: _history,
+              child: _PaintObserver(
+                onPaint: () => paints++,
+                child: const BeuiPriceTargetAxes(),
+              ),
+            );
+          },
+        ),
+      ),
+    );
+    final before = paints;
+    update(() => current = 250);
+    await tester.pump();
+    expect(paints, greaterThan(before));
+  });
+
+  testWidgets('history path repaints when history changes in a boundary', (
+    tester,
+  ) async {
+    var history = _history;
+    var paints = 0;
+    late StateSetter update;
+    await tester.pumpWidget(
+      beuiTestApp(
+        StatefulBuilder(
+          builder: (context, setState) {
+            update = setState;
+            return BeuiPriceTargetFan(
+              current: 178.52,
+              targets: _targets,
+              history: history,
+              child: _PaintObserver(
+                onPaint: () => paints++,
+                child: const BeuiPriceTargetHistory(),
+              ),
+            );
+          },
+        ),
+      ),
+    );
+    final before = paints;
+    update(
+      () => history = [
+        ..._history.take(2),
+        const BeuiPriceHistoryPoint(date: '2025-11-14', price: 185),
+      ],
+    );
+    await tester.pump();
+    expect(paints, greaterThan(before));
+  });
+
+  testWidgets('target paths repaint their origin when current changes', (
+    tester,
+  ) async {
+    var current = 178.52;
+    var paints = 0;
+    late StateSetter update;
+    await tester.pumpWidget(
+      beuiTestApp(
+        StatefulBuilder(
+          builder: (context, setState) {
+            update = setState;
+            return BeuiPriceTargetFan(
+              current: current,
+              targets: _targets,
+              history: _history,
+              child: _PaintObserver(
+                onPaint: () => paints++,
+                child: const BeuiPriceTargetTargets(),
+              ),
+            );
+          },
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+    double originY() {
+      final canvas = TestRecordingCanvas();
+      final paint = tester
+          .widgetList<CustomPaint>(
+            find.descendant(
+              of: find.byType(BeuiPriceTargetTargets),
+              matching: find.byType(CustomPaint),
+            ),
+          )
+          .first;
+      paint.painter!.paint(canvas, const Size(520, 236));
+      final path =
+          canvas.invocations
+                  .firstWhere((call) => call.invocation.memberName == #drawPath)
+                  .invocation
+                  .positionalArguments
+                  .first
+              as Path;
+      return path.computeMetrics().first.getTangentForOffset(0)!.position.dy;
+    }
+
+    expect(originY(), closeTo(150.85093, .001));
+    update(() => current = 188);
+    await tester.pump();
+    expect(originY(), closeTo(128.77019, .001));
+  });
+
+  testWidgets('history points can be inspected by hover and keyboard', (
+    tester,
+  ) async {
+    await _pumpChart(tester, _chart());
+    final point = find.byKey(const ValueKey('price-target-history-2025-10-14'));
+    await tester.ensureVisible(point);
+    final mouse = await tester.createGesture(kind: PointerDeviceKind.mouse);
+    await mouse.addPointer(location: Offset.zero);
+    addTearDown(mouse.removePointer);
+    await mouse.moveTo(tester.getCenter(point));
+    await tester.tap(point);
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 250));
+    await tester.pumpAndSettle();
+    expect(find.text('Tue, Oct 14'), findsWidgets);
+    expect(find.text('Price'), findsWidgets);
+
+    await tester.sendKeyEvent(LogicalKeyboardKey.home);
+    await tester.pump();
+    expect(find.text('Sun, Sep 14'), findsWidgets);
+  });
+
+  testWidgets('dragging from a history point selects the last history date', (
+    tester,
+  ) async {
+    BeuiPriceTargetFanActive? changed;
+    await _pumpChart(
+      tester,
+      _chart(onActiveChange: (value) => changed = value),
+    );
+    final first = tester.getCenter(
+      find.byKey(const ValueKey('price-target-history-2025-09-14')),
+    );
+    final last = tester.getCenter(
+      find.byKey(const ValueKey('price-target-history-2025-11-14')),
+    );
+    await tester.dragFrom(first, last - first);
+    await tester.pump();
+
+    expect(changed, const BeuiPriceTargetFanActive.history('2025-11-14'));
+  });
+
+  testWidgets('target hover exit restores the mean header', (tester) async {
+    await _pumpChart(tester, _chart());
+    final mouse = await tester.createGesture(kind: PointerDeviceKind.mouse);
+    await mouse.addPointer(location: Offset.zero);
+    addTearDown(mouse.removePointer);
+    final high = find.byKey(const ValueKey('price-target-target-High'));
+    await mouse.moveTo(tester.getCenter(high));
+    await tester.pump();
+    expect(find.text('High target'), findsWidgets);
+
+    await mouse.moveTo(const Offset(790, 630));
+    await tester.pump();
+    expect(find.text('Mean target'), findsOneWidget);
+  });
+
+  testWidgets('history hover exit clears active history', (tester) async {
+    BeuiPriceTargetFanActive? changed;
+    await _pumpChart(
+      tester,
+      _chart(onActiveChange: (value) => changed = value),
+    );
+    final point = find.byKey(const ValueKey('price-target-history-2025-11-14'));
+    final mouse = await tester.createGesture(kind: PointerDeviceKind.mouse);
+    await mouse.addPointer(location: Offset.zero);
+    addTearDown(mouse.removePointer);
+    await mouse.moveTo(tester.getCenter(point));
+    await tester.pump();
+    expect(changed, const BeuiPriceTargetFanActive.history('2025-11-14'));
+
+    await mouse.moveTo(const Offset(790, 630));
+    await tester.pump();
+    expect(changed, isNull);
+  });
+
+  testWidgets('history focus blur clears active history', (tester) async {
+    BeuiPriceTargetFanActive? changed;
+    await _pumpChart(
+      tester,
+      _chart(onActiveChange: (value) => changed = value),
+    );
+    final focus =
+        tester.state(find.byKey(const ValueKey('price-target-history-slider')))
+            as dynamic;
+    focus.focusNode.requestFocus();
+    await tester.pump();
+    expect(changed, const BeuiPriceTargetFanActive.history('2025-11-14'));
+
+    focus.focusNode.unfocus();
+    await tester.pump();
+    expect(changed, isNull);
+  });
+
+  testWidgets('axis painter repaints when theme changes on the same chart', (
+    tester,
+  ) async {
+    var dark = false;
+    var paints = 0;
+    late StateSetter update;
+    final chart = BeuiPriceTargetFan(
+      current: 178.52,
+      targets: _targets,
+      history: _history,
+      child: _PaintObserver(
+        onPaint: () => paints++,
+        child: const BeuiPriceTargetAxes(),
+      ),
+    );
+    await tester.pumpWidget(
+      StatefulBuilder(
+        builder: (context, setState) {
+          update = setState;
+          final brightness = dark ? Brightness.dark : Brightness.light;
+          return MaterialApp(
+            theme: ThemeData(
+              brightness: brightness,
+              extensions: [
+                BeuiColors.of(BeuiColorTheme.defaultMono, brightness),
+              ],
+            ),
+            home: Scaffold(body: chart),
+          );
+        },
+      ),
+    );
+    final before = paints;
+    update(() => dark = true);
+    await tester.pumpAndSettle();
+    expect(paints, greaterThan(before));
+  });
+
+  testWidgets('target buttons report the selected projection', (tester) async {
+    BeuiPriceTargetFanActive? changed;
+    await _pumpChart(
+      tester,
+      _chart(onActiveChange: (value) => changed = value),
+    );
+    await tester.tap(find.byKey(const ValueKey('price-target-target-High')));
+    await tester.pump();
+    expect(changed, const BeuiPriceTargetFanActive.target('High'));
+  });
+
+  testWidgets('arrow keys step the uncontrolled active date', (tester) async {
+    BeuiPriceTargetFanActive? changed;
+    await _pumpChart(
+      tester,
+      _chart(
+        defaultActive: const BeuiPriceTargetFanActive.history('2025-09-14'),
+        onActiveChange: (value) => changed = value,
+      ),
+    );
+    expect(find.text('Sun, Sep 14'), findsWidgets);
+    await tester.tap(
+      find.byKey(const ValueKey('price-target-history-2025-09-14')),
+    );
+    await tester.sendKeyEvent(LogicalKeyboardKey.arrowRight);
+    await tester.pump();
+    expect(changed, const BeuiPriceTargetFanActive.history('2025-10-14'));
+    expect(find.text('Tue, Oct 14'), findsWidgets);
+  });
+
+  testWidgets('keyboard inspector selects an endpoint and Escape clears', (
+    tester,
+  ) async {
+    final semantics = tester.ensureSemantics();
+    await _pumpChart(tester, _chart());
+    await tester.tap(find.byKey(const ValueKey('price-target-target-Mean')));
+    await tester.pump();
+    await tester.sendKeyEvent(LogicalKeyboardKey.escape);
+    await tester.pump();
+    expect(
+      tester
+          .widgetList<Semantics>(find.byType(Semantics))
+          .where((s) => s.properties.selected == true),
+      isEmpty,
+    );
+    semantics.dispose();
+  });
+
+  testWidgets(
+    'rejects repeated or nonpositive targets and unsorted ISO history',
+    (tester) async {
+      await tester.pumpWidget(
+        beuiTestApp(
+          BeuiPriceTargetFan(
+            current: 10,
+            targets: const [
+              BeuiPriceTarget(key: 'H', price: 20),
+              BeuiPriceTarget(key: 'M', price: 20),
+              BeuiPriceTarget(key: 'L', price: -2),
+            ],
+          ),
+        ),
+      );
+      expect(tester.takeException(), isArgumentError);
+      await tester.pumpWidget(
+        beuiTestApp(
+          BeuiPriceTargetFan(
+            current: 10,
+            targets: const [
+              BeuiPriceTarget(key: 'H', price: 20),
+              BeuiPriceTarget(key: 'M', price: 15),
+              BeuiPriceTarget(key: 'L', price: 5),
+            ],
+            history: const [
+              BeuiPriceHistoryPoint(date: '2025-02-01', price: 8),
+              BeuiPriceHistoryPoint(date: '2025-01-01', price: 9),
+            ],
+          ),
+        ),
+      );
+      expect(tester.takeException(), isArgumentError);
+    },
+  );
+
+  testWidgets('rejects a nonpositive or non-finite current price', (
+    tester,
+  ) async {
+    for (final current in [0.0, -1.0, double.nan, double.infinity]) {
+      await tester.pumpWidget(
+        beuiTestApp(
+          BeuiPriceTargetFan(
+            current: current,
+            targets: _targets,
+            history: _history,
+          ),
+        ),
+      );
+      expect(tester.takeException(), isArgumentError);
+    }
+  });
+
+  testWidgets('reduced-motion rest state matches golden', (tester) async {
+    await _pumpChart(tester, _chart(), reduce: true);
+    await tester.pump();
+    expect(tester.takeException(), isNull);
+    await expectLater(
+      find.byType(BeuiPriceTargetFan),
+      matchesGoldenFile('goldens/beui_price_target_fan.png'),
+    );
+  });
+}
+
+class _PaintObserver extends SingleChildRenderObjectWidget {
+  const _PaintObserver({required this.onPaint, required super.child});
+
+  final VoidCallback onPaint;
+
+  @override
+  RenderObject createRenderObject(BuildContext context) =>
+      _ObservedRepaintBoundary(onPaint);
+
+  @override
+  void updateRenderObject(
+    BuildContext context,
+    covariant _ObservedRepaintBoundary renderObject,
+  ) {
+    renderObject.onPaint = onPaint;
+  }
+}
+
+class _ObservedRepaintBoundary extends RenderProxyBox {
+  _ObservedRepaintBoundary(this.onPaint);
+
+  VoidCallback onPaint;
+
+  @override
+  bool get isRepaintBoundary => true;
+
+  @override
+  void paint(PaintingContext context, Offset offset) {
+    onPaint();
+    super.paint(context, offset);
+  }
+}

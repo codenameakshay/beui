@@ -261,9 +261,9 @@ void main() {
         [
           ('const', light.keyword),
           (' ', light.base),
-          ('x', light.base),
+          ('x', light.number),
           (' ', light.base),
-          ('=', light.punct),
+          ('=', light.keyword),
           (' ', light.base),
           ('foo', light.entity),
           ('(', light.punct),
@@ -322,7 +322,7 @@ void main() {
         [
           ('x', light.base),
           (' ', light.base),
-          ('=', light.punct),
+          ('=', light.keyword),
           (' ', light.base),
           ('.5', light.number),
           (';', light.punct),

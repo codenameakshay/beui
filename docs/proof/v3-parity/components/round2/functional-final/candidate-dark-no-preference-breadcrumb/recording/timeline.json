@@ -1,0 +1,1315 @@
+{
+  "stats": {
+    "originEpochMs": 1792749950633,
+    "backend": "screenshots",
+    "startMs": 3711.6382089999997,
+    "sequenceStartMs": 3712.3569589999997,
+    "stopMs": 8075.356,
+    "frames": 108,
+    "durationMs": 4185.9166622161865,
+    "measuredFps": 25.561904030681312,
+    "medianIntervalMs": 32.44924545288086,
+    "maxIntervalMs": 483.3564758300781,
+    "reorderedDeliveries": 0,
+    "fastMotionVerdict": "inconclusive; inspect per-event gaps, not nominal frame rate",
+    "errors": [],
+    "video": {
+      "width": 1280,
+      "height": 913,
+      "decodedFrames": 108
+    }
+  },
+  "events": [
+    {
+      "atMs": 400,
+      "type": "move",
+      "target": "target1",
+      "pointer": {
+        "x": 543.4599609375,
+        "y": 444,
+        "measuredBox": {
+          "x": 527.4599609375,
+          "y": 432,
+          "width": 32,
+          "height": 24
+        }
+      },
+      "requestedMs": 4112.356959,
+      "dispatchBeforeMs": 4115.285834,
+      "dispatchAfterMs": 4146.416542
+    },
+    {
+      "atMs": 1200,
+      "type": "down",
+      "target": "target2",
+      "button": "left",
+      "pointer": {
+        "x": 584.1069946289062,
+        "y": 491.61785888671875,
+        "measuredBox": {
+          "x": 551.0430297851562,
+          "y": 475.8957824707031,
+          "width": 66.1279296875,
+          "height": 31.44415283203125
+        }
+      },
+      "requestedMs": 4912.356959,
+      "dispatchBeforeMs": 4920.488209,
+      "dispatchAfterMs": 5171.41
+    },
+    {
+      "atMs": 2000,
+      "type": "key",
+      "key": "Escape",
+      "requestedMs": 5712.356959,
+      "dispatchBeforeMs": 5716.587334,
+      "dispatchAfterMs": 5732.654834
+    },
+    {
+      "atMs": 2100,
+      "type": "up",
+      "button": "left",
+      "pointer": {
+        "x": 584.1069946289062,
+        "y": 491.61785888671875,
+        "measuredBox": {
+          "x": 551.0430297851562,
+          "y": 475.8957824707031,
+          "width": 66.1279296875,
+          "height": 31.44415283203125
+        }
+      },
+      "requestedMs": 5812.356959,
+      "dispatchBeforeMs": 5814.49575,
+      "dispatchAfterMs": 5825.926958999999
+    },
+    {
+      "atMs": 2900,
+      "type": "click",
+      "target": "target3",
+      "button": "left",
+      "pointer": {
+        "x": 452.7265625,
+        "y": 444,
+        "measuredBox": {
+          "x": 400,
+          "y": 428,
+          "width": 105.453125,
+          "height": 32
+        }
+      },
+      "requestedMs": 6612.356959,
+      "dispatchBeforeMs": 6615.560625,
+      "dispatchAfterMs": 6629.559959
+    },
+    {
+      "atMs": 3700,
+      "type": "click",
+      "target": "target4",
+      "button": "left",
+      "pointer": {
+        "x": 640,
+        "y": 542.5,
+        "measuredBox": {
+          "x": 400,
+          "y": 513,
+          "width": 480,
+          "height": 59
+        }
+      },
+      "requestedMs": 7412.356959,
+      "dispatchBeforeMs": 7414.706209,
+      "dispatchAfterMs": 7423.655459
+    }
+  ],
+  "frames": [
+    {
+      "index": 0,
+      "file": "original-frames/frame_000000.png",
+      "requestedMs": 3711.6520419999997,
+      "receivedMs": 3903.015292,
+      "metadata": {
+        "timestamp": 1792749954.5358973,
+        "timestampMeaning": "response receipt; exposure lies inside request-response interval"
+      },
+      "sha256": "c6e9689013c1ed04172f812a5119799e1e236b01c55c0e2cf97d727a9ecc43c3"
+    },
+    {
+      "index": 1,
+      "file": "original-frames/frame_000001.png",
+      "requestedMs": 3908.8846670000003,
+      "receivedMs": 3973.906459,
+      "metadata": {
+        "timestamp": 1792749954.606863,
+        "timestampMeaning": "response receipt; exposure lies inside request-response interval"
+      },
+      "sha256": "c6e9689013c1ed04172f812a5119799e1e236b01c55c0e2cf97d727a9ecc43c3"
+    },
+    {
+      "index": 2,
+      "file": "original-frames/frame_000002.png",
+      "requestedMs": 3974.245417,
+      "receivedMs": 4050.751625,
+      "metadata": {
+        "timestamp": 1792749954.6833363,
+        "timestampMeaning": "response receipt; exposure lies inside request-response interval"
+      },
+      "sha256": "c6e9689013c1ed04172f812a5119799e1e236b01c55c0e2cf97d727a9ecc43c3"
+    },
+    {
+      "index": 3,
+      "file": "original-frames/frame_000003.png",
+      "requestedMs": 4054.385625,
+      "receivedMs": 4087.3999589999994,
+      "metadata": {
+        "timestamp": 1792749954.72036,
+        "timestampMeaning": "response receipt; exposure lies inside request-response interval"
+      },
+      "sha256": "c6e9689013c1ed04172f812a5119799e1e236b01c55c0e2cf97d727a9ecc43c3"
+    },
+    {
+      "index": 4,
+      "file": "original-frames/frame_000004.png",
+      "requestedMs": 4087.514459,
+      "receivedMs": 4139.8088339999995,
+      "metadata": {
+        "timestamp": 1792749954.7726672,
+        "timestampMeaning": "response receipt; exposure lies inside request-response interval"
+      },
+      "sha256": "c6e9689013c1ed04172f812a5119799e1e236b01c55c0e2cf97d727a9ecc43c3"
+    },
+    {
+      "index": 5,
+      "file": "original-frames/frame_000005.png",
+      "requestedMs": 4139.925625,
+      "receivedMs": 4623.104375,
+      "metadata": {
+        "timestamp": 1792749955.2560236,
+        "timestampMeaning": "response receipt; exposure lies inside request-response interval"
+      },
+      "sha256": "5063bb8e27aef6eafa4477739ee6537600416c563b748f4815d5bd5618a7ab3b"
+    },
+    {
+      "index": 6,
+      "file": "original-frames/frame_000006.png",
+      "requestedMs": 4623.6965,
+      "receivedMs": 4860.403917,
+      "metadata": {
+        "timestamp": 1792749955.4933634,
+        "timestampMeaning": "response receipt; exposure lies inside request-response interval"
+      },
+      "sha256": "bd6563c2fcd56dbd19f6fb886960d6dadf59371bc2fa11932a4f6f71e149e2c6"
+    },
+    {
+      "index": 7,
+      "file": "original-frames/frame_000007.png",
+      "requestedMs": 4860.63225,
+      "receivedMs": 5198.223833999999,
+      "metadata": {
+        "timestamp": 1792749955.831162,
+        "timestampMeaning": "response receipt; exposure lies inside request-response interval"
+      },
+      "sha256": "c6e9689013c1ed04172f812a5119799e1e236b01c55c0e2cf97d727a9ecc43c3"
+    },
+    {
+      "index": 8,
+      "file": "original-frames/frame_000008.png",
+      "requestedMs": 5198.293874999999,
+      "receivedMs": 5261.8965419999995,
+      "metadata": {
+        "timestamp": 1792749955.8948214,
+        "timestampMeaning": "response receipt; exposure lies inside request-response interval"
+      },
+      "sha256": "c6e9689013c1ed04172f812a5119799e1e236b01c55c0e2cf97d727a9ecc43c3"
+    },
+    {
+      "index": 9,
+      "file": "original-frames/frame_000009.png",
+      "requestedMs": 5262.8734589999995,
+      "receivedMs": 5311.497709,
+      "metadata": {
+        "timestamp": 1792749955.9444377,
+        "timestampMeaning": "response receipt; exposure lies inside request-response interval"
+      },
+      "sha256": "c6e9689013c1ed04172f812a5119799e1e236b01c55c0e2cf97d727a9ecc43c3"
+    },
+    {
+      "index": 10,
+      "file": "original-frames/frame_000010.png",
+      "requestedMs": 5311.574959,
+      "receivedMs": 5402.9529999999995,
+      "metadata": {
+        "timestamp": 1792749956.0359273,
+        "timestampMeaning": "response receipt; exposure lies inside request-response interval"
+      },
+      "sha256": "c6e9689013c1ed04172f812a5119799e1e236b01c55c0e2cf97d727a9ecc43c3"
+    },
+    {
+      "index": 11,
+      "file": "original-frames/frame_000011.png",
+      "requestedMs": 5403.049792,
+      "receivedMs": 5422.676459,
+      "metadata": {
+        "timestamp": 1792749956.055652,
+        "timestampMeaning": "response receipt; exposure lies inside request-response interval"
+      },
+      "sha256": "c6e9689013c1ed04172f812a5119799e1e236b01c55c0e2cf97d727a9ecc43c3"
+    },
+    {
+      "index": 12,
+      "file": "original-frames/frame_000012.png",
+      "requestedMs": 5422.75025,
+      "receivedMs": 5441.820125,
+      "metadata": {
+        "timestamp": 1792749956.0747893,
+        "timestampMeaning": "response receipt; exposure lies inside request-response interval"
+      },
+      "sha256": "c6e9689013c1ed04172f812a5119799e1e236b01c55c0e2cf97d727a9ecc43c3"
+    },
+    {
+      "index": 13,
+      "file": "original-frames/frame_000013.png",
+      "requestedMs": 5441.8896669999995,
+      "receivedMs": 5486.233834,
+      "metadata": {
+        "timestamp": 1792749956.119211,
+        "timestampMeaning": "response receipt; exposure lies inside request-response interval"
+      },
+      "sha256": "c6e9689013c1ed04172f812a5119799e1e236b01c55c0e2cf97d727a9ecc43c3"
+    },
+    {
+      "index": 14,
+      "file": "original-frames/frame_000014.png",
+      "requestedMs": 5486.297334,
+      "receivedMs": 5521.544917,
+      "metadata": {
+        "timestamp": 1792749956.1545212,
+        "timestampMeaning": "response receipt; exposure lies inside request-response interval"
+      },
+      "sha256": "c6e9689013c1ed04172f812a5119799e1e236b01c55c0e2cf97d727a9ecc43c3"
+    },
+    {
+      "index": 15,
+      "file": "original-frames/frame_000015.png",
+      "requestedMs": 5521.618334,
+      "receivedMs": 5542.782042,
+      "metadata": {
+        "timestamp": 1792749956.1757567,
+        "timestampMeaning": "response receipt; exposure lies inside request-response interval"
+      },
+      "sha256": "c6e9689013c1ed04172f812a5119799e1e236b01c55c0e2cf97d727a9ecc43c3"
+    },
+    {
+      "index": 16,
+      "file": "original-frames/frame_000016.png",
+      "requestedMs": 5542.848334,
+      "receivedMs": 5599.286292,
+      "metadata": {
+        "timestamp": 1792749956.232267,
+        "timestampMeaning": "response receipt; exposure lies inside request-response interval"
+      },
+      "sha256": "c6e9689013c1ed04172f812a5119799e1e236b01c55c0e2cf97d727a9ecc43c3"
+    },
+    {
+      "index": 17,
+      "file": "original-frames/frame_000017.png",
+      "requestedMs": 5599.360291999999,
+      "receivedMs": 5622.714542,
+      "metadata": {
+        "timestamp": 1792749956.2556946,
+        "timestampMeaning": "response receipt; exposure lies inside request-response interval"
+      },
+      "sha256": "c6e9689013c1ed04172f812a5119799e1e236b01c55c0e2cf97d727a9ecc43c3"
+    },
+    {
+      "index": 18,
+      "file": "original-frames/frame_000018.png",
+      "requestedMs": 5622.790167,
+      "receivedMs": 5657.408709,
+      "metadata": {
+        "timestamp": 1792749956.2903895,
+        "timestampMeaning": "response receipt; exposure lies inside request-response interval"
+      },
+      "sha256": "c6e9689013c1ed04172f812a5119799e1e236b01c55c0e2cf97d727a9ecc43c3"
+    },
+    {
+      "index": 19,
+      "file": "original-frames/frame_000019.png",
+      "requestedMs": 5657.472,
+      "receivedMs": 5688.871542,
+      "metadata": {
+        "timestamp": 1792749956.3218555,
+        "timestampMeaning": "response receipt; exposure lies inside request-response interval"
+      },
+      "sha256": "c6e9689013c1ed04172f812a5119799e1e236b01c55c0e2cf97d727a9ecc43c3"
+    },
+    {
+      "index": 20,
+      "file": "original-frames/frame_000020.png",
+      "requestedMs": 5688.935375,
+      "receivedMs": 5721.327,
+      "metadata": {
+        "timestamp": 1792749956.3543048,
+        "timestampMeaning": "response receipt; exposure lies inside request-response interval"
+      },
+      "sha256": "c6e9689013c1ed04172f812a5119799e1e236b01c55c0e2cf97d727a9ecc43c3"
+    },
+    {
+      "index": 21,
+      "file": "original-frames/frame_000021.png",
+      "requestedMs": 5721.387,
+      "receivedMs": 5756.112666999999,
+      "metadata": {
+        "timestamp": 1792749956.3890927,
+        "timestampMeaning": "response receipt; exposure lies inside request-response interval"
+      },
+      "sha256": "c6e9689013c1ed04172f812a5119799e1e236b01c55c0e2cf97d727a9ecc43c3"
+    },
+    {
+      "index": 22,
+      "file": "original-frames/frame_000022.png",
+      "requestedMs": 5756.252875,
+      "receivedMs": 5789.013709,
+      "metadata": {
+        "timestamp": 1792749956.4219935,
+        "timestampMeaning": "response receipt; exposure lies inside request-response interval"
+      },
+      "sha256": "c6e9689013c1ed04172f812a5119799e1e236b01c55c0e2cf97d727a9ecc43c3"
+    },
+    {
+      "index": 23,
+      "file": "original-frames/frame_000023.png",
+      "requestedMs": 5789.077499999999,
+      "receivedMs": 5824.9389169999995,
+      "metadata": {
+        "timestamp": 1792749956.4579108,
+        "timestampMeaning": "response receipt; exposure lies inside request-response interval"
+      },
+      "sha256": "c6e9689013c1ed04172f812a5119799e1e236b01c55c0e2cf97d727a9ecc43c3"
+    },
+    {
+      "index": 24,
+      "file": "original-frames/frame_000024.png",
+      "requestedMs": 5825.080709,
+      "receivedMs": 5858.504042,
+      "metadata": {
+        "timestamp": 1792749956.4914868,
+        "timestampMeaning": "response receipt; exposure lies inside request-response interval"
+      },
+      "sha256": "c6e9689013c1ed04172f812a5119799e1e236b01c55c0e2cf97d727a9ecc43c3"
+    },
+    {
+      "index": 25,
+      "file": "original-frames/frame_000025.png",
+      "requestedMs": 5858.5689999999995,
+      "receivedMs": 5897.74925,
+      "metadata": {
+        "timestamp": 1792749956.5307248,
+        "timestampMeaning": "response receipt; exposure lies inside request-response interval"
+      },
+      "sha256": "c6e9689013c1ed04172f812a5119799e1e236b01c55c0e2cf97d727a9ecc43c3"
+    },
+    {
+      "index": 26,
+      "file": "original-frames/frame_000026.png",
+      "requestedMs": 5897.82275,
+      "receivedMs": 5931.141334,
+      "metadata": {
+        "timestamp": 1792749956.5641046,
+        "timestampMeaning": "response receipt; exposure lies inside request-response interval"
+      },
+      "sha256": "c6e9689013c1ed04172f812a5119799e1e236b01c55c0e2cf97d727a9ecc43c3"
+    },
+    {
+      "index": 27,
+      "file": "original-frames/frame_000027.png",
+      "requestedMs": 5931.202084,
+      "receivedMs": 5962.677167,
+      "metadata": {
+        "timestamp": 1792749956.5956345,
+        "timestampMeaning": "response receipt; exposure lies inside request-response interval"
+      },
+      "sha256": "c6e9689013c1ed04172f812a5119799e1e236b01c55c0e2cf97d727a9ecc43c3"
+    },
+    {
+      "index": 28,
+      "file": "original-frames/frame_000028.png",
+      "requestedMs": 5962.788334,
+      "receivedMs": 5989.354084,
+      "metadata": {
+        "timestamp": 1792749956.622339,
+        "timestampMeaning": "response receipt; exposure lies inside request-response interval"
+      },
+      "sha256": "c6e9689013c1ed04172f812a5119799e1e236b01c55c0e2cf97d727a9ecc43c3"
+    },
+    {
+      "index": 29,
+      "file": "original-frames/frame_000029.png",
+      "requestedMs": 5989.4217499999995,
+      "receivedMs": 6006.134709,
+      "metadata": {
+        "timestamp": 1792749956.6391113,
+        "timestampMeaning": "response receipt; exposure lies inside request-response interval"
+      },
+      "sha256": "c6e9689013c1ed04172f812a5119799e1e236b01c55c0e2cf97d727a9ecc43c3"
+    },
+    {
+      "index": 30,
+      "file": "original-frames/frame_000030.png",
+      "requestedMs": 6006.209334,
+      "receivedMs": 6022.152666999999,
+      "metadata": {
+        "timestamp": 1792749956.6551368,
+        "timestampMeaning": "response receipt; exposure lies inside request-response interval"
+      },
+      "sha256": "c6e9689013c1ed04172f812a5119799e1e236b01c55c0e2cf97d727a9ecc43c3"
+    },
+    {
+      "index": 31,
+      "file": "original-frames/frame_000031.png",
+      "requestedMs": 6022.207667,
+      "receivedMs": 6039.138959,
+      "metadata": {
+        "timestamp": 1792749956.6721168,
+        "timestampMeaning": "response receipt; exposure lies inside request-response interval"
+      },
+      "sha256": "c6e9689013c1ed04172f812a5119799e1e236b01c55c0e2cf97d727a9ecc43c3"
+    },
+    {
+      "index": 32,
+      "file": "original-frames/frame_000032.png",
+      "requestedMs": 6039.198709,
+      "receivedMs": 6055.969375,
+      "metadata": {
+        "timestamp": 1792749956.6889517,
+        "timestampMeaning": "response receipt; exposure lies inside request-response interval"
+      },
+      "sha256": "c6e9689013c1ed04172f812a5119799e1e236b01c55c0e2cf97d727a9ecc43c3"
+    },
+    {
+      "index": 33,
+      "file": "original-frames/frame_000033.png",
+      "requestedMs": 6056.088959,
+      "receivedMs": 6072.58125,
+      "metadata": {
+        "timestamp": 1792749956.7055647,
+        "timestampMeaning": "response receipt; exposure lies inside request-response interval"
+      },
+      "sha256": "c6e9689013c1ed04172f812a5119799e1e236b01c55c0e2cf97d727a9ecc43c3"
+    },
+    {
+      "index": 34,
+      "file": "original-frames/frame_000034.png",
+      "requestedMs": 6072.640542,
+      "receivedMs": 6093.797167,
+      "metadata": {
+        "timestamp": 1792749956.7267723,
+        "timestampMeaning": "response receipt; exposure lies inside request-response interval"
+      },
+      "sha256": "c6e9689013c1ed04172f812a5119799e1e236b01c55c0e2cf97d727a9ecc43c3"
+    },
+    {
+      "index": 35,
+      "file": "original-frames/frame_000035.png",
+      "requestedMs": 6093.865624999999,
+      "receivedMs": 6127.4190419999995,
+      "metadata": {
+        "timestamp": 1792749956.7603967,
+        "timestampMeaning": "response receipt; exposure lies inside request-response interval"
+      },
+      "sha256": "c6e9689013c1ed04172f812a5119799e1e236b01c55c0e2cf97d727a9ecc43c3"
+    },
+    {
+      "index": 36,
+      "file": "original-frames/frame_000036.png",
+      "requestedMs": 6127.485709,
+      "receivedMs": 6159.949791999999,
+      "metadata": {
+        "timestamp": 1792749956.7929163,
+        "timestampMeaning": "response receipt; exposure lies inside request-response interval"
+      },
+      "sha256": "c6e9689013c1ed04172f812a5119799e1e236b01c55c0e2cf97d727a9ecc43c3"
+    },
+    {
+      "index": 37,
+      "file": "original-frames/frame_000037.png",
+      "requestedMs": 6160.0554999999995,
+      "receivedMs": 6175.2195839999995,
+      "metadata": {
+        "timestamp": 1792749956.808162,
+        "timestampMeaning": "response receipt; exposure lies inside request-response interval"
+      },
+      "sha256": "c6e9689013c1ed04172f812a5119799e1e236b01c55c0e2cf97d727a9ecc43c3"
+    },
+    {
+      "index": 38,
+      "file": "original-frames/frame_000038.png",
+      "requestedMs": 6175.296667,
+      "receivedMs": 6190.464209,
+      "metadata": {
+        "timestamp": 1792749956.8234506,
+        "timestampMeaning": "response receipt; exposure lies inside request-response interval"
+      },
+      "sha256": "c6e9689013c1ed04172f812a5119799e1e236b01c55c0e2cf97d727a9ecc43c3"
+    },
+    {
+      "index": 39,
+      "file": "original-frames/frame_000039.png",
+      "requestedMs": 6190.513959,
+      "receivedMs": 6206.332958999999,
+      "metadata": {
+        "timestamp": 1792749956.8393142,
+        "timestampMeaning": "response receipt; exposure lies inside request-response interval"
+      },
+      "sha256": "c6e9689013c1ed04172f812a5119799e1e236b01c55c0e2cf97d727a9ecc43c3"
+    },
+    {
+      "index": 40,
+      "file": "original-frames/frame_000040.png",
+      "requestedMs": 6206.390792,
+      "receivedMs": 6222.653292,
+      "metadata": {
+        "timestamp": 1792749956.8556404,
+        "timestampMeaning": "response receipt; exposure lies inside request-response interval"
+      },
+      "sha256": "c6e9689013c1ed04172f812a5119799e1e236b01c55c0e2cf97d727a9ecc43c3"
+    },
+    {
+      "index": 41,
+      "file": "original-frames/frame_000041.png",
+      "requestedMs": 6222.707459,
+      "receivedMs": 6240.416709,
+      "metadata": {
+        "timestamp": 1792749956.8734024,
+        "timestampMeaning": "response receipt; exposure lies inside request-response interval"
+      },
+      "sha256": "c6e9689013c1ed04172f812a5119799e1e236b01c55c0e2cf97d727a9ecc43c3"
+    },
+    {
+      "index": 42,
+      "file": "original-frames/frame_000042.png",
+      "requestedMs": 6240.473667,
+      "receivedMs": 6256.595042,
+      "metadata": {
+        "timestamp": 1792749956.8895836,
+        "timestampMeaning": "response receipt; exposure lies inside request-response interval"
+      },
+      "sha256": "c6e9689013c1ed04172f812a5119799e1e236b01c55c0e2cf97d727a9ecc43c3"
+    },
+    {
+      "index": 43,
+      "file": "original-frames/frame_000043.png",
+      "requestedMs": 6256.648459,
+      "receivedMs": 6274.380875,
+      "metadata": {
+        "timestamp": 1792749956.9073608,
+        "timestampMeaning": "response receipt; exposure lies inside request-response interval"
+      },
+      "sha256": "c6e9689013c1ed04172f812a5119799e1e236b01c55c0e2cf97d727a9ecc43c3"
+    },
+    {
+      "index": 44,
+      "file": "original-frames/frame_000044.png",
+      "requestedMs": 6274.4415,
+      "receivedMs": 6289.431791999999,
+      "metadata": {
+        "timestamp": 1792749956.9224126,
+        "timestampMeaning": "response receipt; exposure lies inside request-response interval"
+      },
+      "sha256": "c6e9689013c1ed04172f812a5119799e1e236b01c55c0e2cf97d727a9ecc43c3"
+    },
+    {
+      "index": 45,
+      "file": "original-frames/frame_000045.png",
+      "requestedMs": 6289.591042,
+      "receivedMs": 6306.039167,
+      "metadata": {
+        "timestamp": 1792749956.9390202,
+        "timestampMeaning": "response receipt; exposure lies inside request-response interval"
+      },
+      "sha256": "c6e9689013c1ed04172f812a5119799e1e236b01c55c0e2cf97d727a9ecc43c3"
+    },
+    {
+      "index": 46,
+      "file": "original-frames/frame_000046.png",
+      "requestedMs": 6306.102124999999,
+      "receivedMs": 6322.9834169999995,
+      "metadata": {
+        "timestamp": 1792749956.9559667,
+        "timestampMeaning": "response receipt; exposure lies inside request-response interval"
+      },
+      "sha256": "c6e9689013c1ed04172f812a5119799e1e236b01c55c0e2cf97d727a9ecc43c3"
+    },
+    {
+      "index": 47,
+      "file": "original-frames/frame_000047.png",
+      "requestedMs": 6323.074042,
+      "receivedMs": 6339.126834,
+      "metadata": {
+        "timestamp": 1792749956.9721093,
+        "timestampMeaning": "response receipt; exposure lies inside request-response interval"
+      },
+      "sha256": "c6e9689013c1ed04172f812a5119799e1e236b01c55c0e2cf97d727a9ecc43c3"
+    },
+    {
+      "index": 48,
+      "file": "original-frames/frame_000048.png",
+      "requestedMs": 6339.187792,
+      "receivedMs": 6360.368917,
+      "metadata": {
+        "timestamp": 1792749956.9933429,
+        "timestampMeaning": "response receipt; exposure lies inside request-response interval"
+      },
+      "sha256": "c6e9689013c1ed04172f812a5119799e1e236b01c55c0e2cf97d727a9ecc43c3"
+    },
+    {
+      "index": 49,
+      "file": "original-frames/frame_000049.png",
+      "requestedMs": 6360.4430839999995,
+      "receivedMs": 6390.215875,
+      "metadata": {
+        "timestamp": 1792749957.0231957,
+        "timestampMeaning": "response receipt; exposure lies inside request-response interval"
+      },
+      "sha256": "c6e9689013c1ed04172f812a5119799e1e236b01c55c0e2cf97d727a9ecc43c3"
+    },
+    {
+      "index": 50,
+      "file": "original-frames/frame_000050.png",
+      "requestedMs": 6390.287209,
+      "receivedMs": 6423.075667,
+      "metadata": {
+        "timestamp": 1792749957.056063,
+        "timestampMeaning": "response receipt; exposure lies inside request-response interval"
+      },
+      "sha256": "c6e9689013c1ed04172f812a5119799e1e236b01c55c0e2cf97d727a9ecc43c3"
+    },
+    {
+      "index": 51,
+      "file": "original-frames/frame_000051.png",
+      "requestedMs": 6423.132167,
+      "receivedMs": 6455.695334,
+      "metadata": {
+        "timestamp": 1792749957.0886748,
+        "timestampMeaning": "response receipt; exposure lies inside request-response interval"
+      },
+      "sha256": "c6e9689013c1ed04172f812a5119799e1e236b01c55c0e2cf97d727a9ecc43c3"
+    },
+    {
+      "index": 52,
+      "file": "original-frames/frame_000052.png",
+      "requestedMs": 6455.785667,
+      "receivedMs": 6488.43125,
+      "metadata": {
+        "timestamp": 1792749957.1213996,
+        "timestampMeaning": "response receipt; exposure lies inside request-response interval"
+      },
+      "sha256": "c6e9689013c1ed04172f812a5119799e1e236b01c55c0e2cf97d727a9ecc43c3"
+    },
+    {
+      "index": 53,
+      "file": "original-frames/frame_000053.png",
+      "requestedMs": 6488.608542,
+      "receivedMs": 6522.599542,
+      "metadata": {
+        "timestamp": 1792749957.1555815,
+        "timestampMeaning": "response receipt; exposure lies inside request-response interval"
+      },
+      "sha256": "c6e9689013c1ed04172f812a5119799e1e236b01c55c0e2cf97d727a9ecc43c3"
+    },
+    {
+      "index": 54,
+      "file": "original-frames/frame_000054.png",
+      "requestedMs": 6522.732542,
+      "receivedMs": 6555.109375,
+      "metadata": {
+        "timestamp": 1792749957.1880896,
+        "timestampMeaning": "response receipt; exposure lies inside request-response interval"
+      },
+      "sha256": "c6e9689013c1ed04172f812a5119799e1e236b01c55c0e2cf97d727a9ecc43c3"
+    },
+    {
+      "index": 55,
+      "file": "original-frames/frame_000055.png",
+      "requestedMs": 6555.1727089999995,
+      "receivedMs": 6594.992917,
+      "metadata": {
+        "timestamp": 1792749957.2278755,
+        "timestampMeaning": "response receipt; exposure lies inside request-response interval"
+      },
+      "sha256": "c6e9689013c1ed04172f812a5119799e1e236b01c55c0e2cf97d727a9ecc43c3"
+    },
+    {
+      "index": 56,
+      "file": "original-frames/frame_000056.png",
+      "requestedMs": 6595.062584,
+      "receivedMs": 6625.064584,
+      "metadata": {
+        "timestamp": 1792749957.2580411,
+        "timestampMeaning": "response receipt; exposure lies inside request-response interval"
+      },
+      "sha256": "c6e9689013c1ed04172f812a5119799e1e236b01c55c0e2cf97d727a9ecc43c3"
+    },
+    {
+      "index": 57,
+      "file": "original-frames/frame_000057.png",
+      "requestedMs": 6625.13275,
+      "receivedMs": 6683.623875,
+      "metadata": {
+        "timestamp": 1792749957.3166006,
+        "timestampMeaning": "response receipt; exposure lies inside request-response interval"
+      },
+      "sha256": "02b310561828e1743cfa85eb403e54a888070e4ebf3ddecda92f83193796ae96"
+    },
+    {
+      "index": 58,
+      "file": "original-frames/frame_000058.png",
+      "requestedMs": 6683.6822919999995,
+      "receivedMs": 6716.512041999999,
+      "metadata": {
+        "timestamp": 1792749957.349473,
+        "timestampMeaning": "response receipt; exposure lies inside request-response interval"
+      },
+      "sha256": "3639cda22228c913c39d6bdf0f670ee36e6a4c439f0892500fc584eb14fa1341"
+    },
+    {
+      "index": 59,
+      "file": "original-frames/frame_000059.png",
+      "requestedMs": 6716.829334,
+      "receivedMs": 6754.613792,
+      "metadata": {
+        "timestamp": 1792749957.38759,
+        "timestampMeaning": "response receipt; exposure lies inside request-response interval"
+      },
+      "sha256": "120ffd3a2cb87234efbc189f00693a7474667fef9695a85ddea5df80fd7eb01d"
+    },
+    {
+      "index": 60,
+      "file": "original-frames/frame_000060.png",
+      "requestedMs": 6754.682667,
+      "receivedMs": 6795.974834,
+      "metadata": {
+        "timestamp": 1792749957.4289484,
+        "timestampMeaning": "response receipt; exposure lies inside request-response interval"
+      },
+      "sha256": "ab9676e47f9eb04d5ba8a60c6668bf63c0263a6e99cc667776f4471b7d784490"
+    },
+    {
+      "index": 61,
+      "file": "original-frames/frame_000061.png",
+      "requestedMs": 6796.148,
+      "receivedMs": 6825.694084000001,
+      "metadata": {
+        "timestamp": 1792749957.458673,
+        "timestampMeaning": "response receipt; exposure lies inside request-response interval"
+      },
+      "sha256": "7f2d577d24f4d4324203466883d3818b993a1cea3ae7abd51fe4fe5581960ebb"
+    },
+    {
+      "index": 62,
+      "file": "original-frames/frame_000062.png",
+      "requestedMs": 6825.762000000001,
+      "receivedMs": 6859.6982499999995,
+      "metadata": {
+        "timestamp": 1792749957.4926267,
+        "timestampMeaning": "response receipt; exposure lies inside request-response interval"
+      },
+      "sha256": "7f2d577d24f4d4324203466883d3818b993a1cea3ae7abd51fe4fe5581960ebb"
+    },
+    {
+      "index": 63,
+      "file": "original-frames/frame_000063.png",
+      "requestedMs": 6859.774834,
+      "receivedMs": 6889.256292,
+      "metadata": {
+        "timestamp": 1792749957.5222273,
+        "timestampMeaning": "response receipt; exposure lies inside request-response interval"
+      },
+      "sha256": "7f2d577d24f4d4324203466883d3818b993a1cea3ae7abd51fe4fe5581960ebb"
+    },
+    {
+      "index": 64,
+      "file": "original-frames/frame_000064.png",
+      "requestedMs": 6889.318084,
+      "receivedMs": 6933.837167,
+      "metadata": {
+        "timestamp": 1792749957.5668206,
+        "timestampMeaning": "response receipt; exposure lies inside request-response interval"
+      },
+      "sha256": "7f2d577d24f4d4324203466883d3818b993a1cea3ae7abd51fe4fe5581960ebb"
+    },
+    {
+      "index": 65,
+      "file": "original-frames/frame_000065.png",
+      "requestedMs": 6933.896209,
+      "receivedMs": 6959.405999999999,
+      "metadata": {
+        "timestamp": 1792749957.5923915,
+        "timestampMeaning": "response receipt; exposure lies inside request-response interval"
+      },
+      "sha256": "7f2d577d24f4d4324203466883d3818b993a1cea3ae7abd51fe4fe5581960ebb"
+    },
+    {
+      "index": 66,
+      "file": "original-frames/frame_000066.png",
+      "requestedMs": 6959.520542,
+      "receivedMs": 6972.719959,
+      "metadata": {
+        "timestamp": 1792749957.6057065,
+        "timestampMeaning": "response receipt; exposure lies inside request-response interval"
+      },
+      "sha256": "7f2d577d24f4d4324203466883d3818b993a1cea3ae7abd51fe4fe5581960ebb"
+    },
+    {
+      "index": 67,
+      "file": "original-frames/frame_000067.png",
+      "requestedMs": 6972.7901249999995,
+      "receivedMs": 6990.400625,
+      "metadata": {
+        "timestamp": 1792749957.6233857,
+        "timestampMeaning": "response receipt; exposure lies inside request-response interval"
+      },
+      "sha256": "7f2d577d24f4d4324203466883d3818b993a1cea3ae7abd51fe4fe5581960ebb"
+    },
+    {
+      "index": 68,
+      "file": "original-frames/frame_000068.png",
+      "requestedMs": 6990.462374999999,
+      "receivedMs": 7007.960459,
+      "metadata": {
+        "timestamp": 1792749957.6409194,
+        "timestampMeaning": "response receipt; exposure lies inside request-response interval"
+      },
+      "sha256": "7f2d577d24f4d4324203466883d3818b993a1cea3ae7abd51fe4fe5581960ebb"
+    },
+    {
+      "index": 69,
+      "file": "original-frames/frame_000069.png",
+      "requestedMs": 7008.099958999999,
+      "receivedMs": 7023.405584,
+      "metadata": {
+        "timestamp": 1792749957.656389,
+        "timestampMeaning": "response receipt; exposure lies inside request-response interval"
+      },
+      "sha256": "7f2d577d24f4d4324203466883d3818b993a1cea3ae7abd51fe4fe5581960ebb"
+    },
+    {
+      "index": 70,
+      "file": "original-frames/frame_000070.png",
+      "requestedMs": 7023.505459,
+      "receivedMs": 7039.1200420000005,
+      "metadata": {
+        "timestamp": 1792749957.6721053,
+        "timestampMeaning": "response receipt; exposure lies inside request-response interval"
+      },
+      "sha256": "7f2d577d24f4d4324203466883d3818b993a1cea3ae7abd51fe4fe5581960ebb"
+    },
+    {
+      "index": 71,
+      "file": "original-frames/frame_000071.png",
+      "requestedMs": 7039.217124999999,
+      "receivedMs": 7055.872041999999,
+      "metadata": {
+        "timestamp": 1792749957.6888561,
+        "timestampMeaning": "response receipt; exposure lies inside request-response interval"
+      },
+      "sha256": "7f2d577d24f4d4324203466883d3818b993a1cea3ae7abd51fe4fe5581960ebb"
+    },
+    {
+      "index": 72,
+      "file": "original-frames/frame_000072.png",
+      "requestedMs": 7056.002709,
+      "receivedMs": 7073.110624999999,
+      "metadata": {
+        "timestamp": 1792749957.706096,
+        "timestampMeaning": "response receipt; exposure lies inside request-response interval"
+      },
+      "sha256": "7f2d577d24f4d4324203466883d3818b993a1cea3ae7abd51fe4fe5581960ebb"
+    },
+    {
+      "index": 73,
+      "file": "original-frames/frame_000073.png",
+      "requestedMs": 7075.6650420000005,
+      "receivedMs": 7107.189624999999,
+      "metadata": {
+        "timestamp": 1792749957.7401636,
+        "timestampMeaning": "response receipt; exposure lies inside request-response interval"
+      },
+      "sha256": "7f2d577d24f4d4324203466883d3818b993a1cea3ae7abd51fe4fe5581960ebb"
+    },
+    {
+      "index": 74,
+      "file": "original-frames/frame_000074.png",
+      "requestedMs": 7107.526749999999,
+      "receivedMs": 7139.2564999999995,
+      "metadata": {
+        "timestamp": 1792749957.7721784,
+        "timestampMeaning": "response receipt; exposure lies inside request-response interval"
+      },
+      "sha256": "7f2d577d24f4d4324203466883d3818b993a1cea3ae7abd51fe4fe5581960ebb"
+    },
+    {
+      "index": 75,
+      "file": "original-frames/frame_000075.png",
+      "requestedMs": 7139.356959000001,
+      "receivedMs": 7171.992249999999,
+      "metadata": {
+        "timestamp": 1792749957.8049796,
+        "timestampMeaning": "response receipt; exposure lies inside request-response interval"
+      },
+      "sha256": "7f2d577d24f4d4324203466883d3818b993a1cea3ae7abd51fe4fe5581960ebb"
+    },
+    {
+      "index": 76,
+      "file": "original-frames/frame_000076.png",
+      "requestedMs": 7172.04825,
+      "receivedMs": 7205.590291999999,
+      "metadata": {
+        "timestamp": 1792749957.8385713,
+        "timestampMeaning": "response receipt; exposure lies inside request-response interval"
+      },
+      "sha256": "7f2d577d24f4d4324203466883d3818b993a1cea3ae7abd51fe4fe5581960ebb"
+    },
+    {
+      "index": 77,
+      "file": "original-frames/frame_000077.png",
+      "requestedMs": 7205.654291999999,
+      "receivedMs": 7238.7932089999995,
+      "metadata": {
+        "timestamp": 1792749957.8717797,
+        "timestampMeaning": "response receipt; exposure lies inside request-response interval"
+      },
+      "sha256": "7f2d577d24f4d4324203466883d3818b993a1cea3ae7abd51fe4fe5581960ebb"
+    },
+    {
+      "index": 78,
+      "file": "original-frames/frame_000078.png",
+      "requestedMs": 7238.8475,
+      "receivedMs": 7273.071459000001,
+      "metadata": {
+        "timestamp": 1792749957.906024,
+        "timestampMeaning": "response receipt; exposure lies inside request-response interval"
+      },
+      "sha256": "7f2d577d24f4d4324203466883d3818b993a1cea3ae7abd51fe4fe5581960ebb"
+    },
+    {
+      "index": 79,
+      "file": "original-frames/frame_000079.png",
+      "requestedMs": 7273.210084,
+      "receivedMs": 7306.402458999999,
+      "metadata": {
+        "timestamp": 1792749957.9393861,
+        "timestampMeaning": "response receipt; exposure lies inside request-response interval"
+      },
+      "sha256": "7f2d577d24f4d4324203466883d3818b993a1cea3ae7abd51fe4fe5581960ebb"
+    },
+    {
+      "index": 80,
+      "file": "original-frames/frame_000080.png",
+      "requestedMs": 7306.4700840000005,
+      "receivedMs": 7339.9752499999995,
+      "metadata": {
+        "timestamp": 1792749957.9729595,
+        "timestampMeaning": "response receipt; exposure lies inside request-response interval"
+      },
+      "sha256": "7f2d577d24f4d4324203466883d3818b993a1cea3ae7abd51fe4fe5581960ebb"
+    },
+    {
+      "index": 81,
+      "file": "original-frames/frame_000081.png",
+      "requestedMs": 7340.0365839999995,
+      "receivedMs": 7372.140917000001,
+      "metadata": {
+        "timestamp": 1792749958.005114,
+        "timestampMeaning": "response receipt; exposure lies inside request-response interval"
+      },
+      "sha256": "7f2d577d24f4d4324203466883d3818b993a1cea3ae7abd51fe4fe5581960ebb"
+    },
+    {
+      "index": 82,
+      "file": "original-frames/frame_000082.png",
+      "requestedMs": 7372.200042,
+      "receivedMs": 7406.696958999999,
+      "metadata": {
+        "timestamp": 1792749958.0396838,
+        "timestampMeaning": "response receipt; exposure lies inside request-response interval"
+      },
+      "sha256": "7f2d577d24f4d4324203466883d3818b993a1cea3ae7abd51fe4fe5581960ebb"
+    },
+    {
+      "index": 83,
+      "file": "original-frames/frame_000083.png",
+      "requestedMs": 7406.857834,
+      "receivedMs": 7446.954916999999,
+      "metadata": {
+        "timestamp": 1792749958.079925,
+        "timestampMeaning": "response receipt; exposure lies inside request-response interval"
+      },
+      "sha256": "895fc9cb02dc8ea9ab77c9e78155fb31816cf0dc7776e75bd1c7e54711a17b49"
+    },
+    {
+      "index": 84,
+      "file": "original-frames/frame_000084.png",
+      "requestedMs": 7447.07775,
+      "receivedMs": 7474.560041999999,
+      "metadata": {
+        "timestamp": 1792749958.1075406,
+        "timestampMeaning": "response receipt; exposure lies inside request-response interval"
+      },
+      "sha256": "7dbd2253941b2650dd96712c2081c6bdb97ff1287d4afcb6979a7f0ada31d7ed"
+    },
+    {
+      "index": 85,
+      "file": "original-frames/frame_000085.png",
+      "requestedMs": 7474.62975,
+      "receivedMs": 7492.386833999999,
+      "metadata": {
+        "timestamp": 1792749958.1253698,
+        "timestampMeaning": "response receipt; exposure lies inside request-response interval"
+      },
+      "sha256": "a180837a47997caf7956fcaad73b26296ed327628a310b2e102ffde3f16d5c28"
+    },
+    {
+      "index": 86,
+      "file": "original-frames/frame_000086.png",
+      "requestedMs": 7492.445,
+      "receivedMs": 7507.806624999999,
+      "metadata": {
+        "timestamp": 1792749958.1407897,
+        "timestampMeaning": "response receipt; exposure lies inside request-response interval"
+      },
+      "sha256": "2a1e902a0d1e4e470ec021aa823743a842db0c29083924cddf28e35260816989"
+    },
+    {
+      "index": 87,
+      "file": "original-frames/frame_000087.png",
+      "requestedMs": 7507.864750000001,
+      "receivedMs": 7523.1865419999995,
+      "metadata": {
+        "timestamp": 1792749958.156171,
+        "timestampMeaning": "response receipt; exposure lies inside request-response interval"
+      },
+      "sha256": "f1edcdf6b482e6f9167ae4884c08347b9aaedd5c4046719d749ee35167ae04c5"
+    },
+    {
+      "index": 88,
+      "file": "original-frames/frame_000088.png",
+      "requestedMs": 7523.243875,
+      "receivedMs": 7539.989334,
+      "metadata": {
+        "timestamp": 1792749958.1729534,
+        "timestampMeaning": "response receipt; exposure lies inside request-response interval"
+      },
+      "sha256": "d3a04308caeb89f82664fb9a7e664eb1fa11c35a7e7418d88d842080ef68ea2d"
+    },
+    {
+      "index": 89,
+      "file": "original-frames/frame_000089.png",
+      "requestedMs": 7540.044,
+      "receivedMs": 7556.721792,
+      "metadata": {
+        "timestamp": 1792749958.1897068,
+        "timestampMeaning": "response receipt; exposure lies inside request-response interval"
+      },
+      "sha256": "7b53958304e8f2c77f9a5d7a49bd69af9724ad532b9b9e3ca45a59885e32551c"
+    },
+    {
+      "index": 90,
+      "file": "original-frames/frame_000090.png",
+      "requestedMs": 7556.797124999999,
+      "receivedMs": 7573.467042,
+      "metadata": {
+        "timestamp": 1792749958.2064505,
+        "timestampMeaning": "response receipt; exposure lies inside request-response interval"
+      },
+      "sha256": "b59659f4e44dd33bb37239b7cd5714c6c7a5d8db7a8529f9240d5f10ffb0b889"
+    },
+    {
+      "index": 91,
+      "file": "original-frames/frame_000091.png",
+      "requestedMs": 7573.524167,
+      "receivedMs": 7590.85375,
+      "metadata": {
+        "timestamp": 1792749958.2238379,
+        "timestampMeaning": "response receipt; exposure lies inside request-response interval"
+      },
+      "sha256": "fbf09da8d0006f38d0a285f92e76e4fbb287ad74ff556ecc43cbce00934b2c73"
+    },
+    {
+      "index": 92,
+      "file": "original-frames/frame_000092.png",
+      "requestedMs": 7590.951292,
+      "receivedMs": 7608.742125000001,
+      "metadata": {
+        "timestamp": 1792749958.2417297,
+        "timestampMeaning": "response receipt; exposure lies inside request-response interval"
+      },
+      "sha256": "28783444728d7c4f484f2b15e6ecb1b1288a5b02d79e38d0fd905c946a44ebc6"
+    },
+    {
+      "index": 93,
+      "file": "original-frames/frame_000093.png",
+      "requestedMs": 7608.798999999999,
+      "receivedMs": 7628.564124999999,
+      "metadata": {
+        "timestamp": 1792749958.2615242,
+        "timestampMeaning": "response receipt; exposure lies inside request-response interval"
+      },
+      "sha256": "28783444728d7c4f484f2b15e6ecb1b1288a5b02d79e38d0fd905c946a44ebc6"
+    },
+    {
+      "index": 94,
+      "file": "original-frames/frame_000094.png",
+      "requestedMs": 7628.645124999999,
+      "receivedMs": 7660.205749999999,
+      "metadata": {
+        "timestamp": 1792749958.2931879,
+        "timestampMeaning": "response receipt; exposure lies inside request-response interval"
+      },
+      "sha256": "28783444728d7c4f484f2b15e6ecb1b1288a5b02d79e38d0fd905c946a44ebc6"
+    },
+    {
+      "index": 95,
+      "file": "original-frames/frame_000095.png",
+      "requestedMs": 7660.275292,
+      "receivedMs": 7682.062709,
+      "metadata": {
+        "timestamp": 1792749958.314976,
+        "timestampMeaning": "response receipt; exposure lies inside request-response interval"
+      },
+      "sha256": "28783444728d7c4f484f2b15e6ecb1b1288a5b02d79e38d0fd905c946a44ebc6"
+    },
+    {
+      "index": 96,
+      "file": "original-frames/frame_000096.png",
+      "requestedMs": 7682.176334,
+      "receivedMs": 7723.108709,
+      "metadata": {
+        "timestamp": 1792749958.3560815,
+        "timestampMeaning": "response receipt; exposure lies inside request-response interval"
+      },
+      "sha256": "28783444728d7c4f484f2b15e6ecb1b1288a5b02d79e38d0fd905c946a44ebc6"
+    },
+    {
+      "index": 97,
+      "file": "original-frames/frame_000097.png",
+      "requestedMs": 7723.202541999999,
+      "receivedMs": 7754.956458999999,
+      "metadata": {
+        "timestamp": 1792749958.3879411,
+        "timestampMeaning": "response receipt; exposure lies inside request-response interval"
+      },
+      "sha256": "28783444728d7c4f484f2b15e6ecb1b1288a5b02d79e38d0fd905c946a44ebc6"
+    },
+    {
+      "index": 98,
+      "file": "original-frames/frame_000098.png",
+      "requestedMs": 7755.030333999999,
+      "receivedMs": 7789.633334,
+      "metadata": {
+        "timestamp": 1792749958.4226053,
+        "timestampMeaning": "response receipt; exposure lies inside request-response interval"
+      },
+      "sha256": "28783444728d7c4f484f2b15e6ecb1b1288a5b02d79e38d0fd905c946a44ebc6"
+    },
+    {
+      "index": 99,
+      "file": "original-frames/frame_000099.png",
+      "requestedMs": 7789.691375,
+      "receivedMs": 7821.243958999999,
+      "metadata": {
+        "timestamp": 1792749958.4542308,
+        "timestampMeaning": "response receipt; exposure lies inside request-response interval"
+      },
+      "sha256": "28783444728d7c4f484f2b15e6ecb1b1288a5b02d79e38d0fd905c946a44ebc6"
+    },
+    {
+      "index": 100,
+      "file": "original-frames/frame_000100.png",
+      "requestedMs": 7821.347125,
+      "receivedMs": 7854.471334,
+      "metadata": {
+        "timestamp": 1792749958.4874468,
+        "timestampMeaning": "response receipt; exposure lies inside request-response interval"
+      },
+      "sha256": "28783444728d7c4f484f2b15e6ecb1b1288a5b02d79e38d0fd905c946a44ebc6"
+    },
+    {
+      "index": 101,
+      "file": "original-frames/frame_000101.png",
+      "requestedMs": 7854.563167,
+      "receivedMs": 7888.326042000001,
+      "metadata": {
+        "timestamp": 1792749958.5213053,
+        "timestampMeaning": "response receipt; exposure lies inside request-response interval"
+      },
+      "sha256": "28783444728d7c4f484f2b15e6ecb1b1288a5b02d79e38d0fd905c946a44ebc6"
+    },
+    {
+      "index": 102,
+      "file": "original-frames/frame_000102.png",
+      "requestedMs": 7888.411083999999,
+      "receivedMs": 7921.863625,
+      "metadata": {
+        "timestamp": 1792749958.5548503,
+        "timestampMeaning": "response receipt; exposure lies inside request-response interval"
+      },
+      "sha256": "28783444728d7c4f484f2b15e6ecb1b1288a5b02d79e38d0fd905c946a44ebc6"
+    },
+    {
+      "index": 103,
+      "file": "original-frames/frame_000103.png",
+      "requestedMs": 7921.948417,
+      "receivedMs": 7955.186709,
+      "metadata": {
+        "timestamp": 1792749958.5881593,
+        "timestampMeaning": "response receipt; exposure lies inside request-response interval"
+      },
+      "sha256": "28783444728d7c4f484f2b15e6ecb1b1288a5b02d79e38d0fd905c946a44ebc6"
+    },
+    {
+      "index": 104,
+      "file": "original-frames/frame_000104.png",
+      "requestedMs": 7955.317042000001,
+      "receivedMs": 7988.178834,
+      "metadata": {
+        "timestamp": 1792749958.6211622,
+        "timestampMeaning": "response receipt; exposure lies inside request-response interval"
+      },
+      "sha256": "28783444728d7c4f484f2b15e6ecb1b1288a5b02d79e38d0fd905c946a44ebc6"
+    },
+    {
+      "index": 105,
+      "file": "original-frames/frame_000105.png",
+      "requestedMs": 7988.250583999999,
+      "receivedMs": 8021.541874999999,
+      "metadata": {
+        "timestamp": 1792749958.654525,
+        "timestampMeaning": "response receipt; exposure lies inside request-response interval"
+      },
+      "sha256": "28783444728d7c4f484f2b15e6ecb1b1288a5b02d79e38d0fd905c946a44ebc6"
+    },
+    {
+      "index": 106,
+      "file": "original-frames/frame_000106.png",
+      "requestedMs": 8021.605208999999,
+      "receivedMs": 8055.648874999999,
+      "metadata": {
+        "timestamp": 1792749958.6886256,
+        "timestampMeaning": "response receipt; exposure lies inside request-response interval"
+      },
+      "sha256": "28783444728d7c4f484f2b15e6ecb1b1288a5b02d79e38d0fd905c946a44ebc6"
+    },
+    {
+      "index": 107,
+      "file": "original-frames/frame_000107.png",
+      "requestedMs": 8055.723125,
+      "receivedMs": 8088.832958999999,
+      "metadata": {
+        "timestamp": 1792749958.721814,
+        "timestampMeaning": "response receipt; exposure lies inside request-response interval"
+      },
+      "sha256": "28783444728d7c4f484f2b15e6ecb1b1288a5b02d79e38d0fd905c946a44ebc6"
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+FAIL candidate no-preference accept no page errors ["Error: ENOSPC: no space left on device, write"]
+{
+  target: 'candidate',
+  reducedMotion: 'no-preference',
+  owner: 'accept',
+  failures: [ 'no page errors' ]
+}
+FAIL candidate no-preference reject sequence completed "Error: ENOSPC: no space left on device, open '/Users/codenameakshay/.t3/worktrees/beui/t3-df4b55e2/docs/proof/v3-parity/resume-20261024/scheduler-copy/attempt-6/candidate-no-preference-reject/opened.png'"
+{
+  target: 'candidate',
+  reducedMotion: 'no-preference',
+  owner: 'reject',
+  failures: [ 'sequence completed' ]
+}
+{
+  target: 'candidate',
+  reducedMotion: 'reduce',
+  owner: 'accept',
+  failures: []
+}
+{
+  target: 'candidate',
+  reducedMotion: 'reduce',
+  owner: 'reject',
+  failures: []
+}

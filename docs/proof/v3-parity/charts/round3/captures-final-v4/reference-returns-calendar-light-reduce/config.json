@@ -1,0 +1,124 @@
+{
+  "url": "https://beui.dev/charts/returns-calendar",
+  "viewport": {
+    "width": 1280,
+    "height": 1000
+  },
+  "theme": "light",
+  "reducedMotion": "reduce",
+  "reference": true,
+  "requireFlutterProbe": false,
+  "backend": "screenshots",
+  "loadWaitMs": 3000,
+  "provenance": {
+    "slug": "returns-calendar",
+    "revision": "live deployment unknown",
+    "pinnedSource": "a76e57c9bbc2837e96420b2610e9c82a3271bb05",
+    "chartRevision": "a87eb753",
+    "effectiveDependencies": [],
+    "recorderRevision": "d53695ffca9e4c9d1403e75712a9ff8e2ceed8ed",
+    "recorderSha256": "2aa405da2051b7a59a3010f7b0e3291108e3c51c65f6e1e76bf73bca120709ca",
+    "wrapperRevision": "live deployment unknown",
+    "observedProbeTargets": [
+      {
+        "name": "Jan 2021 +1.1%",
+        "rect": {
+          "x": 394,
+          "y": 457.8125,
+          "width": 32.671875,
+          "height": 32.671875,
+          "top": 457.8125,
+          "right": 426.671875,
+          "bottom": 490.484375,
+          "left": 394
+        }
+      },
+      {
+        "name": "Feb 2021 +4.0%",
+        "rect": {
+          "x": 426.671875,
+          "y": 457.8125,
+          "width": 32.671875,
+          "height": 32.671875,
+          "top": 457.8125,
+          "right": 459.34375,
+          "bottom": 490.484375,
+          "left": 426.671875
+        }
+      }
+    ],
+    "timerOverrides": "none",
+    "keyboardMethod": "click A, exit, native key, native Tab. No direct focus injection."
+  },
+  "targets": {
+    "A": {
+      "x": 410.3359375,
+      "y": 474.1484375
+    },
+    "B": {
+      "x": 443.0078125,
+      "y": 474.1484375
+    },
+    "exit": {
+      "x": 1120,
+      "y": 250
+    }
+  },
+  "events": [
+    {
+      "atMs": 300,
+      "type": "move",
+      "target": "A",
+      "caption": "A. Exact datum recorded in provenance."
+    },
+    {
+      "atMs": 1100,
+      "type": "move",
+      "target": "B",
+      "caption": "B. Retarget the visible readout."
+    },
+    {
+      "atMs": 1220,
+      "type": "move",
+      "target": "A",
+      "caption": "A. Reverse during the source ticker duration."
+    },
+    {
+      "atMs": 2100,
+      "type": "move",
+      "target": "exit",
+      "caption": "Pointer exit."
+    },
+    {
+      "atMs": 2500,
+      "type": "click",
+      "target": "A",
+      "caption": "Native click establishes focus."
+    },
+    {
+      "atMs": 2700,
+      "type": "move",
+      "target": "exit",
+      "caption": "Pointer leaves before keyboard input."
+    },
+    {
+      "atMs": 3000,
+      "type": "key",
+      "key": "Tab",
+      "caption": "Actual keyboard input after pointer exit."
+    },
+    {
+      "atMs": 3550,
+      "type": "key",
+      "key": "Tab",
+      "caption": "Actual Tab traversal."
+    },
+    {
+      "atMs": 3900,
+      "type": "key",
+      "key": "Escape",
+      "caption": "Dismiss."
+    }
+  ],
+  "finalHoldMs": 500
+}

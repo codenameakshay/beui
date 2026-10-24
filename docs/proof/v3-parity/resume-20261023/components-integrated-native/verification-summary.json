@@ -1,0 +1,230 @@
+{
+  "archiveVerified": true,
+  "behaviorAllPassed": false,
+  "runs": [
+    {
+      "run": "no-match/multi-select-no-preference",
+      "originalFrames": 75,
+      "decoded": {
+        "capture.mp4": 75,
+        "frame-index-replay.mkv": 75
+      },
+      "rgbReplayExact": true,
+      "checks": 15,
+      "preservedFailures": [
+        "typing opens no-match panel",
+        "retyping opens no-match panel",
+        "return input empty"
+      ]
+    },
+    {
+      "run": "no-match/multi-select-reduce",
+      "originalFrames": 27,
+      "decoded": {
+        "capture.mp4": 27,
+        "frame-index-replay.mkv": 27
+      },
+      "rgbReplayExact": true,
+      "checks": 15,
+      "preservedFailures": [
+        "typing opens no-match panel",
+        "retyping opens no-match panel",
+        "return input empty"
+      ]
+    },
+    {
+      "run": "run-1/file-tree-no-preference",
+      "originalFrames": 122,
+      "decoded": {
+        "capture.mp4": 122,
+        "frame-index-replay.mkv": 122
+      },
+      "rgbReplayExact": true,
+      "checks": 13,
+      "preservedFailures": [
+        "Down focuses button file",
+        "Home app",
+        "Right child",
+        "End README",
+        "Up package"
+      ]
+    },
+    {
+      "run": "run-1/file-tree-reduce",
+      "originalFrames": 32,
+      "decoded": {
+        "capture.mp4": 32,
+        "frame-index-replay.mkv": 32
+      },
+      "rgbReplayExact": true,
+      "checks": 13,
+      "preservedFailures": [
+        "Down focuses button file",
+        "Home app",
+        "Right child",
+        "End README",
+        "Up package"
+      ]
+    },
+    {
+      "run": "run-1/multi-select-no-preference",
+      "originalFrames": 82,
+      "decoded": {
+        "capture.mp4": 82,
+        "frame-index-replay.mkv": 82
+      },
+      "rgbReplayExact": true,
+      "checks": 15,
+      "preservedFailures": [
+        "typing opens Product option",
+        "retyping opens Research option",
+        "Tab closes and clears",
+        "return input empty"
+      ]
+    },
+    {
+      "run": "run-1/multi-select-reduce",
+      "originalFrames": 26,
+      "decoded": {
+        "capture.mp4": 26,
+        "frame-index-replay.mkv": 26
+      },
+      "rgbReplayExact": true,
+      "checks": 15,
+      "preservedFailures": [
+        "typing opens Product option",
+        "retyping opens Research option",
+        "Tab closes and clears",
+        "return input empty"
+      ]
+    },
+    {
+      "run": "run-1/sortable-stack-no-preference",
+      "originalFrames": 50,
+      "decoded": {
+        "capture.mp4": 50,
+        "frame-index-replay.mkv": 50
+      },
+      "rgbReplayExact": true,
+      "checks": 9,
+      "preservedFailures": [
+        "KNOWN engine focus after move"
+      ]
+    },
+    {
+      "run": "run-1/sortable-stack-reduce",
+      "originalFrames": 17,
+      "decoded": {
+        "capture.mp4": 17,
+        "frame-index-replay.mkv": 17
+      },
+      "rgbReplayExact": true,
+      "checks": 9,
+      "preservedFailures": [
+        "KNOWN engine focus after move"
+      ]
+    },
+    {
+      "run": "run-2/file-tree-no-preference",
+      "originalFrames": 126,
+      "decoded": {
+        "capture.mp4": 126,
+        "frame-index-replay.mkv": 126
+      },
+      "rgbReplayExact": true,
+      "checks": 13,
+      "preservedFailures": []
+    },
+    {
+      "run": "run-2/file-tree-reduce",
+      "originalFrames": 32,
+      "decoded": {
+        "capture.mp4": 32,
+        "frame-index-replay.mkv": 32
+      },
+      "rgbReplayExact": true,
+      "checks": 13,
+      "preservedFailures": []
+    },
+    {
+      "run": "run-2/multi-select-no-preference",
+      "originalFrames": 92,
+      "decoded": {
+        "capture.mp4": 92,
+        "frame-index-replay.mkv": 92
+      },
+      "rgbReplayExact": true,
+      "checks": 16,
+      "preservedFailures": [
+        "outside Tab closes and clears",
+        "return input empty"
+      ]
+    },
+    {
+      "run": "run-2/multi-select-reduce",
+      "originalFrames": 31,
+      "decoded": {
+        "capture.mp4": 31,
+        "frame-index-replay.mkv": 31
+      },
+      "rgbReplayExact": true,
+      "checks": 16,
+      "preservedFailures": [
+        "outside Tab closes and clears",
+        "return input empty"
+      ]
+    },
+    {
+      "run": "run-2/sortable-stack-no-preference",
+      "originalFrames": 50,
+      "decoded": {
+        "capture.mp4": 50,
+        "frame-index-replay.mkv": 50
+      },
+      "rgbReplayExact": true,
+      "checks": 9,
+      "preservedFailures": [
+        "KNOWN engine focus after move"
+      ]
+    },
+    {
+      "run": "run-2/sortable-stack-reduce",
+      "originalFrames": 17,
+      "decoded": {
+        "capture.mp4": 17,
+        "frame-index-replay.mkv": 17
+      },
+      "rgbReplayExact": true,
+      "checks": 9,
+      "preservedFailures": [
+        "KNOWN engine focus after move"
+      ]
+    },
+    {
+      "run": "tab-followup/multi-select-no-preference",
+      "originalFrames": 126,
+      "decoded": {
+        "capture.mp4": 126,
+        "frame-index-replay.mkv": 126
+      },
+      "rgbReplayExact": true,
+      "checks": 15,
+      "preservedFailures": [
+        "outside Tab closes and clears"
+      ]
+    },
+    {
+      "run": "tab-followup/multi-select-reduce",
+      "originalFrames": 46,
+      "decoded": {
+        "capture.mp4": 46,
+        "frame-index-replay.mkv": 46
+      },
+      "rgbReplayExact": true,
+      "checks": 15,
+      "preservedFailures": [
+        "outside Tab closes and clears"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,76 @@
+{
+  "url": "https://beui.dev/components/motion/image-viewer",
+  "viewport": {
+    "width": 1280,
+    "height": 1000
+  },
+  "theme": "light",
+  "reference": true,
+  "backend": "screenshots",
+  "loadWaitMs": 1800,
+  "finalHoldMs": 500,
+  "targets": {
+    "outside": {
+      "x": 300,
+      "y": 280
+    },
+    "control0": {
+      "x": 404,
+      "y": 742,
+      "width": 184,
+      "height": 230,
+      "measuredName": "Open Sculptural architecture",
+      "measuredRole": null
+    }
+  },
+  "events": [
+    {
+      "atMs": 400,
+      "type": "move",
+      "target": "control0",
+      "observedTargetName": "Open Sculptural architecture"
+    },
+    {
+      "atMs": 650,
+      "type": "click",
+      "target": "control0",
+      "observedTargetName": "Open Sculptural architecture"
+    },
+    {
+      "atMs": 1500,
+      "type": "key",
+      "key": "ArrowRight"
+    },
+    {
+      "atMs": 2300,
+      "type": "key",
+      "key": "ArrowLeft"
+    },
+    {
+      "atMs": 3100,
+      "type": "key",
+      "key": "Escape"
+    },
+    {
+      "atMs": 3600,
+      "type": "move",
+      "target": "outside"
+    },
+    {
+      "atMs": 3950,
+      "type": "key",
+      "key": "Escape"
+    }
+  ],
+  "provenance": {
+    "phase": "live reference",
+    "implementationHead": "8ccb169aa6d6786c451456f756af2087d2672c89",
+    "baseline": "5ec78ac30e1274727ddd185a883346e4d908e6c8",
+    "referenceRevision": "a76e57c9bbc2837e96420b2610e9c82a3271bb05",
+    "liveDeploymentRevision": "unknown",
+    "sourceInnerWidth": 592,
+    "buildMode": "live deployment",
+    "scope": "Default preview only. Missing targets are not exercised. Keyboard dispatch alone does not assert its outcome.",
+    "missingTargets": []
+  }
+}

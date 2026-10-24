@@ -1,0 +1,258 @@
+{
+  "sourceCommit": "a76e57c9bbc2837e96420b2610e9c82a3271bb05",
+  "sourceStatus": "",
+  "flutterCommit": "c8ef8a2cb0c40a1f7a59f9f5051fea528b43b9b0",
+  "records": [
+    {
+      "path": "/tmp/beui-charts-reference-20261023/app/layout.tsx",
+      "sha256": "365337638a574134c4cb021df98ac2d9df3d8ade6c833ab5fb756b7654514deb",
+      "usage": [
+        {
+          "line": 2,
+          "text": "import { Geist, Geist_Mono } from \"next/font/google\";"
+        },
+        {
+          "line": 22,
+          "text": "const sans = Geist({"
+        },
+        {
+          "line": 26,
+          "text": "const mono = Geist_Mono({"
+        },
+        {
+          "line": 111,
+          "text": "      className={cn(sans.variable, mono.variable)}"
+        }
+      ]
+    },
+    {
+      "path": "/tmp/beui-charts-reference-20261023/app/globals.css",
+      "sha256": "e0db1ba39a084d56f5a701732722bff0ea42d761905f3bfcf17ecb2a09611a40",
+      "usage": [
+        {
+          "line": 115,
+          "text": "    --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;"
+        },
+        {
+          "line": 116,
+          "text": "    --font-mono: var(--font-geist-mono), ui-monospace, monospace;"
+        },
+        {
+          "line": 246,
+          "text": "        font-family: var(--font-sans);"
+        }
+      ]
+    },
+    {
+      "path": "/tmp/beui-charts-reference-20261023/components/motion/command-palette.tsx",
+      "sha256": "ca1868e0398556fa3cd9bf3602b661de025acef9bc2c6dce088e34940bd09b08",
+      "usage": []
+    },
+    {
+      "path": "/tmp/beui-charts-reference-20261023/components/agents/code-block.tsx",
+      "sha256": "d4b6689f49a15c9790270aea8067411b6579dd1abb89505c8b1ea56c8bbe144b",
+      "usage": [
+        {
+          "line": 117,
+          "text": "          <span className=\"min-w-0 truncate font-mono text-xs text-foreground/80\">"
+        },
+        {
+          "line": 165,
+          "text": "        <pre className=\"m-0 min-w-max font-mono text-xs leading-5 text-foreground/85\">"
+        }
+      ]
+    },
+    {
+      "path": "/tmp/beui-charts-reference-20261023/components/charts/order-book.tsx",
+      "sha256": "9b4657b7e3a63a7fac6367a2d2c0cf0496fe726a7227ff0e38ed8fd90979f3e0",
+      "usage": [
+        {
+          "line": 132,
+          "text": "          \"w-full max-w-[560px] overflow-hidden rounded-2xl border border-border bg-background font-mono text-xs tabular-nums\","
+        },
+        {
+          "line": 308,
+          "text": "        <span className=\"font-sans\">{placeholder}</span>"
+        }
+      ]
+    },
+    {
+      "path": "lib/src/theme/beui_text_theme.dart",
+      "sha256": "30f45fdef99a29235822adfe0d7829d388572811aa259f2eb2569300cdee635a",
+      "usage": [
+        {
+          "line": 21,
+          "text": "///   fontFamily: text.monoFamily,"
+        },
+        {
+          "line": 22,
+          "text": "///   fontFamilyFallback: text.monoFamilyFallback,"
+        },
+        {
+          "line": 28,
+          "text": "  /// ([sansFamily] `Geist`, [monoFamily] `Geist Mono`)."
+        },
+        {
+          "line": 30,
+          "text": "    this.sansFamily = 'Geist',"
+        },
+        {
+          "line": 31,
+          "text": "    this.monoFamily = 'Geist Mono',"
+        },
+        {
+          "line": 34,
+          "text": "  /// The sans-serif family name (source: Geist)."
+        },
+        {
+          "line": 37,
+          "text": "  /// The monospace family name (source: Geist Mono)."
+        },
+        {
+          "line": 42,
+          "text": "  /// fixed-width face even before the consumer wires up Geist Mono."
+        },
+        {
+          "line": 66,
+          "text": "  ///     ThemeData(fontFamily: 'Geist').copyWith(extensions: [BeuiColors.dark()]),"
+        }
+      ]
+    },
+    {
+      "path": "lib/src/theme/beui_agent_theme.dart",
+      "sha256": "7fd466c8fc228da5b60dd8240fb9395c611b7578e0feaba42e3b0ec140c1c7cb",
+      "usage": [
+        {
+          "line": 5,
+          "text": "/// complements [BeuiColors] (palette) and [ThemeData.fontFamily] /"
+        },
+        {
+          "line": 14,
+          "text": "///   fontFamily: 'General Sans',"
+        },
+        {
+          "line": 46,
+          "text": "/// family. Sans styles leave [TextStyle.fontFamily] unset so"
+        },
+        {
+          "line": 47,
+          "text": "/// [ThemeData.fontFamily] inherits through."
+        },
+        {
+          "line": 72,
+          "text": "      fontFamily: 'monospace',"
+        },
+        {
+          "line": 73,
+          "text": "      fontFamilyFallback: ['monospace'],"
+        }
+      ]
+    },
+    {
+      "path": "example/lib/explorer/explorer_app.dart",
+      "sha256": "a26bed6e477a1c8289d9a90b484d38d64ffe67fef34d72e87f08a575c0cf5538",
+      "usage": [
+        {
+          "line": 60,
+          "text": "/// The gallery's [ThemeData] for [colorTheme] at [brightness] — Geist,"
+        },
+        {
+          "line": 66,
+          "text": "  // Geist is the face beui.dev serves; the gallery renders in it so it reads"
+        },
+        {
+          "line": 72,
+          "text": "    ThemeData(brightness: brightness, useMaterial3: true, fontFamily: 'Geist'),"
+        }
+      ]
+    },
+    {
+      "path": "example/pubspec.yaml",
+      "sha256": "41a867766bb7b3867eff8b42777139cbc7a596cf1e7da25b7f0df8d5bea42b25",
+      "usage": [
+        {
+          "line": 24,
+          "text": "  # beui.dev serves Geist (its CSS declares `font-family: Geist`, weights"
+        },
+        {
+          "line": 30,
+          "text": "  # Geist is (c) 2024 The Geist Project Authors, SIL Open Font License 1.1 —"
+        },
+        {
+          "line": 33,
+          "text": "    - family: Geist"
+        },
+        {
+          "line": 35,
+          "text": "        - asset: assets/fonts/Geist-Regular.ttf"
+        },
+        {
+          "line": 37,
+          "text": "        - asset: assets/fonts/Geist-Medium.ttf"
+        },
+        {
+          "line": 39,
+          "text": "        - asset: assets/fonts/Geist-SemiBold.ttf"
+        },
+        {
+          "line": 41,
+          "text": "        - asset: assets/fonts/Geist-Bold.ttf"
+        },
+        {
+          "line": 43,
+          "text": "    # BeuiTextTheme exposes the source name, Geist Mono. Existing code surfaces"
+        },
+        {
+          "line": 48,
+          "text": "    # Geist Mono is (c) 2024 The Geist Project Authors, SIL OFL 1.1 —"
+        },
+        {
+          "line": 50,
+          "text": "    - family: Geist Mono"
+        },
+        {
+          "line": 52,
+          "text": "        - asset: assets/fonts/GeistMono-Regular.ttf"
+        },
+        {
+          "line": 54,
+          "text": "        - asset: assets/fonts/GeistMono-Medium.ttf"
+        },
+        {
+          "line": 58,
+          "text": "        - asset: assets/fonts/GeistMono-Regular.ttf"
+        },
+        {
+          "line": 60,
+          "text": "        - asset: assets/fonts/GeistMono-Medium.ttf"
+        }
+      ]
+    },
+    {
+      "path": "docs/PORTING_SPEC.md",
+      "sha256": "d1ef6391152db052869595b450ae880902c0fb95e08a993e0fb506ee680c2cd7",
+      "usage": [
+        {
+          "line": 184,
+          "text": "- Sans: **Inter**."
+        },
+        {
+          "line": 185,
+          "text": "- Mono: **JetBrains Mono** (OFL, loaded via `next/font/google` in source) — *not* Geist Mono."
+        },
+        {
+          "line": 188,
+          "text": "The published package ships **no bundled fonts**; only the `example/` gallery may bundle Inter/JetBrains Mono for visual parity."
+        },
+        {
+          "line": 192,
+          "text": "The AI-agent family previously inlined source Tailwind metrics (`text-sm`, `rounded-2xl`, `p-4`, Lucide defaults). Those are now a `ThemeExtension<BeuiAgentTheme>` with semantic roles (body/title/metadata type, bubble vs card radii, turn vs grouped spacing, borders, optional glass, icon slots). **Defaults are the current source-fidelity values** — omitting the extension is identical to 1.0.0. `BeuiColors` still owns the palette; `ThemeData.fontFamily` still owns the sans face. Do not fold this into a library-wide style object that would force migrating all 72 catalog entries."
+        },
+        {
+          "line": 638,
+          "text": "- The only genuine bundled-asset question is **fonts**, and the answer is *don't bundle* — see *Theme system* (map to `TextStyle(fontFamily: ...)` / `BeuiTextTheme`, leave the font to the consumer)."
+        }
+      ]
+    }
+  ]
+}

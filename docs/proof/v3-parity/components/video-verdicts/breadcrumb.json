@@ -1,0 +1,362 @@
+{
+  "id": "components/breadcrumb",
+  "owner": "components",
+  "newBadge": true,
+  "demoChanged": true,
+  "sourceUrl": "https://beui.dev/components/motion/breadcrumb",
+  "sourceFiles": [
+    {
+      "path": "components/motion/breadcrumb.tsx",
+      "sha256": "f45d588a391e0735629b3fa64a9cf1c6b4798f449db4d86a5243d389246a57b1"
+    }
+  ],
+  "sourcePreviews": [
+    "components/previews/motion/breadcrumb.preview.tsx"
+  ],
+  "sourceExamples": [],
+  "widgetParts": [
+    "BeuiBreadcrumb",
+    "BeuiBreadcrumbList",
+    "BeuiBreadcrumbItem",
+    "BeuiBreadcrumbLink",
+    "BeuiBreadcrumbPage",
+    "BeuiBreadcrumbSeparator",
+    "BeuiBreadcrumbEllipsis"
+  ],
+  "states": [
+    "rest",
+    "hover-exit",
+    "keyboard",
+    "reduced-motion",
+    "link hover focus press and exit",
+    "ellipsis collapsed ancestor navigation",
+    "list item link page separator and ellipsis parts"
+  ],
+  "themes": [
+    "dark",
+    "light"
+  ],
+  "verdict": "Known mismatch or failed visual gate",
+  "implementation": "repaired subset, see CHANGE_MANIFEST.md",
+  "missing": "No complete matched-width 60 FPS reference/before/after state set or independent visual verdict.",
+  "captures": [
+    {
+      "id": "reference-light-breadcrumb",
+      "slug": "breadcrumb",
+      "origin": "reference",
+      "theme": "light",
+      "code": 0,
+      "configPath": "/Users/codenameakshay/.t3/worktrees/beui/t3-48d38279/docs/proof/v3-parity/components/release-recordings-run2/configs/reference-light-breadcrumb.json",
+      "runDirectory": "/Users/codenameakshay/.t3/worktrees/beui/t3-48d38279/docs/proof/v3-parity/components/release-recordings-run2/reference-light-breadcrumb",
+      "missingTargets": [],
+      "stats": {
+        "originEpochMs": 1792743222403,
+        "backend": "screenshots",
+        "startMs": 2555.92125,
+        "sequenceStartMs": 2556.254875,
+        "stopMs": 5711.047791999999,
+        "frames": 49,
+        "durationMs": 3148.53835105896,
+        "measuredFps": 15.245169233481299,
+        "medianIntervalMs": 66.5581226348877,
+        "maxIntervalMs": 71.3508129119873,
+        "reorderedDeliveries": 0,
+        "fastMotionVerdict": "inconclusive; inspect per-event gaps, not nominal frame rate",
+        "errors": [],
+        "video": {
+          "width": 1280,
+          "height": 913,
+          "decodedFrames": 49
+        }
+      },
+      "video": {
+        "path": "release-recordings-run2/reference-light-breadcrumb/capture.mp4",
+        "bytes": 783783,
+        "sha256": "2bb0b735f3ea117ab55dd48ed2d9cc88554b2a12c4d2c26605850a88aa913ec7"
+      }
+    },
+    {
+      "id": "reference-dark-breadcrumb",
+      "slug": "breadcrumb",
+      "origin": "reference",
+      "theme": "dark",
+      "code": 0,
+      "configPath": "/Users/codenameakshay/.t3/worktrees/beui/t3-48d38279/docs/proof/v3-parity/components/release-recordings-run2/configs/reference-dark-breadcrumb.json",
+      "runDirectory": "/Users/codenameakshay/.t3/worktrees/beui/t3-48d38279/docs/proof/v3-parity/components/release-recordings-run2/reference-dark-breadcrumb",
+      "missingTargets": [],
+      "stats": {
+        "originEpochMs": 1792743287229,
+        "backend": "screenshots",
+        "startMs": 2715.9590000000003,
+        "sequenceStartMs": 2716.2275,
+        "stopMs": 5871.313292,
+        "frames": 48,
+        "durationMs": 3109.1604232788086,
+        "measuredFps": 15.116621081402899,
+        "medianIntervalMs": 66.55597686767578,
+        "maxIntervalMs": 74.47648048400879,
+        "reorderedDeliveries": 0,
+        "fastMotionVerdict": "inconclusive; inspect per-event gaps, not nominal frame rate",
+        "errors": [],
+        "video": {
+          "width": 1280,
+          "height": 913,
+          "decodedFrames": 48
+        }
+      },
+      "video": {
+        "path": "release-recordings-run2/reference-dark-breadcrumb/capture.mp4",
+        "bytes": 774546,
+        "sha256": "c6a635280f64448b0e56688499cd7792c538d6d238d98d977970dffd82dfb55d"
+      }
+    },
+    {
+      "id": "candidate-light-breadcrumb",
+      "slug": "breadcrumb",
+      "origin": "candidate",
+      "theme": "light",
+      "code": 0,
+      "configPath": "/Users/codenameakshay/.t3/worktrees/beui/t3-48d38279/docs/proof/v3-parity/components/release-recordings-run2/configs/candidate-light-breadcrumb.json",
+      "runDirectory": "/Users/codenameakshay/.t3/worktrees/beui/t3-48d38279/docs/proof/v3-parity/components/release-recordings-run2/candidate-light-breadcrumb",
+      "missingTargets": [],
+      "stats": {
+        "originEpochMs": 1792743423306,
+        "backend": "screenshots",
+        "startMs": 5176.958708,
+        "sequenceStartMs": 5177.221708,
+        "stopMs": 8334.409208,
+        "frames": 127,
+        "durationMs": 3145.4389095306396,
+        "measuredFps": 40.05800259487527,
+        "medianIntervalMs": 17.809152603149414,
+        "maxIntervalMs": 50.78935623168945,
+        "reorderedDeliveries": 0,
+        "fastMotionVerdict": "inconclusive; inspect per-event gaps, not nominal frame rate",
+        "errors": [],
+        "video": {
+          "width": 1280,
+          "height": 913,
+          "decodedFrames": 127
+        }
+      },
+      "video": {
+        "path": "release-recordings-run2/candidate-light-breadcrumb/capture.mp4",
+        "bytes": 674837,
+        "sha256": "197dd737cf80f60352c8de0e9805aca97b14315dbad4d1e1ce681b853ceb7068"
+      }
+    },
+    {
+      "id": "candidate-dark-breadcrumb",
+      "slug": "breadcrumb",
+      "origin": "candidate",
+      "theme": "dark",
+      "code": 0,
+      "configPath": "/Users/codenameakshay/.t3/worktrees/beui/t3-48d38279/docs/proof/v3-parity/components/release-recordings-run2/configs/candidate-dark-breadcrumb.json",
+      "runDirectory": "/Users/codenameakshay/.t3/worktrees/beui/t3-48d38279/docs/proof/v3-parity/components/release-recordings-run2/candidate-dark-breadcrumb",
+      "missingTargets": [],
+      "stats": {
+        "originEpochMs": 1792743708726,
+        "backend": "screenshots",
+        "startMs": 5166.376084,
+        "sequenceStartMs": 5166.503125,
+        "stopMs": 8322.043667,
+        "frames": 150,
+        "durationMs": 3125.490665435791,
+        "measuredFps": 47.67251479832039,
+        "medianIntervalMs": 17.031431198120117,
+        "maxIntervalMs": 35.228729248046875,
+        "reorderedDeliveries": 0,
+        "fastMotionVerdict": "inconclusive; inspect per-event gaps, not nominal frame rate",
+        "errors": [],
+        "video": {
+          "width": 1280,
+          "height": 913,
+          "decodedFrames": 150
+        }
+      },
+      "video": {
+        "path": "release-recordings-run2/candidate-dark-breadcrumb/capture.mp4",
+        "bytes": 783219,
+        "sha256": "302701c0888706be3dbf10a1ca8c12a635c4fd19a502b7a99a127a711dca48fe"
+      }
+    }
+  ],
+  "changeVideos": [
+    {
+      "slug": "breadcrumb",
+      "theme": "light",
+      "before": "/Users/codenameakshay/.t3/worktrees/beui/t3-48d38279/docs/proof/v3-parity/components/before-verified/candidate/light/breadcrumb/recording.webm",
+      "after": "/Users/codenameakshay/.t3/worktrees/beui/t3-48d38279/docs/proof/v3-parity/components/release-recordings-run2/candidate-light-breadcrumb/capture.mp4",
+      "video": "/Users/codenameakshay/.t3/worktrees/beui/t3-48d38279/docs/proof/v3-parity/components/change-videos/breadcrumb-light-before-after.mp4",
+      "change": "Restore source width, spacing, forward navigation row, link metrics, and current-page focus restoration.",
+      "frameProof": [
+        {
+          "phase": "BEFORE",
+          "original": {
+            "programs": [],
+            "stream_groups": [],
+            "streams": [
+              {
+                "width": 1440,
+                "height": 1000,
+                "nb_read_frames": "69"
+              }
+            ],
+            "format": {
+              "duration": "2.760000"
+            }
+          },
+          "presentation": {
+            "programs": [],
+            "stream_groups": [],
+            "streams": [
+              {
+                "width": 1440,
+                "height": 1120,
+                "nb_read_frames": "69"
+              }
+            ],
+            "format": {
+              "duration": "2.760000"
+            }
+          }
+        },
+        {
+          "phase": "AFTER",
+          "original": {
+            "programs": [],
+            "stream_groups": [],
+            "streams": [
+              {
+                "width": 1280,
+                "height": 913,
+                "nb_read_frames": "127"
+              }
+            ],
+            "format": {
+              "duration": "3.145439"
+            }
+          },
+          "presentation": {
+            "programs": [],
+            "stream_groups": [],
+            "streams": [
+              {
+                "width": 1440,
+                "height": 1120,
+                "nb_read_frames": "127"
+              }
+            ],
+            "format": {
+              "duration": "3.170206"
+            }
+          }
+        }
+      ],
+      "decoded": {
+        "programs": [],
+        "stream_groups": [],
+        "streams": [
+          {
+            "width": 1440,
+            "height": 1120,
+            "nb_read_frames": "196"
+          }
+        ],
+        "format": {
+          "duration": "5.930206"
+        }
+      },
+      "comparison": "Presentation only. Different original viewport widths are labeled. No rescaling or interpolation."
+    },
+    {
+      "slug": "breadcrumb",
+      "theme": "dark",
+      "before": "/Users/codenameakshay/.t3/worktrees/beui/t3-48d38279/docs/proof/v3-parity/components/before-verified/candidate/dark/breadcrumb/recording.webm",
+      "after": "/Users/codenameakshay/.t3/worktrees/beui/t3-48d38279/docs/proof/v3-parity/components/release-recordings-run2/candidate-dark-breadcrumb/capture.mp4",
+      "video": "/Users/codenameakshay/.t3/worktrees/beui/t3-48d38279/docs/proof/v3-parity/components/change-videos/breadcrumb-dark-before-after.mp4",
+      "change": "Restore source width, spacing, forward navigation row, link metrics, and current-page focus restoration.",
+      "frameProof": [
+        {
+          "phase": "BEFORE",
+          "original": {
+            "programs": [],
+            "stream_groups": [],
+            "streams": [
+              {
+                "width": 1440,
+                "height": 1000,
+                "nb_read_frames": "71"
+              }
+            ],
+            "format": {
+              "duration": "2.840000"
+            }
+          },
+          "presentation": {
+            "programs": [],
+            "stream_groups": [],
+            "streams": [
+              {
+                "width": 1440,
+                "height": 1120,
+                "nb_read_frames": "71"
+              }
+            ],
+            "format": {
+              "duration": "2.840000"
+            }
+          }
+        },
+        {
+          "phase": "AFTER",
+          "original": {
+            "programs": [],
+            "stream_groups": [],
+            "streams": [
+              {
+                "width": 1280,
+                "height": 913,
+                "nb_read_frames": "150"
+              }
+            ],
+            "format": {
+              "duration": "3.125493"
+            }
+          },
+          "presentation": {
+            "programs": [],
+            "stream_groups": [],
+            "streams": [
+              {
+                "width": 1440,
+                "height": 1120,
+                "nb_read_frames": "150"
+              }
+            ],
+            "format": {
+              "duration": "3.136466"
+            }
+          }
+        }
+      ],
+      "decoded": {
+        "programs": [],
+        "stream_groups": [],
+        "streams": [
+          {
+            "width": 1440,
+            "height": 1120,
+            "nb_read_frames": "221"
+          }
+        ],
+        "format": {
+          "duration": "5.976466"
+        }
+      },
+      "comparison": "Presentation only. Different original viewport widths are labeled. No rescaling or interpolation."
+    }
+  ],
+  "knownGaps": "Item exit retention and ellipsis morph remain unmatched. Existing golden comparison fails.",
+  "coverage": "Default preview recording only. No complete state or example parity certificate."
+}

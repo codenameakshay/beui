@@ -1,0 +1,28 @@
+@import '/tmp/beui-sankey-runtime-20261023/node_modules/tailwindcss';
+@source '/tmp/beui-charts-reference-20261023/components/charts/sankey-chart';
+@source '/tmp/beui-charts-reference-20261023/components/charts/sankey-chart.tsx';
+@source '/tmp/beui-charts-reference-20261023/components/previews/charts/sankey-chart.preview.tsx';
+@source '/tmp/beui-charts-reference-20261023/components/motion/tabs.tsx';
+@source '/tmp/beui-charts-reference-20261023/components/motion/tabs';
+@source '/tmp/beui-charts-reference-20261023/components/motion/number-ticker.tsx';
+@source '/tmp/beui-charts-reference-20261023/components/motion/tooltip';
+@source '/tmp/beui-charts-reference-20261023/components/motion/tooltip-surface.tsx';
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-border: var(--border);
+  --color-ring: var(--ring);
+  --color-card: var(--card);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+}
+:root {--background: oklch(99% 0 0); --foreground: oklch(15% 0 0); --muted: oklch(96% 0 0); --muted-foreground: oklch(55% 0 0); --border: oklch(15% 0 0 / .06); --ring: oklch(15% 0 0 / .12); color-scheme: light;}
+.dark {--background: #151515; --foreground: oklch(93% 0 0); --muted: #262626; --muted-foreground: oklch(65% 0 0); --border: rgb(255 255 255 / .05); --ring: rgb(255 255 255 / .1); color-scheme: dark;}
+@font-face {font-family: Geist; src: url('./Geist.ttf');}
+@font-face {font-family: Geist; font-weight: 500; src: url('./GeistMedium.ttf');}
+@font-face {font-family: 'Geist Mono'; src: url('./GeistMono.ttf');}
+body {margin: 0; background: var(--background); color: var(--foreground); font: 14px/20px Geist, sans-serif;}
+.font-mono {font-family: 'Geist Mono', monospace;}
+#root {height: 100vh; display: flex; align-items: center; justify-content: center; padding: 16px;}

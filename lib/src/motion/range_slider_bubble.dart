@@ -168,11 +168,11 @@ class _BeuiBubbleSliderState extends State<BeuiBubbleSlider>
     super.dispose();
   }
 
-  void _onPanStart(DragStartDetails details, double trackWidth) {
+  void _onPanStart(Offset position, double trackWidth) {
     if (!widget.enabled) return;
     _focus.requestFocus();
     setState(() => _dragging = true);
-    commitValue(sliderValueFromDx(details.localPosition.dx, trackWidth));
+    commitValue(sliderValueFromDx(position.dx, trackWidth));
   }
 
   void _onPanUpdate(DragUpdateDetails details, double trackWidth) {
@@ -375,7 +375,14 @@ class _BeuiBubbleSliderState extends State<BeuiBubbleSlider>
                       : SystemMouseCursors.basic,
                   child: GestureDetector(
                     behavior: HitTestBehavior.opaque,
-                    onPanStart: (d) => _onPanStart(d, trackWidth),
+                    onPanDown: (d) => _onPanStart(d.localPosition, trackWidth),
+                    onPanStart: (d) {
+                      if (widget.enabled) {
+                        commitValue(
+                          sliderValueFromDx(d.localPosition.dx, trackWidth),
+                        );
+                      }
+                    },
                     onPanUpdate: (d) => _onPanUpdate(d, trackWidth),
                     onPanEnd: (_) => _onPanEnd(),
                     onPanCancel: _onPanEnd,

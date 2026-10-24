@@ -1,0 +1,65 @@
+[
+  {
+    "scope": "candle-volume",
+    "taskId": "node:delegated-task:command%3Amcp%3A88ccf142-fc2c-4907-a265-6141941bf107%3Adelegate-task%3Av3-resume-candle-volume-20261023",
+    "model": "gpt-6.1-sol",
+    "reasoningEffort": "high",
+    "serviceTier": "priority",
+    "base": "a2942181a755503a25571ca3150a16acc284d29b",
+    "statusAtAssignment": "running"
+  },
+  {
+    "scope": "bump",
+    "taskId": "node:delegated-task:command%3Amcp%3A88ccf142-fc2c-4907-a265-6141941bf107%3Adelegate-task%3Av3-resume-bump-20261023",
+    "model": "gpt-6.1-sol",
+    "reasoningEffort": "high",
+    "serviceTier": "priority",
+    "base": "a2942181a755503a25571ca3150a16acc284d29b",
+    "statusAtAssignment": "running"
+  },
+  {
+    "scope": "composition-funnel",
+    "taskId": "node:delegated-task:command%3Amcp%3A88ccf142-fc2c-4907-a265-6141941bf107%3Adelegate-task%3Av3-resume-composition-funnel-20261023",
+    "model": "gpt-6.1-sol",
+    "reasoningEffort": "high",
+    "serviceTier": "priority",
+    "base": "a2942181a755503a25571ca3150a16acc284d29b",
+    "statusAtAssignment": "running"
+  },
+  {
+    "scope": "agent-pixels",
+    "taskId": "node:delegated-task:command%3Amcp%3A88ccf142-fc2c-4907-a265-6141941bf107%3Adelegate-task%3Av3-resume-agent-pixels-20261023",
+    "model": "gpt-6.1-sol",
+    "reasoningEffort": "high",
+    "serviceTier": "priority",
+    "base": "a2942181a755503a25571ca3150a16acc284d29b",
+    "statusAtAssignment": "running"
+  },
+  {
+    "scope": "coverage-ledger",
+    "taskId": "node:delegated-task:command%3Amcp%3A88ccf142-fc2c-4907-a265-6141941bf107%3Adelegate-task%3Av3-resume-coverage-ledger-20261023",
+    "model": "gpt-6.1-sol",
+    "reasoningEffort": "high",
+    "serviceTier": "priority",
+    "base": "a2942181a755503a25571ca3150a16acc284d29b",
+    "statusAtAssignment": "running",
+    "latestStatus": "completed",
+    "output": "coverage-ledger.json"
+  },
+  {
+    "scope": "sankey",
+    "taskId": "node:delegated-task:command%3Amcp%3A88ccf142-fc2c-4907-a265-6141941bf107%3Adelegate-task%3Av3-resume-sankey-20261023",
+    "model": "gpt-6.1-sol",
+    "reasoningEffort": "high",
+    "serviceTier": "priority",
+    "statusAtAssignment": "running"
+  },
+  {
+    "scope": "component-examples",
+    "taskId": "node:delegated-task:command%3Amcp%3A88ccf142-fc2c-4907-a265-6141941bf107%3Adelegate-task%3Av3-resume-component-examples-20261023",
+    "model": "gpt-6.1-sol",
+    "reasoningEffort": "high",
+    "serviceTier": "priority",
+    "statusAtAssignment": "running"
+  }
+]

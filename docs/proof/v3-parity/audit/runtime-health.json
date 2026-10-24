@@ -1,0 +1,106 @@
+{
+  "designComparePing": {
+    "content": [
+      {
+        "type": "text",
+        "text": "{\n  \"pong\": true,\n  \"protocol\": 1,\n  \"version\": \"0.11.0\",\n  \"echo\": {\n    \"message\": \"audit-final-health\"\n  }\n}"
+      }
+    ]
+  },
+  "mp4Metadata": [
+    {
+      "file": ".github/screenshots/charts/charts-family.mp4",
+      "probe": {
+        "programs": [],
+        "stream_groups": [],
+        "streams": [
+          {
+            "width": 640,
+            "height": 420,
+            "avg_frame_rate": "125/141",
+            "nb_frames": "5"
+          }
+        ],
+        "format": {
+          "duration": "5.640000"
+        }
+      }
+    },
+    {
+      "file": ".github/screenshots/v3-blocks/six-demos.mp4",
+      "probe": {
+        "programs": [],
+        "stream_groups": [],
+        "streams": [
+          {
+            "width": 960,
+            "height": 540,
+            "avg_frame_rate": "8/1",
+            "nb_frames": "64"
+          }
+        ],
+        "format": {
+          "duration": "8.000000"
+        }
+      }
+    },
+    {
+      "file": "docs/proof/v3-components/cand-text-animation.mp4",
+      "probe": {
+        "programs": [],
+        "stream_groups": [],
+        "streams": [
+          {
+            "width": 1440,
+            "height": 1200,
+            "avg_frame_rate": "8/1",
+            "nb_frames": "16"
+          }
+        ],
+        "format": {
+          "duration": "2.000000"
+        }
+      }
+    },
+    {
+      "file": "example/proof/voice-orb/voice-orb-vs-beui.dev.mp4",
+      "probe": {
+        "programs": [],
+        "stream_groups": [],
+        "streams": [
+          {
+            "width": 720,
+            "height": 360,
+            "avg_frame_rate": "100/13",
+            "nb_frames": "12"
+          }
+        ],
+        "format": {
+          "duration": "1.560000"
+        }
+      }
+    }
+  ],
+  "baselineGallery": {
+    "url": "http://127.0.0.1:8105/",
+    "revision": "5ec78ac30e1274727ddd185a883346e4d908e6c8",
+    "build": "debug",
+    "httpGet": 200,
+    "renderedUI": "unverified",
+    "execSessionId": 5371
+  },
+  "roiProbe": {
+    "source": "docs/proof/v3-components/cand-text-animation.mp4",
+    "rect": {
+      "x": 300,
+      "y": 300,
+      "width": 800,
+      "height": 300
+    },
+    "nativeFps": 8,
+    "extractedFrames": 16,
+    "upsampling60FpsExit": 2,
+    "staticCandidateFrameSSIM": 0.928492,
+    "certification": false
+  }
+}

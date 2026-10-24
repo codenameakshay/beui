@@ -1,0 +1,31 @@
+Injecting <script> tag. Using callback.
+{
+  state: {
+    value: [ 'beta', 'gamma' ],
+    calls: [ [Array] ],
+    query: 'zz',
+    open: true,
+    opens: [ true ],
+    queries: [ 'z', 'zz' ],
+    alive: true,
+    reject: false,
+    controlled: false,
+    disableAnimations: false
+  },
+  active: 'INPUT'
+}
+{
+  state: {
+    value: [ 'beta', 'gamma' ],
+    calls: [ [Array] ],
+    query: 'xy',
+    open: true,
+    opens: [ true, false, true ],
+    queries: [ 'z', 'zz', '', 'x', 'xy' ],
+    alive: true,
+    reject: false,
+    controlled: false,
+    disableAnimations: false
+  },
+  active: 'INPUT'
+}

@@ -356,7 +356,9 @@ class _BeuiStreamingResponseState extends State<BeuiStreamingResponse> {
     // without punctuation, or the tail of a stopped stream, still has to be
     // read out.
     if (widget.status != old.status && !_streaming) {
-      _announcer?.flush();
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted && !_streaming) _announcer?.flush();
+      });
     }
   }
 
@@ -728,6 +730,7 @@ class _StatusNotice extends StatelessWidget {
     return Semantics(
       container: true,
       label: message,
+      explicitChildNodes: true,
       child: DecoratedBox(
         decoration: BoxDecoration(
           color: palette.background,
@@ -813,6 +816,8 @@ class _NoticeActionState extends State<_NoticeAction> {
       child: Semantics(
         button: true,
         label: widget.label,
+        onTap: widget.onTap,
+        excludeSemantics: true,
         child: FocusableActionDetector(
           mouseCursor: SystemMouseCursors.click,
           onShowHoverHighlight: (v) => setState(() => _hovered = v),

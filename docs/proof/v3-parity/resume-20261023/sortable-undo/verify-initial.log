@@ -1,0 +1,15 @@
+Verified 5813 archived files and exact source/candidate input bindings.
+attempt-2/candidate-no-preference: 38 states, 152 original frames, 152 decoded, 48 recorded assertion failures.
+attempt-2/candidate-reduce: 38 states, 95 original frames, 95 decoded, 48 recorded assertion failures.
+attempt-2/source-no-preference: 38 states, 424 original frames, 424 decoded, 0 recorded assertion failures.
+attempt-2/source-reduce: 38 states, 86 original frames, 86 decoded, 0 recorded assertion failures.
+attempt-3/candidate-no-preference: 38 states, 153 original frames, 153 decoded, 47 recorded assertion failures.
+attempt-3/candidate-reduce: 38 states, 94 original frames, 94 decoded, 47 recorded assertion failures.
+attempt-3/source-no-preference: 38 states, 486 original frames, 486 decoded, 0 recorded assertion failures.
+attempt-3/source-reduce: 38 states, 87 original frames, 87 decoded, 0 recorded assertion failures.
+attempt-4/candidate-no-preference: 38 states, 234 original frames, 234 decoded, 10 recorded assertion failures.
+Traceback (most recent call last):
+  File "/Users/codenameakshay/.t3/worktrees/beui/t3-df4b55e2/docs/proof/v3-parity/resume-20261023/sortable-undo/verify.py", line 46, in <module>
+    if scenario['scenario']!='disabled':assert any(e['type']=='keydown' and e.get('key')=='Tab' for e in scenario['events'])
+                                               ~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError

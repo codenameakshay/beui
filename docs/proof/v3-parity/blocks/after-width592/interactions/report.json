@@ -1,0 +1,236 @@
+[
+  {
+    "target": "candidate",
+    "slug": "project-folder",
+    "url": "http://localhost:8103/?slug=project-folder&theme=dark&previewWidth=592",
+    "steps": [
+      {
+        "name": "rest",
+        "eventMs": 7859.900000095367,
+        "result": "captured"
+      },
+      {
+        "name": "hover-enter",
+        "eventMs": 8625,
+        "result": "captured"
+      },
+      {
+        "name": "hover-move",
+        "eventMs": 9554.700000047684,
+        "result": "captured"
+      },
+      {
+        "name": "hover-leave",
+        "eventMs": 10421.300000071526,
+        "result": "captured"
+      },
+      {
+        "name": "open",
+        "eventMs": 11199.300000071526,
+        "result": "captured"
+      },
+      {
+        "name": "escape",
+        "eventMs": 12227.5,
+        "result": "captured"
+      }
+    ]
+  },
+  {
+    "target": "candidate",
+    "slug": "card-folder",
+    "url": "http://localhost:8103/?slug=card-folder&theme=dark&previewWidth=592",
+    "steps": [
+      {
+        "name": "rest",
+        "eventMs": 6520.199999928474,
+        "result": "captured"
+      },
+      {
+        "name": "privacy-reveal",
+        "eventMs": 7323.599999904633,
+        "result": "captured"
+      },
+      {
+        "name": "privacy-hide",
+        "eventMs": 8238.699999928474,
+        "result": "captured"
+      },
+      {
+        "name": "open",
+        "eventMs": 8974.899999976158,
+        "result": "captured"
+      },
+      {
+        "name": "close",
+        "eventMs": 9931,
+        "result": "captured"
+      }
+    ]
+  },
+  {
+    "target": "candidate",
+    "slug": "morphing-search",
+    "url": "http://localhost:8103/?slug=morphing-search&theme=dark&previewWidth=592",
+    "steps": [
+      {
+        "name": "rest",
+        "eventMs": 3766.5,
+        "result": "captured"
+      },
+      {
+        "name": "open",
+        "eventMs": 4508.5,
+        "result": "captured"
+      },
+      {
+        "name": "query",
+        "eventMs": 5538.899999976158,
+        "result": "captured"
+      },
+      {
+        "name": "select",
+        "eventMs": 6894.700000047684,
+        "result": "captured"
+      },
+      {
+        "name": "escape",
+        "eventMs": 7673.100000023842,
+        "result": "captured"
+      }
+    ]
+  },
+  {
+    "target": "candidate",
+    "slug": "morphing-search-chips",
+    "url": "http://localhost:8103/?slug=morphing-search-chips&theme=dark&previewWidth=592",
+    "steps": [
+      {
+        "name": "rest",
+        "eventMs": 3711.899999976158,
+        "result": "captured"
+      },
+      {
+        "name": "focus",
+        "eventMs": 4489,
+        "result": "captured"
+      },
+      {
+        "name": "query",
+        "eventMs": 5305.899999976158,
+        "result": "captured"
+      },
+      {
+        "name": "add-chip",
+        "eventMs": 6367.300000071526,
+        "result": "captured"
+      },
+      {
+        "name": "escape",
+        "eventMs": 7135.800000071526,
+        "result": "captured"
+      }
+    ]
+  },
+  {
+    "target": "candidate",
+    "slug": "morphing-tabs",
+    "url": "http://localhost:8103/?slug=morphing-tabs&theme=dark&previewWidth=592",
+    "steps": [
+      {
+        "name": "rest",
+        "eventMs": 3524.600000023842,
+        "result": "captured"
+      },
+      {
+        "name": "hover-enter",
+        "eventMs": 4265,
+        "result": "captured"
+      },
+      {
+        "name": "select",
+        "eventMs": 5081,
+        "result": "captured"
+      },
+      {
+        "name": "keyboard-next",
+        "eventMs": 5872.399999976158,
+        "result": "captured"
+      },
+      {
+        "name": "keyboard-reorder",
+        "eventMs": 6656.799999952316,
+        "result": "captured"
+      },
+      {
+        "name": "close-tab",
+        "eventMs": 7398.700000047684,
+        "error": "TimeoutError: locator.click: Timeout 5000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('button', { name: 'Close Archive', exact: true })\u001b[22m\n"
+      }
+    ]
+  },
+  {
+    "target": "candidate",
+    "slug": "prediction-market-card",
+    "url": "http://localhost:8103/?slug=prediction-market-card&theme=dark&previewWidth=592",
+    "steps": [
+      {
+        "name": "rest",
+        "eventMs": 4450.600000023842,
+        "result": "captured"
+      },
+      {
+        "name": "hover-enter",
+        "eventMs": 5179.300000071526,
+        "error": "TimeoutError: locator.hover: Timeout 5000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('button', { name: 'Trade Celtics at 51%', exact: true })\u001b[22m\n"
+      },
+      {
+        "name": "hover-leave",
+        "eventMs": 10180.400000095367,
+        "result": "captured"
+      },
+      {
+        "name": "keyboard-focus",
+        "eventMs": 10912.300000071526,
+        "error": "TimeoutError: locator.focus: Timeout 5000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('button', { name: 'Trade Celtics at 51%', exact: true })\u001b[22m\n"
+      },
+      {
+        "name": "update-odds",
+        "eventMs": 15915.100000023842,
+        "result": "captured"
+      }
+    ]
+  },
+  {
+    "target": "candidate",
+    "slug": "signup-form",
+    "url": "http://localhost:8103/?slug=signup-form&theme=dark&previewWidth=592",
+    "steps": [
+      {
+        "name": "rest",
+        "eventMs": 3183.4000000953674,
+        "result": "captured"
+      },
+      {
+        "name": "blur-name",
+        "eventMs": 3954.8000000715256,
+        "result": "captured"
+      },
+      {
+        "name": "fix-name",
+        "eventMs": 4885.5,
+        "result": "captured"
+      },
+      {
+        "name": "password-reveal",
+        "eventMs": 5618.800000071526,
+        "result": "captured"
+      },
+      {
+        "name": "invalid-submit",
+        "eventMs": 6369.800000071526,
+        "result": "captured"
+      }
+    ]
+  }
+]

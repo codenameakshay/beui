@@ -1,5 +1,5 @@
 import 'dart:async';
-import 'dart:ui' show ImageFilter;
+import 'dart:ui' show FontFeature, ImageFilter;
 
 import 'package:flutter/widgets.dart';
 
@@ -174,7 +174,15 @@ class _BeuiNumberTickerState extends State<BeuiNumberTicker>
 
   @override
   Widget build(BuildContext context) {
-    final style = widget.style ?? DefaultTextStyle.of(context).style;
+    final resolved = DefaultTextStyle.of(context).style.merge(widget.style);
+    final features = resolved.fontFeatures ?? const <FontFeature>[];
+    final style = resolved.copyWith(
+      fontFeatures: [
+        if (!features.any((feature) => feature.feature == 'tnum'))
+          const FontFeature.tabularFigures(),
+        ...features,
+      ],
+    );
     final reduce = MediaQuery.disableAnimationsOf(context);
     final text = _format();
 
@@ -222,7 +230,8 @@ class _BeuiNumberTickerState extends State<BeuiNumberTicker>
       child: ExcludeSemantics(
         child: Row(
           mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.baseline,
+          textBaseline: TextBaseline.alphabetic,
           children: children,
         ),
       ),
@@ -319,8 +328,20 @@ class _DigitState extends State<_Digit> {
   @override
   Widget build(BuildContext context) {
     final fontSize = widget.style.fontSize ?? 14;
-    final slot = fontSize * _heightEm;
-    final width = fontSize * 0.62; // ~1ch for tabular figures
+    final scaler = MediaQuery.textScalerOf(context);
+    final slot = scaler.scale(fontSize) * _heightEm;
+    final digitStyle = widget.style.copyWith(
+      height: 1,
+      leadingDistribution: TextLeadingDistribution.even,
+    );
+    final zero = TextPainter(
+      text: TextSpan(text: '0', style: digitStyle),
+      textDirection: Directionality.of(context),
+      textScaler: scaler,
+      locale: Localizations.maybeLocaleOf(context),
+    )..layout();
+    final width = zero.width;
+    zero.dispose();
 
     Widget column(double y) {
       return Transform.translate(
@@ -334,7 +355,7 @@ class _DigitState extends State<_Digit> {
                 child: Center(
                   child: Text(
                     '$n',
-                    style: widget.style,
+                    style: digitStyle,
                     maxLines: 1,
                     softWrap: false,
                   ),
@@ -345,15 +366,33 @@ class _DigitState extends State<_Digit> {
       );
     }
 
-    Widget slotBox(Widget child) => ClipRect(
-      child: SizedBox(
-        width: width,
-        height: slot,
-        child: OverflowBox(
-          alignment: Alignment.topCenter,
-          maxHeight: double.infinity,
-          child: Align(alignment: Alignment.topCenter, child: child),
-        ),
+    Widget slotBox(Widget child) => SizedBox(
+      width: width,
+      height: slot,
+      child: Stack(
+        clipBehavior: Clip.none,
+        children: [
+          // Source's invisible in-flow digit supplies the baseline independently
+          // of the translated column. Even leading matches CSS line boxes.
+          Opacity(
+            opacity: 0,
+            child: Text(
+              '${widget.digit}',
+              style: digitStyle.copyWith(height: _heightEm),
+              maxLines: 1,
+              softWrap: false,
+            ),
+          ),
+          Positioned.fill(
+            child: ClipRect(
+              child: OverflowBox(
+                alignment: Alignment.topCenter,
+                maxHeight: double.infinity,
+                child: Align(alignment: Alignment.topCenter, child: child),
+              ),
+            ),
+          ),
+        ],
       ),
     );
 

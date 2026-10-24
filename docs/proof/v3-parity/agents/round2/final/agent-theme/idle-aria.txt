@@ -1,0 +1,19 @@
+- group "Capture stage width 752 height 1000 reduced false":
+  - group "Conversation":
+    - group "Conversation":
+      - group:
+        - group "user message": Draft the next step and wait for my OK.
+        - group "assistant message":
+          - group "Response Here is a compact proposal. Expand it to edit the details, then approve or reject.":
+            - switch "Helpful"
+            - switch "Not helpful"
+          - group "Completed":
+            - button "Thought for 0s"
+          - group "Only the decision is visible until you expand. Update the shared layout and keep the current split.":
+            - button "Show details"
+            - button "Edit"
+            - button "Approve"
+            - button "Request changes"
+            - button "Reject"
+          - button "apply_change Completed 120ms apply_change" [expanded]
+          - group: ok 3 files updated

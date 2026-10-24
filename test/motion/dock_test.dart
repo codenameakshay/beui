@@ -12,7 +12,7 @@ const _icons = <IconData>[
   LucideIcons.house,
   LucideIcons.mail,
   LucideIcons.calendar,
-  LucideIcons.music,
+  LucideIcons.list_music,
   LucideIcons.sparkles,
 ];
 

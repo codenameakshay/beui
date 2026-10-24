@@ -3,11 +3,24 @@ import 'package:flutter/material.dart';
 
 import '../explorer/widgets.dart';
 import 'agents_chat_preview.dart';
+import 'message_bubble_source_examples.dart';
 
 /// Gallery route for `BeuiMessageBubble`: the source preview's shared chat
 /// surface, plus a specimen sheet covering tones, grouping, collapsing and
 /// interaction that the source's docs-only usage samples don't render.
-Widget messageBubbleDemo(BuildContext context) => const _MessageBubbleDemo();
+Widget messageBubbleDemo(
+  BuildContext context, {
+  String? example,
+}) => switch (example ?? Uri.base.queryParameters['example']) {
+  'avatars' => const MessageBubbleAvatarsPreview(),
+  'show-more' => const MessageBubbleShowMorePreview(),
+  'api-specimens' => const _MessageBubbleDemo(),
+  _ => const ChatPreview(
+    reply:
+        'That message mounted once with a spring pop. Streaming updates only change its content, so the entrance does not replay.',
+    placeholder: 'Send a bubble…',
+  ),
+};
 
 class _MessageBubbleDemo extends StatelessWidget {
   const _MessageBubbleDemo();

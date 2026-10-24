@@ -1,0 +1,24 @@
+{
+  target: 'source',
+  reducedMotion: 'no-preference',
+  pass: true,
+  checks: 5,
+  failures: []
+}
+{
+  target: 'source',
+  reducedMotion: 'reduce',
+  pass: true,
+  checks: 5,
+  failures: []
+}
+node:internal/modules/run_main:111
+    triggerUncaughtException(
+    ^
+
+page.waitForFunction: Timeout 30000ms exceeded.
+    at /private/tmp/returns-revision/capture.mjs:21:13 {
+  name: 'TimeoutError'
+}
+
+Node.js v26.12.1

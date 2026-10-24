@@ -3,22 +3,36 @@ import 'dart:async';
 import 'package:beui/beui.dart';
 import 'package:flutter/material.dart';
 
-import '../explorer/widgets.dart';
+import 'agents_replay_button.dart';
 
 /// Gallery route for [BeuiApprovalCard] — mirrors the source previews:
 /// multi-step questions + simple review-and-approve, each with Replay.
-Widget approvalCardDemo(BuildContext context) => const _ApprovalCardDemo();
+Widget approvalCardDemo(BuildContext context, {String? example}) =>
+    switch (example ?? Uri.base.queryParameters['example']) {
+      'review' => const _ReviewPreview(),
+      'api-specimens' => const _HeaderTriggerPreview(),
+      _ => const _QuestionPreview(),
+    };
 
 const _questions = <BeuiApprovalCardQuestion>[
   BeuiApprovalCardQuestion(
     id: 'scope',
     title: 'How focused should the first release be?',
     options: [
-      BeuiApprovalCardOption(value: 'focused', label: 'A focused starter set'),
-      BeuiApprovalCardOption(value: 'broad', label: 'A broader collection'),
+      BeuiApprovalCardOption(
+        value: 'focused',
+        label: 'A focused starter set',
+        description: 'Ship a few polished pieces first.',
+      ),
+      BeuiApprovalCardOption(
+        value: 'broad',
+        label: 'A broader collection',
+        description: 'Cover more ground with lighter depth.',
+      ),
       BeuiApprovalCardOption(
         value: 'flagship',
         label: 'One flagship experience',
+        description: 'Pour everything into a single showcase.',
       ),
     ],
     allowCustom: true,
@@ -43,33 +57,6 @@ const _questions = <BeuiApprovalCardQuestion>[
     customPlaceholder: 'Add a final constraint…',
   ),
 ];
-
-class _ApprovalCardDemo extends StatelessWidget {
-  const _ApprovalCardDemo();
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const SectionLabel('Questions'),
-          const SizedBox(height: 12),
-          const _QuestionPreview(),
-          const SizedBox(height: 40),
-          const SectionLabel('Review and approve'),
-          const SizedBox(height: 12),
-          const _ReviewPreview(),
-          const SizedBox(height: 40),
-          const SectionLabel('Header trigger'),
-          const SizedBox(height: 12),
-          const _HeaderTriggerPreview(),
-        ],
-      ),
-    );
-  }
-}
 
 // ---------------------------------------------------------------------------
 // Header trigger invariant
@@ -169,7 +156,9 @@ class _QuestionPreviewState extends State<_QuestionPreview> {
               Positioned(
                 left: 0,
                 bottom: 0,
-                child: ReplayButton(onPressed: () => setState(() => _run += 1)),
+                child: AgentReplayButton(
+                  onPressed: () => setState(() => _run += 1),
+                ),
               ),
             ],
           ),
@@ -246,7 +235,9 @@ class _ReviewPreviewState extends State<_ReviewPreview> {
               Positioned(
                 left: 0,
                 bottom: 0,
-                child: ReplayButton(onPressed: () => setState(() => _run += 1)),
+                child: AgentReplayButton(
+                  onPressed: () => setState(() => _run += 1),
+                ),
               ),
             ],
           ),

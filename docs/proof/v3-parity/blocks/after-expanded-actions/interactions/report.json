@@ -1,0 +1,312 @@
+[
+  {
+    "target": "candidate",
+    "slug": "infinite-masonry",
+    "url": "http://localhost:8103/?slug=infinite-masonry&theme=dark",
+    "steps": [
+      {
+        "error": "TimeoutError: locator.waitFor: Timeout 45000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('flt-glass-pane')\u001b[22m\n"
+      }
+    ]
+  },
+  {
+    "target": "candidate",
+    "slug": "notification-stack",
+    "url": "http://localhost:8103/?slug=notification-stack&theme=dark",
+    "steps": [
+      {
+        "name": "rest",
+        "eventMs": 3936.6999999284744,
+        "result": "captured"
+      },
+      {
+        "name": "hover-enter",
+        "eventMs": 4667.599999904633,
+        "result": "captured"
+      },
+      {
+        "name": "hover-leave",
+        "eventMs": 5495.799999952316,
+        "result": "captured"
+      },
+      {
+        "name": "expand",
+        "eventMs": 6216.199999928474,
+        "result": "captured"
+      },
+      {
+        "name": "keyboard-exit",
+        "eventMs": 6956.5,
+        "result": "captured"
+      }
+    ]
+  },
+  {
+    "target": "candidate",
+    "slug": "knockout-bracket",
+    "url": "http://localhost:8103/?slug=knockout-bracket&theme=dark",
+    "steps": [
+      {
+        "name": "rest",
+        "eventMs": 3420.399999976158,
+        "result": "captured"
+      },
+      {
+        "name": "fixture-enter",
+        "eventMs": 4160.399999976158,
+        "result": "captured"
+      },
+      {
+        "name": "fixture-leave",
+        "eventMs": 4992.799999952316,
+        "result": "captured"
+      }
+    ]
+  },
+  {
+    "target": "candidate",
+    "slug": "availability-scheduler",
+    "url": "http://localhost:8103/?slug=availability-scheduler&theme=dark",
+    "steps": [
+      {
+        "name": "rest",
+        "eventMs": 3450.4000000953674,
+        "result": "captured"
+      },
+      {
+        "name": "toggle-day",
+        "eventMs": 4309,
+        "error": "TimeoutError: locator.click: Timeout 5000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('button', { name: 'Toggle Monday availability', exact: true })\u001b[22m\n"
+      },
+      {
+        "name": "restore-day",
+        "eventMs": 9317.700000047684,
+        "error": "TimeoutError: locator.click: Timeout 5000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('button', { name: 'Toggle Monday availability', exact: true })\u001b[22m\n"
+      },
+      {
+        "name": "add-range",
+        "eventMs": 14319.300000071526,
+        "result": "captured"
+      },
+      {
+        "name": "copy-open",
+        "eventMs": 15235.800000071526,
+        "result": "captured"
+      },
+      {
+        "name": "escape",
+        "eventMs": 16859.5,
+        "result": "captured"
+      }
+    ]
+  },
+  {
+    "target": "candidate",
+    "slug": "dynamic-island",
+    "url": "http://localhost:8103/?slug=dynamic-island&theme=dark",
+    "steps": [
+      {
+        "name": "rest",
+        "eventMs": 4273.5,
+        "result": "captured"
+      },
+      {
+        "name": "call",
+        "eventMs": 5000.899999976158,
+        "result": "captured"
+      },
+      {
+        "name": "timer",
+        "eventMs": 5783.799999952316,
+        "result": "captured"
+      },
+      {
+        "name": "music",
+        "eventMs": 6551.700000047684,
+        "result": "captured"
+      },
+      {
+        "name": "dismiss",
+        "eventMs": 7335.600000023842,
+        "result": "captured"
+      }
+    ]
+  },
+  {
+    "target": "candidate",
+    "slug": "wallet-card",
+    "url": "http://localhost:8103/?slug=wallet-card&theme=dark",
+    "steps": [
+      {
+        "name": "rest",
+        "eventMs": 3203.2999999523163,
+        "result": "captured"
+      },
+      {
+        "name": "privacy",
+        "eventMs": 3954.6999999284744,
+        "result": "captured"
+      },
+      {
+        "name": "privacy-restore",
+        "eventMs": 4754.899999976158,
+        "result": "captured"
+      },
+      {
+        "name": "account-open",
+        "eventMs": 5537.5,
+        "result": "captured"
+      },
+      {
+        "name": "escape",
+        "eventMs": 6321.5,
+        "result": "captured"
+      },
+      {
+        "name": "balance-update",
+        "eventMs": 7087.199999928474,
+        "result": "captured"
+      }
+    ]
+  },
+  {
+    "target": "candidate",
+    "slug": "bloom-menu",
+    "url": "http://localhost:8103/?slug=bloom-menu&theme=dark",
+    "steps": [
+      {
+        "name": "rest",
+        "eventMs": 3840.9000000953674,
+        "result": "captured"
+      },
+      {
+        "name": "open",
+        "eventMs": 4577.400000095367,
+        "result": "captured"
+      },
+      {
+        "name": "escape",
+        "eventMs": 5456.5,
+        "result": "captured"
+      },
+      {
+        "name": "reopen",
+        "eventMs": 6190.900000095367,
+        "result": "captured"
+      },
+      {
+        "name": "outside",
+        "eventMs": 6955.400000095367,
+        "result": "captured"
+      }
+    ]
+  },
+  {
+    "target": "candidate",
+    "slug": "feedback-widget",
+    "url": "http://localhost:8103/?slug=feedback-widget&theme=dark",
+    "steps": [
+      {
+        "name": "rest",
+        "eventMs": 3678.7000000476837,
+        "result": "captured"
+      },
+      {
+        "name": "open",
+        "eventMs": 4411.900000095367,
+        "result": "captured"
+      },
+      {
+        "name": "escape",
+        "eventMs": 5195.300000071526,
+        "result": "captured"
+      },
+      {
+        "name": "reopen",
+        "eventMs": 5967,
+        "result": "captured"
+      }
+    ]
+  },
+  {
+    "target": "candidate",
+    "slug": "dock",
+    "url": "http://localhost:8103/?slug=dock&theme=dark",
+    "steps": [
+      {
+        "name": "rest",
+        "eventMs": 3721.2999999523163,
+        "result": "captured"
+      },
+      {
+        "name": "hover-Home",
+        "eventMs": 4442,
+        "result": "captured"
+      },
+      {
+        "name": "hover-Music",
+        "eventMs": 5235.200000047684,
+        "error": "TimeoutError: locator.hover: Timeout 5000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('button', { name: 'Music', exact: true }).first()\u001b[22m\n"
+      },
+      {
+        "name": "hover-Settings",
+        "eventMs": 10237.399999976158,
+        "error": "TimeoutError: locator.hover: Timeout 5000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('button', { name: 'Settings', exact: true }).first()\u001b[22m\n"
+      },
+      {
+        "name": "hover-leave",
+        "eventMs": 15238.799999952316,
+        "result": "captured"
+      }
+    ]
+  },
+  {
+    "target": "candidate",
+    "slug": "number",
+    "url": "http://localhost:8103/?slug=number&theme=dark",
+    "steps": [
+      {
+        "name": "rest",
+        "eventMs": 3652.2000000476837,
+        "result": "captured"
+      },
+      {
+        "name": "animate",
+        "eventMs": 4390.200000047684,
+        "result": "captured"
+      },
+      {
+        "name": "reverse",
+        "eventMs": 5216.100000023842,
+        "result": "captured"
+      }
+    ]
+  },
+  {
+    "target": "candidate",
+    "slug": "text-animation",
+    "url": "http://localhost:8103/?slug=text-animation&theme=dark",
+    "steps": [
+      {
+        "name": "rest",
+        "eventMs": 3781.600000023842,
+        "result": "captured"
+      },
+      {
+        "name": "phrase-1",
+        "eventMs": 4539.100000023842,
+        "result": "captured"
+      },
+      {
+        "name": "phrase-2",
+        "eventMs": 5385.5,
+        "result": "captured"
+      },
+      {
+        "name": "phrase-3",
+        "eventMs": 6164.899999976158,
+        "result": "captured"
+      }
+    ]
+  }
+]

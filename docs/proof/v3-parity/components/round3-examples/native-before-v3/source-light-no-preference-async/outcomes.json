@@ -1,0 +1,1430 @@
+{
+  "example": {
+    "key": "async",
+    "id": "example/table-async/async",
+    "preview": "table-async",
+    "family": "table",
+    "seed": "0 loading, 20 per 700ms, max 160",
+    "flows": [
+      "initial-loading",
+      "scroll-load",
+      "loading-lockout",
+      "end-reached",
+      "all-loaded",
+      "keyboard",
+      "reduced-motion"
+    ]
+  },
+  "origin": "source",
+  "theme": "light",
+  "motion": "no-preference",
+  "checks": [
+    {
+      "name": "first page",
+      "actual": true,
+      "expected": true,
+      "pass": true
+    },
+    {
+      "name": "end reached via keyboard",
+      "actual": "60 loaded\nLoading…\nName\n\t\nEmail\n\t\nRole\n\t\nStatus\n\t\nMRR\n\t\n\nAva Cole\tava.cole40@beui.dev\tOwner\tSuspended\t$28\t\nLeo Marsh\tleo.marsh41@beui.dev\tViewer\tInvited\t$65\t\nMia Okafor\tmia.okafor42@beui.dev\tMember\tActive\t$102\t\nKai Frost\tkai.frost43@beui.dev\tAdmin\tSuspended\t$139\t\nZoe Bose\tzoe.bose44@beui.dev\tOwner\tInvited\t$176\t\nEli Sato\teli.sato45@beui.dev\tViewer\tActive\t$213\t\nNoa Vale\tnoa.vale46@beui.dev\tMember\tSuspended\t$250\t\nRen Quinn\tren.quinn47@beui.dev\tAdmin\tInvited\t$287\t\nIvy Lund\tivy.lund48@beui.dev\tOwner\tActive\t$324\t\nJude Reyes\tjude.reyes49@beui.dev\tViewer\tSuspended\t$361\t\nAva Cole\tava.cole50@beui.dev\tMember\tInvited\t$398\t\nLeo Marsh\tleo.marsh51@beui.dev\tAdmin\tActive\t$435\t\nMia Okafor\tmia.okafor52@beui.dev\tOwner\tSuspended\t$472\t\nKai Frost\tkai.frost53@beui.dev\tViewer\tInvited\t$21\t\nZoe Bose\tzoe.bose54@beui.dev\tMember\tActive\t$58\t\nEli Sato\teli.sato55@beui.dev\tAdmin\tSuspended\t$95\t\nNoa Vale\tnoa.vale56@beui.dev\tOwner\tInvited\t$132\t\nRen Quinn\tren.quinn57@beui.dev\tViewer\tActive\t$169\t\nIvy Lund\tivy.lund58@beui.dev\tMember\tSuspended\t$206\t\nJude Reyes\tjude.reyes59@beui.dev\tAdmin\tInvited\t$243\t\n\n\t\n\t\n\t\n\t\n\t\n\n\t\n\t\n\t\n\t\n\t\n\n\t\n\t\n\t\n\t\n\t",
+      "expected": "more than 20 loaded",
+      "pass": false
+    }
+  ],
+  "observations": [
+    {
+      "label": "rest",
+      "atMs": 7.4444169999915175,
+      "observed": {
+        "url": "http://127.0.0.1:18120/source/?example=async&theme=light&captureProbe=1",
+        "reduce": false,
+        "probe": null,
+        "stage": {
+          "x": 344,
+          "y": 0,
+          "width": 592,
+          "height": 478,
+          "top": 0,
+          "right": 936,
+          "bottom": 478,
+          "left": 344
+        },
+        "controls": [
+          {
+            "tag": "MAIN",
+            "role": null,
+            "name": "20 loaded\nScroll for more\nName\n\t\nEmail\n\t\nRole\n\t\nStatus\n\t\nMRR\n\t\nAva Cole\tava.cole0@beui.dev\tOwner\tActive\t$12\t\nLeo Marsh\tleo.marsh1@beui.dev\tViewer\tSuspended\t$49\t\nMia Okafor\tmia.okafor2@beui.dev\tMember\tInvited\t$86\t\nKai Frost\tkai.frost3@beui.dev\tAdmin\tActive\t$123\t\nZoe Bose\tzoe.bose4@beui.dev\tOwner\tSuspended\t$160\t\nEli Sato\teli.sato5@beui.dev\tViewer\tInvited\t$197\t\nNoa Vale\tnoa.vale6@beui.dev\tMember\tActive\t$234\t\nRen Quinn\tren.quinn7@beui.dev\tAdmin\tSuspended\t$271\t\nIvy Lund\tivy.lund8@beui.dev\tOwner\tInvited\t$308\t\nJude Reyes\tjude.reyes9@beui.dev\tViewer\tActive\t$345\t\nAva Cole\tava.cole10@beui.dev\tMember\tSuspended\t$382\t\nLeo Marsh\tleo.marsh11@beui.dev\tAdmin\tInvited\t$419\t\nMia Okafor\tmia.okafor12@beui.dev\tOwner\tActive\t$456\t\nKai Frost\tkai.frost13@beui.dev\tViewer\tSuspended\t$493\t\nZoe Bose\tzoe.bose14@beui.dev\tMember\tInvited\t$42\t\nEli Sato\teli.sato15@beui.dev\tAdmin\tActive\t$79\t\nNoa Vale\tnoa.vale16@beui.dev\tOwner\tSuspended\t$116\t\nRen Quinn\tren.quinn17@beui.dev\tViewer\tInvited\t$153\t\nIvy Lund\tivy.lund18@beui.dev\tMember\tActive\t$190\t\n",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 344,
+              "y": 0,
+              "width": 592,
+              "height": 478,
+              "top": 0,
+              "right": 936,
+              "bottom": 478,
+              "left": 344
+            }
+          },
+          {
+            "tag": "TR",
+            "role": null,
+            "name": "Name\n\t\nEmail\n\t\nRole\n\t\nStatus\n\t\nMRR\n\t",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 361,
+              "y": 41,
+              "width": 614,
+              "height": 52.5,
+              "top": 41,
+              "right": 975,
+              "bottom": 93.5,
+              "left": 361
+            }
+          },
+          {
+            "tag": "TR",
+            "role": null,
+            "name": "Ava Cole\tava.cole0@beui.dev\tOwner\tActive\t$12\t",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 361,
+              "y": 93.5,
+              "width": 614,
+              "height": 52,
+              "top": 93.5,
+              "right": 975,
+              "bottom": 145.5,
+              "left": 361
+            }
+          },
+          {
+            "tag": "TR",
+            "role": null,
+            "name": "Leo Marsh\tleo.marsh1@beui.dev\tViewer\tSuspended\t$49\t",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 361,
+              "y": 145.5,
+              "width": 614,
+              "height": 52,
+              "top": 145.5,
+              "right": 975,
+              "bottom": 197.5,
+              "left": 361
+            }
+          },
+          {
+            "tag": "TR",
+            "role": null,
+            "name": "Mia Okafor\tmia.okafor2@beui.dev\tMember\tInvited\t$86\t",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 361,
+              "y": 197.5,
+              "width": 614,
+              "height": 52,
+              "top": 197.5,
+              "right": 975,
+              "bottom": 249.5,
+              "left": 361
+            }
+          },
+          {
+            "tag": "TR",
+            "role": null,
+            "name": "Kai Frost\tkai.frost3@beui.dev\tAdmin\tActive\t$123\t",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 361,
+              "y": 249.5,
+              "width": 614,
+              "height": 52,
+              "top": 249.5,
+              "right": 975,
+              "bottom": 301.5,
+              "left": 361
+            }
+          },
+          {
+            "tag": "TR",
+            "role": null,
+            "name": "Zoe Bose\tzoe.bose4@beui.dev\tOwner\tSuspended\t$160\t",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 361,
+              "y": 301.5,
+              "width": 614,
+              "height": 52,
+              "top": 301.5,
+              "right": 975,
+              "bottom": 353.5,
+              "left": 361
+            }
+          },
+          {
+            "tag": "TR",
+            "role": null,
+            "name": "Eli Sato\teli.sato5@beui.dev\tViewer\tInvited\t$197\t",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 361,
+              "y": 353.5,
+              "width": 614,
+              "height": 52,
+              "top": 353.5,
+              "right": 975,
+              "bottom": 405.5,
+              "left": 361
+            }
+          },
+          {
+            "tag": "TR",
+            "role": null,
+            "name": "Noa Vale\tnoa.vale6@beui.dev\tMember\tActive\t$234\t",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 361,
+              "y": 405.5,
+              "width": 614,
+              "height": 52,
+              "top": 405.5,
+              "right": 975,
+              "bottom": 457.5,
+              "left": 361
+            }
+          },
+          {
+            "tag": "TR",
+            "role": null,
+            "name": "Ren Quinn\tren.quinn7@beui.dev\tAdmin\tSuspended\t$271\t",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 361,
+              "y": 457.5,
+              "width": 614,
+              "height": 52,
+              "top": 457.5,
+              "right": 975,
+              "bottom": 509.5,
+              "left": 361
+            }
+          },
+          {
+            "tag": "TR",
+            "role": null,
+            "name": "Ivy Lund\tivy.lund8@beui.dev\tOwner\tInvited\t$308\t",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 361,
+              "y": 509.5,
+              "width": 614,
+              "height": 52,
+              "top": 509.5,
+              "right": 975,
+              "bottom": 561.5,
+              "left": 361
+            }
+          },
+          {
+            "tag": "TR",
+            "role": null,
+            "name": "Jude Reyes\tjude.reyes9@beui.dev\tViewer\tActive\t$345\t",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 361,
+              "y": 561.5,
+              "width": 614,
+              "height": 52,
+              "top": 561.5,
+              "right": 975,
+              "bottom": 613.5,
+              "left": 361
+            }
+          },
+          {
+            "tag": "TR",
+            "role": null,
+            "name": "Ava Cole\tava.cole10@beui.dev\tMember\tSuspended\t$382\t",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 361,
+              "y": 613.5,
+              "width": 614,
+              "height": 52,
+              "top": 613.5,
+              "right": 975,
+              "bottom": 665.5,
+              "left": 361
+            }
+          },
+          {
+            "tag": "TR",
+            "role": null,
+            "name": "Leo Marsh\tleo.marsh11@beui.dev\tAdmin\tInvited\t$419\t",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 361,
+              "y": 665.5,
+              "width": 614,
+              "height": 52,
+              "top": 665.5,
+              "right": 975,
+              "bottom": 717.5,
+              "left": 361
+            }
+          },
+          {
+            "tag": "TR",
+            "role": null,
+            "name": "Mia Okafor\tmia.okafor12@beui.dev\tOwner\tActive\t$456\t",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 361,
+              "y": 717.5,
+              "width": 614,
+              "height": 52,
+              "top": 717.5,
+              "right": 975,
+              "bottom": 769.5,
+              "left": 361
+            }
+          },
+          {
+            "tag": "TR",
+            "role": null,
+            "name": "Kai Frost\tkai.frost13@beui.dev\tViewer\tSuspended\t$493\t",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 361,
+              "y": 769.5,
+              "width": 614,
+              "height": 52,
+              "top": 769.5,
+              "right": 975,
+              "bottom": 821.5,
+              "left": 361
+            }
+          },
+          {
+            "tag": "TR",
+            "role": null,
+            "name": "Zoe Bose\tzoe.bose14@beui.dev\tMember\tInvited\t$42\t",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 361,
+              "y": 821.5,
+              "width": 614,
+              "height": 52,
+              "top": 821.5,
+              "right": 975,
+              "bottom": 873.5,
+              "left": 361
+            }
+          },
+          {
+            "tag": "TR",
+            "role": null,
+            "name": "Eli Sato\teli.sato15@beui.dev\tAdmin\tActive\t$79\t",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 361,
+              "y": 873.5,
+              "width": 614,
+              "height": 52,
+              "top": 873.5,
+              "right": 975,
+              "bottom": 925.5,
+              "left": 361
+            }
+          },
+          {
+            "tag": "TR",
+            "role": null,
+            "name": "Noa Vale\tnoa.vale16@beui.dev\tOwner\tSuspended\t$116\t",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 361,
+              "y": 925.5,
+              "width": 614,
+              "height": 52,
+              "top": 925.5,
+              "right": 975,
+              "bottom": 977.5,
+              "left": 361
+            }
+          },
+          {
+            "tag": "TR",
+            "role": null,
+            "name": "Ren Quinn\tren.quinn17@beui.dev\tViewer\tInvited\t$153\t",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 361,
+              "y": 977.5,
+              "width": 614,
+              "height": 52,
+              "top": 977.5,
+              "right": 975,
+              "bottom": 1029.5,
+              "left": 361
+            }
+          },
+          {
+            "tag": "TR",
+            "role": null,
+            "name": "Ivy Lund\tivy.lund18@beui.dev\tMember\tActive\t$190\t",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 361,
+              "y": 1029.5,
+              "width": 614,
+              "height": 52,
+              "top": 1029.5,
+              "right": 975,
+              "bottom": 1081.5,
+              "left": 361
+            }
+          },
+          {
+            "tag": "TR",
+            "role": null,
+            "name": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 361,
+              "y": 1081.5,
+              "width": 614,
+              "height": 52,
+              "top": 1081.5,
+              "right": 975,
+              "bottom": 1133.5,
+              "left": 361
+            }
+          }
+        ]
+      }
+    },
+    {
+      "label": "initial-loaded",
+      "atMs": 908.8972920000087,
+      "observed": {
+        "url": "http://127.0.0.1:18120/source/?example=async&theme=light&captureProbe=1",
+        "reduce": false,
+        "probe": null,
+        "stage": {
+          "x": 344,
+          "y": 0,
+          "width": 592,
+          "height": 478,
+          "top": 0,
+          "right": 936,
+          "bottom": 478,
+          "left": 344
+        },
+        "controls": [
+          {
+            "tag": "MAIN",
+            "role": null,
+            "name": "20 loaded\nScroll for more\nName\n\t\nEmail\n\t\nRole\n\t\nStatus\n\t\nMRR\n\t\nAva Cole\tava.cole0@beui.dev\tOwner\tActive\t$12\t\nLeo Marsh\tleo.marsh1@beui.dev\tViewer\tSuspended\t$49\t\nMia Okafor\tmia.okafor2@beui.dev\tMember\tInvited\t$86\t\nKai Frost\tkai.frost3@beui.dev\tAdmin\tActive\t$123\t\nZoe Bose\tzoe.bose4@beui.dev\tOwner\tSuspended\t$160\t\nEli Sato\teli.sato5@beui.dev\tViewer\tInvited\t$197\t\nNoa Vale\tnoa.vale6@beui.dev\tMember\tActive\t$234\t\nRen Quinn\tren.quinn7@beui.dev\tAdmin\tSuspended\t$271\t\nIvy Lund\tivy.lund8@beui.dev\tOwner\tInvited\t$308\t\nJude Reyes\tjude.reyes9@beui.dev\tViewer\tActive\t$345\t\nAva Cole\tava.cole10@beui.dev\tMember\tSuspended\t$382\t\nLeo Marsh\tleo.marsh11@beui.dev\tAdmin\tInvited\t$419\t\nMia Okafor\tmia.okafor12@beui.dev\tOwner\tActive\t$456\t\nKai Frost\tkai.frost13@beui.dev\tViewer\tSuspended\t$493\t\nZoe Bose\tzoe.bose14@beui.dev\tMember\tInvited\t$42\t\nEli Sato\teli.sato15@beui.dev\tAdmin\tActive\t$79\t\nNoa Vale\tnoa.vale16@beui.dev\tOwner\tSuspended\t$116\t\nRen Quinn\tren.quinn17@beui.dev\tViewer\tInvited\t$153\t\nIvy Lund\tivy.lund18@beui.dev\tMember\tActive\t$190\t\n",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 344,
+              "y": 0,
+              "width": 592,
+              "height": 478,
+              "top": 0,
+              "right": 936,
+              "bottom": 478,
+              "left": 344
+            }
+          },
+          {
+            "tag": "TR",
+            "role": null,
+            "name": "Name\n\t\nEmail\n\t\nRole\n\t\nStatus\n\t\nMRR\n\t",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 361,
+              "y": 41,
+              "width": 614,
+              "height": 52.5,
+              "top": 41,
+              "right": 975,
+              "bottom": 93.5,
+              "left": 361
+            }
+          },
+          {
+            "tag": "TR",
+            "role": null,
+            "name": "Ava Cole\tava.cole0@beui.dev\tOwner\tActive\t$12\t",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 361,
+              "y": 93.5,
+              "width": 614,
+              "height": 52,
+              "top": 93.5,
+              "right": 975,
+              "bottom": 145.5,
+              "left": 361
+            }
+          },
+          {
+            "tag": "TR",
+            "role": null,
+            "name": "Leo Marsh\tleo.marsh1@beui.dev\tViewer\tSuspended\t$49\t",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 361,
+              "y": 145.5,
+              "width": 614,
+              "height": 52,
+              "top": 145.5,
+              "right": 975,
+              "bottom": 197.5,
+              "left": 361
+            }
+          },
+          {
+            "tag": "TR",
+            "role": null,
+            "name": "Mia Okafor\tmia.okafor2@beui.dev\tMember\tInvited\t$86\t",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 361,
+              "y": 197.5,
+              "width": 614,
+              "height": 52,
+              "top": 197.5,
+              "right": 975,
+              "bottom": 249.5,
+              "left": 361
+            }
+          },
+          {
+            "tag": "TR",
+            "role": null,
+            "name": "Kai Frost\tkai.frost3@beui.dev\tAdmin\tActive\t$123\t",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 361,
+              "y": 249.5,
+              "width": 614,
+              "height": 52,
+              "top": 249.5,
+              "right": 975,
+              "bottom": 301.5,
+              "left": 361
+            }
+          },
+          {
+            "tag": "TR",
+            "role": null,
+            "name": "Zoe Bose\tzoe.bose4@beui.dev\tOwner\tSuspended\t$160\t",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 361,
+              "y": 301.5,
+              "width": 614,
+              "height": 52,
+              "top": 301.5,
+              "right": 975,
+              "bottom": 353.5,
+              "left": 361
+            }
+          },
+          {
+            "tag": "TR",
+            "role": null,
+            "name": "Eli Sato\teli.sato5@beui.dev\tViewer\tInvited\t$197\t",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 361,
+              "y": 353.5,
+              "width": 614,
+              "height": 52,
+              "top": 353.5,
+              "right": 975,
+              "bottom": 405.5,
+              "left": 361
+            }
+          },
+          {
+            "tag": "TR",
+            "role": null,
+            "name": "Noa Vale\tnoa.vale6@beui.dev\tMember\tActive\t$234\t",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 361,
+              "y": 405.5,
+              "width": 614,
+              "height": 52,
+              "top": 405.5,
+              "right": 975,
+              "bottom": 457.5,
+              "left": 361
+            }
+          },
+          {
+            "tag": "TR",
+            "role": null,
+            "name": "Ren Quinn\tren.quinn7@beui.dev\tAdmin\tSuspended\t$271\t",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 361,
+              "y": 457.5,
+              "width": 614,
+              "height": 52,
+              "top": 457.5,
+              "right": 975,
+              "bottom": 509.5,
+              "left": 361
+            }
+          },
+          {
+            "tag": "TR",
+            "role": null,
+            "name": "Ivy Lund\tivy.lund8@beui.dev\tOwner\tInvited\t$308\t",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 361,
+              "y": 509.5,
+              "width": 614,
+              "height": 52,
+              "top": 509.5,
+              "right": 975,
+              "bottom": 561.5,
+              "left": 361
+            }
+          },
+          {
+            "tag": "TR",
+            "role": null,
+            "name": "Jude Reyes\tjude.reyes9@beui.dev\tViewer\tActive\t$345\t",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 361,
+              "y": 561.5,
+              "width": 614,
+              "height": 52,
+              "top": 561.5,
+              "right": 975,
+              "bottom": 613.5,
+              "left": 361
+            }
+          },
+          {
+            "tag": "TR",
+            "role": null,
+            "name": "Ava Cole\tava.cole10@beui.dev\tMember\tSuspended\t$382\t",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 361,
+              "y": 613.5,
+              "width": 614,
+              "height": 52,
+              "top": 613.5,
+              "right": 975,
+              "bottom": 665.5,
+              "left": 361
+            }
+          },
+          {
+            "tag": "TR",
+            "role": null,
+            "name": "Leo Marsh\tleo.marsh11@beui.dev\tAdmin\tInvited\t$419\t",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 361,
+              "y": 665.5,
+              "width": 614,
+              "height": 52,
+              "top": 665.5,
+              "right": 975,
+              "bottom": 717.5,
+              "left": 361
+            }
+          },
+          {
+            "tag": "TR",
+            "role": null,
+            "name": "Mia Okafor\tmia.okafor12@beui.dev\tOwner\tActive\t$456\t",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 361,
+              "y": 717.5,
+              "width": 614,
+              "height": 52,
+              "top": 717.5,
+              "right": 975,
+              "bottom": 769.5,
+              "left": 361
+            }
+          },
+          {
+            "tag": "TR",
+            "role": null,
+            "name": "Kai Frost\tkai.frost13@beui.dev\tViewer\tSuspended\t$493\t",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 361,
+              "y": 769.5,
+              "width": 614,
+              "height": 52,
+              "top": 769.5,
+              "right": 975,
+              "bottom": 821.5,
+              "left": 361
+            }
+          },
+          {
+            "tag": "TR",
+            "role": null,
+            "name": "Zoe Bose\tzoe.bose14@beui.dev\tMember\tInvited\t$42\t",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 361,
+              "y": 821.5,
+              "width": 614,
+              "height": 52,
+              "top": 821.5,
+              "right": 975,
+              "bottom": 873.5,
+              "left": 361
+            }
+          },
+          {
+            "tag": "TR",
+            "role": null,
+            "name": "Eli Sato\teli.sato15@beui.dev\tAdmin\tActive\t$79\t",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 361,
+              "y": 873.5,
+              "width": 614,
+              "height": 52,
+              "top": 873.5,
+              "right": 975,
+              "bottom": 925.5,
+              "left": 361
+            }
+          },
+          {
+            "tag": "TR",
+            "role": null,
+            "name": "Noa Vale\tnoa.vale16@beui.dev\tOwner\tSuspended\t$116\t",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 361,
+              "y": 925.5,
+              "width": 614,
+              "height": 52,
+              "top": 925.5,
+              "right": 975,
+              "bottom": 977.5,
+              "left": 361
+            }
+          },
+          {
+            "tag": "TR",
+            "role": null,
+            "name": "Ren Quinn\tren.quinn17@beui.dev\tViewer\tInvited\t$153\t",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 361,
+              "y": 977.5,
+              "width": 614,
+              "height": 52,
+              "top": 977.5,
+              "right": 975,
+              "bottom": 1029.5,
+              "left": 361
+            }
+          },
+          {
+            "tag": "TR",
+            "role": null,
+            "name": "Ivy Lund\tivy.lund18@beui.dev\tMember\tActive\t$190\t",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 361,
+              "y": 1029.5,
+              "width": 614,
+              "height": 52,
+              "top": 1029.5,
+              "right": 975,
+              "bottom": 1081.5,
+              "left": 361
+            }
+          },
+          {
+            "tag": "TR",
+            "role": null,
+            "name": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 361,
+              "y": 1081.5,
+              "width": 614,
+              "height": 52,
+              "top": 1081.5,
+              "right": 975,
+              "bottom": 1133.5,
+              "left": 361
+            }
+          }
+        ]
+      }
+    },
+    {
+      "label": "end-reached",
+      "atMs": 7500.841583000001,
+      "observed": {
+        "url": "http://127.0.0.1:18120/source/?example=async&theme=light&captureProbe=1",
+        "reduce": false,
+        "probe": null,
+        "stage": {
+          "x": 344,
+          "y": 0,
+          "width": 592,
+          "height": 478,
+          "top": 0,
+          "right": 936,
+          "bottom": 478,
+          "left": 344
+        },
+        "controls": [
+          {
+            "tag": "MAIN",
+            "role": null,
+            "name": "60 loaded\nLoading…\nName\n\t\nEmail\n\t\nRole\n\t\nStatus\n\t\nMRR\n\t\n\nAva Cole\tava.cole40@beui.dev\tOwner\tSuspended\t$28\t\nLeo Marsh\tleo.marsh41@beui.dev\tViewer\tInvited\t$65\t\nMia Okafor\tmia.okafor42@beui.dev\tMember\tActive\t$102\t\nKai Frost\tkai.frost43@beui.dev\tAdmin\tSuspended\t$139\t\nZoe Bose\tzoe.bose44@beui.dev\tOwner\tInvited\t$176\t\nEli Sato\teli.sato45@beui.dev\tViewer\tActive\t$213\t\nNoa Vale\tnoa.vale46@beui.dev\tMember\tSuspended\t$250\t\nRen Quinn\tren.quinn47@beui.dev\tAdmin\tInvited\t$287\t\nIvy Lund\tivy.lund48@beui.dev\tOwner\tActive\t$324\t\nJude Reyes\tjude.reyes49@beui.dev\tViewer\tSuspended\t$361\t\nAva Cole\tava.cole50@beui.dev\tMember\tInvited\t$398\t\nLeo Marsh\tleo.marsh51@beui.dev\tAdmin\tActive\t$435\t\nMia Okafor\tmia.okafor52@beui.dev\tOwner\tSuspended\t$472\t\nKai Frost\tkai.frost53@beui.dev\tViewer\tInvited\t$21\t\nZoe Bose\tzoe.bose54@beui.dev\tMember\tActive\t$58\t\nEli Sato\teli.sato55@beui.dev\tAdmin\tSuspended\t$95\t\nNoa Vale\tnoa.vale56@beui.dev\tOwner\tInvited\t$132\t\nRen Quinn\tren.quinn57@beui.dev\tViewer\tActive\t$169\t\nIvy Lund\tivy.lund58@beui.dev\tMember\tSuspended\t$206\t\nJude Reyes\tjude.reyes59@beui.dev\tAdmin\tInvited\t$243\t\n\n\t\n\t\n\t\n\t\n\t\n\n\t\n\t\n\t\n\t\n\t\n\n\t\n\t\n\t\n\t\n\t",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 344,
+              "y": 0,
+              "width": 592,
+              "height": 478,
+              "top": 0,
+              "right": 936,
+              "bottom": 478,
+              "left": 344
+            }
+          },
+          {
+            "tag": "TR",
+            "role": null,
+            "name": "Name\n\t\nEmail\n\t\nRole\n\t\nStatus\n\t\nMRR\n\t",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 361,
+              "y": -2588,
+              "width": 614,
+              "height": 52.5,
+              "top": -2588,
+              "right": 975,
+              "bottom": -2535.5,
+              "left": 361
+            }
+          },
+          {
+            "tag": "TR",
+            "role": null,
+            "name": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 361,
+              "y": -2535.5,
+              "width": 614,
+              "height": 2080,
+              "top": -2535.5,
+              "right": 975,
+              "bottom": -455.5,
+              "left": 361
+            }
+          },
+          {
+            "tag": "TR",
+            "role": null,
+            "name": "Ava Cole\tava.cole40@beui.dev\tOwner\tSuspended\t$28\t",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 361,
+              "y": -455.5,
+              "width": 614,
+              "height": 52,
+              "top": -455.5,
+              "right": 975,
+              "bottom": -403.5,
+              "left": 361
+            }
+          },
+          {
+            "tag": "TR",
+            "role": null,
+            "name": "Leo Marsh\tleo.marsh41@beui.dev\tViewer\tInvited\t$65\t",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 361,
+              "y": -403.5,
+              "width": 614,
+              "height": 52,
+              "top": -403.5,
+              "right": 975,
+              "bottom": -351.5,
+              "left": 361
+            }
+          },
+          {
+            "tag": "TR",
+            "role": null,
+            "name": "Mia Okafor\tmia.okafor42@beui.dev\tMember\tActive\t$102\t",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 361,
+              "y": -351.5,
+              "width": 614,
+              "height": 52,
+              "top": -351.5,
+              "right": 975,
+              "bottom": -299.5,
+              "left": 361
+            }
+          },
+          {
+            "tag": "TR",
+            "role": null,
+            "name": "Kai Frost\tkai.frost43@beui.dev\tAdmin\tSuspended\t$139\t",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 361,
+              "y": -299.5,
+              "width": 614,
+              "height": 52,
+              "top": -299.5,
+              "right": 975,
+              "bottom": -247.5,
+              "left": 361
+            }
+          },
+          {
+            "tag": "TR",
+            "role": null,
+            "name": "Zoe Bose\tzoe.bose44@beui.dev\tOwner\tInvited\t$176\t",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 361,
+              "y": -247.5,
+              "width": 614,
+              "height": 52,
+              "top": -247.5,
+              "right": 975,
+              "bottom": -195.5,
+              "left": 361
+            }
+          },
+          {
+            "tag": "TR",
+            "role": null,
+            "name": "Eli Sato\teli.sato45@beui.dev\tViewer\tActive\t$213\t",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 361,
+              "y": -195.5,
+              "width": 614,
+              "height": 52,
+              "top": -195.5,
+              "right": 975,
+              "bottom": -143.5,
+              "left": 361
+            }
+          },
+          {
+            "tag": "TR",
+            "role": null,
+            "name": "Noa Vale\tnoa.vale46@beui.dev\tMember\tSuspended\t$250\t",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 361,
+              "y": -143.5,
+              "width": 614,
+              "height": 52,
+              "top": -143.5,
+              "right": 975,
+              "bottom": -91.5,
+              "left": 361
+            }
+          },
+          {
+            "tag": "TR",
+            "role": null,
+            "name": "Ren Quinn\tren.quinn47@beui.dev\tAdmin\tInvited\t$287\t",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 361,
+              "y": -91.5,
+              "width": 614,
+              "height": 52,
+              "top": -91.5,
+              "right": 975,
+              "bottom": -39.5,
+              "left": 361
+            }
+          },
+          {
+            "tag": "TR",
+            "role": null,
+            "name": "Ivy Lund\tivy.lund48@beui.dev\tOwner\tActive\t$324\t",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 361,
+              "y": -39.5,
+              "width": 614,
+              "height": 52,
+              "top": -39.5,
+              "right": 975,
+              "bottom": 12.5,
+              "left": 361
+            }
+          },
+          {
+            "tag": "TR",
+            "role": null,
+            "name": "Jude Reyes\tjude.reyes49@beui.dev\tViewer\tSuspended\t$361\t",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 361,
+              "y": 12.5,
+              "width": 614,
+              "height": 52,
+              "top": 12.5,
+              "right": 975,
+              "bottom": 64.5,
+              "left": 361
+            }
+          },
+          {
+            "tag": "TR",
+            "role": null,
+            "name": "Ava Cole\tava.cole50@beui.dev\tMember\tInvited\t$398\t",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 361,
+              "y": 64.5,
+              "width": 614,
+              "height": 52,
+              "top": 64.5,
+              "right": 975,
+              "bottom": 116.5,
+              "left": 361
+            }
+          },
+          {
+            "tag": "TR",
+            "role": null,
+            "name": "Leo Marsh\tleo.marsh51@beui.dev\tAdmin\tActive\t$435\t",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 361,
+              "y": 116.5,
+              "width": 614,
+              "height": 52,
+              "top": 116.5,
+              "right": 975,
+              "bottom": 168.5,
+              "left": 361
+            }
+          },
+          {
+            "tag": "TR",
+            "role": null,
+            "name": "Mia Okafor\tmia.okafor52@beui.dev\tOwner\tSuspended\t$472\t",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 361,
+              "y": 168.5,
+              "width": 614,
+              "height": 52,
+              "top": 168.5,
+              "right": 975,
+              "bottom": 220.5,
+              "left": 361
+            }
+          },
+          {
+            "tag": "TR",
+            "role": null,
+            "name": "Kai Frost\tkai.frost53@beui.dev\tViewer\tInvited\t$21\t",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 361,
+              "y": 220.5,
+              "width": 614,
+              "height": 52,
+              "top": 220.5,
+              "right": 975,
+              "bottom": 272.5,
+              "left": 361
+            }
+          },
+          {
+            "tag": "TR",
+            "role": null,
+            "name": "Zoe Bose\tzoe.bose54@beui.dev\tMember\tActive\t$58\t",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 361,
+              "y": 272.5,
+              "width": 614,
+              "height": 52,
+              "top": 272.5,
+              "right": 975,
+              "bottom": 324.5,
+              "left": 361
+            }
+          },
+          {
+            "tag": "TR",
+            "role": null,
+            "name": "Eli Sato\teli.sato55@beui.dev\tAdmin\tSuspended\t$95\t",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 361,
+              "y": 324.5,
+              "width": 614,
+              "height": 52,
+              "top": 324.5,
+              "right": 975,
+              "bottom": 376.5,
+              "left": 361
+            }
+          },
+          {
+            "tag": "TR",
+            "role": null,
+            "name": "Noa Vale\tnoa.vale56@beui.dev\tOwner\tInvited\t$132\t",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 361,
+              "y": 376.5,
+              "width": 614,
+              "height": 52,
+              "top": 376.5,
+              "right": 975,
+              "bottom": 428.5,
+              "left": 361
+            }
+          },
+          {
+            "tag": "TR",
+            "role": null,
+            "name": "Ren Quinn\tren.quinn57@beui.dev\tViewer\tActive\t$169\t",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 361,
+              "y": 428.5,
+              "width": 614,
+              "height": 52,
+              "top": 428.5,
+              "right": 975,
+              "bottom": 480.5,
+              "left": 361
+            }
+          },
+          {
+            "tag": "TR",
+            "role": null,
+            "name": "Ivy Lund\tivy.lund58@beui.dev\tMember\tSuspended\t$206\t",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 361,
+              "y": 480.5,
+              "width": 614,
+              "height": 52,
+              "top": 480.5,
+              "right": 975,
+              "bottom": 532.5,
+              "left": 361
+            }
+          },
+          {
+            "tag": "TR",
+            "role": null,
+            "name": "Jude Reyes\tjude.reyes59@beui.dev\tAdmin\tInvited\t$243\t",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 361,
+              "y": 532.5,
+              "width": 614,
+              "height": 52,
+              "top": 532.5,
+              "right": 975,
+              "bottom": 584.5,
+              "left": 361
+            }
+          },
+          {
+            "tag": "TR",
+            "role": null,
+            "name": "\t\n\t\n\t\n\t\n\t",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 361,
+              "y": 584.5,
+              "width": 614,
+              "height": 52,
+              "top": 584.5,
+              "right": 975,
+              "bottom": 636.5,
+              "left": 361
+            }
+          },
+          {
+            "tag": "TR",
+            "role": null,
+            "name": "\t\n\t\n\t\n\t\n\t",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 361,
+              "y": 636.5,
+              "width": 614,
+              "height": 52,
+              "top": 636.5,
+              "right": 975,
+              "bottom": 688.5,
+              "left": 361
+            }
+          },
+          {
+            "tag": "TR",
+            "role": null,
+            "name": "\t\n\t\n\t\n\t\n\t",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 361,
+              "y": 688.5,
+              "width": 614,
+              "height": 52,
+              "top": 688.5,
+              "right": 975,
+              "bottom": 740.5,
+              "left": 361
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

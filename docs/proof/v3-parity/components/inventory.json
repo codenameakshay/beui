@@ -1,0 +1,1377 @@
+{
+  "schema": 1,
+  "baseline": "5ec78ac30e1274727ddd185a883346e4d908e6c8",
+  "referenceRevision": "a76e57c9bbc2837e96420b2610e9c82a3271bb05",
+  "liveDeploymentRevision": "unknown",
+  "auditCommit": "fe9213f",
+  "auditPath": "/Users/codenameakshay/.t3/worktrees/beui/t3-df4b55e2/docs/proof/v3-parity/audit",
+  "routeCount": 28,
+  "stateObligations": 223,
+  "routes": [
+    {
+      "id": "components/timeline",
+      "owner": "components",
+      "newBadge": true,
+      "demoChanged": true,
+      "sourceUrl": "https://beui.dev/components/motion/timeline",
+      "sourceFiles": [
+        {
+          "path": "components/motion/timeline.tsx",
+          "sha256": "e05aa112fccaea356d7a73ff38a289b1aea58c9069b15fd63710204c50b298fc"
+        }
+      ],
+      "sourcePreviews": [
+        "components/previews/motion/timeline.preview.tsx"
+      ],
+      "sourceExamples": [],
+      "widgetParts": [
+        "BeuiTimeline"
+      ],
+      "states": [
+        "rest",
+        "hover-exit",
+        "keyboard",
+        "reduced-motion",
+        "drag through every event and release momentum",
+        "select first middle last cards and reverse",
+        "match dated tiles imagery and captions"
+      ],
+      "themes": [
+        "dark",
+        "light"
+      ],
+      "verdict": "inconclusive",
+      "implementation": "repaired subset, see CHANGE_MANIFEST.md",
+      "missing": "No complete matched-width 60 FPS reference/before/after state set or independent visual verdict."
+    },
+    {
+      "id": "components/alert",
+      "owner": "components",
+      "newBadge": true,
+      "demoChanged": true,
+      "sourceUrl": "https://beui.dev/components/motion/alert",
+      "sourceFiles": [
+        {
+          "path": "components/motion/alert.tsx",
+          "sha256": "debf16a3862e112ce970ecf97a22e7e53a530c938616a849fc53069aaeceefe2"
+        }
+      ],
+      "sourcePreviews": [
+        "components/previews/motion/alert.preview.tsx"
+      ],
+      "sourceExamples": [],
+      "widgetParts": [
+        "BeuiAlert",
+        "BeuiAlertIcon",
+        "BeuiAlertContent",
+        "BeuiAlertTitle",
+        "BeuiAlertDescription",
+        "BeuiAlertAction",
+        "BeuiAlertClose"
+      ],
+      "states": [
+        "rest",
+        "hover-exit",
+        "keyboard",
+        "reduced-motion",
+        "every status icon title description action and close part",
+        "controlled closed open close reopen",
+        "mid-entry mid-exit icon and height transition"
+      ],
+      "themes": [
+        "dark",
+        "light"
+      ],
+      "verdict": "inconclusive",
+      "implementation": "repaired subset, see CHANGE_MANIFEST.md",
+      "missing": "No complete matched-width 60 FPS reference/before/after state set or independent visual verdict."
+    },
+    {
+      "id": "components/collapsible",
+      "owner": "components",
+      "newBadge": true,
+      "demoChanged": true,
+      "sourceUrl": "https://beui.dev/components/motion/collapsible",
+      "sourceFiles": [
+        {
+          "path": "components/motion/collapsible.tsx",
+          "sha256": "2e34435d3cb4919ed07e0776c81ad6094ba893e168028aae3983e671c5d3502e"
+        }
+      ],
+      "sourcePreviews": [
+        "components/previews/motion/collapsible.preview.tsx"
+      ],
+      "sourceExamples": [],
+      "widgetParts": [
+        "BeuiCollapsible",
+        "BeuiCollapsibleTrigger",
+        "BeuiCollapsibleContent",
+        "BeuiCollapsibleIndicator"
+      ],
+      "states": [
+        "rest",
+        "hover-exit",
+        "keyboard",
+        "reduced-motion",
+        "trigger indicator and content open close reopen",
+        "controlled and uncontrolled disabled",
+        "nested content height replacement during exit"
+      ],
+      "themes": [
+        "dark",
+        "light"
+      ],
+      "verdict": "inconclusive",
+      "implementation": "not changed in this repair checkpoint",
+      "missing": "No complete matched-width 60 FPS reference/before/after state set or independent visual verdict."
+    },
+    {
+      "id": "components/aspect-ratio",
+      "owner": "components",
+      "newBadge": true,
+      "demoChanged": true,
+      "sourceUrl": "https://beui.dev/components/motion/aspect-ratio",
+      "sourceFiles": [
+        {
+          "path": "components/motion/aspect-ratio.tsx",
+          "sha256": "8301eb7c28ea5cc9feb05c4269cca80a5ac56dda7b7bd5056e514245a742b021"
+        }
+      ],
+      "sourcePreviews": [
+        "components/previews/motion/aspect-ratio.preview.tsx"
+      ],
+      "sourceExamples": [],
+      "widgetParts": [
+        "BeuiAspectRatio",
+        "BeuiAspectRatioImage"
+      ],
+      "states": [
+        "rest",
+        "hover-exit",
+        "keyboard",
+        "reduced-motion",
+        "all preview ratios and responsive resize",
+        "image loading error and content-fit",
+        "ratio change while media remains mounted"
+      ],
+      "themes": [
+        "dark",
+        "light"
+      ],
+      "verdict": "inconclusive",
+      "implementation": "not changed in this repair checkpoint",
+      "missing": "No complete matched-width 60 FPS reference/before/after state set or independent visual verdict."
+    },
+    {
+      "id": "components/arc-picker",
+      "owner": "components",
+      "newBadge": true,
+      "demoChanged": true,
+      "sourceUrl": "https://beui.dev/components/motion/arc-picker",
+      "sourceFiles": [
+        {
+          "path": "components/motion/arc-picker.tsx",
+          "sha256": "cfef13d94ebef8c7202beabd0705989c59dd02f84f3a226b49cc52f9167d954c"
+        }
+      ],
+      "sourcePreviews": [
+        "components/previews/motion/arc-picker.preview.tsx"
+      ],
+      "sourceExamples": [],
+      "widgetParts": [
+        "BeuiArcPicker"
+      ],
+      "states": [
+        "rest",
+        "hover-exit",
+        "keyboard",
+        "reduced-motion",
+        "top bottom left right curves",
+        "wheel drag inertia reverse and disabled items",
+        "bracket width through short and long labels"
+      ],
+      "themes": [
+        "dark",
+        "light"
+      ],
+      "verdict": "inconclusive",
+      "implementation": "repaired subset, see CHANGE_MANIFEST.md",
+      "missing": "No complete matched-width 60 FPS reference/before/after state set or independent visual verdict."
+    },
+    {
+      "id": "components/sortable-stack",
+      "owner": "components",
+      "newBadge": true,
+      "demoChanged": true,
+      "sourceUrl": "https://beui.dev/components/motion/sortable-stack",
+      "sourceFiles": [
+        {
+          "path": "components/motion/sortable-list.tsx",
+          "sha256": "740c2ae4c5d23455eb7ba61a60ab0ef2ee46d3bf986b0ff0e5ef6be329806027"
+        },
+        {
+          "path": "components/motion/sortable-stack.tsx",
+          "sha256": "0e3499f44a8d2eecf692949fc76866100e8677f154b3881d73452d881f92c9cc"
+        }
+      ],
+      "sourcePreviews": [
+        "components/previews/motion/sortable-stack.preview.tsx"
+      ],
+      "sourceExamples": [],
+      "widgetParts": [
+        "BeuiSortableList",
+        "BeuiSortableListGroup",
+        "BeuiSortableListItem",
+        "BeuiSortableListHandle",
+        "BeuiSortableListItemContent",
+        "BeuiSortableListUndo"
+      ],
+      "states": [
+        "rest",
+        "hover-exit",
+        "keyboard",
+        "reduced-motion",
+        "handle hover press drag reorder drop and undo",
+        "keyboard pickup reorder cancel and drop announcement",
+        "controlled rejection group item handle content undo composition"
+      ],
+      "themes": [
+        "dark",
+        "light"
+      ],
+      "verdict": "inconclusive",
+      "implementation": "not changed in this repair checkpoint",
+      "missing": "No complete matched-width 60 FPS reference/before/after state set or independent visual verdict."
+    },
+    {
+      "id": "components/image-viewer",
+      "owner": "components",
+      "newBadge": true,
+      "demoChanged": true,
+      "sourceUrl": "https://beui.dev/components/motion/image-viewer",
+      "sourceFiles": [
+        {
+          "path": "components/motion/morphing-lightbox.tsx",
+          "sha256": "1d541309dc86c03b637d64f7cd757101d5c6a4203b504a64b2217419800af0ac"
+        }
+      ],
+      "sourcePreviews": [
+        "components/previews/motion/morphing-lightbox.preview.tsx"
+      ],
+      "sourceExamples": [
+        {
+          "slug": "morphing",
+          "installSlug": "morphing-lightbox",
+          "preview": "components/previews/motion/morphing-lightbox.preview.tsx"
+        }
+      ],
+      "widgetParts": [
+        "BeuiImageViewer",
+        "BeuiImageViewerGallery",
+        "BeuiImageViewerThumbnail",
+        "BeuiImageViewerCounter",
+        "BeuiImageViewerCaption",
+        "BeuiImageViewerClose",
+        "BeuiImageViewerPrevious",
+        "BeuiImageViewerNext",
+        "BeuiImageViewerContent"
+      ],
+      "states": [
+        "rest",
+        "hover-exit",
+        "keyboard",
+        "reduced-motion",
+        "thumbnail open full-size morph close and reopen",
+        "previous next counter caption swipe zoom and pan",
+        "Escape arrows focus trap and return to originating thumbnail",
+        "example/morphing-lightbox/morphing"
+      ],
+      "themes": [
+        "dark",
+        "light"
+      ],
+      "verdict": "inconclusive",
+      "implementation": "repaired subset, see CHANGE_MANIFEST.md",
+      "missing": "No complete matched-width 60 FPS reference/before/after state set or independent visual verdict."
+    },
+    {
+      "id": "components/date-range-picker",
+      "owner": "components",
+      "newBadge": true,
+      "demoChanged": true,
+      "sourceUrl": "https://beui.dev/components/motion/date-range-picker",
+      "sourceFiles": [
+        {
+          "path": "components/motion/date-range-picker.tsx",
+          "sha256": "d830f6258d5f6b6229d56783e67054153c729392368b751dd73a36336511773a"
+        }
+      ],
+      "sourcePreviews": [
+        "components/previews/motion/date-range-picker.preview.tsx"
+      ],
+      "sourceExamples": [],
+      "widgetParts": [
+        "BeuiDateRangePicker",
+        "BeuiDateRangePickerCalendar",
+        "BeuiDateRangePickerSummary",
+        "BeuiDateRangePickerHeader",
+        "BeuiDateRangePickerGrid",
+        "BeuiDateRangePickerFooter",
+        "BeuiDateRangePickerSelection",
+        "BeuiDateRangePickerPresets",
+        "BeuiDateRangePickerClear",
+        "BeuiDateRangePickerPreset",
+        "BeuiDateRangePickerTrigger",
+        "BeuiDateRangePickerContent",
+        "BeuiDateRangePickerDropdown"
+      ],
+      "states": [
+        "rest",
+        "hover-exit",
+        "keyboard",
+        "reduced-motion",
+        "inline and trigger-content dropdown",
+        "select start end reverse clear and presets",
+        "month year navigation bounds disabled dates",
+        "calendar header grid summary footer selection clear preset parts"
+      ],
+      "themes": [
+        "dark",
+        "light"
+      ],
+      "verdict": "inconclusive",
+      "implementation": "not changed in this repair checkpoint",
+      "missing": "No complete matched-width 60 FPS reference/before/after state set or independent visual verdict."
+    },
+    {
+      "id": "components/card",
+      "owner": "components",
+      "newBadge": true,
+      "demoChanged": true,
+      "sourceUrl": "https://beui.dev/components/motion/card",
+      "sourceFiles": [
+        {
+          "path": "components/motion/card.tsx",
+          "sha256": "bb8bfb95302743d4bcce54aa80b55dbad2788f48d98e97c9d3c2040df777f6e4"
+        }
+      ],
+      "sourcePreviews": [
+        "components/previews/motion/card.preview.tsx"
+      ],
+      "sourceExamples": [],
+      "widgetParts": [
+        "BeuiCard",
+        "BeuiCardHeader",
+        "BeuiCardTitle",
+        "BeuiCardDescription",
+        "BeuiCardAction",
+        "BeuiCardContent",
+        "BeuiCardFooter",
+        "BeuiCardTarget"
+      ],
+      "states": [
+        "rest",
+        "hover-exit",
+        "keyboard",
+        "reduced-motion",
+        "outlined muted standard compact",
+        "interactive hover press selected and unselected",
+        "header title description action content footer",
+        "checkbox radio switch controls and full-card hit target"
+      ],
+      "themes": [
+        "dark",
+        "light"
+      ],
+      "verdict": "inconclusive",
+      "implementation": "repaired subset, see CHANGE_MANIFEST.md",
+      "missing": "No complete matched-width 60 FPS reference/before/after state set or independent visual verdict."
+    },
+    {
+      "id": "components/color-picker",
+      "owner": "components",
+      "newBadge": true,
+      "demoChanged": true,
+      "sourceUrl": "https://beui.dev/components/motion/color-picker",
+      "sourceFiles": [
+        {
+          "path": "components/motion/color-picker.tsx",
+          "sha256": "b10af7910e21273e4255233019ed847082dd1f8add12156499ddadcbf581651d"
+        }
+      ],
+      "sourcePreviews": [
+        "components/previews/motion/color-picker.preview.tsx"
+      ],
+      "sourceExamples": [],
+      "widgetParts": [
+        "BeuiColorPicker",
+        "BeuiColorPickerArea",
+        "BeuiColorPickerHue",
+        "BeuiColorPickerAlpha",
+        "BeuiColorPickerHex",
+        "BeuiColorPickerChannels",
+        "BeuiColorPickerEyeDropper",
+        "BeuiColorPickerPresets",
+        "BeuiColorPickerPreset",
+        "BeuiColorPickerTrigger",
+        "BeuiColorPickerContent",
+        "BeuiColorPickerSwatch"
+      ],
+      "states": [
+        "rest",
+        "hover-exit",
+        "keyboard",
+        "reduced-motion",
+        "trigger area morph open and close",
+        "saturation hue alpha drag loupe tilt release and commit",
+        "hex valid invalid channels RGB HSL greys retaining hue",
+        "presets swatch ring and EyeDropper available unavailable"
+      ],
+      "themes": [
+        "dark",
+        "light"
+      ],
+      "verdict": "inconclusive",
+      "implementation": "not changed in this repair checkpoint",
+      "missing": "No complete matched-width 60 FPS reference/before/after state set or independent visual verdict."
+    },
+    {
+      "id": "components/color-selector",
+      "owner": "components",
+      "newBadge": true,
+      "demoChanged": true,
+      "sourceUrl": "https://beui.dev/components/motion/color-selector",
+      "sourceFiles": [
+        {
+          "path": "components/motion/color-selector.tsx",
+          "sha256": "1866cf9cf0b2140dca04cdd07635a4825bdb22fb0c10b8aa8314432a34cafdbd"
+        }
+      ],
+      "sourcePreviews": [
+        "components/previews/motion/color-selector.preview.tsx"
+      ],
+      "sourceExamples": [],
+      "widgetParts": [
+        "BeuiColorSelector",
+        "BeuiColorSelectorLabel",
+        "BeuiColorSelectorList",
+        "BeuiColorSelectorItem"
+      ],
+      "states": [
+        "rest",
+        "hover-exit",
+        "keyboard",
+        "reduced-motion",
+        "select every swatch and clear controlled selection",
+        "arc-ring travel reversal and item reorder removal",
+        "label list item composition and disabled choice"
+      ],
+      "themes": [
+        "dark",
+        "light"
+      ],
+      "verdict": "inconclusive",
+      "implementation": "repaired subset, see CHANGE_MANIFEST.md",
+      "missing": "No complete matched-width 60 FPS reference/before/after state set or independent visual verdict."
+    },
+    {
+      "id": "components/breadcrumb",
+      "owner": "components",
+      "newBadge": true,
+      "demoChanged": true,
+      "sourceUrl": "https://beui.dev/components/motion/breadcrumb",
+      "sourceFiles": [
+        {
+          "path": "components/motion/breadcrumb.tsx",
+          "sha256": "f45d588a391e0735629b3fa64a9cf1c6b4798f449db4d86a5243d389246a57b1"
+        }
+      ],
+      "sourcePreviews": [
+        "components/previews/motion/breadcrumb.preview.tsx"
+      ],
+      "sourceExamples": [],
+      "widgetParts": [
+        "BeuiBreadcrumb",
+        "BeuiBreadcrumbList",
+        "BeuiBreadcrumbItem",
+        "BeuiBreadcrumbLink",
+        "BeuiBreadcrumbPage",
+        "BeuiBreadcrumbSeparator",
+        "BeuiBreadcrumbEllipsis"
+      ],
+      "states": [
+        "rest",
+        "hover-exit",
+        "keyboard",
+        "reduced-motion",
+        "link hover focus press and exit",
+        "ellipsis collapsed ancestor navigation",
+        "list item link page separator and ellipsis parts"
+      ],
+      "themes": [
+        "dark",
+        "light"
+      ],
+      "verdict": "inconclusive",
+      "implementation": "repaired subset, see CHANGE_MANIFEST.md",
+      "missing": "No complete matched-width 60 FPS reference/before/after state set or independent visual verdict."
+    },
+    {
+      "id": "components/button",
+      "owner": "components",
+      "newBadge": false,
+      "demoChanged": true,
+      "sourceUrl": "https://beui.dev/components/motion/button",
+      "sourceFiles": [
+        {
+          "path": "components/motion/button/index.tsx",
+          "sha256": "df1d7b59bcef7549c02c5d231114d62d4ddba9773a9ea05ca6c842210fcf6b46"
+        },
+        {
+          "path": "components/motion/button/base.tsx",
+          "sha256": "5948d878f3446b4cdfa6e076aa2c6ccdb05f5a102bbba074b022de6f3e924144"
+        },
+        {
+          "path": "components/motion/button/stateful.tsx",
+          "sha256": "8eb0731b06cc6375f7f42bcf3efaa9cdc55f4af08ce28835f2b08bd4b25c32de"
+        },
+        {
+          "path": "components/motion/button/magnetic.tsx",
+          "sha256": "864dc7db0cda2d8ee9bff7127706c546632d00f554595c9ce1816e283acb2a1f"
+        },
+        {
+          "path": "components/motion/button/metallic.tsx",
+          "sha256": "e95693277c7dfd71f55c096fca8a3aee2cc92fde1826f46ceab07d56d20b9f0e"
+        }
+      ],
+      "sourcePreviews": [
+        "components/previews/motion/button-metallic.preview.tsx",
+        "components/previews/motion/button-base.preview.tsx",
+        "components/previews/motion/button-stateful.preview.tsx",
+        "components/previews/motion/button-magnetic.preview.tsx"
+      ],
+      "sourceExamples": [
+        {
+          "slug": "metallic",
+          "installSlug": "button-metallic",
+          "preview": "components/previews/motion/button-metallic.preview.tsx"
+        },
+        {
+          "slug": "base",
+          "installSlug": "button-base",
+          "preview": "components/previews/motion/button-base.preview.tsx"
+        },
+        {
+          "slug": "stateful",
+          "installSlug": "button-stateful",
+          "preview": "components/previews/motion/button-stateful.preview.tsx"
+        },
+        {
+          "slug": "magnetic",
+          "installSlug": "button-magnetic",
+          "preview": "components/previews/motion/button-magnetic.preview.tsx"
+        }
+      ],
+      "widgetParts": [
+        "BeuiButton",
+        "BeuiMagneticButton",
+        "BeuiMetallicButton",
+        "BeuiStatefulButton",
+        "BeuiMagnetic"
+      ],
+      "states": [
+        "rest",
+        "hover-exit",
+        "keyboard",
+        "reduced-motion",
+        "all source examples including new metallic",
+        "every size tone variant hover press release disabled",
+        "stateful idle loading success error busy lockout",
+        "magnetic follow and pointer exit reset",
+        "example/button-metallic/metallic",
+        "example/button-base/base",
+        "example/button-stateful/stateful",
+        "example/button-magnetic/magnetic"
+      ],
+      "themes": [
+        "dark",
+        "light"
+      ],
+      "verdict": "inconclusive",
+      "implementation": "not changed in this repair checkpoint",
+      "missing": "No complete matched-width 60 FPS reference/before/after state set or independent visual verdict."
+    },
+    {
+      "id": "components/expandable-control",
+      "owner": "components",
+      "newBadge": true,
+      "demoChanged": true,
+      "sourceUrl": "https://beui.dev/components/motion/expandable-control",
+      "sourceFiles": [
+        {
+          "path": "components/motion/expandable-control.tsx",
+          "sha256": "91284ad416cbd533f457fa2e8cb2106a25d7770d34f94c25dca2e2afafc380f9"
+        }
+      ],
+      "sourcePreviews": [
+        "components/previews/motion/expandable-control.preview.tsx"
+      ],
+      "sourceExamples": [],
+      "widgetParts": [
+        "BeuiExpandableButton",
+        "BeuiExpandableChip"
+      ],
+      "states": [
+        "rest",
+        "hover-exit",
+        "keyboard",
+        "reduced-motion",
+        "button and chip rest hover expand press collapse",
+        "label and icon entry exit and focus expansion"
+      ],
+      "themes": [
+        "dark",
+        "light"
+      ],
+      "verdict": "inconclusive",
+      "implementation": "not changed in this repair checkpoint",
+      "missing": "No complete matched-width 60 FPS reference/before/after state set or independent visual verdict."
+    },
+    {
+      "id": "components/adaptive-stepper",
+      "owner": "components",
+      "newBadge": true,
+      "demoChanged": true,
+      "sourceUrl": "https://beui.dev/components/motion/adaptive-stepper",
+      "sourceFiles": [
+        {
+          "path": "components/motion/adaptive-stepper.tsx",
+          "sha256": "61f78544e5606ae089953471af7e792507deb062e544774b6a1ed1ce85f3e96d"
+        }
+      ],
+      "sourcePreviews": [
+        "components/previews/motion/adaptive-stepper.preview.tsx"
+      ],
+      "sourceExamples": [],
+      "widgetParts": [
+        "BeuiAdaptiveStepper",
+        "BeuiAdaptiveStepperDecrement",
+        "BeuiAdaptiveStepperValue",
+        "BeuiAdaptiveStepperIncrement"
+      ],
+      "states": [
+        "rest",
+        "hover-exit",
+        "keyboard",
+        "reduced-motion",
+        "decrement value increment parts",
+        "min max disabled and controlled rejection",
+        "repeat increments reversal and liquid connection through morph"
+      ],
+      "themes": [
+        "dark",
+        "light"
+      ],
+      "verdict": "inconclusive",
+      "implementation": "not changed in this repair checkpoint",
+      "missing": "No complete matched-width 60 FPS reference/before/after state set or independent visual verdict."
+    },
+    {
+      "id": "components/tabs",
+      "owner": "components",
+      "newBadge": false,
+      "demoChanged": true,
+      "sourceUrl": "https://beui.dev/components/motion/tabs",
+      "sourceFiles": [
+        {
+          "path": "components/motion/tabs.tsx",
+          "sha256": "bb7ea05c6c6250c76603fb226ad84633f8497023a74806f15e50a2a2aef4a53c"
+        }
+      ],
+      "sourcePreviews": [
+        "components/previews/motion/tabs.preview.tsx"
+      ],
+      "sourceExamples": [],
+      "widgetParts": [
+        "BeuiTabs"
+      ],
+      "states": [
+        "rest",
+        "hover-exit",
+        "keyboard",
+        "reduced-motion",
+        "pill segment underline icons and overflow scroll",
+        "select first middle last and reverse indicator",
+        "panel entry exit and focus-visible vs pointer focus"
+      ],
+      "themes": [
+        "dark",
+        "light"
+      ],
+      "verdict": "inconclusive",
+      "implementation": "repaired subset, see CHANGE_MANIFEST.md",
+      "missing": "No complete matched-width 60 FPS reference/before/after state set or independent visual verdict."
+    },
+    {
+      "id": "components/input",
+      "owner": "components",
+      "newBadge": false,
+      "demoChanged": true,
+      "sourceUrl": "https://beui.dev/components/motion/input",
+      "sourceFiles": [
+        {
+          "path": "components/motion/input.tsx",
+          "sha256": "4dd774bbada7f1c9ec283905586a4306593792ea570ae81caa71874d5bdb0b3d"
+        }
+      ],
+      "sourcePreviews": [
+        "components/previews/motion/input.preview.tsx"
+      ],
+      "sourceExamples": [],
+      "widgetParts": [
+        "BeuiInput"
+      ],
+      "states": [
+        "rest",
+        "hover-exit",
+        "keyboard",
+        "reduced-motion",
+        "empty typed focused blurred error success disabled",
+        "reserveErrorLine false and true no layout jumps",
+        "error shake success draw and left right icons"
+      ],
+      "themes": [
+        "dark",
+        "light"
+      ],
+      "verdict": "inconclusive",
+      "implementation": "not changed in this repair checkpoint",
+      "missing": "No complete matched-width 60 FPS reference/before/after state set or independent visual verdict."
+    },
+    {
+      "id": "components/combobox",
+      "owner": "components",
+      "newBadge": true,
+      "demoChanged": true,
+      "sourceUrl": "https://beui.dev/components/motion/combobox",
+      "sourceFiles": [
+        {
+          "path": "components/motion/combobox.tsx",
+          "sha256": "91fa03416be024fcf1584fe865fe6a85e11986d463a1e8e78cc9e0baaaf09c8c"
+        }
+      ],
+      "sourcePreviews": [
+        "components/previews/motion/combobox.preview.tsx"
+      ],
+      "sourceExamples": [],
+      "widgetParts": [
+        "BeuiCombobox",
+        "BeuiComboboxTrigger",
+        "BeuiComboboxInput",
+        "BeuiComboboxContent",
+        "BeuiComboboxList",
+        "BeuiComboboxItem",
+        "BeuiComboboxGroup",
+        "BeuiComboboxLabel",
+        "BeuiComboboxEmpty",
+        "BeuiComboboxSeparator",
+        "BeuiComboboxValue"
+      ],
+      "states": [
+        "rest",
+        "hover-exit",
+        "keyboard",
+        "reduced-motion",
+        "trigger input content list item group label empty separator clear",
+        "search filter no matches select clear reopen",
+        "keyboard active row scroll and controlled rejection"
+      ],
+      "themes": [
+        "dark",
+        "light"
+      ],
+      "verdict": "inconclusive",
+      "implementation": "not changed in this repair checkpoint",
+      "missing": "No complete matched-width 60 FPS reference/before/after state set or independent visual verdict."
+    },
+    {
+      "id": "components/multi-select",
+      "owner": "components",
+      "newBadge": true,
+      "demoChanged": true,
+      "sourceUrl": "https://beui.dev/components/motion/multi-select",
+      "sourceFiles": [
+        {
+          "path": "components/motion/multi-select/index.tsx",
+          "sha256": "df1c773fb85c071d8d5b88f463b27f1c5517e3b1e19a4a16a372c375a65222ba"
+        },
+        {
+          "path": "components/motion/multi-select/context.tsx",
+          "sha256": "15206860b8c104328ab375cb9e1ddf2129513cba2b555e944fb107d305d5517c"
+        },
+        {
+          "path": "components/motion/multi-select/trigger.tsx",
+          "sha256": "b47351811d7fdd9c39454dc9b2fd12bcbe9bb7a8a076663f1e24400c98f1748b"
+        },
+        {
+          "path": "components/motion/multi-select/content.tsx",
+          "sha256": "292f695b88976d8ca262e11ac42ab1e9fc1f7bd23f0353d948479171c1bced6b"
+        },
+        {
+          "path": "components/motion/multi-select/list.tsx",
+          "sha256": "e8c4fb1f06365b0a1bb4aa291e324a01d9023553e1daeb0fe2c8aa7caa4cefc0"
+        }
+      ],
+      "sourcePreviews": [
+        "components/previews/motion/multi-select.preview.tsx"
+      ],
+      "sourceExamples": [],
+      "widgetParts": [
+        "BeuiMultiSelect",
+        "BeuiMultiSelectTrigger",
+        "BeuiMultiSelectValue",
+        "BeuiMultiSelectInput",
+        "BeuiMultiSelectContent",
+        "BeuiMultiSelectList",
+        "BeuiMultiSelectItem"
+      ],
+      "states": [
+        "rest",
+        "hover-exit",
+        "keyboard",
+        "reduced-motion",
+        "trigger value token input content list item composition",
+        "search select multiple remove chips clear no matches",
+        "Backspace keyboard selection focus and disabled items"
+      ],
+      "themes": [
+        "dark",
+        "light"
+      ],
+      "verdict": "inconclusive",
+      "implementation": "not changed in this repair checkpoint",
+      "missing": "No complete matched-width 60 FPS reference/before/after state set or independent visual verdict."
+    },
+    {
+      "id": "components/shared-layout-bg",
+      "owner": "components",
+      "newBadge": false,
+      "demoChanged": false,
+      "sourceUrl": "https://beui.dev/components/motion/shared-layout-bg",
+      "sourceFiles": [
+        {
+          "path": "components/motion/shared-layout-bg.tsx",
+          "sha256": "dc3e6b9418a9e4e01332c0c888ec2bb08c1b576bf46f9fad56eb5eb8abae9351"
+        }
+      ],
+      "sourcePreviews": [
+        "components/previews/motion/shared-layout-bg.preview.tsx"
+      ],
+      "sourceExamples": [],
+      "widgetParts": [
+        "BeuiSharedLayoutBg"
+      ],
+      "states": [
+        "rest",
+        "hover-exit",
+        "keyboard",
+        "reduced-motion",
+        "pointer item A to B across gap and leave all items",
+        "rapid reversal and data reorder"
+      ],
+      "themes": [
+        "dark",
+        "light"
+      ],
+      "verdict": "inconclusive",
+      "implementation": "not changed in this repair checkpoint",
+      "missing": "No complete matched-width 60 FPS reference/before/after state set or independent visual verdict."
+    },
+    {
+      "id": "components/animated-sidebar",
+      "owner": "components",
+      "newBadge": false,
+      "demoChanged": true,
+      "sourceUrl": "https://beui.dev/components/motion/animated-sidebar",
+      "sourceFiles": [
+        {
+          "path": "components/motion/animated-sidebar.tsx",
+          "sha256": "3056d574e10fda887004f6da0c7ddf59e7225a7bfed3b74f5d56406af113a947"
+        }
+      ],
+      "sourcePreviews": [
+        "components/previews/motion/animated-sidebar.preview.tsx"
+      ],
+      "sourceExamples": [],
+      "widgetParts": [
+        "BeuiAnimatedSidebarScope",
+        "BeuiAnimatedSidebarTrigger",
+        "BeuiAnimatedSidebar"
+      ],
+      "states": [
+        "rest",
+        "hover-exit",
+        "keyboard",
+        "reduced-motion",
+        "sidebar floating inset variants",
+        "desktop icon rail nested nav open close",
+        "mobile sheet keyboard focus trap Escape and return"
+      ],
+      "themes": [
+        "dark",
+        "light"
+      ],
+      "verdict": "inconclusive",
+      "implementation": "not changed in this repair checkpoint",
+      "missing": "No complete matched-width 60 FPS reference/before/after state set or independent visual verdict."
+    },
+    {
+      "id": "components/file-tree",
+      "owner": "components",
+      "newBadge": true,
+      "demoChanged": true,
+      "sourceUrl": "https://beui.dev/components/motion/file-tree",
+      "sourceFiles": [
+        {
+          "path": "components/motion/file-tree.tsx",
+          "sha256": "119f58c07143b515b979da8fdb478dec489febf457e8af80aa36bb7895733aaa"
+        }
+      ],
+      "sourcePreviews": [
+        "components/previews/motion/file-tree.preview.tsx"
+      ],
+      "sourceExamples": [],
+      "widgetParts": [
+        "BeuiFileTreeFolder",
+        "BeuiFileTreeFile",
+        "BeuiFileTree"
+      ],
+      "states": [
+        "rest",
+        "hover-exit",
+        "keyboard",
+        "reduced-motion",
+        "folder open close nested selection file hover exit",
+        "arrow navigation home end typeahead focus-visible",
+        "folder file root parts controlled selection and disabled item"
+      ],
+      "themes": [
+        "dark",
+        "light"
+      ],
+      "verdict": "inconclusive",
+      "implementation": "not changed in this repair checkpoint",
+      "missing": "No complete matched-width 60 FPS reference/before/after state set or independent visual verdict."
+    },
+    {
+      "id": "components/dock",
+      "owner": "components",
+      "newBadge": false,
+      "demoChanged": true,
+      "sourceUrl": "https://beui.dev/components/motion/dock",
+      "sourceFiles": [
+        {
+          "path": "components/motion/dock.tsx",
+          "sha256": "83cabddbfa41622000b1acb3122c7273dfbf396aab55724dea99f79e5af388de"
+        }
+      ],
+      "sourcePreviews": [
+        "components/previews/motion/dock.preview.tsx"
+      ],
+      "sourceExamples": [],
+      "widgetParts": [
+        "BeuiDock"
+      ],
+      "states": [
+        "rest",
+        "hover-exit",
+        "keyboard",
+        "reduced-motion",
+        "grouped actions separators active pill selection",
+        "pointer traverse hover exit keyboard and narrow layout"
+      ],
+      "themes": [
+        "dark",
+        "light"
+      ],
+      "verdict": "inconclusive",
+      "implementation": "not changed in this repair checkpoint",
+      "missing": "No complete matched-width 60 FPS reference/before/after state set or independent visual verdict."
+    },
+    {
+      "id": "components/tooltip",
+      "owner": "components",
+      "newBadge": false,
+      "demoChanged": true,
+      "sourceUrl": "https://beui.dev/components/motion/tooltip",
+      "sourceFiles": [
+        {
+          "path": "components/motion/tooltip.tsx",
+          "sha256": "05aa29e1cac3ac96d2ea5f1320e48cc65f905b26ccee8044971d6a0318c776b4"
+        }
+      ],
+      "sourcePreviews": [
+        "components/previews/motion/tooltip.preview.tsx",
+        "components/previews/motion/tooltip-toolbar.preview.tsx"
+      ],
+      "sourceExamples": [
+        {
+          "slug": "default",
+          "installSlug": "tooltip",
+          "preview": "components/previews/motion/tooltip.preview.tsx"
+        },
+        {
+          "slug": "toolbar",
+          "installSlug": "tooltip",
+          "preview": "components/previews/motion/tooltip-toolbar.preview.tsx"
+        }
+      ],
+      "widgetParts": [
+        "BeuiTooltipProvider",
+        "BeuiTooltipTrigger",
+        "BeuiTooltipContent",
+        "BeuiTooltip"
+      ],
+      "states": [
+        "rest",
+        "hover-exit",
+        "keyboard",
+        "reduced-motion",
+        "cold delay interrupted show warm sibling window",
+        "all sides align arrow collision followCursor disabled",
+        "focus open blur Escape and pointer leave",
+        "provider trigger content composition and animated changing text",
+        "example/tooltip/default",
+        "example/tooltip/toolbar"
+      ],
+      "themes": [
+        "dark",
+        "light"
+      ],
+      "verdict": "inconclusive",
+      "implementation": "repaired subset, see CHANGE_MANIFEST.md",
+      "missing": "No complete matched-width 60 FPS reference/before/after state set or independent visual verdict."
+    },
+    {
+      "id": "components/text-animation",
+      "owner": "blocks worker, coordinate existing text parts",
+      "newBadge": false,
+      "demoChanged": true,
+      "sourceUrl": "https://beui.dev/components/motion/text-animation",
+      "sourceFiles": [
+        {
+          "path": "components/motion/text-reveal.tsx",
+          "sha256": "9d3e79870b33032a9680c64600bc1b2ffdf7c30ea56e1dd2f80c165dfcc8d8ba"
+        },
+        {
+          "path": "components/motion/chromatic-text-reveal.tsx",
+          "sha256": "35c1083998c295b008735174d7cbdd72f8bd043bc171b2a666f66a0b1d6e13c3"
+        },
+        {
+          "path": "components/motion/text-shimmer.tsx",
+          "sha256": "a8ae8ca2966009a4c9d14085985cb2e571af1b5c75e8e64cb1f4dd99f3fb3236"
+        },
+        {
+          "path": "components/motion/text-cascade.tsx",
+          "sha256": "fff61ff6b7a7d376dad25e0e0768d547cd89b81b3fb912b1c52338251d8e9ebb"
+        },
+        {
+          "path": "components/motion/text-scramble.tsx",
+          "sha256": "398bdea1bb7ec795068cc0ab7fd55d6775721a7ab42fc9504c15bf47aa1c7617"
+        }
+      ],
+      "sourcePreviews": [
+        "components/previews/motion/text-animation.preview.tsx",
+        "components/previews/motion/text-scramble.preview.tsx",
+        "components/previews/motion/chromatic-text-reveal.preview.tsx",
+        "components/previews/motion/text-reveal.preview.tsx",
+        "components/previews/motion/text-shimmer.preview.tsx",
+        "components/previews/motion/text-cascade.preview.tsx"
+      ],
+      "sourceExamples": [
+        {
+          "slug": "text-scramble",
+          "installSlug": "text-scramble",
+          "preview": "components/previews/motion/text-scramble.preview.tsx"
+        },
+        {
+          "slug": "chromatic-reveal",
+          "installSlug": "chromatic-text-reveal",
+          "preview": "components/previews/motion/chromatic-text-reveal.preview.tsx"
+        },
+        {
+          "slug": "reveal",
+          "installSlug": "text-reveal",
+          "preview": "components/previews/motion/text-reveal.preview.tsx"
+        },
+        {
+          "slug": "shimmer",
+          "installSlug": "text-shimmer",
+          "preview": "components/previews/motion/text-shimmer.preview.tsx"
+        },
+        {
+          "slug": "cascade",
+          "installSlug": "text-cascade",
+          "preview": "components/previews/motion/text-cascade.preview.tsx"
+        }
+      ],
+      "widgetParts": [
+        "BeuiChromaticTextReveal",
+        "BeuiTextCascade",
+        "BeuiTextReveal",
+        "BeuiTextScramble",
+        "BeuiTextShimmer"
+      ],
+      "states": [
+        "rest",
+        "hover-exit",
+        "keyboard",
+        "reduced-motion",
+        "scramble reveal shimmer cascade chromatic all examples",
+        "scramble trigger repeat change text during animation",
+        "reveal prefix cycling word boundary and loop",
+        "example/text-scramble/text-scramble",
+        "example/chromatic-text-reveal/chromatic-reveal",
+        "example/text-reveal/reveal",
+        "example/text-shimmer/shimmer",
+        "example/text-cascade/cascade"
+      ],
+      "themes": [
+        "dark",
+        "light"
+      ],
+      "verdict": "inconclusive",
+      "implementation": "not changed in this repair checkpoint",
+      "missing": "No complete matched-width 60 FPS reference/before/after state set or independent visual verdict."
+    },
+    {
+      "id": "components/number",
+      "owner": "blocks worker, coordinate existing text parts",
+      "newBadge": false,
+      "demoChanged": true,
+      "sourceUrl": "https://beui.dev/components/motion/number",
+      "sourceFiles": [
+        {
+          "path": "components/motion/animated-number.tsx",
+          "sha256": "60b86a1d2f9afcf7c7e91df00de4ff62f0500041a4a40b9216e25b2c89363a94"
+        },
+        {
+          "path": "components/motion/number-ticker.tsx",
+          "sha256": "122fe951f13aa06357eef56c4acb6c5f665caa87f8ac37c86b55f61d1f232975"
+        },
+        {
+          "path": "components/motion/digit-swap.tsx",
+          "sha256": "b2ac5b1189576d056691aa3fb83be9f08f726f2265c17de72ccf7a02bd2045be"
+        }
+      ],
+      "sourcePreviews": [
+        "components/previews/motion/number.preview.tsx",
+        "components/previews/motion/digit-swap.preview.tsx",
+        "components/previews/motion/number-ticker.preview.tsx",
+        "components/previews/motion/animated-number.preview.tsx"
+      ],
+      "sourceExamples": [
+        {
+          "slug": "digit-swap",
+          "installSlug": "digit-swap",
+          "preview": "components/previews/motion/digit-swap.preview.tsx"
+        },
+        {
+          "slug": "ticker",
+          "installSlug": "number-ticker",
+          "preview": "components/previews/motion/number-ticker.preview.tsx"
+        },
+        {
+          "slug": "animated",
+          "installSlug": "animated-number",
+          "preview": "components/previews/motion/animated-number.preview.tsx"
+        }
+      ],
+      "widgetParts": [
+        "BeuiAnimatedNumber",
+        "BeuiDigitSwap",
+        "BeuiNumberTicker"
+      ],
+      "states": [
+        "rest",
+        "hover-exit",
+        "keyboard",
+        "reduced-motion",
+        "digit-swap mask reveal repeated Animate",
+        "number-ticker carries sign grouping decimals width changes",
+        "animated-number in-view from to and replay",
+        "example/digit-swap/digit-swap",
+        "example/number-ticker/ticker",
+        "example/animated-number/animated"
+      ],
+      "themes": [
+        "dark",
+        "light"
+      ],
+      "verdict": "inconclusive",
+      "implementation": "not changed in this repair checkpoint",
+      "missing": "No complete matched-width 60 FPS reference/before/after state set or independent visual verdict."
+    },
+    {
+      "id": "components/range-slider",
+      "owner": "components",
+      "newBadge": false,
+      "demoChanged": true,
+      "sourceUrl": "https://beui.dev/components/motion/range-slider",
+      "sourceFiles": [
+        {
+          "path": "components/motion/range-slider.tsx",
+          "sha256": "def8fd8a27890ce28da2298c8cca31b8bd9780cb594dcb9a876d524deb3f8e29"
+        },
+        {
+          "path": "components/motion/range-slider-inline.tsx",
+          "sha256": "a296c5a61779750d850054d38a50cd11e1aa81e951f20242de9f074aacc54633"
+        },
+        {
+          "path": "components/motion/range-slider-fluid.tsx",
+          "sha256": "0b470753dadc7726a8b412ba171d0ec924fffb1e72c061ec967136aa31dc91f3"
+        },
+        {
+          "path": "components/motion/range-slider-wave.tsx",
+          "sha256": "12e37692142aa53b80f2b170a411cc7a430832b92d50d113f23da07c95bd451e"
+        },
+        {
+          "path": "components/motion/range-slider-bubble.tsx",
+          "sha256": "61d84a519fbf6839cb1597aa5511c0cde9e73c306ebb397974bd9ea7e31ec3ff"
+        },
+        {
+          "path": "components/motion/range-slider-ruler.tsx",
+          "sha256": "5c06d4fbc45575f1c9e9f83499c616c34a6856c95bf6197b022054ebea32118b"
+        }
+      ],
+      "sourcePreviews": [
+        "components/previews/motion/range-slider.preview.tsx",
+        "components/previews/motion/range-slider-inline.preview.tsx",
+        "components/previews/motion/range-slider-fluid.preview.tsx",
+        "components/previews/motion/range-slider-wave.preview.tsx",
+        "components/previews/motion/range-slider-bubble.preview.tsx",
+        "components/previews/motion/range-slider-ruler.preview.tsx"
+      ],
+      "sourceExamples": [
+        {
+          "slug": "inline",
+          "installSlug": "range-slider-inline",
+          "preview": "components/previews/motion/range-slider-inline.preview.tsx"
+        },
+        {
+          "slug": "stepped",
+          "installSlug": "range-slider",
+          "preview": "components/previews/motion/range-slider.preview.tsx"
+        },
+        {
+          "slug": "fluid",
+          "installSlug": "range-slider-fluid",
+          "preview": "components/previews/motion/range-slider-fluid.preview.tsx"
+        },
+        {
+          "slug": "wave",
+          "installSlug": "range-slider-wave",
+          "preview": "components/previews/motion/range-slider-wave.preview.tsx"
+        },
+        {
+          "slug": "bubble",
+          "installSlug": "range-slider-bubble",
+          "preview": "components/previews/motion/range-slider-bubble.preview.tsx"
+        },
+        {
+          "slug": "ruler",
+          "installSlug": "range-slider-ruler",
+          "preview": "components/previews/motion/range-slider-ruler.preview.tsx"
+        }
+      ],
+      "widgetParts": [
+        "BeuiRangeSlider",
+        "BeuiBubbleSlider",
+        "BeuiFluidSlider",
+        "BeuiInlineSlider",
+        "BeuiRulerSlider",
+        "BeuiWaveSlider"
+      ],
+      "states": [
+        "rest",
+        "hover-exit",
+        "keyboard",
+        "reduced-motion",
+        "inline plus base fluid wave bubble ruler",
+        "drag tap snap stops min max disabled controlled rejection",
+        "inline labels hide dots and value text transition",
+        "arrows Home End all six designs",
+        "example/range-slider-inline/inline",
+        "example/range-slider/stepped",
+        "example/range-slider-fluid/fluid",
+        "example/range-slider-wave/wave",
+        "example/range-slider-bubble/bubble",
+        "example/range-slider-ruler/ruler"
+      ],
+      "themes": [
+        "dark",
+        "light"
+      ],
+      "verdict": "inconclusive",
+      "implementation": "not changed in this repair checkpoint",
+      "missing": "No complete matched-width 60 FPS reference/before/after state set or independent visual verdict."
+    },
+    {
+      "id": "components/table",
+      "owner": "components",
+      "newBadge": false,
+      "demoChanged": true,
+      "sourceUrl": "https://beui.dev/components/motion/table",
+      "sourceFiles": [
+        {
+          "path": "components/motion/table/index.tsx",
+          "sha256": "b5ee4311cf527d5e3a0cb7d16717c836b6b77b913fca66e64f92b0106285de92"
+        }
+      ],
+      "sourcePreviews": [
+        "components/previews/motion/table.preview.tsx",
+        "components/previews/motion/table-editable.preview.tsx",
+        "components/previews/motion/table-async.preview.tsx"
+      ],
+      "sourceExamples": [
+        {
+          "slug": "data",
+          "installSlug": "table",
+          "preview": "components/previews/motion/table.preview.tsx"
+        },
+        {
+          "slug": "editable",
+          "installSlug": "table-editable",
+          "preview": "components/previews/motion/table-editable.preview.tsx"
+        },
+        {
+          "slug": "async",
+          "installSlug": "table-async",
+          "preview": "components/previews/motion/table-async.preview.tsx"
+        }
+      ],
+      "widgetParts": [
+        "BeuiTable"
+      ],
+      "states": [
+        "rest",
+        "hover-exit",
+        "keyboard",
+        "reduced-motion",
+        "base editable async preview bands",
+        "sort resize reorder select virtual scroll",
+        "edit commit cancel loading end-reached empty",
+        "example/table/data",
+        "example/table-editable/editable",
+        "example/table-async/async"
+      ],
+      "themes": [
+        "dark",
+        "light"
+      ],
+      "verdict": "inconclusive",
+      "implementation": "not changed in this repair checkpoint",
+      "missing": "No complete matched-width 60 FPS reference/before/after state set or independent visual verdict."
+    }
+  ]
+}

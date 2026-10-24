@@ -1,0 +1,37 @@
+FAIL source no-preference decoded frame count {"decoded":11,"original":12}
+{
+  target: 'source',
+  reducedMotion: 'no-preference',
+  states: 4,
+  frames: 12,
+  decoded: 11,
+  checks: 21,
+  failures: [ 'decoded frame count' ]
+}
+{
+  target: 'source',
+  reducedMotion: 'reduce',
+  states: 4,
+  frames: 11,
+  decoded: 11,
+  checks: 21,
+  failures: []
+}
+{
+  target: 'candidate',
+  reducedMotion: 'no-preference',
+  states: 4,
+  frames: 9,
+  decoded: 9,
+  checks: 21,
+  failures: []
+}
+{
+  target: 'candidate',
+  reducedMotion: 'reduce',
+  states: 4,
+  frames: 9,
+  decoded: 9,
+  checks: 21,
+  failures: []
+}

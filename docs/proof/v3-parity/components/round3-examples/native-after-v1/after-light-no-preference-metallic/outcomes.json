@@ -1,0 +1,1191 @@
+{
+  "example": {
+    "key": "metallic",
+    "id": "example/button-metallic/metallic",
+    "preview": "button-metallic",
+    "family": "button",
+    "seed": "Continue, Generate, Magic tools",
+    "flows": [
+      "hover",
+      "hold",
+      "release",
+      "exit",
+      "keyboard",
+      "reduced-motion"
+    ]
+  },
+  "origin": "after",
+  "theme": "light",
+  "motion": "no-preference",
+  "checks": [
+    {
+      "name": "exact preview control count",
+      "actual": 3,
+      "expected": 3,
+      "pass": true
+    },
+    {
+      "name": "control 0 press geometry",
+      "actual": {
+        "x": 496.77093505859375,
+        "y": 160,
+        "width": 127.109375,
+        "height": 40,
+        "top": 160,
+        "right": 623.8803100585938,
+        "bottom": 200,
+        "left": 496.77093505859375
+      },
+      "expected": "narrower than rest",
+      "pass": false
+    },
+    {
+      "name": "control 1 press geometry",
+      "actual": {
+        "x": 635.8927001953125,
+        "y": 164,
+        "width": 103.328125,
+        "height": 32,
+        "top": 164,
+        "right": 739.2208251953125,
+        "bottom": 196,
+        "left": 635.8927001953125
+      },
+      "expected": "narrower than rest",
+      "pass": false
+    },
+    {
+      "name": "control 2 press geometry",
+      "actual": {
+        "x": 751.2290649414062,
+        "y": 164,
+        "width": 32,
+        "height": 32,
+        "top": 164,
+        "right": 783.2290649414062,
+        "bottom": 196,
+        "left": 751.2290649414062
+      },
+      "expected": "narrower than rest",
+      "pass": false
+    }
+  ],
+  "observations": [
+    {
+      "label": "rest",
+      "atMs": 12.588249999999789,
+      "observed": {
+        "url": "http://127.0.0.1:18120/after/?example=metallic&theme=light&captureProbe=1",
+        "reduce": false,
+        "active": {
+          "tag": "FLUTTER-VIEW",
+          "role": null,
+          "name": "ContinueGenerateMagic toolsflutter-view flt-scene-host {  font: normal normal 14px sans-serif;}flutter-view flt-semantics input[type=range] {  appearance: none;  -webkit-appearance: none;  width: 100%;  position: absolute;  border: none;  top: 0;  right: 0;  bottom: 0;  left: 0;}flutter-view input::selection {  background-color: transparent;}flutter-view textarea::selection {  background-color: transparent;}flutter-view flt-semantics input,flutter-view flt-semantics textarea,flutter-view flt-semantics [contentEditable=\"true\"] {  caret-color: transparent;}flutter-view .flt-text-editing::placeholder {  opacity: 0;}flutter-view:focus { outline: rgb(0, 0, 0) none 0px;}flutter-view .transparentTextEditing:-webkit-autofill,flutter-view .transparentTextEditing:-webkit-autofill:hover,flutter-view .transparentTextEditing:-webkit-autofill:focus,flutter-view .transparentTextEditing:-webkit-autofill:active {  opacity: 0 !important;}"
+        },
+        "probe": {
+          "disableAnimations": false,
+          "platformDisableAnimations": false,
+          "motionOverride": null,
+          "backgroundArgb": 4294769916,
+          "constraints": {
+            "minWidth": 0,
+            "maxWidth": 592,
+            "minHeight": 0,
+            "maxHeight": null
+          },
+          "rect": {
+            "x": 344,
+            "y": 160,
+            "width": 592,
+            "height": 40
+          }
+        },
+        "stage": null,
+        "controls": [
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": null,
+            "name": "Continue\nGenerate\nMagic tools",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1000,
+              "top": 0,
+              "right": 1280,
+              "bottom": 1000,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": null,
+            "name": "Continue\nGenerate\nMagic tools",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1000,
+              "top": 0,
+              "right": 1280,
+              "bottom": 1000,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": null,
+            "name": "Continue\nGenerate\nMagic tools",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1000,
+              "top": 0,
+              "right": 1280,
+              "bottom": 1000,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": null,
+            "name": "Continue\nGenerate\nMagic tools",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1000,
+              "top": 0,
+              "right": 1280,
+              "bottom": 1000,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "group",
+            "name": "Continue\nGenerate\nMagic tools",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 360,
+              "top": 0,
+              "right": 1280,
+              "bottom": 360,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "button",
+            "name": "Continue",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 496.77093505859375,
+              "y": 160,
+              "width": 127.109375,
+              "height": 40,
+              "top": 160,
+              "right": 623.8803100585938,
+              "bottom": 200,
+              "left": 496.77093505859375
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "button",
+            "name": "Generate",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 635.8927001953125,
+              "y": 164,
+              "width": 103.328125,
+              "height": 32,
+              "top": 164,
+              "right": 739.2208251953125,
+              "bottom": 196,
+              "left": 635.8927001953125
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "button",
+            "name": "Magic tools",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 751.2290649414062,
+              "y": 164,
+              "width": 32,
+              "height": 32,
+              "top": 164,
+              "right": 783.2290649414062,
+              "bottom": 196,
+              "left": 751.2290649414062
+            }
+          }
+        ]
+      }
+    },
+    {
+      "label": "control-0-held",
+      "atMs": 1421.223167,
+      "observed": {
+        "url": "http://127.0.0.1:18120/after/?example=metallic&theme=light&captureProbe=1",
+        "reduce": false,
+        "active": {
+          "tag": "FLT-SEMANTICS",
+          "role": "button",
+          "name": "Continue"
+        },
+        "probe": {
+          "disableAnimations": false,
+          "platformDisableAnimations": false,
+          "motionOverride": null,
+          "backgroundArgb": 4294769916,
+          "constraints": {
+            "minWidth": 0,
+            "maxWidth": 592,
+            "minHeight": 0,
+            "maxHeight": null
+          },
+          "rect": {
+            "x": 344,
+            "y": 160,
+            "width": 592,
+            "height": 40
+          }
+        },
+        "stage": null,
+        "controls": [
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": null,
+            "name": "Continue\nGenerate\nMagic tools",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1000,
+              "top": 0,
+              "right": 1280,
+              "bottom": 1000,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": null,
+            "name": "Continue\nGenerate\nMagic tools",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1000,
+              "top": 0,
+              "right": 1280,
+              "bottom": 1000,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": null,
+            "name": "Continue\nGenerate\nMagic tools",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1000,
+              "top": 0,
+              "right": 1280,
+              "bottom": 1000,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": null,
+            "name": "Continue\nGenerate\nMagic tools",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1000,
+              "top": 0,
+              "right": 1280,
+              "bottom": 1000,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "group",
+            "name": "Continue\nGenerate\nMagic tools",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 360,
+              "top": 0,
+              "right": 1280,
+              "bottom": 360,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "button",
+            "name": "Continue",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 496.77093505859375,
+              "y": 160,
+              "width": 127.109375,
+              "height": 40,
+              "top": 160,
+              "right": 623.8803100585938,
+              "bottom": 200,
+              "left": 496.77093505859375
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "button",
+            "name": "Generate",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 635.8927001953125,
+              "y": 164,
+              "width": 103.328125,
+              "height": 32,
+              "top": 164,
+              "right": 739.2208251953125,
+              "bottom": 196,
+              "left": 635.8927001953125
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "button",
+            "name": "Magic tools",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 751.2290649414062,
+              "y": 164,
+              "width": 32,
+              "height": 32,
+              "top": 164,
+              "right": 783.2290649414062,
+              "bottom": 196,
+              "left": 751.2290649414062
+            }
+          }
+        ]
+      }
+    },
+    {
+      "label": "control-1-held",
+      "atMs": 2168.4661670000005,
+      "observed": {
+        "url": "http://127.0.0.1:18120/after/?example=metallic&theme=light&captureProbe=1",
+        "reduce": false,
+        "active": {
+          "tag": "FLT-SEMANTICS",
+          "role": "button",
+          "name": "Generate"
+        },
+        "probe": {
+          "disableAnimations": false,
+          "platformDisableAnimations": false,
+          "motionOverride": null,
+          "backgroundArgb": 4294769916,
+          "constraints": {
+            "minWidth": 0,
+            "maxWidth": 592,
+            "minHeight": 0,
+            "maxHeight": null
+          },
+          "rect": {
+            "x": 344,
+            "y": 160,
+            "width": 592,
+            "height": 40
+          }
+        },
+        "stage": null,
+        "controls": [
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": null,
+            "name": "Continue\nGenerate\nMagic tools",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1000,
+              "top": 0,
+              "right": 1280,
+              "bottom": 1000,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": null,
+            "name": "Continue\nGenerate\nMagic tools",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1000,
+              "top": 0,
+              "right": 1280,
+              "bottom": 1000,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": null,
+            "name": "Continue\nGenerate\nMagic tools",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1000,
+              "top": 0,
+              "right": 1280,
+              "bottom": 1000,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": null,
+            "name": "Continue\nGenerate\nMagic tools",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1000,
+              "top": 0,
+              "right": 1280,
+              "bottom": 1000,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "group",
+            "name": "Continue\nGenerate\nMagic tools",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 360,
+              "top": 0,
+              "right": 1280,
+              "bottom": 360,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "button",
+            "name": "Continue",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 496.77093505859375,
+              "y": 160,
+              "width": 127.109375,
+              "height": 40,
+              "top": 160,
+              "right": 623.8803100585938,
+              "bottom": 200,
+              "left": 496.77093505859375
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "button",
+            "name": "Generate",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 635.8927001953125,
+              "y": 164,
+              "width": 103.328125,
+              "height": 32,
+              "top": 164,
+              "right": 739.2208251953125,
+              "bottom": 196,
+              "left": 635.8927001953125
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "button",
+            "name": "Magic tools",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 751.2290649414062,
+              "y": 164,
+              "width": 32,
+              "height": 32,
+              "top": 164,
+              "right": 783.2290649414062,
+              "bottom": 196,
+              "left": 751.2290649414062
+            }
+          }
+        ]
+      }
+    },
+    {
+      "label": "control-2-held",
+      "atMs": 2889.3991669999996,
+      "observed": {
+        "url": "http://127.0.0.1:18120/after/?example=metallic&theme=light&captureProbe=1",
+        "reduce": false,
+        "active": {
+          "tag": "FLT-SEMANTICS",
+          "role": "button",
+          "name": "Magic tools"
+        },
+        "probe": {
+          "disableAnimations": false,
+          "platformDisableAnimations": false,
+          "motionOverride": null,
+          "backgroundArgb": 4294769916,
+          "constraints": {
+            "minWidth": 0,
+            "maxWidth": 592,
+            "minHeight": 0,
+            "maxHeight": null
+          },
+          "rect": {
+            "x": 344,
+            "y": 160,
+            "width": 592,
+            "height": 40
+          }
+        },
+        "stage": null,
+        "controls": [
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": null,
+            "name": "Continue\nGenerate\nMagic tools",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1000,
+              "top": 0,
+              "right": 1280,
+              "bottom": 1000,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": null,
+            "name": "Continue\nGenerate\nMagic tools",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1000,
+              "top": 0,
+              "right": 1280,
+              "bottom": 1000,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": null,
+            "name": "Continue\nGenerate\nMagic tools",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1000,
+              "top": 0,
+              "right": 1280,
+              "bottom": 1000,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": null,
+            "name": "Continue\nGenerate\nMagic tools",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1000,
+              "top": 0,
+              "right": 1280,
+              "bottom": 1000,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "group",
+            "name": "Continue\nGenerate\nMagic tools",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 360,
+              "top": 0,
+              "right": 1280,
+              "bottom": 360,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "button",
+            "name": "Continue",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 496.77093505859375,
+              "y": 160,
+              "width": 127.109375,
+              "height": 40,
+              "top": 160,
+              "right": 623.8803100585938,
+              "bottom": 200,
+              "left": 496.77093505859375
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "button",
+            "name": "Generate",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 635.8927001953125,
+              "y": 164,
+              "width": 103.328125,
+              "height": 32,
+              "top": 164,
+              "right": 739.2208251953125,
+              "bottom": 196,
+              "left": 635.8927001953125
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "button",
+            "name": "Magic tools",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 751.2290649414062,
+              "y": 164,
+              "width": 32,
+              "height": 32,
+              "top": 164,
+              "right": 783.2290649414062,
+              "bottom": 196,
+              "left": 751.2290649414062
+            }
+          }
+        ]
+      }
+    },
+    {
+      "label": "exit-reset",
+      "atMs": 3664.087041999999,
+      "observed": {
+        "url": "http://127.0.0.1:18120/after/?example=metallic&theme=light&captureProbe=1",
+        "reduce": false,
+        "active": {
+          "tag": "FLT-SEMANTICS",
+          "role": "button",
+          "name": "Magic tools"
+        },
+        "probe": {
+          "disableAnimations": false,
+          "platformDisableAnimations": false,
+          "motionOverride": null,
+          "backgroundArgb": 4294769916,
+          "constraints": {
+            "minWidth": 0,
+            "maxWidth": 592,
+            "minHeight": 0,
+            "maxHeight": null
+          },
+          "rect": {
+            "x": 344,
+            "y": 160,
+            "width": 592,
+            "height": 40
+          }
+        },
+        "stage": null,
+        "controls": [
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": null,
+            "name": "Continue\nGenerate\nMagic tools",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1000,
+              "top": 0,
+              "right": 1280,
+              "bottom": 1000,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": null,
+            "name": "Continue\nGenerate\nMagic tools",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1000,
+              "top": 0,
+              "right": 1280,
+              "bottom": 1000,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": null,
+            "name": "Continue\nGenerate\nMagic tools",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1000,
+              "top": 0,
+              "right": 1280,
+              "bottom": 1000,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": null,
+            "name": "Continue\nGenerate\nMagic tools",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1000,
+              "top": 0,
+              "right": 1280,
+              "bottom": 1000,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "group",
+            "name": "Continue\nGenerate\nMagic tools",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 360,
+              "top": 0,
+              "right": 1280,
+              "bottom": 360,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "button",
+            "name": "Continue",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 496.77093505859375,
+              "y": 160,
+              "width": 127.109375,
+              "height": 40,
+              "top": 160,
+              "right": 623.8803100585938,
+              "bottom": 200,
+              "left": 496.77093505859375
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "button",
+            "name": "Generate",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 635.8927001953125,
+              "y": 164,
+              "width": 103.328125,
+              "height": 32,
+              "top": 164,
+              "right": 739.2208251953125,
+              "bottom": 196,
+              "left": 635.8927001953125
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "button",
+            "name": "Magic tools",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 751.2290649414062,
+              "y": 164,
+              "width": 32,
+              "height": 32,
+              "top": 164,
+              "right": 783.2290649414062,
+              "bottom": 196,
+              "left": 751.2290649414062
+            }
+          }
+        ]
+      }
+    },
+    {
+      "label": "keyboard",
+      "atMs": 4211.1240419999995,
+      "observed": {
+        "url": "http://127.0.0.1:18120/after/?example=metallic&theme=light&captureProbe=1",
+        "reduce": false,
+        "active": {
+          "tag": "BODY",
+          "role": null,
+          "name": "\n  \n  \n\n\nflutter typography measurementContinueGenerateMagic toolsflutter-view flt-scene-host {  font: normal normal 14px sans-serif;}flutter-view flt-semantics input[type=range] {  appearance: none;  -webkit-appearance: none;  width: 100%;  position: absolute;  border: none;  top: 0;  right: 0;  bottom: 0;  left: 0;}flutter-view input::selection {  background-color: transparent;}flutter-view textarea::selection {  background-color: transparent;}flutter-view flt-semantics input,flutter-view flt-semantics textarea,flutter-view flt-semantics [contentEditable=\"true\"] {  caret-color: transparent;}flutter-view .flt-text-editing::placeholder {  opacity: 0;}flutter-view:focus { outline: rgb(0, 0, 0) none 0px;}flutter-view .transparentTextEditing:-webkit-autofill,flutter-view .transparentTextEditing:-webkit-autofill:hover,flutter-view .transparentTextEditing:-webkit-autofill:focus,flutter-view .transparentTextEditing:-webkit-autofill:active {  opacity: 0 !important;}"
+        },
+        "probe": {
+          "disableAnimations": false,
+          "platformDisableAnimations": false,
+          "motionOverride": null,
+          "backgroundArgb": 4294769916,
+          "constraints": {
+            "minWidth": 0,
+            "maxWidth": 592,
+            "minHeight": 0,
+            "maxHeight": null
+          },
+          "rect": {
+            "x": 344,
+            "y": 160,
+            "width": 592,
+            "height": 40
+          }
+        },
+        "stage": null,
+        "controls": [
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": null,
+            "name": "Continue\nGenerate\nMagic tools",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1000,
+              "top": 0,
+              "right": 1280,
+              "bottom": 1000,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": null,
+            "name": "Continue\nGenerate\nMagic tools",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1000,
+              "top": 0,
+              "right": 1280,
+              "bottom": 1000,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": null,
+            "name": "Continue\nGenerate\nMagic tools",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1000,
+              "top": 0,
+              "right": 1280,
+              "bottom": 1000,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": null,
+            "name": "Continue\nGenerate\nMagic tools",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1000,
+              "top": 0,
+              "right": 1280,
+              "bottom": 1000,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "group",
+            "name": "Continue\nGenerate\nMagic tools",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 360,
+              "top": 0,
+              "right": 1280,
+              "bottom": 360,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "button",
+            "name": "Continue",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 496.77093505859375,
+              "y": 160,
+              "width": 127.109375,
+              "height": 40,
+              "top": 160,
+              "right": 623.8803100585938,
+              "bottom": 200,
+              "left": 496.77093505859375
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "button",
+            "name": "Generate",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 635.8927001953125,
+              "y": 164,
+              "width": 103.328125,
+              "height": 32,
+              "top": 164,
+              "right": 739.2208251953125,
+              "bottom": 196,
+              "left": 635.8927001953125
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "button",
+            "name": "Magic tools",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 751.2290649414062,
+              "y": 164,
+              "width": 32,
+              "height": 32,
+              "top": 164,
+              "right": 783.2290649414062,
+              "bottom": 196,
+              "left": 751.2290649414062
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

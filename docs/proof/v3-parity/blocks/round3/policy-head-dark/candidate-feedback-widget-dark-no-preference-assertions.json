@@ -1,0 +1,117 @@
+{
+  "name": "candidate-feedback-widget-dark-no-preference",
+  "url": "http://127.0.0.1:8108/?slug=feedback-widget&theme=dark&previewWidth=592&captureProbe=1",
+  "targets": {
+    "open": {
+      "x": 955.5,
+      "y": 596,
+      "measuredBounds": {
+        "x": 931.5,
+        "y": 572,
+        "width": 48,
+        "height": 48
+      }
+    },
+    "field": {
+      "x": 822.5,
+      "y": 486.5,
+      "measuredBounds": {
+        "x": 683.5,
+        "y": 452,
+        "width": 278,
+        "height": 69
+      }
+    },
+    "cancel": {
+      "x": 743.5,
+      "y": 588,
+      "measuredBounds": {
+        "x": 671.5,
+        "y": 568,
+        "width": 144,
+        "height": 40
+      }
+    }
+  },
+  "events": [
+    {
+      "atMs": 600,
+      "type": "click",
+      "target": "open"
+    },
+    {
+      "atMs": 1400,
+      "type": "click",
+      "target": "field"
+    },
+    {
+      "atMs": 2200,
+      "type": "text",
+      "text": "   "
+    },
+    {
+      "atMs": 2900,
+      "type": "key",
+      "key": "ControlOrMeta+A"
+    },
+    {
+      "atMs": 3100,
+      "type": "text",
+      "text": "A draft to discard"
+    },
+    {
+      "atMs": 4000,
+      "type": "click",
+      "target": "cancel"
+    },
+    {
+      "atMs": 4900,
+      "type": "click",
+      "target": "open"
+    },
+    {
+      "atMs": 5800,
+      "type": "click",
+      "target": "field"
+    },
+    {
+      "atMs": 6500,
+      "type": "text",
+      "text": "Discard on Escape"
+    },
+    {
+      "atMs": 7300,
+      "type": "key",
+      "key": "Escape"
+    },
+    {
+      "atMs": 8200,
+      "type": "click",
+      "target": "open"
+    }
+  ],
+  "observations": [],
+  "probe": {
+    "disableAnimations": false,
+    "platformDisableAnimations": false,
+    "motionOverride": null,
+    "backgroundArgb": 4279571733,
+    "constraints": {
+      "minWidth": 0,
+      "maxWidth": 592,
+      "minHeight": 0,
+      "maxHeight": null
+    },
+    "rect": {
+      "x": 476.5,
+      "y": 317,
+      "width": 592,
+      "height": 320
+    }
+  },
+  "emptyDisabled": true,
+  "whitespaceDisabled": true,
+  "afterCancel": "",
+  "afterEscape": "",
+  "pass": true
+}

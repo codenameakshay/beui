@@ -1,0 +1,30 @@
+[
+  {
+    "stage": "before",
+    "theme": "dark",
+    "ssim": 0.711107,
+    "verdict": "FAIL: nonzero visual difference",
+    "method": "Native 416x340 crops, integer floor origins, no resampling, masking, font replacement or interpolation. Both include their original surrounding stage background. Rest-only diagnostic, not motion certification."
+  },
+  {
+    "stage": "after",
+    "theme": "dark",
+    "ssim": 0.811485,
+    "verdict": "FAIL: nonzero visual difference",
+    "method": "Native 416x340 crops, integer floor origins, no resampling, masking, font replacement or interpolation. Both include their original surrounding stage background. Rest-only diagnostic, not motion certification."
+  },
+  {
+    "stage": "before",
+    "theme": "light",
+    "ssim": 0.704531,
+    "verdict": "FAIL: nonzero visual difference",
+    "method": "Native 416x340 crops, integer floor origins, no resampling, masking, font replacement or interpolation. Both include their original surrounding stage background. Rest-only diagnostic, not motion certification."
+  },
+  {
+    "stage": "after",
+    "theme": "light",
+    "ssim": 0.808448,
+    "verdict": "FAIL: nonzero visual difference",
+    "method": "Native 416x340 crops, integer floor origins, no resampling, masking, font replacement or interpolation. Both include their original surrounding stage background. Rest-only diagnostic, not motion certification."
+  }
+]

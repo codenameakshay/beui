@@ -1,0 +1,85 @@
+Waiting for another flutter command to release the startup lock...
+00:00 +0: loading /Users/codenameakshay/.t3/worktrees/beui/t3-5c0570f2/test/motion/card_folder_test.dart
+test/motion/card_folder_test.dart:80:46: Error: Undefined name 'Tristate'.
+      expect(node.flagsCollection.isEnabled, Tristate.isFalse);
+                                             ^^^^^^^^
+test/motion/card_folder_test.dart:253:7: Error: Undefined name 'Tristate'.
+      Tristate.isTrue,
+      ^^^^^^^^
+00:00 +0 -1: loading /Users/codenameakshay/.t3/worktrees/beui/t3-5c0570f2/test/motion/card_folder_test.dart [E]
+  Failed to load "/Users/codenameakshay/.t3/worktrees/beui/t3-5c0570f2/test/motion/card_folder_test.dart":
+  Compilation failed for testPath=/Users/codenameakshay/.t3/worktrees/beui/t3-5c0570f2/test/motion/card_folder_test.dart: test/motion/card_folder_test.dart:80:46: Error: Undefined name 'Tristate'.
+        expect(node.flagsCollection.isEnabled, Tristate.isFalse);
+                                               ^^^^^^^^
+  test/motion/card_folder_test.dart:253:7: Error: Undefined name 'Tristate'.
+        Tristate.isTrue,
+        ^^^^^^^^
+  .
+  Error: The Dart compiler exited unexpectedly.
+  package:flutter_tools/src/base/common.dart 34:3  throwToolExit
+  package:flutter_tools/src/compile.dart 1024:11   DefaultResidentCompiler._compile.<fn>
+  dart:async/zone_root.dart 48:47                  _rootRunUnary
+  dart:async/zone.dart 816:35                      _CustomZone.runUnary
+  dart:async/future_impl.dart 948:45               Future._propagateToListeners.handleValueCallback
+  dart:async/future_impl.dart 977:13               Future._propagateToListeners
+  dart:async/future_impl.dart 862:9                Future._propagateToListeners
+  dart:async/future_impl.dart 720:5                Future._completeWithValue
+  dart:async/future_impl.dart 804:7                Future._asyncCompleteWithValue.<fn>
+  dart:async/zone_root.dart 35:13                  _rootRun
+  dart:async/zone.dart 810:35                      _CustomZone.run
+  dart:async/zone.dart 702:7                       _CustomZone.runGuarded
+  dart:async/zone.dart 743:23                      _CustomZone.bindCallbackGuarded.<fn>
+  dart:async/schedule_microtask.dart 40:35         _microtaskLoop
+  dart:async/schedule_microtask.dart 49:5          _startMicrotaskLoop
+  dart:isolate-patch/isolate_patch.dart 127:13     _runPendingImmediateCallback
+  dart:isolate-patch/isolate_patch.dart 193:5      _RawReceivePort._handleMessage
+  
+00:00 +0 -1: /Users/codenameakshay/.t3/worktrees/beui/t3-5c0570f2/test/motion/prediction_market_card_test.dart: keyboard focus paints the offset source ring
+00:02 +1 -1: /Users/codenameakshay/.t3/worktrees/beui/t3-5c0570f2/test/motion/prediction_market_card_test.dart: keyboard focus paints the offset source ring
+00:03 +2 -1: /Users/codenameakshay/.t3/worktrees/beui/t3-5c0570f2/test/motion/prediction_market_card_test.dart: keyboard focus paints the offset source ring
+00:03 +3 -1: /Users/codenameakshay/.t3/worktrees/beui/t3-5c0570f2/test/motion/prediction_market_card_test.dart: keyboard focus paints the offset source ring
+00:03 +4 -1: /Users/codenameakshay/.t3/worktrees/beui/t3-5c0570f2/test/motion/morphing_tabs_test.dart: BeuiMorphingTabs clips tab contents at an exact 280.0px root width
+00:03 +5 -1: /Users/codenameakshay/.t3/worktrees/beui/t3-5c0570f2/test/motion/feedback_widget_test.dart: BeuiFeedbackWidget interaction submit calls onSubmit and shows the success view
+00:03 +6 -1: /Users/codenameakshay/.t3/worktrees/beui/t3-5c0570f2/test/motion/feedback_widget_test.dart: BeuiFeedbackWidget interaction submit calls onSubmit and shows the success view
+00:03 +7 -1: /Users/codenameakshay/.t3/worktrees/beui/t3-5c0570f2/test/motion/feedback_widget_test.dart: BeuiFeedbackWidget interaction submit calls onSubmit and shows the success view
+00:04 +8 -1: /Users/codenameakshay/.t3/worktrees/beui/t3-5c0570f2/test/motion/feedback_widget_test.dart: BeuiFeedbackWidget interaction submit calls onSubmit and shows the success view
+00:04 +9 -1: /Users/codenameakshay/.t3/worktrees/beui/t3-5c0570f2/test/motion/feedback_widget_test.dart: BeuiFeedbackWidget interaction submit calls onSubmit and shows the success view
+00:04 +10 -1: /Users/codenameakshay/.t3/worktrees/beui/t3-5c0570f2/test/motion/feedback_widget_test.dart: BeuiFeedbackWidget interaction submit calls onSubmit and shows the success view
+00:04 +11 -1: /Users/codenameakshay/.t3/worktrees/beui/t3-5c0570f2/test/motion/feedback_widget_test.dart: BeuiFeedbackWidget interaction submit calls onSubmit and shows the success view
+00:04 +12 -1: /Users/codenameakshay/.t3/worktrees/beui/t3-5c0570f2/test/motion/prediction_market_card_test.dart: keyboard visits each payout and CTA only once
+00:05 +13 -1: /Users/codenameakshay/.t3/worktrees/beui/t3-5c0570f2/test/motion/prediction_market_card_test.dart: keyboard visits each payout and CTA only once
+00:05 +14 -1: /Users/codenameakshay/.t3/worktrees/beui/t3-5c0570f2/test/motion/prediction_market_card_test.dart: keyboard visits each payout and CTA only once
+00:05 +15 -1: /Users/codenameakshay/.t3/worktrees/beui/t3-5c0570f2/test/motion/feedback_widget_test.dart: BeuiFeedbackWidget interaction closing discards the draft before reopening
+00:05 +16 -1: /Users/codenameakshay/.t3/worktrees/beui/t3-5c0570f2/test/motion/feedback_widget_test.dart: BeuiFeedbackWidget interaction closing discards the draft before reopening
+00:05 +17 -1: /Users/codenameakshay/.t3/worktrees/beui/t3-5c0570f2/test/motion/feedback_widget_test.dart: BeuiFeedbackWidget interaction closing discards the draft before reopening
+00:05 +18 -1: /Users/codenameakshay/.t3/worktrees/beui/t3-5c0570f2/test/motion/feedback_widget_test.dart: BeuiFeedbackWidget interaction closing discards the draft before reopening
+00:06 +19 -1: /Users/codenameakshay/.t3/worktrees/beui/t3-5c0570f2/test/motion/feedback_widget_test.dart: BeuiFeedbackWidget interaction closing discards the draft before reopening
+00:06 +20 -1: /Users/codenameakshay/.t3/worktrees/beui/t3-5c0570f2/test/motion/morphing_tabs_test.dart: BeuiMorphingTabs Alt+arrow reorders and reports the completed order
+00:06 +21 -1: /Users/codenameakshay/.t3/worktrees/beui/t3-5c0570f2/test/motion/prediction_market_card_test.dart: each outcome CTA buys that outcome, independent of its color
+00:06 +22 -1: /Users/codenameakshay/.t3/worktrees/beui/t3-5c0570f2/test/motion/feedback_widget_test.dart: BeuiFeedbackWidget interaction Escape closes and discards the draft
+00:06 +23 -1: /Users/codenameakshay/.t3/worktrees/beui/t3-5c0570f2/test/motion/feedback_widget_test.dart: BeuiFeedbackWidget interaction Escape closes and discards the draft
+00:06 +24 -1: /Users/codenameakshay/.t3/worktrees/beui/t3-5c0570f2/test/motion/feedback_widget_test.dart: BeuiFeedbackWidget interaction Escape closes and discards the draft
+00:06 +25 -1: /Users/codenameakshay/.t3/worktrees/beui/t3-5c0570f2/test/motion/feedback_widget_test.dart: BeuiFeedbackWidget interaction Escape closes and discards the draft
+00:06 +26 -1: /Users/codenameakshay/.t3/worktrees/beui/t3-5c0570f2/test/motion/prediction_market_card_test.dart: live status uses a rose dot instead of a LIVE badge
+00:06 +27 -1: /Users/codenameakshay/.t3/worktrees/beui/t3-5c0570f2/test/motion/morphing_tabs_test.dart: BeuiMorphingTabs controlled value does not change internally
+00:06 +28 -1: /Users/codenameakshay/.t3/worktrees/beui/t3-5c0570f2/test/motion/feedback_widget_test.dart: BeuiFeedbackWidget interaction the success view holds while a screen reader is active
+00:06 +29 -1: /Users/codenameakshay/.t3/worktrees/beui/t3-5c0570f2/test/motion/feedback_widget_test.dart: BeuiFeedbackWidget interaction the success view holds while a screen reader is active
+00:06 +30 -1: /Users/codenameakshay/.t3/worktrees/beui/t3-5c0570f2/test/motion/feedback_widget_test.dart: BeuiFeedbackWidget interaction the success view holds while a screen reader is active
+00:06 +31 -1: /Users/codenameakshay/.t3/worktrees/beui/t3-5c0570f2/test/motion/morphing_tabs_test.dart: BeuiMorphingTabs reduced motion snaps active shape and fades content
+00:06 +32 -1: /Users/codenameakshay/.t3/worktrees/beui/t3-5c0570f2/test/motion/morphing_tabs_test.dart: BeuiMorphingTabs reduced motion snaps active shape and fades content
+00:06 +33 -1: /Users/codenameakshay/.t3/worktrees/beui/t3-5c0570f2/test/motion/feedback_widget_test.dart: BeuiFeedbackWidget interaction opted-in sentiment rides along with the message
+00:06 +34 -1: /Users/codenameakshay/.t3/worktrees/beui/t3-5c0570f2/test/motion/feedback_widget_test.dart: BeuiFeedbackWidget interaction opted-in sentiment rides along with the message
+00:07 +35 -1: /Users/codenameakshay/.t3/worktrees/beui/t3-5c0570f2/test/motion/feedback_widget_test.dart: BeuiFeedbackWidget interaction opted-in sentiment rides along with the message
+00:07 +36 -1: /Users/codenameakshay/.t3/worktrees/beui/t3-5c0570f2/test/motion/feedback_widget_test.dart: BeuiFeedbackWidget interaction opted-in sentiment rides along with the message
+00:07 +37 -1: /Users/codenameakshay/.t3/worktrees/beui/t3-5c0570f2/test/motion/morphing_tabs_test.dart: BeuiMorphingTabs inactive tab paints a hover fill
+00:07 +38 -1: /Users/codenameakshay/.t3/worktrees/beui/t3-5c0570f2/test/motion/feedback_widget_test.dart: BeuiFeedbackWidget interaction close and trigger are keyboard-activatable
+00:07 +39 -1: /Users/codenameakshay/.t3/worktrees/beui/t3-5c0570f2/test/motion/feedback_widget_test.dart: BeuiFeedbackWidget interaction a thrown submit routes to the retry view
+00:07 +40 -1: /Users/codenameakshay/.t3/worktrees/beui/t3-5c0570f2/test/motion/feedback_widget_test.dart: BeuiFeedbackWidget interaction a thrown submit without onSubmitError reports through FlutterError
+00:07 +41 -1: /Users/codenameakshay/.t3/worktrees/beui/t3-5c0570f2/test/motion/feedback_widget_test.dart: BeuiFeedbackWidget interaction success view auto-dismisses back to the trigger
+00:07 +42 -1: /Users/codenameakshay/.t3/worktrees/beui/t3-5c0570f2/test/motion/feedback_widget_test.dart: BeuiFeedbackWidget motion fidelity content morph blurs under normal motion
+00:08 +43 -1: /Users/codenameakshay/.t3/worktrees/beui/t3-5c0570f2/test/motion/feedback_widget_test.dart: BeuiFeedbackWidget motion fidelity reduced motion drops the morph blur
+00:08 +44 -1: /Users/codenameakshay/.t3/worktrees/beui/t3-5c0570f2/test/motion/feedback_widget_test.dart: BeuiFeedbackWidget motion fidelity reduced motion still reaches the success view
+00:08 +45 -1: Some tests failed.
+
+Failing tests:
+  /Users/codenameakshay/.t3/worktrees/beui/t3-5c0570f2/test/motion/card_folder_test.dart: loading /Users/codenameakshay/.t3/worktrees/beui/t3-5c0570f2/test/motion/card_folder_test.dart

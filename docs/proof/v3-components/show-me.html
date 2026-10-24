@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>v3 components family</title>
+<style>
+  :root { color-scheme: dark; }
+  html, body { margin: 0; background: transparent; color: var(--text, #e8e8e8); font: 16px/1.45 ui-sans-serif, system-ui, sans-serif; }
+  .wrap { width: 100%; }
+  h2 { font-size: 20px; letter-spacing: 0; color: var(--text, #e8e8e8); font-weight: 600; margin: 0 0 12px; }
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  figure { margin: 0; background: #111; border-radius: 12px; overflow: hidden; padding: 8px; }
+  figure img, figure video { width: 100%; height: auto; display: block; border-radius: 8px; }
+  figcaption { font-size: 12px; color: var(--muted, #9aa0a6); padding: 8px 4px 2px; }
+  .scores { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 12px 0 18px; }
+  .score { background: #141414; border-radius: 10px; padding: 10px 12px; font-size: 12px; }
+  .score b { display: block; font-size: 28px; line-height: 1.2; }
+  pre { background: #141414; border-radius: 12px; padding: 12px; overflow: auto; font-size: 12px; line-height: 1.4; }
+  .gap { margin-top: 14px; font-size: 16px; color: var(--muted, #9aa0a6); }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h2>Before / after (beui.dev → Flutter harness)</h2>
+  <div class="grid">
+    <figure>
+      <img src="/Users/codenameakshay/.t3/worktrees/beui/akshay-v3-components/docs/proof/v3-components/ref-tabs.png" alt="beui.dev Tabs">
+      <figcaption>Reference · Tabs</figcaption>
+    </figure>
+    <figure>
+      <img src="/Users/codenameakshay/.t3/worktrees/beui/akshay-v3-components/docs/proof/v3-components/cand-tabs.png" alt="Flutter Tabs">
+      <figcaption>Candidate · Tabs (dark harness)</figcaption>
+    </figure>
+    <figure>
+      <img src="/Users/codenameakshay/.t3/worktrees/beui/akshay-v3-components/docs/proof/v3-components/ref-collapsible.png" alt="beui.dev Collapsible">
+      <figcaption>Reference · Collapsible</figcaption>
+    </figure>
+    <figure>
+      <img src="/Users/codenameakshay/.t3/worktrees/beui/akshay-v3-components/docs/proof/v3-components/cand-collapsible.png" alt="Flutter Collapsible">
+      <figcaption>Candidate · Collapsible</figcaption>
+    </figure>
+    <figure>
+      <img src="/Users/codenameakshay/.t3/worktrees/beui/akshay-v3-components/docs/proof/v3-components/ref-card.png" alt="beui.dev Card">
+      <figcaption>Reference · Card</figcaption>
+    </figure>
+    <figure>
+      <img src="/Users/codenameakshay/.t3/worktrees/beui/akshay-v3-components/docs/proof/v3-components/cand-card.png" alt="Flutter Card">
+      <figcaption>Candidate · Card</figcaption>
+    </figure>
+  </div>
+
+  <h2 style="margin-top:18px">Motion · text animation</h2>
+  <figure>
+    <video src="/Users/codenameakshay/.t3/worktrees/beui/akshay-v3-components/docs/proof/v3-components/cand-text-animation.mp4" autoplay loop muted playsinline></video>
+    <figcaption>Isolated Flutter harness · slug=text-animation&amp;theme=dark</figcaption>
+  </figure>
+
+  <div class="scores">
+    <div class="score">Timeline<b>63.72</b>widget / dark-ui</div>
+    <div class="score">Alert<b>65.08</b>widget / dark-ui</div>
+    <div class="score">Tabs<b>68.42</b>widget / dark-ui</div>
+  </div>
+  <p class="gap">Scores compare a full beui.dev page (chrome, ads, sidebar) to an isolated harness widget. Content/spacing stay near zero because identity alignment does not crop the site chrome.</p>
+
+  <h2>File tree this PR adds</h2>
+  <pre>lib/src/motion/
+├── timeline.dart
+├── alert.dart
+├── collapsible.dart
+├── aspect_ratio.dart
+├── arc_picker.dart
+├── sortable_list.dart
+├── image_viewer.dart
+├── date_range_picker.dart
+├── card.dart
+├── color_picker.dart
+├── color_selector.dart
+├── breadcrumb.dart
+├── button/metallic.dart
+├── expandable_control.dart
+├── adaptive_stepper.dart
+├── combobox.dart
+├── multi_select.dart
+├── file_tree.dart
+├── text_scramble.dart
+├── digit_swap.dart
+└── range_slider_inline.dart
+
+lib/beui.dart                 # append-only // v3-components exports
+example/lib/explorer/catalog.dart  # kComponents only
+</pre>
+</div>
+</body>
+</html>

@@ -243,14 +243,19 @@ class _BeuiCheckboxState extends State<BeuiCheckbox> {
             children: [
               control,
               const SizedBox(width: 12),
-              GestureDetector(
-                onTap: enabled ? _toggle : null,
-                child: ExcludeSemantics(
-                  child: Opacity(
-                    opacity: enabled ? 1.0 : 0.6,
-                    child: Text(
-                      widget.label!,
-                      style: TextStyle(fontSize: 14, color: colors.foreground),
+              Flexible(
+                child: GestureDetector(
+                  onTap: enabled ? _toggle : null,
+                  child: ExcludeSemantics(
+                    child: Opacity(
+                      opacity: enabled ? 1.0 : 0.6,
+                      child: Text(
+                        widget.label!,
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: colors.foreground,
+                        ),
+                      ),
                     ),
                   ),
                 ),

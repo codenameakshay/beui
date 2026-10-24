@@ -1,0 +1,527 @@
+beUI Native is free — Pro mobile blocks and screens are in presale from $99
+
+Reserve
+beUI Pro for mobile
+beUI
+Components
+Blocks
+Agents
+Charts
+Playground
+Sponsors
+Light theme
+Light theme
+Dark theme
+Dark theme
+System theme
+System theme
+1.9k
+Get Pro
+All
+Agents
+Components
+Blocks
+
+INTRO
+
+Home
+Changelog
+
+GUIDES
+
+Motion Guides
+Agent Guide
+OpenUI
+React Native Setup
+AI AGENTS
+18
+Voice Orb
+Message Bubble
+Message
+Message Scroller
+Prompt Input
+Todo List
+Code Block
+Approval Card
+File Diff
+Tool Result
+Streaming Response
+Image Generation
+Tool Approval
+Citations
+Agent Activity
+Agent Loading States
+AI Sidebar
+Chat App
+COMPONENTS
+54
+Timeline
+NEW
+Animated Alert
+Animated Collapsible
+Aspect Ratio
+Arc Picker
+Sortable List
+Image Viewer
+Date Range Picker
+Card
+Color Picker
+Animated Color Selector
+Animated Breadcrumb
+Tilt Card
+Button
+Animated CTA Buttons
+Expandable Control
+Adaptive Stepper
+Marquee
+Tabs
+Switch
+Input
+Select
+Combobox
+Multi Select
+Checkbox
+Radio Group
+Bottom Sheet
+Pull to Refresh
+Shared Layout Background
+Bounce Sidebar
+Animated Sidebar
+File Tree
+Preview Rail
+Dock
+Tooltip
+Animated Context Menu
+Popover
+Morphing Modal
+Center Morph Modal
+Text Animation
+Number Animation
+Animated Badge
+Action Swap
+Animated Toast Stack
+Theme Toggle
+Bouncy Accordion
+Drawer
+Scroll Animation
+Range Slider
+Wheel Picker
+Table
+Shader Background
+Cylinder Carousel
+Loader
+BLOCKS
+23
+Infinite Masonry
+Notification Stack
+Project Folder
+Card Folder
+Fixtures
+Availability Scheduler
+Multi-chain Swap
+Dynamic Island
+Command Palette
+Morphing Search
+Expandable Action Bar
+Overflow Actions
+Expandable Tabs
+Morphing Tabs
+Swipeable List
+File Upload
+Prediction Market
+Wallet Card
+OTP Input
+Sign Up Form
+Bloom Menu
+Feedback Widget
+404 / Not Found
+Blocks
+Fixtures
+Fixtures
+Copy Page
+
+Animated tournament fixtures in two styles: a knockout bracket that pages through rounds, and a wheel that wraps the same tree around the champion. Both read the same array of rounds, so one dataset draws either.
+
+Knockout Wheel
+knockout-wheel.tsx
+
+The tournament drawn radially. The champion holds the hub, each round is a ring further out, and the teams themselves form the rim. Nodes spring in ring by ring, and hovering one isolates that team while the rest recede. Teams show a flag, a logo or their initials, and a deeper draw grows another ring.
+
+Preview
+Preview
+Usage
+Usage
+Code
+Code
+Spain v Argentina · 2–1
+Spain v Brazil · 2–1
+France v Argentina · 0–0 (3–4 pens)
+Spain v Portugal · 1–0
+England v Brazil · 2–3
+France v Italy · 2–1
+Argentina v Germany · 3–1
+Spain v Japan · 2–0
+Netherlands v Portugal · 1–3
+England v Uruguay · 2–1
+Croatia v Brazil · 0–1
+France v Morocco · 3–1
+Belgium v Italy · 1–2
+Argentina v Mexico · 2–0
+Germany v Norway · 1–1 (4–2 pens)
+Spain v Costa Rica · 3–0
+Japan v Serbia · 2–1
+Netherlands v Ecuador · 2–0
+Ghana v Portugal · 2–3
+England v Wales · 4–0
+Canada v Uruguay · 0–2
+Croatia v Denmark · 1–0
+Brazil v Cameroon · 3–1
+France v Poland · 2–1
+Senegal v Morocco · 0–1
+Belgium v Tunisia · 2–0
+Switzerland v Italy · 1–3
+Argentina v Peru · 2–0
+Qatar v Mexico · 0–1
+Germany v Sweden · 4–2
+Austria v Norway · 1–2
+Install
+CLI
+CLI
+Manual
+Manual
+bun
+bun
+npm
+npm
+pnpm
+pnpm
+yarn
+yarn
+$ bunx --bun shadcn add @beui/
+knockout-wheel
+knockout-wheel
+API Reference
+rounds
+Round[]
+
+The whole draw, ordered widest round first — the same array the knockout bracket takes. Any single-elimination tournament fits: each round holds half the matches of the one before it (16 → 8 → 4 → 2 → 1) and `rounds[r].matches[k]` is fed by matches `2k` and `2k + 1` of the round before it. Two rounds are enough; the wheel grows a ring per round and sizes itself to the rim.
+
+—
+initialRound?
+number
+
+Index of the outermost round to draw. Earlier rounds are dropped and the kept round's own teams become the rim, so `1` on a 32-team draw opens at the Round of 16. Defaults to 0 (the whole tree); clamped to the valid range.
+
+0
+className?
+string
+—
+Knockout Bracket
+knockout-bracket.tsx
+
+Pages one round at a time. The leftmost round stacks at a fixed rhythm, each later round centers between its two feeder matches, and cards, elbow connectors, headers and stage height animate into every new layout. A third place play-off sits below the tree under its own rule. Round names, team artwork, dates and result chips all come from the data you pass.
+
+Preview
+Preview
+Usage
+Usage
+Code
+Code
+Showing Round of 16, Quarter-finals, and Semi-finals
+Round of 32
+Round of 16
+Quarter-finals
+Semi-finals
+Final
+Mon, 29 Jun
+FT
+South Africa
+0
+Canada
+1
+Tue, 30 Jun
+FT (P)
+Netherlands
+1 (2)
+Morocco
+1 (3)
+Tue, 30 Jun
+FT (P)
+Germany
+1 (3)
+Paraguay
+1 (4)
+Wed, 1 Jul
+FT
+France
+3
+Sweden
+0
+Thu, 2 Jul
+FT
+Belgium
+3
+Senegal
+2
+Thu, 2 Jul
+FT
+USA
+2
+Bosnia and Herzegovina
+0
+Fri, 3 Jul
+FT
+Spain
+3
+Austria
+0
+Fri, 3 Jul
+FT
+Portugal
+2
+Croatia
+1
+Mon, 29 Jun
+FT
+Brazil
+2
+Japan
+1
+Tue, 30 Jun
+FT
+Côte d'Ivoire
+1
+Norway
+2
+Wed, 1 Jul
+FT
+Mexico
+2
+Ecuador
+0
+Wed, 1 Jul
+FT
+England
+2
+DR Congo
+1
+Fri, 3 Jul
+FT
+Switzerland
+2
+Algeria
+0
+Sat, 4 Jul
+FT
+Colombia
+1
+Ghana
+0
+Fri, 3 Jul
+FT (P)
+Australia
+1 (2)
+Egypt
+1 (4)
+Sat, 4 Jul
+FT
+Argentina
+3
+Cabo Verde
+2
+Sat, 4 Jul
+FT
+Canada
+0
+Morocco
+3
+Sun, 5 Jul
+FT
+Paraguay
+0
+France
+1
+Mon, 6 Jul
+FT
+USA
+1
+Belgium
+4
+Mon, 6 Jul
+FT
+Portugal
+0
+Spain
+1
+Mon, 6 Jul
+FT
+Brazil
+1
+Norway
+2
+Mon, 6 Jul
+FT
+Mexico
+2
+England
+3
+Tue, 7 Jul
+FT (P)
+Switzerland
+0 (4)
+Colombia
+0 (3)
+Tue, 7 Jul
+FT
+Argentina
+3
+Egypt
+2
+Fri, 10 Jul, 4:00 am
+FT
+France
+2
+Morocco
+0
+Sat, 11 Jul, 3:00 am
+FT
+Spain
+2
+Belgium
+1
+Today
+FT
+Norway
+1
+England
+2
+Today
+FT
+Argentina
+3
+Switzerland
+1
+Wed, 15 Jul, 4:00 am
+France
+Spain
+Thu, 16 Jul, 3:00 am
+England
+Argentina
+Mon, 20 Jul, 3:00 am
+TBD
+TBD
+
+Third place play-off
+
+Sun, 19 Jul, 3:00 am
+TBD
+TBD
+Install
+CLI
+CLI
+Manual
+Manual
+bun
+bun
+npm
+npm
+pnpm
+pnpm
+yarn
+yarn
+$ bunx --bun shadcn add @beui/
+knockout-bracket
+knockout-bracket
+API Reference
+rounds
+Round[]
+
+The whole draw, ordered widest round first. Any single-elimination tournament fits: each round holds half the matches of the one before it (16 → 8 → 4 → 2 → 1) and `rounds[r].matches[k]` is fed by matches `2k` and `2k + 1` of the round before it. Two rounds are enough.
+
+—
+initialRound?
+number
+
+Round shown as the leftmost column on mount. Defaults to 1, clamped to the valid range.
+
+1
+thirdPlace?
+Match
+
+Third place play-off, rendered under the bracket instead of inside it.
+
+—
+thirdPlaceLabel?
+string
+
+Heading over `thirdPlace`. Defaults to "Third place play-off".
+
+Third place play-off
+className?
+string
+—
+Related components
+OTP Input
+
+One-time-code input with a gliding focus ring, digits that roll in per slot, error shake and a success check draw.
+
+404 / Not Found
+
+Animated 404 pages in five styles: glitch scramble, magnetic digits, cursor spotlight, a fanning card stack and a typed terminal.
+
+Dynamic Island
+
+iOS-style island pill that morphs between live activity views with bouncy shell resize and blur crossfades.
+
+About Fixtures
+
+Fixtures is a React tournament bracket block with two styles that read the same rounds array. Knockout Bracket pages through rounds a few columns at a time, centers each later match between its two feeders, and animates cards, elbow connectors, headers and stage height into each new layout, with an optional third place play-off below. Knockout Wheel lays the same tournament out radially, with the champion at the hub, one ring per round and the teams on the rim, and springs nodes in ring by ring. Both fit any single-elimination draw and are built with Framer Motion and Tailwind CSS.
+
+When to use it
+A sports site or app shows a world cup, league cup or playoff bracket with scores and kick-off times.
+An esports or gaming tournament page needs custom result badges such as BO5 or Forfeit.
+A community or office competition wants a visual of the winner's path to share after the final.
+Accessibility
+
+The bracket is a labelled section where each round is a named list and each match is a list item labelled with both teams, the kick-off time or result, and the winner, and a polite live region announces which rounds are showing after Previous round or Next round is pressed. In the wheel, every team is a button with a single roving tab stop: Arrow Up moves toward the hub, Arrow Down moves outward, and Arrow Left and Right step around the ring, while a visually hidden list restates every result for screen readers. With reduced motion enabled, paging and the ring-by-ring entrance happen without animation.
+
+FAQ
+How do I make a tournament bracket in React?
+Pass rounds ordered widest first, each with a name and a matches array, where matches[k] of a round is fed by matches 2k and 2k + 1 of the round before it. Each Team takes a name plus a logo URL or a country code for a flag.
+Can I show a third place match?
+Yes, in KnockoutBracket. Pass a Match as thirdPlace and it renders under the bracket, and thirdPlaceLabel renames its heading from "Third place play-off".
+Can I start the bracket at a later round?
+Yes. initialRound on KnockoutBracket sets the leftmost round on mount (1 by default), and on KnockoutWheel it sets the outermost ring and drops earlier rounds (0 by default). Each style installs on its own as knockout-bracket or knockout-wheel.
+Keep in mind
+
+Some components on this site are inspired by or recreated from existing work across the web. I'm not here to take credit; just to learn, experiment, and sometimes push things a bit further. If something looks familiar and I forgot to mention you, reach out and I'll fix that right away.
+
+Updated Oct 18, 2026
+
+Web
+Web
+React Native
+React Native
+beUI
+Pro
+Limited Offer
+
+300+ blocks and premium motion components for React and Next.js.
+
+$179 lifetime access
+
+Explore beUI Pro
+Sponsors
+
+DIAMOND
+
+Tracwell
+
+Visitor insights for growth
+
+Illos
+
+Animated illustrations for product sites
+
+Become a sponsor
+Final · Spain v Argentina · 2–1

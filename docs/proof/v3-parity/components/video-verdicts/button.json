@@ -1,0 +1,160 @@
+{
+  "id": "components/button",
+  "owner": "components",
+  "newBadge": false,
+  "demoChanged": true,
+  "sourceUrl": "https://beui.dev/components/motion/button",
+  "sourceFiles": [
+    {
+      "path": "components/motion/button/index.tsx",
+      "sha256": "df1d7b59bcef7549c02c5d231114d62d4ddba9773a9ea05ca6c842210fcf6b46"
+    },
+    {
+      "path": "components/motion/button/base.tsx",
+      "sha256": "5948d878f3446b4cdfa6e076aa2c6ccdb05f5a102bbba074b022de6f3e924144"
+    },
+    {
+      "path": "components/motion/button/stateful.tsx",
+      "sha256": "8eb0731b06cc6375f7f42bcf3efaa9cdc55f4af08ce28835f2b08bd4b25c32de"
+    },
+    {
+      "path": "components/motion/button/magnetic.tsx",
+      "sha256": "864dc7db0cda2d8ee9bff7127706c546632d00f554595c9ce1816e283acb2a1f"
+    },
+    {
+      "path": "components/motion/button/metallic.tsx",
+      "sha256": "e95693277c7dfd71f55c096fca8a3aee2cc92fde1826f46ceab07d56d20b9f0e"
+    }
+  ],
+  "sourcePreviews": [
+    "components/previews/motion/button-metallic.preview.tsx",
+    "components/previews/motion/button-base.preview.tsx",
+    "components/previews/motion/button-stateful.preview.tsx",
+    "components/previews/motion/button-magnetic.preview.tsx"
+  ],
+  "sourceExamples": [
+    {
+      "slug": "metallic",
+      "installSlug": "button-metallic",
+      "preview": "components/previews/motion/button-metallic.preview.tsx"
+    },
+    {
+      "slug": "base",
+      "installSlug": "button-base",
+      "preview": "components/previews/motion/button-base.preview.tsx"
+    },
+    {
+      "slug": "stateful",
+      "installSlug": "button-stateful",
+      "preview": "components/previews/motion/button-stateful.preview.tsx"
+    },
+    {
+      "slug": "magnetic",
+      "installSlug": "button-magnetic",
+      "preview": "components/previews/motion/button-magnetic.preview.tsx"
+    }
+  ],
+  "widgetParts": [
+    "BeuiButton",
+    "BeuiMagneticButton",
+    "BeuiMetallicButton",
+    "BeuiStatefulButton",
+    "BeuiMagnetic"
+  ],
+  "states": [
+    "rest",
+    "hover-exit",
+    "keyboard",
+    "reduced-motion",
+    "all source examples including new metallic",
+    "every size tone variant hover press release disabled",
+    "stateful idle loading success error busy lockout",
+    "magnetic follow and pointer exit reset",
+    "example/button-metallic/metallic",
+    "example/button-base/base",
+    "example/button-stateful/stateful",
+    "example/button-magnetic/magnetic"
+  ],
+  "themes": [
+    "dark",
+    "light"
+  ],
+  "verdict": "Inconclusive",
+  "implementation": "not changed in this repair checkpoint",
+  "missing": "No complete matched-width 60 FPS reference/before/after state set or independent visual verdict.",
+  "captures": [
+    {
+      "id": "candidate-light-button",
+      "slug": "button",
+      "origin": "candidate",
+      "theme": "light",
+      "code": 0,
+      "configPath": "/Users/codenameakshay/.t3/worktrees/beui/t3-48d38279/docs/proof/v3-parity/components/release-recordings-run2/configs/candidate-light-button.json",
+      "runDirectory": "/Users/codenameakshay/.t3/worktrees/beui/t3-48d38279/docs/proof/v3-parity/components/release-recordings-run2/candidate-light-button",
+      "missingTargets": [],
+      "stats": {
+        "originEpochMs": 1792743433131,
+        "backend": "screenshots",
+        "startMs": 5175.438583,
+        "sequenceStartMs": 5175.770667,
+        "stopMs": 8341.080333000002,
+        "frames": 76,
+        "durationMs": 3144.8299884796143,
+        "measuredFps": 23.848665992993528,
+        "medianIntervalMs": 34.26718711853027,
+        "maxIntervalMs": 236.34004592895508,
+        "reorderedDeliveries": 0,
+        "fastMotionVerdict": "inconclusive; inspect per-event gaps, not nominal frame rate",
+        "errors": [],
+        "video": {
+          "width": 1280,
+          "height": 913,
+          "decodedFrames": 76
+        }
+      },
+      "video": {
+        "path": "release-recordings-run2/candidate-light-button/capture.mp4",
+        "bytes": 515040,
+        "sha256": "49291ce69136b01d38e8b6403ef4beea7852a0d9a50d3c6dc742a336c641284e"
+      }
+    },
+    {
+      "id": "candidate-dark-button",
+      "slug": "button",
+      "origin": "candidate",
+      "theme": "dark",
+      "code": 0,
+      "configPath": "/Users/codenameakshay/.t3/worktrees/beui/t3-48d38279/docs/proof/v3-parity/components/release-recordings-run2/configs/candidate-dark-button.json",
+      "runDirectory": "/Users/codenameakshay/.t3/worktrees/beui/t3-48d38279/docs/proof/v3-parity/components/release-recordings-run2/candidate-dark-button",
+      "missingTargets": [],
+      "stats": {
+        "originEpochMs": 1792743718520,
+        "backend": "screenshots",
+        "startMs": 5243.253834,
+        "sequenceStartMs": 5243.434625,
+        "stopMs": 8401.878584,
+        "frames": 70,
+        "durationMs": 3148.869514465332,
+        "measuredFps": 21.91262600213397,
+        "medianIntervalMs": 49.1480827331543,
+        "maxIntervalMs": 57.3270320892334,
+        "reorderedDeliveries": 0,
+        "fastMotionVerdict": "inconclusive; inspect per-event gaps, not nominal frame rate",
+        "errors": [],
+        "video": {
+          "width": 1280,
+          "height": 913,
+          "decodedFrames": 70
+        }
+      },
+      "video": {
+        "path": "release-recordings-run2/candidate-dark-button/capture.mp4",
+        "bytes": 474118,
+        "sha256": "ec653cc5c4a7975252d3a3de91d9bff5aff33b1b4bbf9806a166c47374e33af4"
+      }
+    }
+  ],
+  "changeVideos": [],
+  "knownGaps": null,
+  "coverage": "Default preview recording only. No complete state or example parity certificate."
+}

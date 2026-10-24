@@ -1,0 +1,18 @@
+{
+  "command": [
+    "/tmp/beui-engine-init-r11/dart-sdk/bin/dart",
+    "run",
+    "dev/felt.dart",
+    "test",
+    "--compile",
+    "--run",
+    "--browser=chrome",
+    "--compiler=dart2js",
+    "test/engine/semantics/initial_edit_boundary_test.dart",
+    "test/engine/semantics/text_field_test.dart",
+    "test/engine/text_editing_test.dart"
+  ],
+  "cwd": "/tmp/beui-engine-init-r11/engine/src/flutter/lib/web_ui",
+  "exit": 1,
+  "seconds": 9.566231966018677
+}

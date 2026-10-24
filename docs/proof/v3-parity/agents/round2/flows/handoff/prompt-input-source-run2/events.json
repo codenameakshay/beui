@@ -1,0 +1,48 @@
+[
+  {
+    "name": "idle",
+    "atMs": 1994.172667,
+    "aria": "- group \"Capture stage width 752 height 1000 reduced false\":\n  - textbox \"Prompt\":\n    - /placeholder: Ask the agent to do something…\n    - text: Review the current implementation and suggest the next improvement.\n  - button \"Add to prompt\":\n    - button\n  - button \"GPT-5.2\"\n  - button \"Send prompt\":\n    - button"
+  },
+  {
+    "action": "submit source prompt through composer",
+    "beforeMs": 1998.6505,
+    "afterMs": 2777.397333
+  },
+  {
+    "composerBeforeSubmit": {
+      "tag": "TEXTAREA",
+      "value": "Review the current implementation and suggest the next improvement."
+    },
+    "atMs": 2774.9309169999997
+  },
+  {
+    "name": "loading send becomes stop",
+    "atMs": 2790.5766249999997,
+    "expected": "Stop generating",
+    "aria": "- group \"Capture stage width 752 height 1000 reduced false\":\n  - textbox \"Prompt\":\n    - /placeholder: Ask the agent to do something…\n  - button \"Add to prompt\":\n    - button\n  - button \"GPT-5.2\"\n  - button \"Stop generating\":\n    - button"
+  },
+  {
+    "name": "900ms notice rather than transcript",
+    "atMs": 3948.758208,
+    "expected": "Prompt sent to the selected model.",
+    "aria": "- group \"Capture stage width 752 height 1000 reduced false\":\n  - textbox \"Prompt Ask the agent to do something…\":\n    - /placeholder: Ask the agent to do something…\n  - button \"Add to prompt\":\n    - button\n  - button \"GPT-5.2\"\n  - button \"Send prompt\" [disabled]:\n    - button [disabled]\n  - text: Prompt sent to the selected model."
+  },
+  {
+    "action": "open actions",
+    "beforeMs": 3948.8160829999997,
+    "afterMs": 3991.8356249999997
+  },
+  {
+    "action": "choose attach image",
+    "beforeMs": 3991.853833,
+    "afterMs": 4642.546042
+  },
+  {
+    "name": "sent notice priority survives action",
+    "atMs": 4950.391833,
+    "expected": "Prompt sent to the selected model.",
+    "absent": "Attach image selected.",
+    "aria": "- group \"Capture stage width 752 height 1000 reduced false\":\n  - textbox \"Prompt Ask the agent to do something…\":\n    - /placeholder: Ask the agent to do something…\n  - button \"Add to prompt\":\n    - button\n  - button \"GPT-5.2\"\n  - button \"Send prompt\" [disabled]:\n    - button [disabled]\n  - text: Prompt sent to the selected model."
+  }
+]

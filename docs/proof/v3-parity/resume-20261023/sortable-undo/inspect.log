@@ -1,0 +1,82 @@
+18159 - main:
+  - heading "Sortable Undo fixture" [level=1]
+  - paragraph: Drag a handle to reorder. With a handle focused, use Up and Down to move, Home and End to move to the edges.
+  - list "Sortable items":
+    - listitem:
+      - button "Reorder A"
+      - text: A
+    - listitem:
+      - button "Reorder B"
+      - text: B
+    - listitem:
+      - button "Reorder C"
+      - text: C
+  - button "Undo reorder" [disabled]
+  - status
+  - button "After list"
+focus { tag: 'LI', label: null, text: 'A' }
+after {
+  probe: {
+    mode: 'accept',
+    calls: [],
+    ownerOrder: [ 'A', 'B', 'C' ],
+    disabled: false,
+    reduce: false
+  },
+  focus: '<li tabindex="0" aria-posinset="1" aria-setsize="3" class="relative flex items-center gap-3 rounded-2xl border border-border bg-background p-3" style="z-index: unset; transform: none;"><button type="button" data-sortable-id="A" aria-label="Reorder A" aria-describedby="_r_0_" class="flex size-9 shrink-0 touch-none items-center justify-center rounded-lg text-muted-foreground hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-40" style="cursor: grab;"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-grip-vertical" aria-hidden="true"><circle cx="9" cy="12" r="1"></circle><circle cx="9" cy="5" r="1"></circle><circle cx="9" cy="19" r="1"></circle><circle cx="15" cy="12" r="1"></circle><circle cx="15" cy="5" r="1"></circle><circle cx="15" cy="19" r="1"></circle></svg></button><div class="min-w-0 flex-1"><span>A</span></div></li>',
+  buttons: [
+    { text: '', label: 'Reorder A', disabled: null, y: 191.4375 },
+    { text: '', label: 'Reorder B', disabled: null, y: 266.4375 },
+    { text: '', label: 'Reorder C', disabled: null, y: 341.4375 },
+    { text: ' Undo reorder', label: null, disabled: null, y: 411.4375 },
+    { text: 'After list', label: null, disabled: null, y: 447.4375 }
+  ]
+}
+18160 - group "Sortable Undo fixture":
+  - group "Sortable items":
+    - group "Sortable items":
+      - button "Reorder A":
+        - button "Reorder A"
+      - text: A
+      - button "Reorder B":
+        - button "Reorder B"
+      - text: B
+      - button "Reorder C":
+        - button "Reorder C"
+      - text: C
+    - button "Undo reorder" [disabled]
+  - button "After list"
+focus { tag: 'FLT-SEMANTICS', label: 'Reorder A', text: 'Reorder A' }
+after {
+  probe: {
+    mode: 'accept',
+    calls: [ [Array] ],
+    ownerOrder: [ 'B', 'A', 'C' ],
+    disabled: false,
+    reduce: false
+  },
+  focus: '<body flt-embedding="full-page" flt-renderer="canvaskit" flt-build-mode="release" spellcheck="false" style="position: fixed; inset: 0px; overflow: hidden; padding: 0px; margin: 0px; user-select: none; touch-action: none;">\n' +
+    '  <!--\n' +
+    '    You can customize the "flutter_bootstrap.js" script.\n' +
+    '    This is useful to provide a custom configuration to the Flutter loader,\n' +
+    '    or to give the user feedback during the initialization process.\n' +
+    '\n' +
+    '    For more details:\n' +
+    '    * https://docs.flutter.dev/platform-integration/web/initialization\n' +
+    '  -->\n' +
+    '  <script src="flutter_bootstrap.js" async=""></script>\n' +
+    '\n' +
+    '\n' +
+    '<p aria-hidden="true" style="position: fixed; bottom: 100%; visibility: hidden; opacity: 0; pointer-events: none; width: auto; height: auto; white-space: nowrap; line-height: 100px; letter-spacing: 100px; word-spacing: 100px; margin: 0px 0px 100px;">flutter typography measurement</p><flt-announcement-host><flt-announcement-polite aria-live="polite" style="position: fixed; overflow: hidden; transform: translate(-99999px, -99999px); width: 1px; height: 1px;"></flt-announcement-polite><flt-announcement-assertive aria-live="assertive" style="position: fixed; overflow: hidden; transform: translate(-99999px, -99999px); width: 1px; height: 1px;"></flt-announcement-assertive></flt-announcement-host><flutter-view flt-view-id="0" tabindex="0" style="position: absolute; inset: 0px; width: 1280px; height: 720px;"><flt-glass-pane></flt-glass-pane><flt-text-editing-host></flt-text-editing-host><flt-semantics-host style="position: absolute; transform-origin: 0px 0px 0px; transform: scale(1);"><flt-semantics id="flt-semantic-node-0" style="position: absolute; overflow: visible; filter: opacity(0%); color: rgba(0, 0, 0, 0); pointer-events: none; width: 1280px; height: 720px; top: 0px; left: 0px;"><flt-semantics id="flt-semantic-node-1" style="position: absolute; overflow: visible; pointer-events: none; width: 1280px; height: 720px; top: 0px; left: 0px;"><flt-semantics id="flt-semantic-node-2" style="position: absolute; overflow: visible; pointer-events: none; width: 1280px; height: 720px; top: 0px; left: 0px;"><flt-semantics id="flt-semantic-node-3" style="position: absolute; overflow: visible; pointer-events: none; width: 1280px; height: 720px; top: 0px; left: 0px;"><flt-semantics id="flt-semantic-node-4" role="group" aria-label="Sortable Undo fixture\n' +
+    'A moved to position 2 of 3." style="position: absolute; overflow: visible; pointer-events: none; width: 1280px; height: 720px; top: 0px; left: 0px;"><flt-semantics id="flt-semantic-node-5" role="group" aria-label="Sortable items" style="position: absolute; overflow: visible; pointer-events: none; z-index: 1; width: 420px; height: 236px; transform-origin: 0px 0px 0px; transform: matrix(1, 0, 0, 1, 430, 235.5);"><flt-semantics id="flt-semantic-node-6" role="group" aria-label="Sortable items" style="position: absolute; overflow: visible; pointer-events: none; z-index: 1; width: 420px; height: 204px; top: 0px; left: 0px;"><flt-semantics id="flt-semantic-node-7" style="position: absolute; overflow: visible; pointer-events: none; width: 420px; height: 204px; top: 0px; left: 0px;"><flt-semantics id="flt-semantic-node-26" style="position: absolute; overflow: visible; pointer-events: none; width: 420px; height: 204px; top: 0px; left: 0px;"><flt-semantics id="flt-semantic-node-29" style="position: absolute; overflow: visible; pointer-events: none; z-index: 1; width: 420px; height: 68px; top: 0px; left: 0px;"><flt-semantics id="flt-semantic-node-30" style="position: absolute; overflow: visible; pointer-events: none; width: 420px; height: 68px; top: 0px; left: 0px;"><flt-semantics id="flt-semantic-node-16" aria-label="Position 1 of 3" style="position: absolute; overflow: visible; pointer-events: none; width: 420px; height: 60px; top: 0px; left: 0px;"><flt-semantics id="flt-semantic-node-17" role="button" tabindex="0" aria-label="Reorder B" aria-description="Drag to reorder. Use Up and Down to move; Home and End to move to the edges." style="position: absolute; overflow: visible; pointer-events: none; z-index: 1; width: 36px; height: 36px; transform-origin: 0px 0px 0px; transform: matrix(1, 0, 0, 1, 12, 12);"><flt-semantics id="flt-semantic-node-18" role="button" tabindex="0" flt-tappable="" style="position: absolute; overflow: visible; pointer-events: all; width: 36px; height: 36px; top: 0px; left: 0px;">Reorder B</flt-semantics></flt-semantics><flt-semantics id="flt-semantic-node-19" style="position: absolute; overflow: visible; pointer-events: auto; z-index: 2; width: 9.76996px; height: 20px; transform-origin: 0px 0px 0px; transform: matrix(1, 0, 0, 1, 56, 20);"><span style="display: inline-block; white-space: nowrap; transform-origin: 0px 0px 0px; pointer-events: none; transform: scale(0.888178, 1.11111);">B</span></flt-semantics></flt-semantics></flt-semantics></flt-semantics><flt-semantics id="flt-semantic-node-31" style="position: absolute; overflow: visible; pointer-events: none; z-index: 2; width: 420px; height: 68px; transform-origin: 0px 0px 0px; transform: matrix(1, 0, 0, 1, 0, 68);"><flt-semantics id="flt-semantic-node-32" style="position: absolute; overflow: visible; pointer-events: none; width: 420px; height: 68px; top: 0px; left: 0px;"><flt-semantics id="flt-semantic-node-10" aria-label="Position 2 of 3" style="position: absolute; overflow: visible; pointer-events: none; width: 420px; height: 60px; top: 0px; left: 0px;"><flt-semantics id="flt-semantic-node-11" role="button" tabindex="0" aria-label="Reorder A" aria-description="Drag to reorder. Use Up and Down to move; Home and End to move to the edges." style="position: absolute; overflow: visible; pointer-events: none; z-index: 1; width: 36px; height: 36px; transform-origin: 0px 0px 0px; transform: matrix(1, 0, 0, 1, 12, 12);"><flt-semantics id="flt-semantic-node-12" role="button" tabindex="0" flt-tappable="" style="position: absolute; overflow: visible; pointer-events: all; width: 36px; height: 36px; top: 0px; left: 0px;">Reorder A</flt-semantics></flt-semantics><flt-semantics id="flt-semantic-node-13" style="position: absolute; overflow: visible; pointer-events: auto; z-index: 2; width: 9.60196px; height: 20px; transform-origin: 0px 0px 0px; transform: matrix(1, 0, 0, 1, 56, 20);"><span style="display: inline-block; white-space: nowrap; transform-origin: 0px 0px 0px; pointer-events: none; transform: scale(0.800163, 1.11111);">A</span></flt-semantics></flt-semantics></flt-semantics></flt-semantics><flt-semantics id="flt-semantic-node-20" style="position: absolute; overflow: visible; pointer-events: none; z-index: 3; width: 420px; height: 68px; transform-origin: 0px 0px 0px; transform: matrix(1, 0, 0, 1, 0, 136);"><flt-semantics id="flt-semantic-node-21" style="position: absolute; overflow: visible; pointer-events: none; width: 420px; height: 68px; top: 0px; left: 0px;"><flt-semantics id="flt-semantic-node-22" aria-label="Position 3 of 3" style="position: absolute; overflow: visible; pointer-events: none; width: 420px; height: 60px; top: 0px; left: 0px;"><flt-semantics id="flt-semantic-node-23" role="button" tabindex="0" aria-label="Reorder C" aria-description="Drag to reorder. Use Up and Down to move; Home and End to move to the edges." style="position: absolute; overflow: visible; pointer-events: none; z-index: 1; width: 36px; height: 36px; transform-origin: 0px 0px 0px; transform: matrix(1, 0, 0, 1, 12, 12);"><flt-semantics id="flt-semantic-node-24" role="button" tabindex="0" flt-tappable="" style="position: absolute; overflow: visible; pointer-events: all; width: 36px; height: 36px; top: 0px; left: 0px;">Reorder C</flt-semantics></flt-semantics><flt-semantics id="flt-semantic-node-25" style="position: absolute; overflow: visible; pointer-events: auto; z-index: 2; width: 10.092px; height: 20px; transform-origin: 0px 0px 0px; transform: matrix(1, 0, 0, 1, 56, 20);"><span style="display: inline-block; white-space: nowrap; transform-origin: 0px 0px 0px; pointer-events: none; transform: scale(0.917451, 1.11111);">C</span></flt-semantics></flt-semantics></flt-semantics></flt-semantics></flt-semantics></flt-semantics></flt-semantics><flt-semantics id="flt-semantic-node-27" role="button" flt-tappable="" tabindex="0" style="position: absolute; overflow: visible; pointer-events: all; z-index: 2; width: 134.822px; height: 32px; transform-origin: 0px 0px 0px; transform: matrix(1, 0, 0, 1, 0, 204);">Undo reorder</flt-semantics></flt-semantics><flt-semantics id="flt-semantic-node-28" role="button" tabindex="0" flt-tappable="" style="position: absolute; overflow: visible; pointer-events: all; z-index: 2; width: 79.7958px; height: 32px; transform-origin: 0px 0px 0px; transform: matrix(1, 0, 0, 1, 600.102, 472.5);">After list</flt-semantics></flt-semantics></flt-semantics></flt-semantics></flt-semantics></flt-semantics></flt-semantics-host><style id="flt-text-editing-stylesheet">flutter-view flt-scene-host {  font: normal normal 14px sans-serif;}flutter-view flt-semantics input[type=range] {  appearance: none;  -webkit-appearance: none;  width: 100%;  position: absolute;  border: none;  top: 0;  right: 0;  bottom: 0;  left: 0;}flutter-view input::selection {  background-color: transparent;}flutter-view textarea::selection {  background-color: transparent;}flutter-view flt-semantics input,flutter-view flt-semantics textarea,flutter-view flt-semantics [contentEditable="true"] {  caret-color: transparent;}flutter-view .flt-text-editing::placeholder {  opacity: 0;}flutter-view:focus { outline: rgb(0, 0, 0) none 0px;}flutter-view .transparentTextEditing:-webkit-autofill,flutter-view .transparentTextEditing:-webkit-autofill:hover,flutter-view .transparentTextEditing:-webkit-autofill:focus,flutter-view .transparentTextEditing:-webkit-autofill:active {  opacity: 0 !important;}</style></flutter-view></body>',
+  buttons: [
+    { text: 'Reorder B', label: 'Reorder B', disabled: null, y: 247.5 },
+    { text: 'Reorder B', label: null, disabled: null, y: 247.5 },
+    { text: 'Reorder A', label: 'Reorder A', disabled: null, y: 315.5 },
+    { text: 'Reorder A', label: null, disabled: null, y: 315.5 },
+    { text: 'Reorder C', label: 'Reorder C', disabled: null, y: 383.5 },
+    { text: 'Reorder C', label: null, disabled: null, y: 383.5 },
+    { text: 'Undo reorder', label: null, disabled: null, y: 439.5 },
+    { text: 'After list', label: null, disabled: null, y: 472.5 }
+  ]
+}

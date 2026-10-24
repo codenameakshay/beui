@@ -1,0 +1,54 @@
+{
+  "url": "http://127.0.0.1:8108/?slug=card-folder&theme=dark&previewWidth=592&captureProbe=1",
+  "viewport": {
+    "width": 1280,
+    "height": 1200
+  },
+  "theme": "dark",
+  "reducedMotion": "no-preference",
+  "reference": false,
+  "requireFlutterProbe": true,
+  "servedJs": {
+    "url": "http://127.0.0.1:8108/main.dart.js",
+    "sha256": "ba6028d3cb2de432fe44fdf17bffe2bae9afdf06dc1ecfda49a567a79b4a3b1d",
+    "revision": "bdd7ea07 plus parent Tooltip blob d12867eac1ed7a24e1708448f079161cebe12482"
+  },
+  "backend": "screenshots",
+  "loadWaitMs": 3500,
+  "finalHoldMs": 1000,
+  "targets": {
+    "privacy": {
+      "x": 619.7000122070312,
+      "y": 500,
+      "measuredBounds": {
+        "x": 599.7000122070312,
+        "y": 480,
+        "width": 40,
+        "height": 40
+      }
+    }
+  },
+  "events": [
+    {
+      "atMs": 600,
+      "type": "click",
+      "target": "privacy"
+    },
+    {
+      "atMs": 1500,
+      "type": "click",
+      "target": "privacy"
+    },
+    {
+      "atMs": 2400,
+      "type": "key",
+      "key": "Tab"
+    }
+  ],
+  "provenance": {
+    "source": "a76e57c9bbc2837e96420b2610e9c82a3271bb05",
+    "liveDeploymentRevision": null,
+    "wrapper": "d831524 previewWidth592 background 21dark/252light, captureProbe1. Original 5ec78ac untouched.",
+    "assertions": "Separate browser run, recorded states require decoded inspection."
+  }
+}

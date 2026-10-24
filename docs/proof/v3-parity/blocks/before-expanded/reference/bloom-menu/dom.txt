@@ -1,0 +1,245 @@
+beUI Native is free — Pro mobile blocks and screens are in presale from $99
+
+Reserve
+beUI Pro for mobile
+beUI
+Components
+Blocks
+Agents
+Charts
+Playground
+Sponsors
+Light theme
+Light theme
+Dark theme
+Dark theme
+System theme
+System theme
+1.9k
+Get Pro
+All
+Agents
+Components
+Blocks
+
+INTRO
+
+Home
+Changelog
+
+GUIDES
+
+Motion Guides
+Agent Guide
+OpenUI
+React Native Setup
+AI AGENTS
+18
+Voice Orb
+Message Bubble
+Message
+Message Scroller
+Prompt Input
+Todo List
+Code Block
+Approval Card
+File Diff
+Tool Result
+Streaming Response
+Image Generation
+Tool Approval
+Citations
+Agent Activity
+Agent Loading States
+AI Sidebar
+Chat App
+COMPONENTS
+54
+Timeline
+NEW
+Animated Alert
+Animated Collapsible
+Aspect Ratio
+Arc Picker
+Sortable List
+Image Viewer
+Date Range Picker
+Card
+Color Picker
+Animated Color Selector
+Animated Breadcrumb
+Tilt Card
+Button
+Animated CTA Buttons
+Expandable Control
+Adaptive Stepper
+Marquee
+Tabs
+Switch
+Input
+Select
+Combobox
+Multi Select
+Checkbox
+Radio Group
+Bottom Sheet
+Pull to Refresh
+Shared Layout Background
+Bounce Sidebar
+Animated Sidebar
+File Tree
+Preview Rail
+Dock
+Tooltip
+Animated Context Menu
+Popover
+Morphing Modal
+Center Morph Modal
+Text Animation
+Number Animation
+Animated Badge
+Action Swap
+Animated Toast Stack
+Theme Toggle
+Bouncy Accordion
+Drawer
+Scroll Animation
+Range Slider
+Wheel Picker
+Table
+Shader Background
+Cylinder Carousel
+Loader
+BLOCKS
+23
+Infinite Masonry
+Notification Stack
+Project Folder
+Card Folder
+Fixtures
+Availability Scheduler
+Multi-chain Swap
+Dynamic Island
+Command Palette
+Morphing Search
+Expandable Action Bar
+Overflow Actions
+Expandable Tabs
+Morphing Tabs
+Swipeable List
+File Upload
+Prediction Market
+Wallet Card
+OTP Input
+Sign Up Form
+Bloom Menu
+Feedback Widget
+404 / Not Found
+Blocks
+Bloom Menu
+Bloom Menu
+Copy Page
+
+A button that morphs open into a menu and blooms iris-out from the center, the grid revealing in every direction with radially staggered items.
+
+Preview
+Preview
+Preview
+Usage
+Usage
+Code
+Code
+Create
+Install
+
+Add it with the shadcn CLI, or copy the source manually.
+
+CLI
+CLI
+Manual
+Manual
+bun
+bun
+npm
+npm
+pnpm
+pnpm
+yarn
+yarn
+$ bunx --bun shadcn add @beui/
+bloom-menu
+bloom-menu
+API Reference
+items?
+MenuItem[]
+[ { label: "Doc", icon: FileText }, { label: "Board", icon: LayoutGrid }, { label: "Table", icon: Table }, { label: "Folder", icon: FolderClosed }, { label: "Reminder", icon: Bell }, { label: "Link", icon: Link }, ]
+onSelect?
+((label: string) => void)
+—
+className?
+string
+—
+Related components
+Expandable Tabs
+
+Icon tab bar where the active tab expands to a labelled pill, with a panel above that morphs height and slides content direction-aware on switch.
+
+Expandable Action Bar
+
+Compact icon actions that expand into labeled controls on hover or focus with shared layout motion.
+
+Overflow Actions
+
+Connected pill rail for primary actions that springs open to reveal extra controls.
+
+About Bloom Menu
+
+Bloom Menu is a React button that morphs into a menu panel using a Framer Motion shared layout animation. When it opens, the grid of options reveals from the center outward like an iris, and each option fades and scales in with a stagger based on its distance from the middle. It ships with a set of create actions (doc, board, table, folder, reminder, link) that you can replace with your own items and icons.
+
+When to use it
+A productivity or notes app needs a Create button that opens a grid of new item types.
+A dashboard or toolbar wants a compact quick actions menu that expands in place instead of opening a dropdown.
+A landing page or demo wants a playful menu reveal that showcases motion.
+Accessibility
+
+The trigger is a button with aria-haspopup and aria-expanded, and the open panel is a labelled menu whose options have the menuitem role. Focus moves into the menu on open, arrow keys move across the grid, Home and End jump to the first and last option, and Escape or a click outside closes it and returns focus to the trigger. With reduced motion enabled, the morph shortens to a quick transition, the iris reveal is skipped, and options fade in together without scaling or blur.
+
+FAQ
+How do I make a button that morphs into a menu in React?
+Install the block and render BloomMenu. Pass items as an array of label and icon pairs, and onSelect to receive the chosen label; the menu closes after a selection.
+Can I use my own icons and options?
+Yes. Each item in the items prop takes any icon component that accepts a className. The grid lays items out in three columns.
+Does it work with Next.js?
+Yes. It is a client component with no portal or browser-only setup, so it renders inside any Next.js page or layout.
+Keep in mind
+
+Some components on this site are inspired by or recreated from existing work across the web. I'm not here to take credit; just to learn, experiment, and sometimes push things a bit further. If something looks familiar and I forgot to mention you, reach out and I'll fix that right away.
+
+Updated Oct 18, 2026
+
+Web
+Web
+React Native
+React Native
+beUI
+Pro
+Limited Offer
+
+300+ blocks and premium motion components for React and Next.js.
+
+$179 lifetime access
+
+Explore beUI Pro
+Sponsors
+
+DIAMOND
+
+Tracwell
+
+Visitor insights for growth
+
+Illos
+
+Animated illustrations for product sites
+
+Become a sponsor

@@ -1,0 +1,62 @@
+{
+  "name": "reference-morphing-search-chips-light-no-preference",
+  "url": "https://beui.dev/components/blocks/morphing-search",
+  "checks": [
+    {
+      "label": "rest",
+      "checkedAt": "2026-10-23T08:56:50.452Z"
+    },
+    {
+      "label": "recents",
+      "checkedAt": "2026-10-23T08:56:51.198Z"
+    },
+    {
+      "label": "suggestions",
+      "checkedAt": "2026-10-23T08:56:51.580Z"
+    },
+    {
+      "label": "chip-added",
+      "checkedAt": "2026-10-23T08:56:52.359Z"
+    },
+    {
+      "label": "closed",
+      "checkedAt": "2026-10-23T08:56:53.086Z"
+    }
+  ],
+  "targets": {
+    "field": {
+      "x": 684.21875,
+      "y": 907,
+      "measuredBounds": {
+        "x": 578.140625,
+        "y": 889,
+        "width": 212.15625,
+        "height": 36
+      }
+    }
+  },
+  "events": [
+    {
+      "atMs": 600,
+      "type": "click",
+      "target": "field"
+    },
+    {
+      "atMs": 1500,
+      "type": "text",
+      "text": "dark mode"
+    },
+    {
+      "atMs": 2400,
+      "type": "key",
+      "key": "Enter"
+    },
+    {
+      "atMs": 3300,
+      "type": "key",
+      "key": "Escape"
+    }
+  ],
+  "browserReducedMotion": false,
+  "pass": true
+}

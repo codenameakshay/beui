@@ -1,0 +1,179 @@
+{
+  "id": "components/range-slider",
+  "owner": "components",
+  "newBadge": false,
+  "demoChanged": true,
+  "sourceUrl": "https://beui.dev/components/motion/range-slider",
+  "sourceFiles": [
+    {
+      "path": "components/motion/range-slider.tsx",
+      "sha256": "def8fd8a27890ce28da2298c8cca31b8bd9780cb594dcb9a876d524deb3f8e29"
+    },
+    {
+      "path": "components/motion/range-slider-inline.tsx",
+      "sha256": "a296c5a61779750d850054d38a50cd11e1aa81e951f20242de9f074aacc54633"
+    },
+    {
+      "path": "components/motion/range-slider-fluid.tsx",
+      "sha256": "0b470753dadc7726a8b412ba171d0ec924fffb1e72c061ec967136aa31dc91f3"
+    },
+    {
+      "path": "components/motion/range-slider-wave.tsx",
+      "sha256": "12e37692142aa53b80f2b170a411cc7a430832b92d50d113f23da07c95bd451e"
+    },
+    {
+      "path": "components/motion/range-slider-bubble.tsx",
+      "sha256": "61d84a519fbf6839cb1597aa5511c0cde9e73c306ebb397974bd9ea7e31ec3ff"
+    },
+    {
+      "path": "components/motion/range-slider-ruler.tsx",
+      "sha256": "5c06d4fbc45575f1c9e9f83499c616c34a6856c95bf6197b022054ebea32118b"
+    }
+  ],
+  "sourcePreviews": [
+    "components/previews/motion/range-slider.preview.tsx",
+    "components/previews/motion/range-slider-inline.preview.tsx",
+    "components/previews/motion/range-slider-fluid.preview.tsx",
+    "components/previews/motion/range-slider-wave.preview.tsx",
+    "components/previews/motion/range-slider-bubble.preview.tsx",
+    "components/previews/motion/range-slider-ruler.preview.tsx"
+  ],
+  "sourceExamples": [
+    {
+      "slug": "inline",
+      "installSlug": "range-slider-inline",
+      "preview": "components/previews/motion/range-slider-inline.preview.tsx"
+    },
+    {
+      "slug": "stepped",
+      "installSlug": "range-slider",
+      "preview": "components/previews/motion/range-slider.preview.tsx"
+    },
+    {
+      "slug": "fluid",
+      "installSlug": "range-slider-fluid",
+      "preview": "components/previews/motion/range-slider-fluid.preview.tsx"
+    },
+    {
+      "slug": "wave",
+      "installSlug": "range-slider-wave",
+      "preview": "components/previews/motion/range-slider-wave.preview.tsx"
+    },
+    {
+      "slug": "bubble",
+      "installSlug": "range-slider-bubble",
+      "preview": "components/previews/motion/range-slider-bubble.preview.tsx"
+    },
+    {
+      "slug": "ruler",
+      "installSlug": "range-slider-ruler",
+      "preview": "components/previews/motion/range-slider-ruler.preview.tsx"
+    }
+  ],
+  "widgetParts": [
+    "BeuiRangeSlider",
+    "BeuiBubbleSlider",
+    "BeuiFluidSlider",
+    "BeuiInlineSlider",
+    "BeuiRulerSlider",
+    "BeuiWaveSlider"
+  ],
+  "states": [
+    "rest",
+    "hover-exit",
+    "keyboard",
+    "reduced-motion",
+    "inline plus base fluid wave bubble ruler",
+    "drag tap snap stops min max disabled controlled rejection",
+    "inline labels hide dots and value text transition",
+    "arrows Home End all six designs",
+    "example/range-slider-inline/inline",
+    "example/range-slider/stepped",
+    "example/range-slider-fluid/fluid",
+    "example/range-slider-wave/wave",
+    "example/range-slider-bubble/bubble",
+    "example/range-slider-ruler/ruler"
+  ],
+  "themes": [
+    "dark",
+    "light"
+  ],
+  "verdict": "Inconclusive",
+  "implementation": "not changed in this repair checkpoint",
+  "missing": "No complete matched-width 60 FPS reference/before/after state set or independent visual verdict.",
+  "captures": [
+    {
+      "id": "candidate-light-range-slider",
+      "slug": "range-slider",
+      "origin": "candidate",
+      "theme": "light",
+      "code": 0,
+      "configPath": "/Users/codenameakshay/.t3/worktrees/beui/t3-48d38279/docs/proof/v3-parity/components/release-recordings-run2/configs/candidate-light-range-slider.json",
+      "runDirectory": "/Users/codenameakshay/.t3/worktrees/beui/t3-48d38279/docs/proof/v3-parity/components/release-recordings-run2/candidate-light-range-slider",
+      "missingTargets": [],
+      "stats": {
+        "originEpochMs": 1792743565510,
+        "backend": "screenshots",
+        "startMs": 5263.775667000001,
+        "sequenceStartMs": 5264.225084000001,
+        "stopMs": 8425.539541999999,
+        "frames": 102,
+        "durationMs": 3055.3030967712402,
+        "measuredFps": 33.05727674178513,
+        "medianIntervalMs": 33.1120491027832,
+        "maxIntervalMs": 50.16827583312988,
+        "reorderedDeliveries": 0,
+        "fastMotionVerdict": "inconclusive; inspect per-event gaps, not nominal frame rate",
+        "errors": [],
+        "video": {
+          "width": 1280,
+          "height": 913,
+          "decodedFrames": 102
+        }
+      },
+      "video": {
+        "path": "release-recordings-run2/candidate-light-range-slider/capture.mp4",
+        "bytes": 538942,
+        "sha256": "e4cfe17629b307c907ce5103b5dec183c16043d7eed95db747a222d83468b110"
+      }
+    },
+    {
+      "id": "candidate-dark-range-slider",
+      "slug": "range-slider",
+      "origin": "candidate",
+      "theme": "dark",
+      "code": 0,
+      "configPath": "/Users/codenameakshay/.t3/worktrees/beui/t3-48d38279/docs/proof/v3-parity/components/release-recordings-run2/configs/candidate-dark-range-slider.json",
+      "runDirectory": "/Users/codenameakshay/.t3/worktrees/beui/t3-48d38279/docs/proof/v3-parity/components/release-recordings-run2/candidate-dark-range-slider",
+      "missingTargets": [],
+      "stats": {
+        "originEpochMs": 1792743847232,
+        "backend": "screenshots",
+        "startMs": 5405.830542,
+        "sequenceStartMs": 5405.95825,
+        "stopMs": 8566.784459,
+        "frames": 95,
+        "durationMs": 3119.6112632751465,
+        "measuredFps": 30.131959422826746,
+        "medianIntervalMs": 33.39576721191406,
+        "maxIntervalMs": 49.78013038635254,
+        "reorderedDeliveries": 0,
+        "fastMotionVerdict": "inconclusive; inspect per-event gaps, not nominal frame rate",
+        "errors": [],
+        "video": {
+          "width": 1280,
+          "height": 913,
+          "decodedFrames": 95
+        }
+      },
+      "video": {
+        "path": "release-recordings-run2/candidate-dark-range-slider/capture.mp4",
+        "bytes": 504971,
+        "sha256": "ff4ba4c612346e3881a5227232d469e53c308ebff1b0a73632ace9d93f7e38e1"
+      }
+    }
+  ],
+  "changeVideos": [],
+  "knownGaps": null,
+  "coverage": "Default preview recording only. No complete state or example parity certificate."
+}

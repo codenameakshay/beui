@@ -1,0 +1,134 @@
+{
+  "url": "https://beui.dev/charts/order-book",
+  "viewport": {
+    "width": 1280,
+    "height": 1000
+  },
+  "theme": "dark",
+  "reducedMotion": "no-preference",
+  "reference": true,
+  "requireFlutterProbe": false,
+  "backend": "screenshots",
+  "loadWaitMs": 3000,
+  "provenance": {
+    "slug": "order-book",
+    "revision": "live deployment unknown",
+    "pinnedSource": "a76e57c9bbc2837e96420b2610e9c82a3271bb05",
+    "chartRevision": "b4230fa",
+    "effectiveDependencies": [],
+    "recorderRevision": "d53695ffca9e4c9d1403e75712a9ff8e2ceed8ed",
+    "recorderSha256": "2aa405da2051b7a59a3010f7b0e3291108e3c51c65f6e1e76bf73bca120709ca",
+    "wrapperRevision": "live deployment unknown",
+    "observedProbeTargets": [
+      {
+        "name": "247.20",
+        "rect": {
+          "x": 357,
+          "y": 450.328125,
+          "width": 43.203125,
+          "height": 16,
+          "top": 450.328125,
+          "right": 400.203125,
+          "bottom": 466.328125,
+          "left": 357
+        }
+      },
+      {
+        "name": "247.05",
+        "rect": {
+          "x": 357,
+          "y": 482.328125,
+          "width": 43.203125,
+          "height": 16,
+          "top": 482.328125,
+          "right": 400.203125,
+          "bottom": 498.328125,
+          "left": 357
+        }
+      }
+    ],
+    "timerOverrides": "none",
+    "keyboardMethod": "click A, exit, native key, native Tab. No direct focus injection."
+  },
+  "targets": {
+    "A": {
+      "x": 378.6015625,
+      "y": 458.328125
+    },
+    "B": {
+      "x": 378.6015625,
+      "y": 490.328125
+    },
+    "exit": {
+      "x": 1120,
+      "y": 250
+    },
+    "pause": {
+      "x": 768.390625,
+      "y": 376
+    }
+  },
+  "events": [
+    {
+      "atMs": 50,
+      "type": "click",
+      "target": "pause",
+      "caption": "Pause actual live updates. Tick differs between runs."
+    },
+    {
+      "atMs": 300,
+      "type": "move",
+      "target": "A",
+      "caption": "A. Exact datum recorded in provenance."
+    },
+    {
+      "atMs": 1100,
+      "type": "move",
+      "target": "B",
+      "caption": "B. Retarget the visible readout."
+    },
+    {
+      "atMs": 1220,
+      "type": "move",
+      "target": "A",
+      "caption": "A. Reverse during the source ticker duration."
+    },
+    {
+      "atMs": 2100,
+      "type": "move",
+      "target": "exit",
+      "caption": "Pointer exit."
+    },
+    {
+      "atMs": 2500,
+      "type": "click",
+      "target": "A",
+      "caption": "Native click establishes focus."
+    },
+    {
+      "atMs": 2700,
+      "type": "move",
+      "target": "exit",
+      "caption": "Pointer leaves before keyboard input."
+    },
+    {
+      "atMs": 3000,
+      "type": "key",
+      "key": "Tab",
+      "caption": "Actual keyboard input after pointer exit."
+    },
+    {
+      "atMs": 3550,
+      "type": "key",
+      "key": "Tab",
+      "caption": "Actual Tab traversal."
+    },
+    {
+      "atMs": 3900,
+      "type": "key",
+      "key": "Escape",
+      "caption": "Dismiss."
+    }
+  ],
+  "finalHoldMs": 500
+}

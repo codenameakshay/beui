@@ -1,0 +1,52 @@
+--- a/lib/src/motion/sortable_list.dart
++++ b/lib/src/motion/sortable_list.dart
+@@ -261,39 +261,8 @@
+       container: true,
+       explicitChildNodes: true,
+       label: scope.listLabel,
+-      child: ReorderableListView(
+-        shrinkWrap: true,
+-        physics: const NeverScrollableScrollPhysics(),
+-        buildDefaultDragHandles: false,
+-        padding: EdgeInsets.zero,
+-        proxyDecorator: (child, index, animation) {
+-          if (MediaQuery.disableAnimationsOf(context)) {
+-            return _SortableListScopeHost(
+-              scope: scope,
+-              child: Material(color: Colors.transparent, child: child),
+-            );
+-          }
+-          final motion = motionFor(context, beuiSpringLayout, isMovement: true);
+-          return _SortableListScopeHost(
+-            scope: scope,
+-            child: SingleMotionBuilder(
+-              value: 1.025,
+-              from: 1,
+-              motion: motion,
+-              builder: (context, scale, _) => Material(
+-                color: Colors.transparent,
+-                elevation: 8 * animation.value,
+-                child: Transform.scale(scale: scale, child: child),
+-              ),
+-            ),
+-          );
+-        },
+-        onReorderItem: (from, target) {
+-          final ids = List<String>.of(scope.ids);
+-          final id = ids.removeAt(from);
+-          ids.insert(target, id);
+-          scope.reorder(ids);
+-        },
++      child: Column(
++        mainAxisSize: MainAxisSize.min,
+         children: [
+           for (var index = 0; index < children.length; index++)
+             children[index]._build(context, index, scope),
+@@ -334,7 +303,6 @@
+           key: ValueKey<String>('sortable-item-$id'),
+           container: true,
+           explicitChildNodes: true,
+-          sortKey: OrdinalSortKey(index.toDouble()),
+           value: 'Position ${index + 1} of ${scope.ids.length}',
+           child: SizedBox(
+             width: double.infinity,

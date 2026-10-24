@@ -1,3 +1,4 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
 import '../theme/beui_colors.dart';
@@ -533,6 +534,7 @@ class _BeuiRulerSliderState extends State<BeuiRulerSlider>
               onFocusChange: (_) => setState(() {}),
               child: GestureDetector(
                 behavior: HitTestBehavior.opaque,
+                dragStartBehavior: DragStartBehavior.down,
                 onHorizontalDragStart: _onDragStart,
                 onHorizontalDragUpdate: _onDragUpdate,
                 onHorizontalDragEnd: _onDragEnd,

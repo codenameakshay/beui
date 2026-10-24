@@ -1,0 +1,58 @@
+[
+  {
+    "event": "local-only idle, no source equivalent",
+    "at": 1792742059561,
+    "monotonicMs": 2694.5,
+    "text": "Draft the next step and wait for my OK.\nThought for 0s\nShow details\nEdit\nApprove\nRequest changes\nReject\napply_change Completed 120ms apply_change\nok 3 files updated",
+    "accessibility": "- group \"Conversation\":\n  - group \"Conversation\":\n    - group:\n      - group \"user message\": Draft the next step and wait for my OK.\n      - group \"assistant message\":\n        - group \"Response Here is a compact proposal. Expand it to edit the details, then approve or reject.\":\n          - switch \"Helpful\"\n          - switch \"Not helpful\"\n        - group \"Completed\":\n          - button \"Thought for 0s\"\n        - group \"Only the decision is visible until you expand. Update the shared layout and keep the current split.\":\n          - button \"Show details\"\n          - button \"Edit\"\n          - button \"Approve\"\n          - button \"Request changes\"\n          - button \"Reject\"\n        - button \"apply_change Completed 120ms apply_change\" [expanded]\n        - group: ok 3 files updated"
+  },
+  {
+    "event": "hover Edit",
+    "at": 1792742060018,
+    "monotonicMs": 3151.1999999284744,
+    "text": "Draft the next step and wait for my OK.\nThought for 0s\nShow details\nEdit\nApprove\nRequest changes\nReject\napply_change Completed 120ms apply_change\nok 3 files updated\nEdit",
+    "accessibility": "- group \"Conversation\":\n  - group \"Conversation\":\n    - group:\n      - group \"user message\": Draft the next step and wait for my OK.\n      - group \"assistant message\":\n        - group \"Response Here is a compact proposal. Expand it to edit the details, then approve or reject.\":\n          - switch \"Helpful\"\n          - switch \"Not helpful\"\n        - group \"Completed\":\n          - button \"Thought for 0s\"\n        - group \"Only the decision is visible until you expand. Update the shared layout and keep the current split.\":\n          - button \"Show details\"\n          - button \"Edit Edit\"\n          - button \"Approve\"\n          - button \"Request changes\"\n          - button \"Reject\"\n        - button \"apply_change Completed 120ms apply_change\" [expanded]\n        - group: ok 3 files updated"
+  },
+  {
+    "event": "expanded proposal",
+    "at": 1792742060441,
+    "monotonicMs": 3574,
+    "text": "Draft the next step and wait for my OK.\nThought for 0s\nHide details\nEdit\nApprove\nRequest changes\nReject\napply_change Completed 120ms apply_change\nok 3 files updated",
+    "accessibility": "- group \"Conversation\":\n  - group \"Conversation\":\n    - group:\n      - group \"user message\": Draft the next step and wait for my OK.\n      - group \"assistant message\":\n        - group \"Response Here is a compact proposal. Expand it to edit the details, then approve or reject.\":\n          - switch \"Helpful\"\n          - switch \"Not helpful\"\n        - group \"Completed\":\n          - button \"Thought for 0s\"\n        - group \"Only the decision is visible until you expand. Full proposal Keep the current participants, apply the new totals, and record this as a single turn. Nothing here is product-specific — the card only hosts whatever editor the consumer builds.\":\n          - button \"Hide details\" [expanded]\n          - button \"Edit\"\n          - textbox\n          - button \"Approve\"\n          - button \"Request changes\"\n          - button \"Reject\"\n        - button \"apply_change Completed 120ms apply_change\"\n        - group: ok 3 files updated"
+  },
+  {
+    "event": "editor replaced with Shared layout proof",
+    "at": 1792742060871,
+    "monotonicMs": 4004.5999999046326,
+    "text": "Draft the next step and wait for my OK.\nThought for 0s\nHide details\nEdit\nApprove\nRequest changes\nReject\napply_change Completed 120ms apply_change\nok 3 files updated",
+    "accessibility": "- group \"Conversation\":\n  - group \"Conversation\":\n    - group:\n      - group \"user message\": Draft the next step and wait for my OK.\n      - group \"assistant message\":\n        - group \"Response Here is a compact proposal. Expand it to edit the details, then approve or reject.\":\n          - switch \"Helpful\"\n          - switch \"Not helpful\"\n        - group \"Completed\":\n          - button \"Thought for 0s\"\n        - group \"Only the decision is visible until you expand. Full proposal Keep the current participants, apply the new totals, and record this as a single turn. Nothing here is product-specific — the card only hosts whatever editor the consumer builds.\":\n          - button \"Hide details\" [expanded]\n          - button \"Edit\"\n          - textbox: Shared layout proof\n          - button \"Approve\"\n          - button \"Request changes\"\n          - button \"Reject\"\n        - button \"apply_change Completed 120ms apply_change\"\n        - group: ok 3 files updated"
+  },
+  {
+    "event": "collapsed proposal",
+    "at": 1792742061340,
+    "monotonicMs": 4473.199999928474,
+    "text": "Draft the next step and wait for my OK.\nThought for 0s\nShow details\nEdit\nApprove\nRequest changes\nReject\napply_change Completed 120ms apply_change\nok 3 files updated",
+    "accessibility": "- group \"Conversation\":\n  - group \"Conversation\":\n    - group:\n      - group \"user message\": Draft the next step and wait for my OK.\n      - group \"assistant message\":\n        - group \"Response Here is a compact proposal. Expand it to edit the details, then approve or reject.\":\n          - switch \"Helpful\"\n          - switch \"Not helpful\"\n        - group \"Completed\":\n          - button \"Thought for 0s\"\n        - group \"Only the decision is visible until you expand. Update the shared layout and keep the current split.\":\n          - button \"Show details\"\n          - button \"Edit\"\n          - button \"Approve\"\n          - button \"Request changes\"\n          - button \"Reject\"\n        - button \"apply_change Completed 120ms apply_change\"\n        - group: ok 3 files updated"
+  },
+  {
+    "event": "Approved",
+    "at": 1792742062171,
+    "monotonicMs": 5304.599999904633,
+    "text": "Draft the next step and wait for my OK.\nThought for 0s\nShow details\nEdit\napply_change Completed 120ms apply_change\nok 3 files updated",
+    "accessibility": "- group \"Conversation\":\n  - group \"Conversation\":\n    - group:\n      - group \"user message\": Draft the next step and wait for my OK.\n      - group \"assistant message\":\n        - group \"Response Here is a compact proposal. Expand it to edit the details, then approve or reject.\":\n          - switch \"Helpful\"\n          - switch \"Not helpful\"\n        - group \"Completed\":\n          - button \"Thought for 0s\"\n        - group \"Approved\":\n          - button \"Show details\"\n          - button \"Edit\"\n        - button \"apply_change Completed 120ms apply_change\"\n        - group: ok 3 files updated"
+  },
+  {
+    "event": "Rejected",
+    "at": 1792742065026,
+    "monotonicMs": 2828,
+    "text": "Draft the next step and wait for my OK.\nThought for 0s\nShow details\nEdit\napply_change Completed 120ms apply_change\nok 3 files updated",
+    "accessibility": "- group \"Conversation\":\n  - group \"Conversation\":\n    - group:\n      - group \"user message\": Draft the next step and wait for my OK.\n      - group \"assistant message\":\n        - group \"Response Here is a compact proposal. Expand it to edit the details, then approve or reject.\":\n          - switch \"Helpful\"\n          - switch \"Not helpful\"\n        - group \"Completed\":\n          - button \"Thought for 0s\"\n        - group \"Rejected\":\n          - button \"Show details\"\n          - button \"Edit\"\n        - button \"apply_change Completed 120ms apply_change\"\n        - group: ok 3 files updated"
+  },
+  {
+    "event": "Changes requested",
+    "at": 1792742067842,
+    "monotonicMs": 2794.600000023842,
+    "text": "Draft the next step and wait for my OK.\nThought for 0s\nShow details\nEdit\napply_change Completed 120ms apply_change\nok 3 files updated",
+    "accessibility": "- group \"Conversation\":\n  - group \"Conversation\":\n    - group:\n      - group \"user message\": Draft the next step and wait for my OK.\n      - group \"assistant message\":\n        - group \"Response Here is a compact proposal. Expand it to edit the details, then approve or reject.\":\n          - switch \"Helpful\"\n          - switch \"Not helpful\"\n        - group \"Completed\":\n          - button \"Thought for 0s\"\n        - group \"Changes requested\":\n          - button \"Show details\"\n          - button \"Edit\"\n        - button \"apply_change Completed 120ms apply_change\"\n        - group: ok 3 files updated"
+  }
+]

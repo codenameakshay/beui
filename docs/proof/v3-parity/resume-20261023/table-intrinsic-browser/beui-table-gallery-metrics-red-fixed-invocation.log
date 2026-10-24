@@ -1,0 +1,35 @@
+00:00 +0: loading /Users/codenameakshay/.t3/worktrees/beui/t3-df4b55e2/example/test/table_intrinsic_demo_test.dart
+00:00 +0: (setUpAll)
+00:00 +0: first layout measures bounded sorted DATA with real fonts
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test:
+Expected: ({double maximum, double minimum}):<(maximum: 24.0, minimum: 24.0)>
+  Actual: ({double maximum, double minimum}):<(maximum: 20.0, minimum: 20.0)>
+
+When the exception was thrown, this was the stack:
+#4      main.<anonymous closure> (file:///Users/codenameakshay/.t3/worktrees/beui/t3-df4b55e2/example/test/table_intrinsic_demo_test.dart:75:5)
+<asynchronous suspension>
+#5      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#6      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+This was caught by the test expectation on the following line:
+  file:///Users/codenameakshay/.t3/worktrees/beui/t3-df4b55e2/example/test/table_intrinsic_demo_test.dart line 75
+The test description was:
+  first layout measures bounded sorted DATA with real fonts
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:06 +0 -1: first layout measures bounded sorted DATA with real fonts [E]
+  Test failed. See exception logs above.
+  The test description was: first layout measures bounded sorted DATA with real fonts
+  
+00:06 +0 -1: scroll samples only the sorted viewport and overscan window
+00:12 +1 -1: resize freeze, drag and selection preserve live alignment
+00:22 +2 -1: wide layout keeps the same header and body column boundaries
+00:31 +3 -1: (tearDownAll)
+00:32 +3 -1: Some tests failed.
+
+Failing tests:
+  /Users/codenameakshay/.t3/worktrees/beui/t3-df4b55e2/example/test/table_intrinsic_demo_test.dart: first layout measures bounded sorted DATA with real fonts

@@ -1,0 +1,91 @@
+- button "beUI"
+- button "Components"
+- button "Agents"
+- button "Blocks"
+- button "Charts"
+- button "Guides"
+- button "Search ⌘K"
+- button "Color theme"
+- button "Light mode"
+- button "GitHub"
+- group:
+  - text: INTRO
+  - button "Home"
+  - text: GUIDES
+  - button "Motion Guides"
+  - text: COMPONENTS 54
+  - button "Timeline NEW"
+  - button "Animated Alert NEW"
+  - button "Animated Collapsible NEW"
+  - button "Aspect Ratio NEW"
+  - button "Arc Picker NEW"
+  - button "Sortable List NEW"
+  - button "Image Viewer NEW"
+  - button "Date Range Picker NEW"
+  - button "Card NEW"
+  - button "Color Picker NEW"
+  - button "Animated Color Selector NEW"
+  - button "Animated Breadcrumb NEW"
+  - button "Tilt Card"
+  - button "Button"
+  - button "Animated CTA Buttons"
+  - button "Expandable Control NEW"
+  - button "Adaptive Stepper NEW"
+  - button "Marquee"
+  - button "Tabs"
+  - button "Switch"
+  - button "Input"
+  - button "Select"
+  - button "Combobox NEW"
+  - button "Multi Select NEW"
+  - button "Checkbox"
+  - button "Radio Group"
+  - button "Bottom Sheet"
+  - button "Pull to Refresh"
+  - button "Shared Layout Background"
+  - button "Bounce Sidebar"
+- group:
+  - button "AI Agents"
+  - text: Message Bubble ON THIS PAGE Conversational surface with tones, alignment and grouped messages. Message Bubble NEW
+  - button "Preview"
+  - button "Usage"
+  - button "Code"
+  - button "Preview"
+  - button "Usage"
+  - button "Code"
+  - text: RELATED
+  - button "Prompt Input"
+  - group:
+    - group "Conversation":
+      - text: Start with the smallest workflow that still feels complete.
+      - group "Conversation":
+        - group:
+          - group "user message": What should we include in the first release?
+          - group "assistant message": Response Start with the smallest workflow that still feels complete.
+    - textbox "Prompt Send a bubble…"
+    - button "Send prompt" [disabled]:
+      - button [disabled]
+    - text: "TONES Six variants. `danger` carries a leading alert glyph as well as its tint, so the state survives a colourblind reader; `outline` has a card fill so its hairline is not the only thing holding the shape."
+    - group "user message": solid — the usual user turn
+    - group "assistant message": soft — the usual assistant turn
+    - group "assistant message": tint — primary wash, for emphasis
+    - group "assistant message": outline — bordered card surface
+    - group "assistant message": ghost — no chrome, full width
+    - group "assistant message": danger — a turn that went wrong
+    - text: GROUP AND MARKER Consecutive turns from one author stack in a group under a single avatar; a marker separates them.
+    - group "assistant message": Assistant 09:41 I found three candidates. Two are in the checkout path. Want me to open the first?
+    - text: New messages
+    - group "user message": Open it. Sent
+    - text: "COLLAPSIBLE Long bodies clamp to `collapsedLines` behind a fade and animate open on the library disclosure curve."
+    - group "assistant message":
+      - button "Show more"
+      - text: "The checkout flow calls the pricing service twice: once to render the summary and again on submit. The second call is what fails under load, because it happens inside the transaction and inherits its timeout. Moving it before the transaction opens fixes the timeout without changing the pricing logic, and it also lets the summary and the submit share one response instead of racing each other. The tradeoff is a slightly staler price if the user waits on the summary screen, which the existing five-second cache already allows for."
+    - text: "INTERACTIVE A bubble with `onTap` is a button: it reports the role, takes Enter and Space, and shows a focus ring painted outside layout so focusing does not reflow the text."
+    - group "assistant message":
+      - button "Open pricing service trace Open pricing service trace"
+    - text: Tab to it, then press Enter or Space.
+  - button "Message"
+  - button "Message Scroller"
+  - button "Streaming Response"
+  - button "Image Generation"
+  - button "Citations"

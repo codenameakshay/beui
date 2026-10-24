@@ -1,0 +1,14 @@
+node:internal/fs/promises:1719
+  return await PromisePrototypeThen(
+         ^
+
+Error: ENOENT: no such file or directory, mkdir '/Users/codenameakshay/.t3/worktrees/beui/t3-b46210a7/docs/proof/v3-parity/charts/round3/captures-final-v11/after-price-target-fan-dark-no-preference'
+    at async mkdir (node:internal/fs/promises:1719:10)
+    at async file:///Users/codenameakshay/.t3/worktrees/beui/t3-b46210a7/tool/parity_capture.mjs:18:1 {
+  errno: -2,
+  code: 'ENOENT',
+  syscall: 'mkdir',
+  path: '/Users/codenameakshay/.t3/worktrees/beui/t3-b46210a7/docs/proof/v3-parity/charts/round3/captures-final-v11/after-price-target-fan-dark-no-preference'
+}
+
+Node.js v26.12.0

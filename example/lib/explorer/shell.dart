@@ -9,6 +9,7 @@ import 'package:flutter/services.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import 'catalog.dart';
+import 'catalog_charts.dart';
 import 'guides_page.dart';
 import 'pages.dart';
 import 'search.dart';
@@ -73,7 +74,9 @@ class ExplorerController extends InheritedWidget {
 
 /// The root shell widget.
 class ExplorerShell extends StatefulWidget {
-  const ExplorerShell({super.key, this.initialRoute});
+  const ExplorerShell({super.key, this.initialRoute, this.previewWidth});
+
+  final double? previewWidth;
 
   /// Destination shown on the first frame. Defaults to the Components index.
   ///
@@ -156,7 +159,11 @@ class _ExplorerShellState extends State<ExplorerShell> {
                       ),
                     ],
                     Expanded(
-                      child: _Content(route: _route, scroll: _contentScroll),
+                      child: _Content(
+                        route: _route,
+                        scroll: _contentScroll,
+                        previewWidth: widget.previewWidth,
+                      ),
                     ),
                   ],
                 ),
@@ -171,9 +178,14 @@ class _ExplorerShellState extends State<ExplorerShell> {
 
 /// Renders the routed content region.
 class _Content extends StatelessWidget {
-  const _Content({required this.route, required this.scroll});
+  const _Content({
+    required this.route,
+    required this.scroll,
+    this.previewWidth,
+  });
   final ExplorerRoute route;
   final ScrollController scroll;
+  final double? previewWidth;
 
   @override
   Widget build(BuildContext context) {
@@ -185,6 +197,7 @@ class _Content extends StatelessWidget {
       DetailRoute(:final entry) => DetailPage(
         key: ValueKey('detail-${entry.slug}'),
         entry: entry,
+        previewWidth: previewWidth,
       ),
       GuidesRoute() => const GuidesPage(key: ValueKey('guides')),
     };
@@ -265,6 +278,11 @@ class ExplorerTopBar extends StatelessWidget {
                 label: 'Blocks',
                 active: _activeSection == ExploreSection.blocks,
                 onTap: () => controller.openIndex(ExploreSection.blocks),
+              ),
+              _NavTab(
+                label: 'Charts',
+                active: _activeSection == ExploreSection.charts,
+                onTap: () => controller.openIndex(ExploreSection.charts),
               ),
               _NavTab(
                 label: 'Guides',
@@ -649,6 +667,15 @@ class ExplorerSidebar extends StatelessWidget {
         const SizedBox(height: 20),
         _SidebarHeader(label: 'Blocks', count: kBlocks.length),
         for (final e in kBlocks)
+          _SidebarItem(
+            label: e.title,
+            isNew: e.isNew,
+            active: _activeSlug == e.slug,
+            onTap: () => controller.openEntry(e),
+          ),
+        const SizedBox(height: 20),
+        _SidebarHeader(label: 'Charts', count: kCharts.length),
+        for (final e in kCharts)
           _SidebarItem(
             label: e.title,
             isNew: e.isNew,

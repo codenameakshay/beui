@@ -1,0 +1,17 @@
+00:00 +0: loading /Users/codenameakshay/.t3/worktrees/beui/t3-5c0570f2/test/motion/feedback_widget_test.dart
+00:00 +0: BeuiFeedbackWidget interaction tap trigger morphs into the form
+00:00 +1: BeuiFeedbackWidget interaction submit calls onSubmit and shows the success view
+00:01 +2: BeuiFeedbackWidget interaction empty message does not submit, and says why
+00:01 +3: BeuiFeedbackWidget interaction closing preserves the draft; a successful submit clears it
+00:01 +4: BeuiFeedbackWidget interaction Escape closes without destroying the draft
+00:01 +5: BeuiFeedbackWidget interaction the success view holds while a screen reader is active
+00:01 +6: BeuiFeedbackWidget interaction sentiment is off by default
+00:01 +7: BeuiFeedbackWidget interaction opted-in sentiment rides along with the message
+00:02 +8: BeuiFeedbackWidget interaction close and trigger are keyboard-activatable
+00:02 +9: BeuiFeedbackWidget interaction a thrown submit routes to the retry view
+00:02 +10: BeuiFeedbackWidget interaction a thrown submit without onSubmitError reports through FlutterError
+00:02 +11: BeuiFeedbackWidget interaction success view auto-dismisses back to the trigger
+00:02 +12: BeuiFeedbackWidget motion fidelity content morph blurs under normal motion
+00:02 +13: BeuiFeedbackWidget motion fidelity reduced motion drops the morph blur
+00:02 +14: BeuiFeedbackWidget motion fidelity reduced motion still reaches the success view
+00:02 +15: All tests passed!

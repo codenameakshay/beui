@@ -1,0 +1,64 @@
+{
+  "url": "http://127.0.0.1:8108/?slug=text-animation&theme=dark&previewWidth=592",
+  "viewport": {
+    "width": 1280,
+    "height": 900
+  },
+  "theme": "dark",
+  "reference": false,
+  "backend": "screenshots",
+  "loadWaitMs": 3500,
+  "finalHoldMs": 900,
+  "targets": {
+    "0": {
+      "x": 772.492431640625,
+      "y": 423,
+      "measuredBounds": {
+        "role": "button",
+        "label": null,
+        "text": "Next phrase",
+        "x": 708.922119140625,
+        "y": 407,
+        "width": 127.140625,
+        "height": 32
+      }
+    },
+    "outside": {
+      "x": 1100,
+      "y": 100
+    }
+  },
+  "provenance": {
+    "batch": "before-observed",
+    "expectedJsSha256": "47c60cc9b7ac87ff21c428362965a9a891921017152607464889723b0e1814c8",
+    "tool": "/Users/codenameakshay/.t3/worktrees/beui/t3-6e9ab891/tool/parity_capture.mjs",
+    "toolHash": "71a498d004c2f7a3a00d015d4dc13f0e4b1ef7966813e2b00c9fc06830fb00fb",
+    "source": "a76e57c9bbc2837e96420b2610e9c82a3271bb05",
+    "liveDeploymentRevision": null,
+    "baselineWrapperApplied": false,
+    "candidatePreviewInnerWidth": 592,
+    "label": "Round2 observation, no native 60 FPS or exact-parity claim"
+  },
+  "events": [
+    {
+      "atMs": 600,
+      "type": "click",
+      "target": "0"
+    },
+    {
+      "atMs": 900,
+      "type": "click",
+      "target": "0"
+    },
+    {
+      "atMs": 1800,
+      "type": "click",
+      "target": "0"
+    },
+    {
+      "atMs": 2800,
+      "type": "key",
+      "key": "Enter"
+    }
+  ]
+}

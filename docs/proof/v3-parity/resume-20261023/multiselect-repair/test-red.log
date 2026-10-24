@@ -1,0 +1,313 @@
+Resolving dependencies...
+Downloading packages...
+  equatable 2.1.0 (3.0.0 available)
+  material_color_utilities 0.13.0 (0.13.1 available)
+  test_api 0.7.12 (0.7.15 available)
+  xml 7.0.1 (7.1.0 available)
+Got dependencies!
+4 packages have newer versions incompatible with dependency constraints.
+Try `flutter pub outdated` for more information.
+Resolving dependencies in `./example`...
+Downloading packages...
+Got dependencies in `./example`.
+00:00 +0: loading /Users/codenameakshay/.t3/worktrees/beui/t3-df4b55e2/test/motion/multi_select_test.dart
+00:00 +0: chip removal keeps input usable reduce=false open=false reject=false
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test:
+Expected: exactly one matching candidate
+  Actual: _TypeWidgetFinder:<Found 0 widgets with type "BeuiMultiSelectList": []>
+   Which: means none were found but one was expected
+
+When the exception was thrown, this was the stack:
+#4      main.<anonymous closure> (file:///Users/codenameakshay/.t3/worktrees/beui/t3-df4b55e2/test/motion/multi_select_test.dart:197:11)
+<asynchronous suspension>
+#5      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#6      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+This was caught by the test expectation on the following line:
+  file:///Users/codenameakshay/.t3/worktrees/beui/t3-df4b55e2/test/motion/multi_select_test.dart line 197
+The test description was:
+  chip removal keeps input usable reduce=false open=false reject=false
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:00 +0 -1: chip removal keeps input usable reduce=false open=false reject=false [E]
+  Test failed. See exception logs above.
+  The test description was: chip removal keeps input usable reduce=false open=false reject=false
+  
+00:00 +0 -1: chip removal keeps input usable reduce=false open=false reject=true
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test:
+Expected: exactly one matching candidate
+  Actual: _TypeWidgetFinder:<Found 0 widgets with type "BeuiMultiSelectList": []>
+   Which: means none were found but one was expected
+
+When the exception was thrown, this was the stack:
+#4      main.<anonymous closure> (file:///Users/codenameakshay/.t3/worktrees/beui/t3-df4b55e2/test/motion/multi_select_test.dart:197:11)
+<asynchronous suspension>
+#5      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#6      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+This was caught by the test expectation on the following line:
+  file:///Users/codenameakshay/.t3/worktrees/beui/t3-df4b55e2/test/motion/multi_select_test.dart line 197
+The test description was:
+  chip removal keeps input usable reduce=false open=false reject=true
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:00 +0 -2: chip removal keeps input usable reduce=false open=false reject=true [E]
+  Test failed. See exception logs above.
+  The test description was: chip removal keeps input usable reduce=false open=false reject=true
+  
+00:00 +0 -2: chip removal keeps input usable reduce=false open=true reject=false
+
+Warning: A call to tap() with finder "Found 1 widget with widget matching predicate: [
+  RawTooltip-[LabeledGlobalKey<RawTooltipState>#50941]("Remove Design", hover delay: 0:00:00.000000, touch delay: 0:00:01.500000, dismiss delay: 0:00:00.100000, triggerMode: TooltipTriggerMode.longPress, enableFeedback: true, positionDelegate: Closure: (TooltipPositionContext) => Offset from Function '_getDefaultPositionDelegate@632220820':., state: RawTooltipState#e5a31(ticker inactive)),
+]" derived an Offset (Offset(341.0, 288.0)) that would not hit test on the specified widget.
+Maybe the widget is actually off-screen, or another widget is obscuring it, or the widget cannot receive pointer events.
+The finder corresponds to this RenderBox: _RenderLayoutSurrogateProxyBox#72214 relayoutBoundary=up28
+The hit test result at that offset is: HitTestResult(_RenderColoredBox#76c5c@Offset(341.0, 288.0), RenderPointerListener#55e67@Offset(341.0, 288.0), RenderSemanticsGestureHandler#94c49@Offset(341.0, 288.0), RenderStack#25711@Offset(341.0, 288.0), RenderSemanticsAnnotations#8b207@Offset(341.0, 288.0), RenderSemanticsAnnotations#f9bab@Offset(341.0, 288.0), RenderSemanticsAnnotations#cdf0e@Offset(341.0, 288.0), _RenderDeferredLayoutBox#d2e31@Offset(341.0, 288.0), _RenderTheater#a64a6@Offset(341.0, 288.0), RenderAbsorbPointer#43253@Offset(341.0, 288.0), RenderPointerListener#a60af@Offset(341.0, 288.0), RenderSemanticsAnnotations#abc5f@Offset(341.0, 288.0), RenderCustomPaint#feec9@Offset(341.0, 288.0), RenderSemanticsAnnotations#83abd@Offset(341.0, 288.0), RenderSemanticsAnnotations#5b500@Offset(341.0, 288.0), RenderSemanticsAnnotations#95beb@Offset(341.0, 288.0), RenderTapRegionSurface#7b6d2@Offset(341.0, 288.0), RenderSemanticsAnnotations#2181e@Offset(341.0, 288.0), RenderSemanticsAnnotations#b870b@Offset(341.0, 288.0), HitTestEntry<HitTestTarget>#83e69(_ReusableRenderView#ebbea), HitTestEntry<HitTestTarget>#2a1f7(<AutomatedTestWidgetsFlutterBinding>))
+#0      WidgetController._getElementPoint (package:flutter_test/src/controller.dart:2165:25)
+#1      WidgetController.getCenter (package:flutter_test/src/controller.dart:1947:12)
+#2      WidgetController.tap (package:flutter_test/src/controller.dart:1080:7)
+#3      main.<anonymous closure> (file:///Users/codenameakshay/.t3/worktrees/beui/t3-df4b55e2/test/motion/multi_select_test.dart:193:24)
+<asynchronous suspension>
+#4      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#5      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
+<asynchronous suspension>
+#6      StackZoneSpecification._registerCallback.<anonymous closure> (package:stack_trace/src/stack_zone_specification.dart:114:42)
+<asynchronous suspension>
+To silence this warning, pass "warnIfMissed: false" to "tap()".
+To make this warning fatal, set WidgetController.hitTestWarningShouldBeFatal to true.
+
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test:
+Expected: [['product']]
+  Actual: []
+   Which: at location [0] is [] which shorter than expected
+
+When the exception was thrown, this was the stack:
+#4      main.<anonymous closure> (file:///Users/codenameakshay/.t3/worktrees/beui/t3-df4b55e2/test/motion/multi_select_test.dart:195:11)
+<asynchronous suspension>
+#5      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#6      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+This was caught by the test expectation on the following line:
+  file:///Users/codenameakshay/.t3/worktrees/beui/t3-df4b55e2/test/motion/multi_select_test.dart line 195
+The test description was:
+  chip removal keeps input usable reduce=false open=true reject=false
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:00 +0 -3: chip removal keeps input usable reduce=false open=true reject=false [E]
+  Test failed. See exception logs above.
+  The test description was: chip removal keeps input usable reduce=false open=true reject=false
+  
+00:00 +0 -3: chip removal keeps input usable reduce=false open=true reject=true
+
+Warning: A call to tap() with finder "Found 1 widget with widget matching predicate: [
+  RawTooltip-[LabeledGlobalKey<RawTooltipState>#2d48f]("Remove Design", hover delay: 0:00:00.000000, touch delay: 0:00:01.500000, dismiss delay: 0:00:00.100000, triggerMode: TooltipTriggerMode.longPress, enableFeedback: true, positionDelegate: Closure: (TooltipPositionContext) => Offset from Function '_getDefaultPositionDelegate@632220820':., state: RawTooltipState#30b65(ticker inactive)),
+]" derived an Offset (Offset(341.0, 288.0)) that would not hit test on the specified widget.
+Maybe the widget is actually off-screen, or another widget is obscuring it, or the widget cannot receive pointer events.
+The finder corresponds to this RenderBox: _RenderLayoutSurrogateProxyBox#78d65 relayoutBoundary=up28
+The hit test result at that offset is: HitTestResult(_RenderColoredBox#e93c4@Offset(341.0, 288.0), RenderPointerListener#a9e4d@Offset(341.0, 288.0), RenderSemanticsGestureHandler#fef1a@Offset(341.0, 288.0), RenderStack#ee736@Offset(341.0, 288.0), RenderSemanticsAnnotations#435a8@Offset(341.0, 288.0), RenderSemanticsAnnotations#8ef9d@Offset(341.0, 288.0), RenderSemanticsAnnotations#d6563@Offset(341.0, 288.0), _RenderDeferredLayoutBox#b9ba2@Offset(341.0, 288.0), _RenderTheater#b5d24@Offset(341.0, 288.0), RenderAbsorbPointer#c061f@Offset(341.0, 288.0), RenderPointerListener#a8bf1@Offset(341.0, 288.0), RenderSemanticsAnnotations#f9371@Offset(341.0, 288.0), RenderCustomPaint#7d16e@Offset(341.0, 288.0), RenderSemanticsAnnotations#e03a4@Offset(341.0, 288.0), RenderSemanticsAnnotations#5241d@Offset(341.0, 288.0), RenderSemanticsAnnotations#fd9b3@Offset(341.0, 288.0), RenderTapRegionSurface#2758e@Offset(341.0, 288.0), RenderSemanticsAnnotations#9733e@Offset(341.0, 288.0), RenderSemanticsAnnotations#d4df2@Offset(341.0, 288.0), HitTestEntry<HitTestTarget>#86f51(_ReusableRenderView#ebbea), HitTestEntry<HitTestTarget>#b28cd(<AutomatedTestWidgetsFlutterBinding>))
+#0      WidgetController._getElementPoint (package:flutter_test/src/controller.dart:2165:25)
+#1      WidgetController.getCenter (package:flutter_test/src/controller.dart:1947:12)
+#2      WidgetController.tap (package:flutter_test/src/controller.dart:1080:7)
+#3      main.<anonymous closure> (file:///Users/codenameakshay/.t3/worktrees/beui/t3-df4b55e2/test/motion/multi_select_test.dart:193:24)
+<asynchronous suspension>
+#4      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#5      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
+<asynchronous suspension>
+#6      StackZoneSpecification._registerCallback.<anonymous closure> (package:stack_trace/src/stack_zone_specification.dart:114:42)
+<asynchronous suspension>
+To silence this warning, pass "warnIfMissed: false" to "tap()".
+To make this warning fatal, set WidgetController.hitTestWarningShouldBeFatal to true.
+
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test:
+Expected: [['product']]
+  Actual: []
+   Which: at location [0] is [] which shorter than expected
+
+When the exception was thrown, this was the stack:
+#4      main.<anonymous closure> (file:///Users/codenameakshay/.t3/worktrees/beui/t3-df4b55e2/test/motion/multi_select_test.dart:195:11)
+<asynchronous suspension>
+#5      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#6      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+This was caught by the test expectation on the following line:
+  file:///Users/codenameakshay/.t3/worktrees/beui/t3-df4b55e2/test/motion/multi_select_test.dart line 195
+The test description was:
+  chip removal keeps input usable reduce=false open=true reject=true
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:00 +0 -4: chip removal keeps input usable reduce=false open=true reject=true [E]
+  Test failed. See exception logs above.
+  The test description was: chip removal keeps input usable reduce=false open=true reject=true
+  
+00:00 +0 -4: chip removal keeps input usable reduce=true open=false reject=false
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test:
+Expected: exactly one matching candidate
+  Actual: _TypeWidgetFinder:<Found 0 widgets with type "BeuiMultiSelectList": []>
+   Which: means none were found but one was expected
+
+When the exception was thrown, this was the stack:
+#4      main.<anonymous closure> (file:///Users/codenameakshay/.t3/worktrees/beui/t3-df4b55e2/test/motion/multi_select_test.dart:197:11)
+<asynchronous suspension>
+#5      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#6      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+This was caught by the test expectation on the following line:
+  file:///Users/codenameakshay/.t3/worktrees/beui/t3-df4b55e2/test/motion/multi_select_test.dart line 197
+The test description was:
+  chip removal keeps input usable reduce=true open=false reject=false
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:00 +0 -5: chip removal keeps input usable reduce=true open=false reject=false [E]
+  Test failed. See exception logs above.
+  The test description was: chip removal keeps input usable reduce=true open=false reject=false
+  
+00:00 +0 -5: chip removal keeps input usable reduce=true open=false reject=true
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test:
+Expected: exactly one matching candidate
+  Actual: _TypeWidgetFinder:<Found 0 widgets with type "BeuiMultiSelectList": []>
+   Which: means none were found but one was expected
+
+When the exception was thrown, this was the stack:
+#4      main.<anonymous closure> (file:///Users/codenameakshay/.t3/worktrees/beui/t3-df4b55e2/test/motion/multi_select_test.dart:197:11)
+<asynchronous suspension>
+#5      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#6      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+This was caught by the test expectation on the following line:
+  file:///Users/codenameakshay/.t3/worktrees/beui/t3-df4b55e2/test/motion/multi_select_test.dart line 197
+The test description was:
+  chip removal keeps input usable reduce=true open=false reject=true
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:00 +0 -6: chip removal keeps input usable reduce=true open=false reject=true [E]
+  Test failed. See exception logs above.
+  The test description was: chip removal keeps input usable reduce=true open=false reject=true
+  
+00:00 +0 -6: chip removal keeps input usable reduce=true open=true reject=false
+
+Warning: A call to tap() with finder "Found 1 widget with widget matching predicate: [
+  RawTooltip-[LabeledGlobalKey<RawTooltipState>#5fffd]("Remove Design", hover delay: 0:00:00.000000, touch delay: 0:00:01.500000, dismiss delay: 0:00:00.100000, triggerMode: TooltipTriggerMode.longPress, enableFeedback: true, positionDelegate: Closure: (TooltipPositionContext) => Offset from Function '_getDefaultPositionDelegate@632220820':., state: RawTooltipState#b67c0(ticker inactive)),
+]" derived an Offset (Offset(341.0, 288.0)) that would not hit test on the specified widget.
+Maybe the widget is actually off-screen, or another widget is obscuring it, or the widget cannot receive pointer events.
+The finder corresponds to this RenderBox: _RenderLayoutSurrogateProxyBox#cc1ac relayoutBoundary=up28
+The hit test result at that offset is: HitTestResult(_RenderColoredBox#36791@Offset(341.0, 288.0), RenderPointerListener#818f4@Offset(341.0, 288.0), RenderSemanticsGestureHandler#21f7e@Offset(341.0, 288.0), RenderStack#6f42d@Offset(341.0, 288.0), RenderSemanticsAnnotations#1d5a4@Offset(341.0, 288.0), RenderSemanticsAnnotations#2feb4@Offset(341.0, 288.0), RenderSemanticsAnnotations#be471@Offset(341.0, 288.0), _RenderDeferredLayoutBox#151e1@Offset(341.0, 288.0), _RenderTheater#2ba9d@Offset(341.0, 288.0), RenderAbsorbPointer#0bd0c@Offset(341.0, 288.0), RenderPointerListener#b14da@Offset(341.0, 288.0), RenderSemanticsAnnotations#3c98e@Offset(341.0, 288.0), RenderCustomPaint#38dae@Offset(341.0, 288.0), RenderSemanticsAnnotations#f806b@Offset(341.0, 288.0), RenderSemanticsAnnotations#a2a65@Offset(341.0, 288.0), RenderSemanticsAnnotations#aa869@Offset(341.0, 288.0), RenderTapRegionSurface#bfe0c@Offset(341.0, 288.0), RenderSemanticsAnnotations#9cdd5@Offset(341.0, 288.0), RenderSemanticsAnnotations#7aaaa@Offset(341.0, 288.0), HitTestEntry<HitTestTarget>#2d0a8(_ReusableRenderView#ebbea), HitTestEntry<HitTestTarget>#ce720(<AutomatedTestWidgetsFlutterBinding>))
+#0      WidgetController._getElementPoint (package:flutter_test/src/controller.dart:2165:25)
+#1      WidgetController.getCenter (package:flutter_test/src/controller.dart:1947:12)
+#2      WidgetController.tap (package:flutter_test/src/controller.dart:1080:7)
+#3      main.<anonymous closure> (file:///Users/codenameakshay/.t3/worktrees/beui/t3-df4b55e2/test/motion/multi_select_test.dart:193:24)
+<asynchronous suspension>
+#4      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#5      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
+<asynchronous suspension>
+#6      StackZoneSpecification._registerCallback.<anonymous closure> (package:stack_trace/src/stack_zone_specification.dart:114:42)
+<asynchronous suspension>
+To silence this warning, pass "warnIfMissed: false" to "tap()".
+To make this warning fatal, set WidgetController.hitTestWarningShouldBeFatal to true.
+
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test:
+Expected: [['product']]
+  Actual: []
+   Which: at location [0] is [] which shorter than expected
+
+When the exception was thrown, this was the stack:
+#4      main.<anonymous closure> (file:///Users/codenameakshay/.t3/worktrees/beui/t3-df4b55e2/test/motion/multi_select_test.dart:195:11)
+<asynchronous suspension>
+#5      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#6      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+This was caught by the test expectation on the following line:
+  file:///Users/codenameakshay/.t3/worktrees/beui/t3-df4b55e2/test/motion/multi_select_test.dart line 195
+The test description was:
+  chip removal keeps input usable reduce=true open=true reject=false
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:00 +0 -7: chip removal keeps input usable reduce=true open=true reject=false [E]
+  Test failed. See exception logs above.
+  The test description was: chip removal keeps input usable reduce=true open=true reject=false
+  
+00:00 +0 -7: chip removal keeps input usable reduce=true open=true reject=true
+
+Warning: A call to tap() with finder "Found 1 widget with widget matching predicate: [
+  RawTooltip-[LabeledGlobalKey<RawTooltipState>#08af5]("Remove Design", hover delay: 0:00:00.000000, touch delay: 0:00:01.500000, dismiss delay: 0:00:00.100000, triggerMode: TooltipTriggerMode.longPress, enableFeedback: true, positionDelegate: Closure: (TooltipPositionContext) => Offset from Function '_getDefaultPositionDelegate@632220820':., state: RawTooltipState#876b1(ticker inactive)),
+]" derived an Offset (Offset(341.0, 288.0)) that would not hit test on the specified widget.
+Maybe the widget is actually off-screen, or another widget is obscuring it, or the widget cannot receive pointer events.
+The finder corresponds to this RenderBox: _RenderLayoutSurrogateProxyBox#2c6df relayoutBoundary=up28
+The hit test result at that offset is: HitTestResult(_RenderColoredBox#1450c@Offset(341.0, 288.0), RenderPointerListener#a6602@Offset(341.0, 288.0), RenderSemanticsGestureHandler#b6f6b@Offset(341.0, 288.0), RenderStack#f2f30@Offset(341.0, 288.0), RenderSemanticsAnnotations#6f416@Offset(341.0, 288.0), RenderSemanticsAnnotations#893c2@Offset(341.0, 288.0), RenderSemanticsAnnotations#5da24@Offset(341.0, 288.0), _RenderDeferredLayoutBox#28134@Offset(341.0, 288.0), _RenderTheater#faaec@Offset(341.0, 288.0), RenderAbsorbPointer#54c1e@Offset(341.0, 288.0), RenderPointerListener#7a8df@Offset(341.0, 288.0), RenderSemanticsAnnotations#4713c@Offset(341.0, 288.0), RenderCustomPaint#0e9ad@Offset(341.0, 288.0), RenderSemanticsAnnotations#e3e14@Offset(341.0, 288.0), RenderSemanticsAnnotations#8fde4@Offset(341.0, 288.0), RenderSemanticsAnnotations#93363@Offset(341.0, 288.0), RenderTapRegionSurface#d5404@Offset(341.0, 288.0), RenderSemanticsAnnotations#a5ce4@Offset(341.0, 288.0), RenderSemanticsAnnotations#3a19d@Offset(341.0, 288.0), HitTestEntry<HitTestTarget>#52ae0(_ReusableRenderView#ebbea), HitTestEntry<HitTestTarget>#bbdb1(<AutomatedTestWidgetsFlutterBinding>))
+#0      WidgetController._getElementPoint (package:flutter_test/src/controller.dart:2165:25)
+#1      WidgetController.getCenter (package:flutter_test/src/controller.dart:1947:12)
+#2      WidgetController.tap (package:flutter_test/src/controller.dart:1080:7)
+#3      main.<anonymous closure> (file:///Users/codenameakshay/.t3/worktrees/beui/t3-df4b55e2/test/motion/multi_select_test.dart:193:24)
+<asynchronous suspension>
+#4      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#5      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
+<asynchronous suspension>
+#6      StackZoneSpecification._registerCallback.<anonymous closure> (package:stack_trace/src/stack_zone_specification.dart:114:42)
+<asynchronous suspension>
+To silence this warning, pass "warnIfMissed: false" to "tap()".
+To make this warning fatal, set WidgetController.hitTestWarningShouldBeFatal to true.
+
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test:
+Expected: [['product']]
+  Actual: []
+   Which: at location [0] is [] which shorter than expected
+
+When the exception was thrown, this was the stack:
+#4      main.<anonymous closure> (file:///Users/codenameakshay/.t3/worktrees/beui/t3-df4b55e2/test/motion/multi_select_test.dart:195:11)
+<asynchronous suspension>
+#5      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#6      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+This was caught by the test expectation on the following line:
+  file:///Users/codenameakshay/.t3/worktrees/beui/t3-df4b55e2/test/motion/multi_select_test.dart line 195
+The test description was:
+  chip removal keeps input usable reduce=true open=true reject=true
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:01 +0 -8: chip removal keeps input usable reduce=true open=true reject=true [E]
+  Test failed. See exception logs above.
+  The test description was: chip removal keeps input usable reduce=true open=true reject=true
+  
+00:01 +0 -8: Some tests failed.
+
+Failing tests:
+  /Users/codenameakshay/.t3/worktrees/beui/t3-df4b55e2/test/motion/multi_select_test.dart: chip removal keeps input usable reduce=false open=false reject=false
+  /Users/codenameakshay/.t3/worktrees/beui/t3-df4b55e2/test/motion/multi_select_test.dart: chip removal keeps input usable reduce=false open=false reject=true
+  /Users/codenameakshay/.t3/worktrees/beui/t3-df4b55e2/test/motion/multi_select_test.dart: chip removal keeps input usable reduce=false open=true reject=false
+  /Users/codenameakshay/.t3/worktrees/beui/t3-df4b55e2/test/motion/multi_select_test.dart: chip removal keeps input usable reduce=false open=true reject=true
+  ... and 4 more

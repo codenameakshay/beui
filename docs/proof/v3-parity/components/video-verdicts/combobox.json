@@ -1,0 +1,125 @@
+{
+  "id": "components/combobox",
+  "owner": "components",
+  "newBadge": true,
+  "demoChanged": true,
+  "sourceUrl": "https://beui.dev/components/motion/combobox",
+  "sourceFiles": [
+    {
+      "path": "components/motion/combobox.tsx",
+      "sha256": "91fa03416be024fcf1584fe865fe6a85e11986d463a1e8e78cc9e0baaaf09c8c"
+    }
+  ],
+  "sourcePreviews": [
+    "components/previews/motion/combobox.preview.tsx"
+  ],
+  "sourceExamples": [],
+  "widgetParts": [
+    "BeuiCombobox",
+    "BeuiComboboxTrigger",
+    "BeuiComboboxInput",
+    "BeuiComboboxContent",
+    "BeuiComboboxList",
+    "BeuiComboboxItem",
+    "BeuiComboboxGroup",
+    "BeuiComboboxLabel",
+    "BeuiComboboxEmpty",
+    "BeuiComboboxSeparator",
+    "BeuiComboboxValue"
+  ],
+  "states": [
+    "rest",
+    "hover-exit",
+    "keyboard",
+    "reduced-motion",
+    "trigger input content list item group label empty separator clear",
+    "search filter no matches select clear reopen",
+    "keyboard active row scroll and controlled rejection"
+  ],
+  "themes": [
+    "dark",
+    "light"
+  ],
+  "verdict": "Known mismatch or failed visual gate",
+  "implementation": "not changed in this repair checkpoint",
+  "missing": "No complete matched-width 60 FPS reference/before/after state set or independent visual verdict.",
+  "captures": [
+    {
+      "id": "candidate-light-combobox",
+      "slug": "combobox",
+      "origin": "candidate",
+      "theme": "light",
+      "code": 0,
+      "configPath": "/Users/codenameakshay/.t3/worktrees/beui/t3-48d38279/docs/proof/v3-parity/components/release-recordings-run2/configs/candidate-light-combobox.json",
+      "runDirectory": "/Users/codenameakshay/.t3/worktrees/beui/t3-48d38279/docs/proof/v3-parity/components/release-recordings-run2/candidate-light-combobox",
+      "missingTargets": [
+        "Search workspaces"
+      ],
+      "stats": {
+        "originEpochMs": 1792743485948,
+        "backend": "screenshots",
+        "startMs": 5361.900834,
+        "sequenceStartMs": 5362.006042,
+        "stopMs": 8519.822667,
+        "frames": 168,
+        "durationMs": 3121.9966411590576,
+        "measuredFps": 53.49140924700046,
+        "medianIntervalMs": 16.704559326171875,
+        "maxIntervalMs": 36.397457122802734,
+        "reorderedDeliveries": 0,
+        "fastMotionVerdict": "inconclusive; inspect per-event gaps, not nominal frame rate",
+        "errors": [],
+        "video": {
+          "width": 1280,
+          "height": 913,
+          "decodedFrames": 168
+        }
+      },
+      "video": {
+        "path": "release-recordings-run2/candidate-light-combobox/capture.mp4",
+        "bytes": 871490,
+        "sha256": "ab62358db5a7191b70c60aed5ad48733eed34b7d865f07b2e9151e44caf39c7b"
+      }
+    },
+    {
+      "id": "candidate-dark-combobox",
+      "slug": "combobox",
+      "origin": "candidate",
+      "theme": "dark",
+      "code": 0,
+      "configPath": "/Users/codenameakshay/.t3/worktrees/beui/t3-48d38279/docs/proof/v3-parity/components/release-recordings-run2/configs/candidate-dark-combobox.json",
+      "runDirectory": "/Users/codenameakshay/.t3/worktrees/beui/t3-48d38279/docs/proof/v3-parity/components/release-recordings-run2/candidate-dark-combobox",
+      "missingTargets": [
+        "Search workspaces"
+      ],
+      "stats": {
+        "originEpochMs": 1792743768644,
+        "backend": "screenshots",
+        "startMs": 5150.0895,
+        "sequenceStartMs": 5150.198292,
+        "stopMs": 8317.355334,
+        "frames": 141,
+        "durationMs": 3148.6451625823975,
+        "measuredFps": 44.46356854170808,
+        "medianIntervalMs": 17.017126083374023,
+        "maxIntervalMs": 49.80635643005371,
+        "reorderedDeliveries": 0,
+        "fastMotionVerdict": "inconclusive; inspect per-event gaps, not nominal frame rate",
+        "errors": [],
+        "video": {
+          "width": 1280,
+          "height": 913,
+          "decodedFrames": 141
+        }
+      },
+      "video": {
+        "path": "release-recordings-run2/candidate-dark-combobox/capture.mp4",
+        "bytes": 739682,
+        "sha256": "118deba6357f93995375dcee0bb94be3316a6c5d7a9418b0f2703a544468f820"
+      }
+    }
+  ],
+  "changeVideos": [],
+  "knownGaps": "Workspace label, 48px trigger, and true 28px icon marks differ. Planned search target was missing.",
+  "coverage": "Default preview recording only. No complete state or example parity certificate."
+}

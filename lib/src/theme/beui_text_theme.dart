@@ -25,21 +25,21 @@ import 'package:flutter/material.dart';
 @immutable
 class BeuiTextTheme {
   /// Creates a typography contract. Defaults to the source families
-  /// ([sansFamily] `Inter`, [monoFamily] `JetBrains Mono`).
+  /// ([sansFamily] `Geist`, [monoFamily] `Geist Mono`).
   const BeuiTextTheme({
-    this.sansFamily = 'Inter',
-    this.monoFamily = 'JetBrains Mono',
+    this.sansFamily = 'Geist',
+    this.monoFamily = 'Geist Mono',
   });
 
-  /// The sans-serif family name (source: Inter).
+  /// The sans-serif family name (source: Geist).
   final String sansFamily;
 
-  /// The monospace family name (source: JetBrains Mono — **not** Geist Mono).
+  /// The monospace family name (source: Geist Mono).
   final String monoFamily;
 
   /// Fallback families for [monoFamily]. Resolves to the platform's built-in
   /// monospace when the named mono family is absent, so code renders in a
-  /// fixed-width face even before the consumer wires up JetBrains Mono.
+  /// fixed-width face even before the consumer wires up Geist Mono.
   List<String> get monoFamilyFallback => const ['monospace'];
 
   /// Fallback families for [sansFamily] — the platform's default sans-serif.

@@ -1,0 +1,428 @@
+--- docs/proof/v3-parity/resume-20261023/sortable-handle-ownership/input-sortable_list_test.dart	2026-10-24 00:16:59
++++ docs/proof/v3-parity/resume-20261023/sortable-handle-ownership/final-sortable_list_test.dart	2026-10-24 00:19:32
+@@ -85,6 +85,7 @@
+ }
+ 
+ void main() {
++  _ownershipMain();
+   testWidgets('keyboard moves item and announces its new position', (
+     tester,
+   ) async {
+@@ -624,4 +625,417 @@
+     return true;
+   });
+   return label;
++}
++
++Widget _ownershipApp({
++  List<String>? items,
++  ValueChanged<List<String>>? change,
++  bool second = false,
++  bool firstEnabled = true,
++  bool secondEnabled = true,
++  bool showFirst = true,
++  int generation = 0,
++  FocusNode? outside,
++  VoidCallback? firstPress,
++  VoidCallback? secondPress,
++  Key? rootKey,
++  bool reparent = false,
++  bool visible = true,
++}) {
++  final list = BeuiSortableList<String>(
++    key: rootKey,
++    defaultItems: const ['A', 'B', 'C'],
++    items: items,
++    getItemId: (s) => s,
++    getItemLabel: (s) => s,
++    onItemsChange: change,
++    children: (values) => Column(
++      mainAxisSize: MainAxisSize.min,
++      children: [
++        BeuiSortableListGroup(
++          children: [
++            for (final id in values)
++              BeuiSortableListItem(
++                id: id,
++                child: Row(
++                  children: [
++                    if (showFirst)
++                      BeuiSortableListHandle(
++                        key: ValueKey('$id-first-$generation'),
++                        enabled: firstEnabled,
++                        onPressed: firstPress,
++                        child: Text('$id-first'),
++                      ),
++                    if (second)
++                      BeuiSortableListHandle(
++                        key: ValueKey('$id-second'),
++                        enabled: secondEnabled,
++                        onPressed: secondPress,
++                        child: Text('$id-second'),
++                      ),
++                    Text(id),
++                  ],
++                ),
++              ),
++          ],
++        ),
++        const BeuiSortableListUndo(),
++      ],
++    ),
++  );
++  return MaterialApp(
++    theme: ThemeData(extensions: [BeuiColors.light()]),
++    home: Scaffold(
++      body: Column(
++        children: [
++          if (visible)
++            SizedBox(
++              width: 400,
++              child: reparent
++                  ? Padding(padding: const EdgeInsets.all(1), child: list)
++                  : list,
++            ),
++          TextButton(
++            focusNode: outside,
++            onPressed: () {},
++            child: const Text('Outside'),
++          ),
++        ],
++      ),
++    ),
++  );
++}
++
++FocusNode _ownershipNode(WidgetTester t, String label) =>
++    Focus.of(t.element(find.text(label)));
++Future<void> _ownershipFocus(WidgetTester t, String label) async {
++  _ownershipNode(t, label).requestFocus();
++  await t.pump();
++}
++
++VoidCallback _ownershipUndo(WidgetTester t) => t
++    .widget<TextButton>(
++      find.ancestor(
++        of: find.text('Undo reorder'),
++        matching: find.byType(TextButton),
++      ),
++    )
++    .onPressed!;
++Future<void> _ownershipKey(WidgetTester t, LogicalKeyboardKey k) async {
++  await t.sendKeyEvent(k);
++  await t.pumpAndSettle();
++}
++
++void _ownershipMain() {
++  for (final transferRoot in [false, true]) {
++    testWidgets(
++      'handle transfers item owner and root=$transferRoot without stale Undo target',
++      (t) async {
++        final handleKey = GlobalKey();
++        final external = FocusNode();
++        addTearDown(external.dispose);
++        var transferred = false;
++        late StateSetter update;
++        final changes = <String>[];
++        Widget list(String root) => BeuiSortableList<String>(
++          key: ValueKey(root),
++          defaultItems: const ['A', 'B'],
++          getItemId: (id) => id,
++          getItemLabel: (id) => id,
++          onItemsChange: (ids) => changes.add('$root:${ids.join()}'),
++          children: (ids) => Column(
++            mainAxisSize: MainAxisSize.min,
++            children: [
++              BeuiSortableListGroup(
++                children: [
++                  for (final id in ids)
++                    BeuiSortableListItem(
++                      id: id,
++                      child: Row(
++                        children: [
++                          Text('$root-$id'),
++                          if (root ==
++                                  (transferred && transferRoot
++                                      ? 'right'
++                                      : 'left') &&
++                              id == (transferred && !transferRoot ? 'B' : 'A'))
++                            BeuiSortableListHandle(
++                              key: handleKey,
++                              child: const Text('Transferred'),
++                            ),
++                        ],
++                      ),
++                    ),
++                ],
++              ),
++              BeuiSortableListUndo(child: Text('Undo $root')),
++            ],
++          ),
++        );
++        await t.pumpWidget(
++          MaterialApp(
++            theme: ThemeData(extensions: [BeuiColors.light()]),
++            home: Scaffold(
++              body: StatefulBuilder(
++                builder: (context, set) {
++                  update = set;
++                  return Column(
++                    children: [
++                      list('left'),
++                      list('right'),
++                      TextButton(
++                        focusNode: external,
++                        onPressed: () {},
++                        child: const Text('Outside'),
++                      ),
++                    ],
++                  );
++                },
++              ),
++            ),
++          ),
++        );
++        await _ownershipFocus(t, 'Transferred');
++        final original = _ownershipNode(t, 'Transferred');
++        await _ownershipKey(t, LogicalKeyboardKey.end);
++        expect(changes, ['left:BA']);
++        update(() => transferred = true);
++        await t.pumpAndSettle();
++        expect(_ownershipNode(t, 'Transferred'), same(original));
++        external.requestFocus();
++        await t.pump();
++        t
++            .widget<TextButton>(
++              find.ancestor(
++                of: find.text('Undo left'),
++                matching: find.byType(TextButton),
++              ),
++            )
++            .onPressed!();
++        await t.pumpAndSettle();
++        expect(external.hasPrimaryFocus, isTrue);
++        expect(changes, ['left:BA', 'left:AB']);
++        await _ownershipFocus(t, 'Transferred');
++        await _ownershipKey(
++          t,
++          transferRoot ? LogicalKeyboardKey.end : LogicalKeyboardKey.home,
++        );
++        expect(changes.last, transferRoot ? 'right:BA' : 'left:BA');
++        if (transferRoot) {
++          external.requestFocus();
++          await t.pump();
++          t
++              .widget<TextButton>(
++                find.ancestor(
++                  of: find.text('Undo right'),
++                  matching: find.byType(TextButton),
++                ),
++              )
++              .onPressed!();
++          await t.pumpAndSettle();
++          expect(original.hasPrimaryFocus, isTrue);
++          expect(changes.last, 'right:AB');
++        }
++        await t.pumpWidget(const SizedBox());
++        expect(original.parent, isNull);
++        expect(original.hasFocus, isFalse);
++      },
++    );
++  }
++  for (final removeFirst in [false, true]) {
++    testWidgets(
++      'Undo selects eligible second handle after first removed=$removeFirst',
++      (t) async {
++        var changed = false;
++        late StateSetter update;
++        await t.pumpWidget(
++          StatefulBuilder(
++            builder: (context, set) {
++              update = set;
++              return _ownershipApp(
++                second: true,
++                showFirst: !changed || !removeFirst,
++                firstEnabled: !changed,
++              );
++            },
++          ),
++        );
++        await _ownershipFocus(t, 'A-second');
++        final second = _ownershipNode(t, 'A-second');
++        await _ownershipKey(t, LogicalKeyboardKey.end);
++        update(() => changed = true);
++        await t.pumpAndSettle();
++        await t.tap(find.text('Undo reorder'));
++        await t.pumpAndSettle();
++        expect(_ownershipNode(t, 'A-second'), same(second));
++        expect(second.hasPrimaryFocus, isTrue);
++        await _ownershipKey(t, LogicalKeyboardKey.arrowDown);
++        expect(
++          t.getTopLeft(find.text('B-second')).dy,
++          lessThan(t.getTopLeft(find.text('A-second')).dy),
++        );
++      },
++    );
++  }
++
++  testWidgets('Enter activates the requested first handle callback', (t) async {
++    final calls = <String>[];
++    await t.pumpWidget(
++      _ownershipApp(
++        second: true,
++        firstPress: () => calls.add('first'),
++        secondPress: () => calls.add('second'),
++      ),
++    );
++    await _ownershipFocus(t, 'A-first');
++    await _ownershipKey(t, LogicalKeyboardKey.enter);
++    expect(calls, ['first']);
++  });
++
++  testWidgets('two enabled handles preserve independent focus ownership', (
++    t,
++  ) async {
++    await t.pumpWidget(_ownershipApp(second: true));
++    expect(
++      _ownershipNode(t, 'A-first'),
++      isNot(same(_ownershipNode(t, 'A-second'))),
++    );
++    await _ownershipFocus(t, 'A-first');
++    expect(_ownershipNode(t, 'A-first').context, isNotNull);
++    final primary = FocusManager.instance.primaryFocus;
++    expect(
++      primary?.context?.findAncestorWidgetOfExactType<IconButton>()?.icon,
++      isA<Text>().having((w) => w.data, 'focused handle', 'A-first'),
++    );
++  });
++  testWidgets('disabled second handle does not disable first handle', (
++    t,
++  ) async {
++    var calls = 0;
++    await t.pumpWidget(
++      _ownershipApp(second: true, secondEnabled: false, change: (_) => calls++),
++    );
++    await _ownershipFocus(t, 'A-first');
++    await _ownershipKey(t, LogicalKeyboardKey.arrowDown);
++    expect(calls, 1);
++  });
++  testWidgets('removing second handle leaves first usable', (t) async {
++    var calls = 0;
++    await t.pumpWidget(_ownershipApp(second: true, change: (_) => calls++));
++    await _ownershipFocus(t, 'A-second');
++    await t.pumpWidget(_ownershipApp(second: false, change: (_) => calls++));
++    await t.pumpAndSettle();
++    await _ownershipFocus(t, 'A-first');
++    await _ownershipKey(t, LogicalKeyboardKey.arrowDown);
++    expect(calls, 1);
++  });
++  testWidgets('key remount keeps replacement handle usable', (t) async {
++    var calls = 0;
++    await t.pumpWidget(_ownershipApp(change: (_) => calls++));
++    await _ownershipFocus(t, 'A-first');
++    await t.pumpWidget(_ownershipApp(generation: 1, change: (_) => calls++));
++    await t.pumpAndSettle();
++    await _ownershipFocus(t, 'A-first');
++    await _ownershipKey(t, LogicalKeyboardKey.arrowDown);
++    expect(calls, 1);
++  });
++  for (final accept in [true, false]) {
++    testWidgets(
++      'controlled Undo accept=$accept respects already focused external owner',
++      (t) async {
++        final external = FocusNode();
++        addTearDown(external.dispose);
++        var values = ['A', 'B', 'C'];
++        var calls = 0;
++        await t.pumpWidget(
++          StatefulBuilder(
++            builder: (context, set) => _ownershipApp(
++              items: values,
++              outside: external,
++              change: (next) {
++                calls++;
++                if (calls == 1 || accept) set(() => values = next);
++                if (calls == 2) external.requestFocus();
++              },
++            ),
++          ),
++        );
++        await _ownershipFocus(t, 'A-first');
++        await _ownershipKey(t, LogicalKeyboardKey.end);
++        external.requestFocus();
++        await t.pump();
++        expect(external.hasPrimaryFocus, isTrue);
++        _ownershipUndo(t)();
++        await t.pumpAndSettle();
++        expect(external.hasPrimaryFocus, isTrue);
++        expect(values, accept ? ['A', 'B', 'C'] : ['B', 'C', 'A']);
++        expect(calls, 2);
++      },
++    );
++  }
++  testWidgets(
++    'membership removes focused handle and reintroduces fresh usable handle',
++    (t) async {
++      var values = ['A', 'B', 'C'];
++      late StateSetter set;
++      var calls = 0;
++      await t.pumpWidget(
++        StatefulBuilder(
++          builder: (c, s) {
++            set = s;
++            return _ownershipApp(items: values, change: (_) => calls++);
++          },
++        ),
++      );
++      await _ownershipFocus(t, 'A-first');
++      set(() => values = ['B', 'C']);
++      await t.pumpAndSettle();
++      set(() => values = ['A', 'B', 'C']);
++      await t.pumpAndSettle();
++      await _ownershipFocus(t, 'A-first');
++      await _ownershipKey(t, LogicalKeyboardKey.arrowDown);
++      expect(calls, 1);
++    },
++  );
++  testWidgets('focused root reparent and disposal preserve external focus', (
++    t,
++  ) async {
++    final root = GlobalKey();
++    final external = FocusNode();
++    addTearDown(external.dispose);
++    await t.pumpWidget(_ownershipApp(rootKey: root, outside: external));
++    await _ownershipFocus(t, 'A-first');
++    final original = FocusManager.instance.primaryFocus;
++    await t.pumpWidget(
++      _ownershipApp(rootKey: root, reparent: true, outside: external),
++    );
++    await t.pumpAndSettle();
++    expect(FocusManager.instance.primaryFocus, same(original));
++    external.requestFocus();
++    await t.pump();
++    await t.pumpWidget(
++      _ownershipApp(rootKey: root, visible: false, outside: external),
++    );
++    await t.pumpAndSettle();
++    expect(external.hasPrimaryFocus, isTrue);
++  });
++  testWidgets('disabled sole handle is not chosen by Undo', (t) async {
++    var enabled = true;
++    late StateSetter set;
++    await t.pumpWidget(
++      StatefulBuilder(
++        builder: (c, s) {
++          set = s;
++          return _ownershipApp(firstEnabled: enabled);
++        },
++      ),
++    );
++    await _ownershipFocus(t, 'A-first');
++    await _ownershipKey(t, LogicalKeyboardKey.end);
++    set(() => enabled = false);
++    await t.pumpAndSettle();
++    _ownershipUndo(t)();
++    await t.pumpAndSettle();
++    expect(_ownershipNode(t, 'A-first').hasFocus, isFalse);
++  });
+ }

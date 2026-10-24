@@ -1,0 +1,670 @@
+{
+  "url": "https://beui.dev/charts/treemap",
+  "viewport": [
+    1440,
+    1000
+  ],
+  "text": "beUI Native is free — Pro mobile blocks and screens are in presale from $99\n\nReserve\nbeUI Pro for mobile\nbeUI\nComponents\nBlocks\nAgents\nCharts\nPlayground\nSponsors\nLight theme\nLight theme\nDark theme\nDark theme\nSystem theme\nSystem theme\n1.9k\nGet Pro\n\nINTRO\n\nHome\nCHARTS\n14\nSankey Chart\nNEW\nTreemap\nCandlestick Chart\nDonut Chart\nVolume Profile\nStatus Bar\nComposition Chart\nFunnel Chart\nLiquidity Heatmap\nBump Chart\nOrder Book\nHeat Calendar\nReturns Calendar\nPrice Target Fan\nCharts\nTreemap\nTreemap\nCopy Page\n\nProportional tiles that morph with your data, with value and share tooltips.\n\nPreview\nPreview\nPreview\nUsage\nUsage\nCode\nCode\n\nPortfolio allocation\n\nDemo data\n\nQ1\nQ1\nQ2\nQ2\nQ3\nQ3\nAAPL\n$210K\nMSFT\n$190K\nNVDA\n$130K\nLLY\n$128K\nUNH\n$85K\nJNJ\nJPM\n$80K\nV\n$95K\nBAC\nXOM\n$74K\nCVX\n$62K\nSHEL\n$44K\nTechnology\nHealthcare\nFinance\nEnergy\nPortfolio allocation data\nItem\tValue\tShare of total\tDetails\nTechnology / AAPL\t$210K\t17.9%\t\nTechnology / MSFT\t$190K\t16.2%\t\nTechnology / NVDA\t$130K\t11.1%\t\nHealthcare / LLY\t$128K\t10.9%\t\nHealthcare / UNH\t$85K\t7.2%\t\nHealthcare / JNJ\t$45K\t3.8%\t\nFinance / JPM\t$80K\t6.8%\t\nFinance / V\t$95K\t8.1%\t\nFinance / BAC\t$30K\t2.6%\t\nEnergy / XOM\t$74K\t6.3%\t\nEnergy / CVX\t$62K\t5.3%\t\nEnergy / SHEL\t$44K\t3.8%\t\nInstall\n\nAdd it with the shadcn CLI, or copy the source manually.\n\nCLI\nCLI\nManual\nManual\nbun\nbun\nnpm\nnpm\npnpm\npnpm\nyarn\nyarn\n$ bunx --bun shadcn add @beui/\ntreemap\ntreemap\nAPI Reference\nTreemap\ndata\nreadonly TreemapNode[]\n\nFlat leaves or nested groups. Tile area uses leaf values; groups sum their descendants.\n\n—\nlabel?\nstring\n—\nformatValue?\n((value: number) => string)\n—\ncolors?\nreadonly string[]\n\nTop-level palette; nodes can override their inherited color and textColor.\n\n—\ntextColor?\nstring\n—\nactiveId?\nstring | null\n—\ndefaultActiveId?\nstring | null\n—\nonActiveChange?\n((id: string | null) => void)\n—\nclassName?\nstring\n—\nTreemapPlot\nclassName?\nstring\n\nSets the plot height; default 20rem. The layout follows its measured dimensions.\n\n—\ntileClassName?\nstring\n—\nrenderTile?\n((tile: TreemapTile) => ReactNode)\n\nReturn presentation content only; each tile already owns its button and accessible name.\n\n—\nTreemapTooltip\nclassName?\nstring\n—\nside?\n\"bottom\" | \"left\" | \"right\" | \"top\"\ntop\nTreemapLegend\nclassName?\nstring\n—\nshowValues?\nboolean\nfalse\nRelated components\nSankey Chart\nNEW\n\nWeighted flows between stages that draw in and morph with your data.\n\nDonut Chart\n\nRounded share segments with a linked center readout and legend.\n\nComposition Chart\n\nStacked bar and area shares with period tooltips and a compact interactive legend.\n\nAbout Treemap\n\nTreemap is an animated React treemap chart for hierarchical or flat data. Each tile's area matches its value, nested groups are tiled with an order-preserving binary layout, and tiles spring to their new sizes with Framer Motion when the data changes. Hovering or focusing a tile opens a cursor-following tooltip with the value and share of total, and you can compose Plot, Tooltip and Legend parts or render custom tile content, colors and formatting.\n\nWhen to use it\nA finance dashboard shows a portfolio or market by sector and holding sized by value.\nAn engineering tool shows disk usage, bundle size or cloud spend broken down by folder or service.\nA sales or budget report compares categories and subcategories as share of a total.\nAccessibility\n\nEvery tile is a native button with an accessible name covering its path, value, share and description, and the plot keeps one roving tab stop. Arrow keys move to the nearest tile in that direction, Home and End jump to the first and last tile, and Escape closes the tooltip. If a focused tile is removed, focus moves to a remaining tile, and a visually hidden table lists every item with its exact value and share. With reduced motion enabled, tiles resize without the spring morph.\n\nFAQ\nHow do I make a treemap chart in React?\nInstall the chart with the shadcn CLI and pass data to Treemap. Leaves have an id, label and value, and groups have children instead of a value. With no children, Treemap renders its plot, tooltip and legend.\nCan I use my own colors and value format?\nYes. Pass a colors palette and formatValue to Treemap, set color or textColor on any node, and use renderTile on TreemapPlot to draw custom tile content.\nCan I control which tile is active?\nYes. Pass activeId and onActiveChange for controlled use, or defaultActiveId for uncontrolled use. The useTreemap hook gives custom parts access to the same state.\n\nUpdated Oct 18, 2026\n\nbeUI\nPro\nLimited Offer\n\n300+ blocks and premium motion components for React and Next.js.\n\n$179 lifetime access\n\nExplore beUI Pro\nSponsors\n\nDIAMOND\n\nTracwell\n\nVisitor insights for growth\n\nIllos\n\nAnimated illustrations for product sites\n\nBecome a sponsor",
+  "elements": [
+    {
+      "tag": "svg",
+      "role": null,
+      "label": null,
+      "text": "",
+      "box": {
+        "x": -231.99095153808594,
+        "y": 0,
+        "width": 2880,
+        "height": 39
+      }
+    },
+    {
+      "tag": "svg",
+      "role": null,
+      "label": null,
+      "text": "",
+      "box": {
+        "x": -1266.0068359375,
+        "y": 5.84375,
+        "width": 2880,
+        "height": 39
+      }
+    },
+    {
+      "tag": "svg",
+      "role": null,
+      "label": null,
+      "text": "",
+      "box": {
+        "x": 988.78125,
+        "y": 13.5,
+        "width": 12,
+        "height": 12
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "label": "Search components",
+      "text": "Search⌘K",
+      "box": {
+        "x": 1035.84375,
+        "y": 50,
+        "width": 36,
+        "height": 36
+      }
+    },
+    {
+      "tag": "svg",
+      "role": null,
+      "label": null,
+      "text": "",
+      "box": {
+        "x": 1046.84375,
+        "y": 61,
+        "width": 14,
+        "height": 14
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": "tab",
+      "label": null,
+      "text": "Light themeLight theme",
+      "box": {
+        "x": 1083.84375,
+        "y": 52,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "tag": "svg",
+      "role": null,
+      "label": null,
+      "text": "",
+      "box": {
+        "x": 1091.84375,
+        "y": 60,
+        "width": 16,
+        "height": 16
+      }
+    },
+    {
+      "tag": "svg",
+      "role": null,
+      "label": null,
+      "text": "",
+      "box": {
+        "x": 1091.84375,
+        "y": 60,
+        "width": 16,
+        "height": 16
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": "tab",
+      "label": null,
+      "text": "Dark themeDark theme",
+      "box": {
+        "x": 1115.84375,
+        "y": 52,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "tag": "svg",
+      "role": null,
+      "label": null,
+      "text": "",
+      "box": {
+        "x": 1123.84375,
+        "y": 60,
+        "width": 16,
+        "height": 16
+      }
+    },
+    {
+      "tag": "svg",
+      "role": null,
+      "label": null,
+      "text": "",
+      "box": {
+        "x": 1123.84375,
+        "y": 60,
+        "width": 16,
+        "height": 16
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": "tab",
+      "label": null,
+      "text": "System themeSystem theme",
+      "box": {
+        "x": 1147.84375,
+        "y": 52,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "tag": "svg",
+      "role": null,
+      "label": null,
+      "text": "",
+      "box": {
+        "x": 1155.84375,
+        "y": 60,
+        "width": 16,
+        "height": 16
+      }
+    },
+    {
+      "tag": "svg",
+      "role": null,
+      "label": null,
+      "text": "",
+      "box": {
+        "x": 1155.84375,
+        "y": 60,
+        "width": 16,
+        "height": 16
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "label": "Customize theme",
+      "text": "",
+      "box": {
+        "x": 1191.84375,
+        "y": 50,
+        "width": 36,
+        "height": 36
+      }
+    },
+    {
+      "tag": "svg",
+      "role": null,
+      "label": null,
+      "text": "",
+      "box": {
+        "x": 1201.84375,
+        "y": 60,
+        "width": 16,
+        "height": 16
+      }
+    },
+    {
+      "tag": "svg",
+      "role": null,
+      "label": null,
+      "text": "",
+      "box": {
+        "x": 1248.84375,
+        "y": 61,
+        "width": 14,
+        "height": 14
+      }
+    },
+    {
+      "tag": "svg",
+      "role": null,
+      "label": null,
+      "text": "",
+      "box": {
+        "x": 1378,
+        "y": 61,
+        "width": 14,
+        "height": 14
+      }
+    },
+    {
+      "tag": "svg",
+      "role": null,
+      "label": null,
+      "text": "",
+      "box": {
+        "x": 352.6875,
+        "y": 131,
+        "width": 14,
+        "height": 14
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "label": "Copy page as Markdown",
+      "text": "Copy Page",
+      "box": {
+        "x": 920.671875,
+        "y": 164,
+        "width": 102.328125,
+        "height": 32
+      }
+    },
+    {
+      "tag": "svg",
+      "role": null,
+      "label": null,
+      "text": "",
+      "box": {
+        "x": 930.671875,
+        "y": 173,
+        "width": 14,
+        "height": 14
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "label": "More page actions",
+      "text": "",
+      "box": {
+        "x": 1024,
+        "y": 164,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "tag": "svg",
+      "role": null,
+      "label": null,
+      "text": "",
+      "box": {
+        "x": 1033,
+        "y": 173,
+        "width": 14,
+        "height": 14
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": "tab",
+      "label": null,
+      "text": "PreviewPreview",
+      "box": {
+        "x": 308,
+        "y": 268,
+        "width": 80.1875,
+        "height": 32
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": "tab",
+      "label": null,
+      "text": "UsageUsage",
+      "box": {
+        "x": 392.1875,
+        "y": 268,
+        "width": 69.40625,
+        "height": 32
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": "tab",
+      "label": null,
+      "text": "CodeCode",
+      "box": {
+        "x": 465.59375,
+        "y": 268,
+        "width": 62.40625,
+        "height": 32
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "label": "Expand preview",
+      "text": "",
+      "box": {
+        "x": 1016,
+        "y": 264,
+        "width": 40,
+        "height": 40
+      }
+    },
+    {
+      "tag": "svg",
+      "role": null,
+      "label": null,
+      "text": "",
+      "box": {
+        "x": 1028,
+        "y": 276,
+        "width": 16,
+        "height": 16
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": "tab",
+      "label": null,
+      "text": "Q1Q1",
+      "box": {
+        "x": 885.359375,
+        "y": 372,
+        "width": 37.8125,
+        "height": 32
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": "tab",
+      "label": null,
+      "text": "Q2Q2",
+      "box": {
+        "x": 927.171875,
+        "y": 372,
+        "width": 40.375,
+        "height": 32
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": "tab",
+      "label": null,
+      "text": "Q3Q3",
+      "box": {
+        "x": 971.546875,
+        "y": 372,
+        "width": 40.453125,
+        "height": 32
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "label": "Technology / AAPL. $210K. 17.9% of total",
+      "text": "AAPL$210K",
+      "box": {
+        "x": 344,
+        "y": 428,
+        "width": 303.625,
+        "height": 126.78125
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "label": "Technology / MSFT. $190K. 16.2% of total",
+      "text": "MSFT$190K",
+      "box": {
+        "x": 344,
+        "y": 554.78125,
+        "width": 180.28125,
+        "height": 193.203125
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "label": "Technology / NVDA. $130K. 11.1% of total",
+      "text": "NVDA$130K",
+      "box": {
+        "x": 524.28125,
+        "y": 554.78125,
+        "width": 123.34375,
+        "height": 193.203125
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "label": "Healthcare / LLY. $128K. 10.9% of total",
+      "text": "LLY$128K",
+      "box": {
+        "x": 647.625,
+        "y": 428,
+        "width": 147.796875,
+        "height": 158.75
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "label": "Healthcare / UNH. $85K. 7.2% of total",
+      "text": "UNH$85K",
+      "box": {
+        "x": 647.625,
+        "y": 586.75,
+        "width": 147.796875,
+        "height": 105.421875
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "label": "Healthcare / JNJ. $45K. 3.8% of total",
+      "text": "JNJ",
+      "box": {
+        "x": 647.625,
+        "y": 692.171875,
+        "width": 147.796875,
+        "height": 55.8125
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "label": "Finance / JPM. $80K. 6.8% of total",
+      "text": "JPM$80K",
+      "box": {
+        "x": 795.421875,
+        "y": 428,
+        "width": 86.0625,
+        "height": 170.375
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "label": "Finance / V. $95K. 8.1% of total",
+      "text": "V$95K",
+      "box": {
+        "x": 881.5,
+        "y": 428,
+        "width": 134.484375,
+        "height": 129.484375
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "label": "Finance / BAC. $30K. 2.6% of total",
+      "text": "BAC",
+      "box": {
+        "x": 881.5,
+        "y": 557.484375,
+        "width": 134.484375,
+        "height": 40.890625
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "label": "Energy / XOM. $74K. 6.3% of total",
+      "text": "XOM$74K",
+      "box": {
+        "x": 795.421875,
+        "y": 598.375,
+        "width": 90.671875,
+        "height": 149.609375
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "label": "Energy / CVX. $62K. 5.3% of total",
+      "text": "CVX$62K",
+      "box": {
+        "x": 886.109375,
+        "y": 598.375,
+        "width": 129.875,
+        "height": 87.5
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "label": "Energy / SHEL. $44K. 3.8% of total",
+      "text": "SHEL$44K",
+      "box": {
+        "x": 886.109375,
+        "y": 685.890625,
+        "width": 129.875,
+        "height": 62.09375
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": "tab",
+      "label": null,
+      "text": "CLICLI",
+      "box": {
+        "x": 308,
+        "y": 985,
+        "width": 49.34375,
+        "height": 32
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": "tab",
+      "label": null,
+      "text": "ManualManual",
+      "box": {
+        "x": 361.34375,
+        "y": 985,
+        "width": 76.203125,
+        "height": 32
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": "tab",
+      "label": null,
+      "text": "bunbun",
+      "box": {
+        "x": 317,
+        "y": 1046,
+        "width": 41.3125,
+        "height": 28
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": "tab",
+      "label": null,
+      "text": "npmnpm",
+      "box": {
+        "x": 360.3125,
+        "y": 1046,
+        "width": 44.671875,
+        "height": 28
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": "tab",
+      "label": null,
+      "text": "pnpmpnpm",
+      "box": {
+        "x": 406.984375,
+        "y": 1046,
+        "width": 51.84375,
+        "height": 28
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": "tab",
+      "label": null,
+      "text": "yarnyarn",
+      "box": {
+        "x": 460.828125,
+        "y": 1046,
+        "width": 44.5,
+        "height": 28
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "label": "Copy code",
+      "text": "",
+      "box": {
+        "x": 1011,
+        "y": 1044,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "tag": "svg",
+      "role": null,
+      "label": null,
+      "text": "",
+      "box": {
+        "x": 1020,
+        "y": 1053,
+        "width": 14,
+        "height": 14
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "label": null,
+      "text": "About Treemap",
+      "box": {
+        "x": 292,
+        "y": 3077.5625,
+        "width": 776,
+        "height": 40
+      }
+    },
+    {
+      "tag": "svg",
+      "role": null,
+      "label": null,
+      "text": "",
+      "box": {
+        "x": 1040,
+        "y": 3089.5625,
+        "width": 16,
+        "height": 16
+      }
+    },
+    {
+      "tag": "svg",
+      "role": null,
+      "label": null,
+      "text": "",
+      "box": {
+        "x": 1299.375,
+        "y": 380.5,
+        "width": 14,
+        "height": 14
+      }
+    },
+    {
+      "tag": "svg",
+      "role": null,
+      "label": null,
+      "text": "",
+      "box": {
+        "x": 1379,
+        "y": 624.5,
+        "width": 16,
+        "height": 16
+      }
+    }
+  ]
+}

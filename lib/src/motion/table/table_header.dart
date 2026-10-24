@@ -1,5 +1,59 @@
 part of 'table.dart';
 
+const _tableRuleWidth = 1.0;
+
+// Paint shared rules once, after all row backgrounds. Splitting a rule across
+// siblings introduces two antialiased edges at fractional row boundaries.
+class _TableGridRules extends CustomPainter {
+  _TableGridRules({
+    required this.scroll,
+    required this.rowHeight,
+    required this.rowCount,
+    required this.color,
+    required this.headerColor,
+  }) : super(repaint: scroll);
+
+  final ScrollController scroll;
+  final double rowHeight;
+  final int rowCount;
+  final Color color;
+  final Color headerColor;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final offset = scroll.hasClients ? scroll.offset : 0.0;
+    final first = math.max(0, ((offset - _tableRuleWidth) / rowHeight).ceil());
+    final last = math.min(
+      rowCount,
+      ((offset + size.height - rowHeight) / rowHeight).ceil(),
+    );
+    canvas.save();
+    canvas.clipRect(Rect.fromLTRB(0, rowHeight, size.width, size.height));
+    final paint = Paint();
+    for (var i = first; i <= last; i++) {
+      paint.color = i == 0 ? headerColor : color;
+      canvas.drawRect(
+        Rect.fromLTWH(
+          0,
+          rowHeight + i * rowHeight - offset,
+          size.width,
+          _tableRuleWidth,
+        ),
+        paint,
+      );
+    }
+    canvas.restore();
+  }
+
+  @override
+  bool shouldRepaint(_TableGridRules old) =>
+      old.scroll != scroll ||
+      old.rowHeight != rowHeight ||
+      old.rowCount != rowCount ||
+      old.color != color ||
+      old.headerColor != headerColor;
+}
+
 /// The header/body rule under `border-collapse: collapse`.
 ///
 /// A collapsed border is painted on the grid line *between* the two cells, over
@@ -33,7 +87,7 @@ class _TableHeader<T> extends StatelessWidget {
   final List<BeuiTableColumn<T>> columns;
   final BeuiColors colors;
   final bool reduce;
-  final Map<String, double> resolved;
+  final _ResolvedTableLayout resolved;
   final bool allSelected;
   final bool someSelected;
   final VoidCallback onToggleAll;
@@ -48,7 +102,7 @@ class _TableHeader<T> extends StatelessWidget {
     // edge of the last column when dropping at the end).
     double? indicatorX;
     if (dragKey != null && dropIndex != null) {
-      var x = state.widget.selectable ? _checkboxWidth : 0.0;
+      var x = resolved.selectionWidth;
       final clamped = dropIndex.clamp(0, columns.length);
       for (var i = 0; i < clamped; i++) {
         x += resolved[columns[i].key]!;
@@ -60,17 +114,32 @@ class _TableHeader<T> extends StatelessWidget {
       children: [
         if (state.widget.selectable)
           Container(
-            width: _checkboxWidth,
+            width: resolved.selectionWidth,
             height: state.widget.rowHeight,
             alignment: Alignment.center,
             decoration: BoxDecoration(
               color: colors.muted,
-              border: Border(bottom: BorderSide(color: _collapsedRule(colors))),
+              border: state.widget.sizing == BeuiTableSizing.intrinsic
+                  ? null
+                  : Border(bottom: BorderSide(color: _collapsedRule(colors))),
             ),
-            child: BeuiCheckbox(
-              value: allSelected,
-              indeterminate: !allSelected && someSelected,
-              onChanged: (_) => onToggleAll(),
+            child: SizedBox(
+              width: state.widget.sizing == BeuiTableSizing.intrinsic
+                  ? 24
+                  : null,
+              height: state.widget.sizing == BeuiTableSizing.intrinsic
+                  ? 24
+                  : null,
+              child: Align(
+                widthFactor: 1,
+                heightFactor: 1,
+                alignment: Alignment.centerLeft,
+                child: BeuiCheckbox(
+                  value: allSelected,
+                  indeterminate: !allSelected && someSelected,
+                  onChanged: (_) => onToggleAll(),
+                ),
+              ),
             ),
           ),
         for (var i = 0; i < columns.length; i++)
@@ -91,7 +160,9 @@ class _TableHeader<T> extends StatelessWidget {
             height: state.widget.rowHeight,
             decoration: BoxDecoration(
               color: colors.muted,
-              border: Border(bottom: BorderSide(color: _collapsedRule(colors))),
+              border: state.widget.sizing == BeuiTableSizing.intrinsic
+                  ? null
+                  : Border(bottom: BorderSide(color: _collapsedRule(colors))),
             ),
           ),
         ),
@@ -101,7 +172,13 @@ class _TableHeader<T> extends StatelessWidget {
     return Stack(
       clipBehavior: Clip.none,
       children: [
-        headerRow,
+        if (state.widget.sizing == BeuiTableSizing.intrinsic)
+          SizedBox(
+            height: state.widget.rowHeight + _tableRuleWidth / 2,
+            child: Align(alignment: Alignment.topLeft, child: headerRow),
+          )
+        else
+          headerRow,
         if (indicatorX != null)
           Positioned(
             left: indicatorX - 1,
@@ -157,18 +234,31 @@ class _HeaderCell<T> extends StatelessWidget {
         if (state.widget.reorderable)
           MouseRegion(
             cursor: SystemMouseCursors.grab,
-            child: GestureDetector(
-              behavior: HitTestBehavior.opaque,
-              onHorizontalDragStart: (_) => state._startReorder(column.key),
-              onHorizontalDragUpdate: (d) =>
-                  state._moveReorder(d.globalPosition.dx),
-              onHorizontalDragEnd: (_) => state._endReorder(),
-              child: Padding(
-                padding: const EdgeInsets.only(left: 8),
-                child: Icon(
-                  LucideIcons.grip_vertical,
-                  size: 14,
-                  color: colors.mutedForeground.withValues(alpha: 0.6),
+            child: Semantics(
+              button: true,
+              label: 'Reorder ${column.key} column',
+              child: GestureDetector(
+                behavior: HitTestBehavior.opaque,
+                dragStartBehavior: DragStartBehavior.down,
+                onHorizontalDragDown: (_) => state._startReorder(column.key),
+                onHorizontalDragUpdate: (d) =>
+                    state._moveReorder(d.globalPosition.dx),
+                onHorizontalDragEnd: (_) => state._endReorder(),
+                onHorizontalDragCancel: state._endReorder,
+                child: Padding(
+                  padding: EdgeInsets.only(
+                    left: state.widget.sizing == BeuiTableSizing.intrinsic
+                        ? 5
+                        : 8,
+                    right: state.widget.sizing == BeuiTableSizing.intrinsic
+                        ? 5
+                        : 0,
+                  ),
+                  child: Icon(
+                    LucideIcons.grip_vertical,
+                    size: 14,
+                    color: colors.mutedForeground.withValues(alpha: 0.6),
+                  ),
                 ),
               ),
             ),
@@ -194,11 +284,21 @@ class _HeaderCell<T> extends StatelessWidget {
       height: state.widget.rowHeight,
       decoration: BoxDecoration(
         color: colors.muted,
-        border: Border(
-          bottom: BorderSide(color: _collapsedRule(colors)),
-          top: isActive ? BorderSide(color: colors.primary) : BorderSide.none,
-        ),
+        border: state.widget.sizing == BeuiTableSizing.intrinsic
+            ? null
+            : Border(
+                bottom: BorderSide(color: _collapsedRule(colors)),
+                top: isActive
+                    ? BorderSide(color: colors.primary)
+                    : BorderSide.none,
+              ),
       ),
+      foregroundDecoration:
+          state.widget.sizing == BeuiTableSizing.intrinsic && isActive
+          ? BoxDecoration(
+              border: Border(top: BorderSide(color: colors.primary)),
+            )
+          : null,
       child: Stack(
         clipBehavior: Clip.none,
         children: [
@@ -212,14 +312,20 @@ class _HeaderCell<T> extends StatelessWidget {
               width: 6,
               child: MouseRegion(
                 cursor: SystemMouseCursors.resizeLeftRight,
-                child: GestureDetector(
-                  behavior: HitTestBehavior.opaque,
-                  onHorizontalDragStart: (d) =>
-                      state._startResize(column.key, d.globalPosition.dx),
-                  onHorizontalDragUpdate: (d) =>
-                      state._moveResize(d.globalPosition.dx),
-                  onHorizontalDragEnd: (_) => state._endResize(),
-                  child: const SizedBox.expand(),
+                child: Semantics(
+                  button: true,
+                  label: 'Resize ${column.key} column',
+                  child: GestureDetector(
+                    behavior: HitTestBehavior.opaque,
+                    dragStartBehavior: DragStartBehavior.down,
+                    onHorizontalDragDown: (d) =>
+                        state._startResize(column.key, d.globalPosition.dx),
+                    onHorizontalDragUpdate: (d) =>
+                        state._moveResize(d.globalPosition.dx),
+                    onHorizontalDragEnd: (_) => state._endResize(),
+                    onHorizontalDragCancel: state._endResize,
+                    child: const SizedBox.expand(),
+                  ),
                 ),
               ),
             ),
@@ -269,47 +375,63 @@ class _HeaderCell<T> extends StatelessWidget {
       final desc = active && sort?.direction == BeuiSortDirection.desc;
       return MouseRegion(
         cursor: SystemMouseCursors.click,
-        child: GestureDetector(
-          behavior: HitTestBehavior.opaque,
-          onTap: () => state._toggleSort(column.key),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: Row(
-              mainAxisAlignment: _rowAlign(column.align),
-              children: [
-                Flexible(
-                  child: Text(
-                    column.header,
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w500,
-                      color: active
-                          ? colors.foreground
-                          : colors.mutedForeground,
+        child: Focus(
+          onKeyEvent: (_, event) {
+            if (event is KeyDownEvent &&
+                (event.logicalKey == LogicalKeyboardKey.enter ||
+                    event.logicalKey == LogicalKeyboardKey.space)) {
+              state._toggleSort(column.key);
+              return KeyEventResult.handled;
+            }
+            return KeyEventResult.ignored;
+          },
+          child: Builder(
+            builder: (context) => GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTap: () {
+                Focus.of(context).requestFocus();
+                state._toggleSort(column.key);
+              },
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: Row(
+                  mainAxisAlignment: _rowAlign(column.align),
+                  children: [
+                    Flexible(
+                      child: Text(
+                        column.header,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500,
+                          color: active
+                              ? colors.foreground
+                              : colors.mutedForeground,
+                        ),
+                      ),
                     ),
-                  ),
-                ),
-                const SizedBox(width: 4),
-                AnimatedOpacity(
-                  opacity: active ? 1 : 0.35,
-                  duration: w.reduce
-                      ? Duration.zero
-                      : const Duration(milliseconds: 180),
-                  child: AnimatedRotation(
-                    turns: desc ? 0.5 : 0,
-                    duration: w.reduce
-                        ? Duration.zero
-                        : const Duration(milliseconds: 180),
-                    curve: beuiEaseOut,
-                    child: Icon(
-                      LucideIcons.chevron_up,
-                      size: 14,
-                      color: colors.mutedForeground,
+                    const SizedBox(width: 4),
+                    AnimatedOpacity(
+                      opacity: active ? 1 : 0.35,
+                      duration: w.reduce
+                          ? Duration.zero
+                          : const Duration(milliseconds: 180),
+                      child: AnimatedRotation(
+                        turns: desc ? 0.5 : 0,
+                        duration: w.reduce
+                            ? Duration.zero
+                            : const Duration(milliseconds: 180),
+                        curve: beuiEaseOut,
+                        child: Icon(
+                          LucideIcons.chevron_up,
+                          size: 14,
+                          color: colors.mutedForeground,
+                        ),
+                      ),
                     ),
-                  ),
+                  ],
                 ),
-              ],
+              ),
             ),
           ),
         ),

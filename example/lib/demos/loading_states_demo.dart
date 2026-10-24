@@ -5,7 +5,61 @@ import '../explorer/widgets.dart';
 
 /// Gallery route for the agent loading-states suite —
 /// [BeuiThinkingShimmer], [BeuiAgentProgress], and [BeuiReasoningText].
-Widget loadingStatesDemo(BuildContext context) => const _LoadingStatesDemo();
+Widget loadingStatesDemo(BuildContext context, {String? example}) {
+  switch (example ?? Uri.base.queryParameters['example']) {
+    case 'thinking-shimmer':
+      return const Center(
+        child: BeuiThinkingShimmer(
+          text: 'Thinking…',
+          style: TextStyle(fontSize: 18),
+        ),
+      );
+    case 'agent-progress':
+      return const Center(
+        child: BeuiAgentProgress(
+          label: 'Churning',
+          initialSeconds: 151.6,
+          style: TextStyle(fontSize: 16),
+        ),
+      );
+    case 'api-specimens':
+      return const _LoadingStatesDemo();
+    default:
+      return Center(
+        child: SizedBox(
+          width: 384,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              for (var i = 0; i < _reasoningExamples.length; i++) ...[
+                if (i > 0) const SizedBox(height: 28),
+                Text(
+                  _reasoningExamples[i].label.toUpperCase(),
+                  style: TextStyle(
+                    fontSize: 11,
+                    height: 16.5 / 11,
+                    fontWeight: FontWeight.w500,
+                    letterSpacing: 1.1,
+                    color: Theme.of(context)
+                        .extension<BeuiColors>()!
+                        .mutedForeground
+                        .withValues(alpha: 0.6),
+                  ),
+                ),
+                const SizedBox(height: 8),
+                BeuiReasoningText(
+                  variant: _reasoningExamples[i].variant,
+                  phrases: _reasoningExamples[i].phrases,
+                  style: const TextStyle(fontSize: 16, height: 28 / 16),
+                ),
+              ],
+            ],
+          ),
+        ),
+      );
+  }
+}
 
 class _LoadingStatesDemo extends StatelessWidget {
   const _LoadingStatesDemo();

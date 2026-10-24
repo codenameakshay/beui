@@ -163,6 +163,8 @@ class BeuiAgentStrings {
     // Prompt input.
     this.promptPlaceholder = 'Ask the agent to do something…',
     this.promptSemanticLabel = 'Prompt',
+    // Voice orb.
+    this.orbUnavailable = 'Orb rendering unavailable',
   });
 
   // ── Tool approval ─────────────────────────────────────────────────────────
@@ -508,6 +510,12 @@ class BeuiAgentStrings {
   /// once the reader has typed.
   final String promptSemanticLabel;
 
+  // ── Voice orb ─────────────────────────────────────────────────────────────
+
+  /// Fallback copy when `BeuiVoiceOrb`'s fragment program fails to load
+  /// (source "Orb rendering unavailable").
+  final String orbUnavailable;
+
   // ── Defaults ──────────────────────────────────────────────────────────────
   //
   // Declared as static methods rather than inline closures so the tear-offs are
@@ -662,6 +670,7 @@ class BeuiAgentStrings {
     String? stopGenerating,
     String? promptPlaceholder,
     String? promptSemanticLabel,
+    String? orbUnavailable,
   }) {
     return BeuiAgentStrings(
       toolApprovalTitle: toolApprovalTitle ?? this.toolApprovalTitle,
@@ -767,6 +776,7 @@ class BeuiAgentStrings {
       stopGenerating: stopGenerating ?? this.stopGenerating,
       promptPlaceholder: promptPlaceholder ?? this.promptPlaceholder,
       promptSemanticLabel: promptSemanticLabel ?? this.promptSemanticLabel,
+      orbUnavailable: orbUnavailable ?? this.orbUnavailable,
     );
   }
 
@@ -871,7 +881,8 @@ class BeuiAgentStrings {
         other.messageNavigation == messageNavigation &&
         other.stopGenerating == stopGenerating &&
         other.promptPlaceholder == promptPlaceholder &&
-        other.promptSemanticLabel == promptSemanticLabel;
+        other.promptSemanticLabel == promptSemanticLabel &&
+        other.orbUnavailable == orbUnavailable;
   }
 
   @override
@@ -966,5 +977,6 @@ class BeuiAgentStrings {
     stopGenerating,
     promptPlaceholder,
     promptSemanticLabel,
+    orbUnavailable,
   ]);
 }

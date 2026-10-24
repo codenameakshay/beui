@@ -1,0 +1,120 @@
+00:00 +0: loading /Users/codenameakshay/.t3/worktrees/beui/t3-450031da/test/motion/agents_round2_test.dart
+00:00 +0: orb springs a nonzero initial activity from the source rest silhouette
+00:00 +1: each loading source example is isolated
+══╡ EXCEPTION CAUGHT BY RENDERING LIBRARY ╞═════════════════════════════════════════════════════════
+The following assertion was thrown during layout:
+A RenderFlex overflowed by 84 pixels on the right.
+
+The relevant error-causing widget was:
+  Row
+  Row:file:///Users/codenameakshay/.t3/worktrees/beui/t3-450031da/lib/src/motion/loading_states.dart:529:14
+
+The overflowing RenderFlex has an orientation of Axis.horizontal.
+The edge of the RenderFlex that is overflowing has been marked in the rendering with a yellow and
+black striped pattern. This is usually caused by the contents being too big for the RenderFlex.
+Consider applying a flex factor (e.g. using an Expanded widget) to force the children of the
+RenderFlex to fit within the available space instead of being sized to their natural size.
+This is considered an error condition because it indicates that there is content that cannot be
+seen. If the content is legitimately bigger than the available space, consider clipping it with a
+ClipRect widget before putting it in the flex, or using a scrollable container rather than a Flex,
+like a ListView.
+The specific RenderFlex in question is: RenderFlex#46c77 relayoutBoundary=up6 OVERFLOWING:
+  needs compositing
+  creator: Row ← Semantics ← BeuiReasoningText ← Column ← SizedBox ← Center ← Builder ← Align ←
+    KeyedSubtree-[GlobalKey#e79c9] ← _BodyBuilder ← MediaQuery ← LayoutId-[<_ScaffoldSlot.body>] ← ⋯
+  parentData: <none> (can use size)
+  constraints: BoxConstraints(0.0<=w<=384.0, 0.0<=h<=Infinity)
+  size: Size(384.0, 28.0)
+  direction: horizontal
+  mainAxisAlignment: start
+  mainAxisSize: min
+  crossAxisAlignment: center
+  textDirection: ltr
+  verticalDirection: down
+  spacing: 0.0
+◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤
+════════════════════════════════════════════════════════════════════════════════════════════════════
+══╡ EXCEPTION CAUGHT BY RENDERING LIBRARY ╞═════════════════════════════════════════════════════════
+The following assertion was thrown during layout:
+A RenderFlex overflowed by 84 pixels on the right.
+
+The relevant error-causing widget was:
+  Row
+  Row:file:///Users/codenameakshay/.t3/worktrees/beui/t3-450031da/lib/src/motion/loading_states.dart:529:14
+
+The overflowing RenderFlex has an orientation of Axis.horizontal.
+The edge of the RenderFlex that is overflowing has been marked in the rendering with a yellow and
+black striped pattern. This is usually caused by the contents being too big for the RenderFlex.
+Consider applying a flex factor (e.g. using an Expanded widget) to force the children of the
+RenderFlex to fit within the available space instead of being sized to their natural size.
+This is considered an error condition because it indicates that there is content that cannot be
+seen. If the content is legitimately bigger than the available space, consider clipping it with a
+ClipRect widget before putting it in the flex, or using a scrollable container rather than a Flex,
+like a ListView.
+The specific RenderFlex in question is: RenderFlex#694f7 relayoutBoundary=up6 OVERFLOWING:
+  needs compositing
+  creator: Row ← Semantics ← BeuiReasoningText ← Column ← SizedBox ← Center ← Builder ← Align ←
+    KeyedSubtree-[GlobalKey#e79c9] ← _BodyBuilder ← MediaQuery ← LayoutId-[<_ScaffoldSlot.body>] ← ⋯
+  parentData: <none> (can use size)
+  constraints: BoxConstraints(0.0<=w<=384.0, 0.0<=h<=Infinity)
+  size: Size(384.0, 28.0)
+  direction: horizontal
+  mainAxisAlignment: start
+  mainAxisSize: min
+  crossAxisAlignment: center
+  textDirection: ltr
+  verticalDirection: down
+  spacing: 0.0
+◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤
+════════════════════════════════════════════════════════════════════════════════════════════════════
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following message was thrown:
+Multiple exceptions (2) were detected during the running of the current test, and at least one was
+unexpected.
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:00 +1 -1: each loading source example is isolated [E]
+  Test failed. See exception logs above.
+  The test description was: each loading source example is isolated
+  
+00:00 +1 -1: avatar source example mounts at 650ms and 1550ms
+00:00 +2 -1: activity source reasoning-steps reaches its terminal summary
+00:00 +3 -1: activity source web-search reaches its terminal summary
+00:00 +4 -1: activity source tool-calls reaches its terminal summary
+00:00 +5 -1: activity source agent-trace reaches its terminal summary
+00:00 +6 -1: activity source mixed-activity reaches its terminal summary
+00:00 +7 -1: chat-app streams at 92 cps, stops, resumes without duplicate turns
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test:
+Expected: exactly one matching candidate
+  Actual: _TextWidgetFinder:<Found 0 widgets with text "I'll keep the patch focused, p": []>
+   Which: means none were found but one was expected
+
+When the exception was thrown, this was the stack:
+#4      main.<anonymous closure> (file:///Users/codenameakshay/.t3/worktrees/beui/t3-450031da/test/motion/agents_round2_test.dart:159:7)
+<asynchronous suspension>
+#5      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#6      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+This was caught by the test expectation on the following line:
+  file:///Users/codenameakshay/.t3/worktrees/beui/t3-450031da/test/motion/agents_round2_test.dart line 159
+The test description was:
+  chat-app streams at 92 cps, stops, resumes without duplicate turns
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:01 +7 -2: chat-app streams at 92 cps, stops, resumes without duplicate turns [E]
+  Test failed. See exception logs above.
+  The test description was: chat-app streams at 92 cps, stops, resumes without duplicate turns
+  
+00:01 +7 -2: source diff has five rows without an invented context gap
+00:01 +8 -2: source questions show all three option descriptions
+00:01 +9 -2: sent prompt notice wins over later action, reduce=false
+00:01 +10 -2: sent prompt notice wins over later action, reduce=true
+00:01 +11 -2: chat-app pending stop does not fabricate an assistant reply
+00:01 +12 -2: Some tests failed.
+
+Failing tests:
+  /Users/codenameakshay/.t3/worktrees/beui/t3-450031da/test/motion/agents_round2_test.dart: chat-app streams at 92 cps, stops, resumes without duplicate turns
+  /Users/codenameakshay/.t3/worktrees/beui/t3-450031da/test/motion/agents_round2_test.dart: each loading source example is isolated

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'catalog.dart';
+import 'capture_probe.dart';
 import 'theme_scope.dart';
 
 /// The teal uppercase "NEW" pill, matching the source badge.
@@ -198,24 +199,35 @@ class _ExplorerCardState extends State<ExplorerCard> {
 
 /// The bordered surface that frames a live demo on a detail page.
 class PreviewSurface extends StatelessWidget {
-  const PreviewSurface({super.key, required this.child});
+  const PreviewSurface({super.key, required this.child, this.innerWidth});
   final Widget child;
+
+  /// Available child width, excluding the 32px padding and 1px border per side.
+  /// Narrow parents reduce this width through normal layout constraints.
+  final double? innerWidth;
 
   @override
   Widget build(BuildContext context) {
     final colors = Theme.of(context).extension<BeuiColors>()!;
-    return Container(
-      width: double.infinity,
+    final width = innerWidth;
+    final hasWidth = width != null && width.isFinite && width > 0;
+    final surface = Container(
+      width: hasWidth ? width + 66 : double.infinity,
       constraints: const BoxConstraints(minHeight: 360),
       padding: const EdgeInsets.all(32),
       decoration: BoxDecoration(
-        color: colors.card.withValues(alpha: 0.4),
+        color: colors.background,
         borderRadius: BorderRadius.circular(20),
         border: Border.all(color: colors.border),
       ),
       alignment: Alignment.center,
-      child: child,
+      child: CaptureProbe(
+        enabled: Uri.base.queryParameters['captureProbe'] == '1',
+        background: colors.background,
+        child: child,
+      ),
     );
+    return hasWidth ? Align(child: surface) : surface;
   }
 }
 

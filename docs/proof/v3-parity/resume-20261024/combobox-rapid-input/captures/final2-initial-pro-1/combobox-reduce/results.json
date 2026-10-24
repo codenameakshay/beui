@@ -1,0 +1,49 @@
+{
+  "target": "combobox",
+  "reducedMotion": "reduce",
+  "trace": [],
+  "browser": "156.0.8078.48",
+  "scripts": [],
+  "states": [
+    {
+      "reduce": true,
+      "focus": {
+        "tag": "BODY",
+        "role": null,
+        "label": null,
+        "text": "\n  \n    \n      \n        \n        \n          \n            This site can’t be reached\n          \n          \n            127.0.0.1 refused to connect.\n          \n\n          \n            \n              Try:\n              \n                \n                  Checking the connection\n                \n                  Checking the proxy and the firewall\n                \n              \n            \n          \n\n          ERR_CONNECTION_REFUSED\n\n          \n        \n      \n      \n        \n          \n            \n              Reload\n            \n          \n          \n        \n        \n          \n            Details\n          \n        \n      \n      \n        \n          \n            \n              Check your Internet connection\n              Check any cables and reboot any routers, modems or other network\n    devices you may be using.\n            \n          \n            \n              Allow Chrome to access the network in your firewall or antivirus\n          settings.\n              If it is already listed as a program allowed to access the network, try\n      removing it from the list and adding it again.\n            \n          \n            \n              If you use a proxy server…\n              Go to Applications > System Settings > Network, select the\n          active network, click the Details… button and deselect any proxies\n          that may have been selected.\n            \n          \n        \n      \n    \n    \n      \n        \n        \n        127.0.0.1 refused to connect.\n      \n    \n  \n  \n    \n    \n    \n  \n\n\nvar loadTimeDataRaw = {\"details\":\"Details\",\"errorCode\":\"ERR_CONNECTION_REFUSED\",\"fontfamily\":\"system-ui, sans-serif\",\"fontfamilyMd\":\"system-ui, sans-serif\",\"fontsize\":\"75%\",\"heading\":{\"msg\":\"This site can’t be reached\"},\"hideDetails\":\"Hide details\",\"iconClass\":\"icon-generic\",\"isOfflineError\":false,\"language\":\"en\",\"reloadButton\":{\"msg\":\"Reload\",\"reloadUrl\":\"http://127.0.0.1:51202/?slug=combobox&theme=light&captureProbe=1\"},\"roundedIconsAttribute\":\"\",\"suggestionsDetails\":[{\"body\":\"Check any cables and reboot any routers, modems or other network\\n    devices you may be using.\",\"header\":\"Check your Internet connection\"},{\"body\":\"If it is already listed as a program allowed to access the network, try\\n      removing it from the list and adding it again.\",\"header\":\"Allow Chrome to access the network in your firewall or antivirus\\n          settings.\"},{\"body\":\"Go to Applications > System Settings > Network, select the\\n          active network, click the Details… button and deselect any proxies\\n          that may have been selected.\",\"header\":\"If you use a proxy server…\"}],\"suggestionsSummaryList\":[{\"summary\":\"Checking the connection\"},{\"summary\":\"\\u003Ca href=\\\"#buttons\\\" onclick=\\\"toggleHelpBox()\\\">Checking the proxy and the firewall\\u003C/a>\"}],\"suggestionsSummaryListHeader\":\"Try:\",\"summary\":{\"msg\":\"\\u003Cstrong>127.0.0.1\\u003C/strong> refused to connect.\"},\"textdirection\":\"ltr\",\"title\":\"127.0.0.1\",\"webuiRoundedIconsAttribute\":\"\",\"webuiRoundedIconsEnabled\":false};",
+        "node": 1
+      },
+      "fields": [],
+      "buttons": [],
+      "rows": [],
+      "name": "failure",
+      "aria": "- heading \"This site can’t be reached\" [level=1]\n- paragraph:\n  - strong: 127.0.0.1\n  - text: refused to connect.\n- paragraph: \"Try:\"\n- list:\n  - listitem: Checking the connection\n  - listitem:\n    - link \"Checking the proxy and the firewall\":\n      - /url: \"#buttons\"\n- text: ERR_CONNECTION_REFUSED\n- button \"Reload\"\n- button \"Details\"",
+      "screenshot": {
+        "file": "failure.png",
+        "sha256": "7c7028f4de557cd2668343cb84cd3f3d0d9124039d8dcac80a29ae884051067c"
+      },
+      "options": []
+    }
+  ],
+  "checks": [
+    {
+      "name": "sequence completed",
+      "pass": false,
+      "actual": "Error: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:51202/?slug=combobox&theme=light&captureProbe=1\nCall log:\n\u001b[2m  - navigating to \"http://127.0.0.1:51202/?slug=combobox&theme=light&captureProbe=1\", waiting until \"load\"\u001b[22m\n"
+    },
+    {
+      "name": "trusted input",
+      "pass": true,
+      "actual": []
+    },
+    {
+      "name": "no page errors",
+      "pass": true,
+      "actual": []
+    }
+  ],
+  "frames": [],
+  "inputs": [],
+  "errors": []
+}

@@ -16,15 +16,6 @@ class _TableMenuEntry {
   final bool destructive;
 }
 
-/// Which trigger edge the menu panel aligns to.
-enum _TableMenuAlign {
-  /// Left edge of the trigger (row handle).
-  start,
-
-  /// Right edge of the trigger (column handle) — the source default.
-  end,
-}
-
 const double _menuWidth = 188;
 
 /// The small handle-triggered dropdown shared by the row and column handles —
@@ -34,23 +25,25 @@ const double _menuWidth = 188;
 /// (transparent barrier, Esc / tap-outside dismiss, root overlay so it escapes
 /// the table's scroll clip) and springs in on `SPRING_PANEL` (source
 /// `SPRING_PANEL`: scale 0.96 → 1, y -4 → 0, opacity). Reduced motion drops the
-/// scale + slide and just fades.
+/// scale and slide. Its entrance is immediate, matching the source.
 class _TableMenu extends StatefulWidget {
   const _TableMenu({
+    required this.label,
+    required this.onOpenChanged,
     required this.colors,
     required this.width,
     required this.height,
     required this.icon,
     required this.items,
-    this.align = _TableMenuAlign.end,
   });
 
   final BeuiColors colors;
+  final String label;
+  final ValueChanged<bool> onOpenChanged;
   final double width;
   final double height;
   final IconData icon;
   final List<_TableMenuEntry> items;
-  final _TableMenuAlign align;
 
   @override
   State<_TableMenu> createState() => _TableMenuState();
@@ -58,8 +51,32 @@ class _TableMenu extends StatefulWidget {
 
 class _TableMenuState extends State<_TableMenu> {
   bool _open = false;
+  final FocusNode _firstItemFocus = FocusNode();
+  late final FocusNode _focusNode = FocusNode(
+    onKeyEvent: (_, event) {
+      if (_open &&
+          event is KeyDownEvent &&
+          event.logicalKey == LogicalKeyboardKey.tab &&
+          !HardwareKeyboard.instance.isShiftPressed) {
+        _firstItemFocus.requestFocus();
+        return KeyEventResult.handled;
+      }
+      return KeyEventResult.ignored;
+    },
+  );
 
-  void _setOpen(bool v) => setState(() => _open = v);
+  @override
+  void dispose() {
+    _focusNode.dispose();
+    _firstItemFocus.dispose();
+    super.dispose();
+  }
+
+  void _setOpen(bool v) {
+    widget.onOpenChanged(v);
+    setState(() => _open = v);
+    if (!v) _focusNode.requestFocus();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -72,30 +89,58 @@ class _TableMenuState extends State<_TableMenu> {
       barrier: true,
       barrierColor: const Color(0x00000000),
       trapFocus: false,
-      enterDuration: const Duration(milliseconds: 240),
-      exitDuration: const Duration(milliseconds: 200),
+      enterDuration: MediaQuery.disableAnimationsOf(context)
+          ? Duration.zero
+          : const Duration(milliseconds: 240),
+      exitDuration: Duration.zero,
       overlayBuilder: _buildMenu,
-      child: MouseRegion(
-        cursor: SystemMouseCursors.click,
-        child: GestureDetector(
-          behavior: HitTestBehavior.opaque,
-          onTap: () => _setOpen(!_open),
-          child: Container(
-            width: widget.width,
-            height: widget.height,
-            alignment: Alignment.center,
-            decoration: BoxDecoration(
-              color: colors.primary,
-              borderRadius: BorderRadius.circular(999),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.12),
-                  blurRadius: 4,
-                  offset: const Offset(0, 1),
-                ),
-              ],
+      child: Semantics(
+        button: true,
+        label: widget.label,
+        child: FocusableActionDetector(
+          focusNode: _focusNode,
+          shortcuts: const {
+            SingleActivator(LogicalKeyboardKey.enter): ActivateIntent(),
+            SingleActivator(LogicalKeyboardKey.space): ActivateIntent(),
+          },
+          actions: {
+            ActivateIntent: CallbackAction<ActivateIntent>(
+              onInvoke: (_) {
+                _setOpen(!_open);
+                return null;
+              },
             ),
-            child: Icon(widget.icon, size: 12, color: colors.primaryForeground),
+          },
+          child: MouseRegion(
+            cursor: SystemMouseCursors.click,
+            child: GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTap: () {
+                _focusNode.requestFocus();
+                _setOpen(!_open);
+              },
+              child: Container(
+                width: widget.width,
+                height: widget.height,
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                  color: colors.primary,
+                  borderRadius: BorderRadius.circular(999),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withValues(alpha: 0.12),
+                      blurRadius: 4,
+                      offset: const Offset(0, 1),
+                    ),
+                  ],
+                ),
+                child: Icon(
+                  widget.icon,
+                  size: 12,
+                  color: colors.primaryForeground,
+                ),
+              ),
+            ),
           ),
         ),
       ),
@@ -109,7 +154,6 @@ class _TableMenuState extends State<_TableMenu> {
   ) {
     final colors = widget.colors;
     final reduce = MediaQuery.disableAnimationsOf(context);
-    final end = widget.align == _TableMenuAlign.end;
 
     final panel = Material(
       color: Colors.transparent,
@@ -131,8 +175,9 @@ class _TableMenuState extends State<_TableMenu> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            for (final item in widget.items)
+            for (final (index, item) in widget.items.indexed)
               _MenuItem(
+                focusNode: index == 0 ? _firstItemFocus : null,
                 item: item,
                 colors: colors,
                 onClose: () => _setOpen(false),
@@ -145,11 +190,11 @@ class _TableMenuState extends State<_TableMenu> {
     return CompositedTransformFollower(
       link: link,
       showWhenUnlinked: false,
-      targetAnchor: end ? Alignment.bottomRight : Alignment.bottomLeft,
-      followerAnchor: end ? Alignment.topRight : Alignment.topLeft,
-      offset: const Offset(0, 6),
+      targetAnchor: Alignment.bottomRight,
+      followerAnchor: Alignment.topRight,
+      offset: const Offset(0, 4),
       child: Align(
-        alignment: end ? Alignment.topRight : Alignment.topLeft,
+        alignment: Alignment.topRight,
         child: SingleMotionBuilder(
           value: _open ? 1.0 : 0.0,
           from: 0,
@@ -174,7 +219,7 @@ class _TableMenuState extends State<_TableMenu> {
                       offset: Offset(0, -4 * (1 - t)),
                       child: Transform.scale(
                         scale: 0.96 + 0.04 * clamped,
-                        alignment: end ? Alignment.topRight : Alignment.topLeft,
+                        alignment: Alignment.topRight,
                         child: child,
                       ),
                     ),
@@ -189,6 +234,7 @@ class _TableMenuState extends State<_TableMenu> {
 
 class _MenuItem extends StatefulWidget {
   const _MenuItem({
+    this.focusNode,
     required this.item,
     required this.colors,
     required this.onClose,
@@ -197,6 +243,7 @@ class _MenuItem extends StatefulWidget {
   final _TableMenuEntry item;
   final BeuiColors colors;
   final VoidCallback onClose;
+  final FocusNode? focusNode;
 
   @override
   State<_MenuItem> createState() => _MenuItemState();
@@ -204,6 +251,11 @@ class _MenuItem extends StatefulWidget {
 
 class _MenuItemState extends State<_MenuItem> {
   bool _hovered = false;
+
+  void _select() {
+    widget.onClose();
+    widget.item.onSelect();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -214,33 +266,48 @@ class _MenuItemState extends State<_MenuItem> {
         ? colors.destructive.withValues(alpha: 0.1)
         : colors.muted;
 
-    return MouseRegion(
-      cursor: SystemMouseCursors.click,
-      onEnter: (_) => setState(() => _hovered = true),
-      onExit: (_) => setState(() => _hovered = false),
-      child: GestureDetector(
-        behavior: HitTestBehavior.opaque,
-        onTap: () {
-          widget.onClose();
-          item.onSelect();
+    return Semantics(
+      button: true,
+      child: FocusableActionDetector(
+        focusNode: widget.focusNode,
+        shortcuts: const {
+          SingleActivator(LogicalKeyboardKey.enter): ActivateIntent(),
+          SingleActivator(LogicalKeyboardKey.space): ActivateIntent(),
         },
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-          decoration: BoxDecoration(
-            color: _hovered ? hoverBg : Colors.transparent,
-            borderRadius: BorderRadius.circular(8),
+        actions: {
+          ActivateIntent: CallbackAction<ActivateIntent>(
+            onInvoke: (_) {
+              _select();
+              return null;
+            },
           ),
-          child: Row(
-            children: [
-              Icon(item.icon, size: 16, color: fg),
-              const SizedBox(width: 10),
-              Expanded(
-                child: Text(
-                  item.label,
-                  style: TextStyle(fontSize: 14, color: fg),
-                ),
+        },
+        child: MouseRegion(
+          cursor: SystemMouseCursors.click,
+          onEnter: (_) => setState(() => _hovered = true),
+          onExit: (_) => setState(() => _hovered = false),
+          child: GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            onTap: _select,
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+              decoration: BoxDecoration(
+                color: _hovered ? hoverBg : Colors.transparent,
+                borderRadius: BorderRadius.circular(8),
               ),
-            ],
+              child: Row(
+                children: [
+                  Icon(item.icon, size: 16, color: fg),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: Text(
+                      item.label,
+                      style: TextStyle(fontSize: 14, color: fg),
+                    ),
+                  ),
+                ],
+              ),
+            ),
           ),
         ),
       ),

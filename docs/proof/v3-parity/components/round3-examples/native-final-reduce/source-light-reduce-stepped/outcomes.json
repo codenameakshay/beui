@@ -1,0 +1,939 @@
+{
+  "example": {
+    "key": "stepped",
+    "id": "example/range-slider/stepped",
+    "preview": "range-slider",
+    "family": "range-slider",
+    "seed": 40,
+    "min": 0,
+    "max": 100,
+    "step": 5,
+    "flows": [
+      "tap",
+      "drag",
+      "hold",
+      "snap",
+      "keyboard",
+      "bounds",
+      "reduced-motion"
+    ]
+  },
+  "origin": "source",
+  "theme": "light",
+  "motion": "reduce",
+  "checks": [
+    {
+      "name": "seed",
+      "actual": 40,
+      "expected": 40,
+      "pass": true
+    },
+    {
+      "name": "drag publishes value",
+      "actual": 85,
+      "expected": "different from seed",
+      "pass": true
+    },
+    {
+      "name": "key Home",
+      "actual": 0,
+      "expected": 0,
+      "pass": true
+    },
+    {
+      "name": "key End",
+      "actual": 100,
+      "expected": 100,
+      "pass": true
+    },
+    {
+      "name": "key ArrowLeft",
+      "actual": 95,
+      "expected": 95,
+      "pass": true
+    },
+    {
+      "name": "key Home",
+      "actual": 0,
+      "expected": 0,
+      "pass": true
+    },
+    {
+      "name": "key PageUp",
+      "actual": 50,
+      "expected": 50,
+      "pass": true
+    },
+    {
+      "name": "key PageDown",
+      "actual": 0,
+      "expected": 0,
+      "pass": true
+    },
+    {
+      "name": "key ArrowRight",
+      "actual": 5,
+      "expected": 5,
+      "pass": true
+    },
+    {
+      "name": "key ArrowDown",
+      "actual": 0,
+      "expected": 0,
+      "pass": true
+    },
+    {
+      "name": "key ArrowUp",
+      "actual": 5,
+      "expected": 5,
+      "pass": true
+    }
+  ],
+  "observations": [
+    {
+      "label": "rest",
+      "atMs": 2.611625000005006,
+      "observed": {
+        "url": "http://127.0.0.1:18120/source/?example=stepped&theme=light&captureProbe=1",
+        "reduce": true,
+        "active": {
+          "tag": "BODY",
+          "role": null,
+          "name": "Drag the handle40"
+        },
+        "probe": null,
+        "stage": {
+          "x": 344,
+          "y": 0,
+          "width": 592,
+          "height": 360,
+          "top": 0,
+          "right": 936,
+          "bottom": 360,
+          "left": 344
+        },
+        "controls": [
+          {
+            "tag": "MAIN",
+            "role": null,
+            "name": "Drag the handle\n40",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 344,
+              "y": 0,
+              "width": 592,
+              "height": 360,
+              "top": 0,
+              "right": 936,
+              "bottom": 360,
+              "left": 344
+            }
+          },
+          {
+            "tag": "DIV",
+            "role": "slider",
+            "name": "Value",
+            "value": "40",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 601.5999755859375,
+              "y": 184,
+              "width": 4,
+              "height": 24,
+              "top": 184,
+              "right": 605.5999755859375,
+              "bottom": 208,
+              "left": 601.5999755859375
+            }
+          }
+        ]
+      }
+    },
+    {
+      "label": "drag-held",
+      "atMs": 407.1545000000042,
+      "observed": {
+        "url": "http://127.0.0.1:18120/source/?example=stepped&theme=light&captureProbe=1",
+        "reduce": true,
+        "active": {
+          "tag": "BODY",
+          "role": null,
+          "name": "Drag the handle70"
+        },
+        "probe": null,
+        "stage": {
+          "x": 344,
+          "y": 0,
+          "width": 592,
+          "height": 360,
+          "top": 0,
+          "right": 936,
+          "bottom": 360,
+          "left": 344
+        },
+        "controls": [
+          {
+            "tag": "MAIN",
+            "role": null,
+            "name": "Drag the handle\n70",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 344,
+              "y": 0,
+              "width": 592,
+              "height": 360,
+              "top": 0,
+              "right": 936,
+              "bottom": 360,
+              "left": 344
+            }
+          },
+          {
+            "tag": "DIV",
+            "role": "slider",
+            "name": "Value",
+            "value": "70",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 710.7999877929688,
+              "y": 184,
+              "width": 4,
+              "height": 24,
+              "top": 184,
+              "right": 714.7999877929688,
+              "bottom": 208,
+              "left": 710.7999877929688
+            }
+          }
+        ]
+      }
+    },
+    {
+      "label": "released",
+      "atMs": 1001.1627089999965,
+      "observed": {
+        "url": "http://127.0.0.1:18120/source/?example=stepped&theme=light&captureProbe=1",
+        "reduce": true,
+        "active": {
+          "tag": "BODY",
+          "role": null,
+          "name": "Drag the handle85"
+        },
+        "probe": null,
+        "stage": {
+          "x": 344,
+          "y": 0,
+          "width": 592,
+          "height": 360,
+          "top": 0,
+          "right": 936,
+          "bottom": 360,
+          "left": 344
+        },
+        "controls": [
+          {
+            "tag": "MAIN",
+            "role": null,
+            "name": "Drag the handle\n85",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 344,
+              "y": 0,
+              "width": 592,
+              "height": 360,
+              "top": 0,
+              "right": 936,
+              "bottom": 360,
+              "left": 344
+            }
+          },
+          {
+            "tag": "DIV",
+            "role": "slider",
+            "name": "Value",
+            "value": "85",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 765.4000244140625,
+              "y": 184,
+              "width": 4,
+              "height": 24,
+              "top": 184,
+              "right": 769.4000244140625,
+              "bottom": 208,
+              "left": 765.4000244140625
+            }
+          }
+        ]
+      }
+    },
+    {
+      "label": "key-Home-3",
+      "atMs": 1319.8347920000087,
+      "observed": {
+        "url": "http://127.0.0.1:18120/source/?example=stepped&theme=light&captureProbe=1",
+        "reduce": true,
+        "active": {
+          "tag": "DIV",
+          "role": "slider",
+          "name": "Value"
+        },
+        "probe": null,
+        "stage": {
+          "x": 344,
+          "y": 0,
+          "width": 592,
+          "height": 360,
+          "top": 0,
+          "right": 936,
+          "bottom": 360,
+          "left": 344
+        },
+        "controls": [
+          {
+            "tag": "MAIN",
+            "role": null,
+            "name": "Drag the handle\n0",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 344,
+              "y": 0,
+              "width": 592,
+              "height": 360,
+              "top": 0,
+              "right": 936,
+              "bottom": 360,
+              "left": 344
+            }
+          },
+          {
+            "tag": "DIV",
+            "role": "slider",
+            "name": "Value",
+            "value": "0",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 456,
+              "y": 184,
+              "width": 4,
+              "height": 24,
+              "top": 184,
+              "right": 460,
+              "bottom": 208,
+              "left": 456
+            }
+          }
+        ]
+      }
+    },
+    {
+      "label": "key-End-4",
+      "atMs": 1606.9767500000016,
+      "observed": {
+        "url": "http://127.0.0.1:18120/source/?example=stepped&theme=light&captureProbe=1",
+        "reduce": true,
+        "active": {
+          "tag": "DIV",
+          "role": "slider",
+          "name": "Value"
+        },
+        "probe": null,
+        "stage": {
+          "x": 344,
+          "y": 0,
+          "width": 592,
+          "height": 360,
+          "top": 0,
+          "right": 936,
+          "bottom": 360,
+          "left": 344
+        },
+        "controls": [
+          {
+            "tag": "MAIN",
+            "role": null,
+            "name": "Drag the handle\n100",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 344,
+              "y": 0,
+              "width": 592,
+              "height": 360,
+              "top": 0,
+              "right": 936,
+              "bottom": 360,
+              "left": 344
+            }
+          },
+          {
+            "tag": "DIV",
+            "role": "slider",
+            "name": "Value",
+            "value": "100",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 820,
+              "y": 184,
+              "width": 4,
+              "height": 24,
+              "top": 184,
+              "right": 824,
+              "bottom": 208,
+              "left": 820
+            }
+          }
+        ]
+      }
+    },
+    {
+      "label": "key-ArrowLeft-5",
+      "atMs": 1911.3420840000035,
+      "observed": {
+        "url": "http://127.0.0.1:18120/source/?example=stepped&theme=light&captureProbe=1",
+        "reduce": true,
+        "active": {
+          "tag": "DIV",
+          "role": "slider",
+          "name": "Value"
+        },
+        "probe": null,
+        "stage": {
+          "x": 344,
+          "y": 0,
+          "width": 592,
+          "height": 360,
+          "top": 0,
+          "right": 936,
+          "bottom": 360,
+          "left": 344
+        },
+        "controls": [
+          {
+            "tag": "MAIN",
+            "role": null,
+            "name": "Drag the handle\n95",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 344,
+              "y": 0,
+              "width": 592,
+              "height": 360,
+              "top": 0,
+              "right": 936,
+              "bottom": 360,
+              "left": 344
+            }
+          },
+          {
+            "tag": "DIV",
+            "role": "slider",
+            "name": "Value",
+            "value": "95",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 801.7999877929688,
+              "y": 184,
+              "width": 4,
+              "height": 24,
+              "top": 184,
+              "right": 805.7999877929688,
+              "bottom": 208,
+              "left": 801.7999877929688
+            }
+          }
+        ]
+      }
+    },
+    {
+      "label": "key-Home-6",
+      "atMs": 2185.0472089999967,
+      "observed": {
+        "url": "http://127.0.0.1:18120/source/?example=stepped&theme=light&captureProbe=1",
+        "reduce": true,
+        "active": {
+          "tag": "DIV",
+          "role": "slider",
+          "name": "Value"
+        },
+        "probe": null,
+        "stage": {
+          "x": 344,
+          "y": 0,
+          "width": 592,
+          "height": 360,
+          "top": 0,
+          "right": 936,
+          "bottom": 360,
+          "left": 344
+        },
+        "controls": [
+          {
+            "tag": "MAIN",
+            "role": null,
+            "name": "Drag the handle\n0",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 344,
+              "y": 0,
+              "width": 592,
+              "height": 360,
+              "top": 0,
+              "right": 936,
+              "bottom": 360,
+              "left": 344
+            }
+          },
+          {
+            "tag": "DIV",
+            "role": "slider",
+            "name": "Value",
+            "value": "0",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 456,
+              "y": 184,
+              "width": 4,
+              "height": 24,
+              "top": 184,
+              "right": 460,
+              "bottom": 208,
+              "left": 456
+            }
+          }
+        ]
+      }
+    },
+    {
+      "label": "key-PageUp-7",
+      "atMs": 2461.875125000006,
+      "observed": {
+        "url": "http://127.0.0.1:18120/source/?example=stepped&theme=light&captureProbe=1",
+        "reduce": true,
+        "active": {
+          "tag": "DIV",
+          "role": "slider",
+          "name": "Value"
+        },
+        "probe": null,
+        "stage": {
+          "x": 344,
+          "y": 0,
+          "width": 592,
+          "height": 360,
+          "top": 0,
+          "right": 936,
+          "bottom": 360,
+          "left": 344
+        },
+        "controls": [
+          {
+            "tag": "MAIN",
+            "role": null,
+            "name": "Drag the handle\n50",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 344,
+              "y": 0,
+              "width": 592,
+              "height": 360,
+              "top": 0,
+              "right": 936,
+              "bottom": 360,
+              "left": 344
+            }
+          },
+          {
+            "tag": "DIV",
+            "role": "slider",
+            "name": "Value",
+            "value": "50",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 638,
+              "y": 184,
+              "width": 4,
+              "height": 24,
+              "top": 184,
+              "right": 642,
+              "bottom": 208,
+              "left": 638
+            }
+          }
+        ]
+      }
+    },
+    {
+      "label": "key-PageDown-8",
+      "atMs": 2746.489459000004,
+      "observed": {
+        "url": "http://127.0.0.1:18120/source/?example=stepped&theme=light&captureProbe=1",
+        "reduce": true,
+        "active": {
+          "tag": "DIV",
+          "role": "slider",
+          "name": "Value"
+        },
+        "probe": null,
+        "stage": {
+          "x": 344,
+          "y": 0,
+          "width": 592,
+          "height": 360,
+          "top": 0,
+          "right": 936,
+          "bottom": 360,
+          "left": 344
+        },
+        "controls": [
+          {
+            "tag": "MAIN",
+            "role": null,
+            "name": "Drag the handle\n0",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 344,
+              "y": 0,
+              "width": 592,
+              "height": 360,
+              "top": 0,
+              "right": 936,
+              "bottom": 360,
+              "left": 344
+            }
+          },
+          {
+            "tag": "DIV",
+            "role": "slider",
+            "name": "Value",
+            "value": "0",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 456,
+              "y": 184,
+              "width": 4,
+              "height": 24,
+              "top": 184,
+              "right": 460,
+              "bottom": 208,
+              "left": 456
+            }
+          }
+        ]
+      }
+    },
+    {
+      "label": "key-ArrowRight-9",
+      "atMs": 3019.416459,
+      "observed": {
+        "url": "http://127.0.0.1:18120/source/?example=stepped&theme=light&captureProbe=1",
+        "reduce": true,
+        "active": {
+          "tag": "DIV",
+          "role": "slider",
+          "name": "Value"
+        },
+        "probe": null,
+        "stage": {
+          "x": 344,
+          "y": 0,
+          "width": 592,
+          "height": 360,
+          "top": 0,
+          "right": 936,
+          "bottom": 360,
+          "left": 344
+        },
+        "controls": [
+          {
+            "tag": "MAIN",
+            "role": null,
+            "name": "Drag the handle\n5",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 344,
+              "y": 0,
+              "width": 592,
+              "height": 360,
+              "top": 0,
+              "right": 936,
+              "bottom": 360,
+              "left": 344
+            }
+          },
+          {
+            "tag": "DIV",
+            "role": "slider",
+            "name": "Value",
+            "value": "5",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 474.20001220703125,
+              "y": 184,
+              "width": 4,
+              "height": 24,
+              "top": 184,
+              "right": 478.20001220703125,
+              "bottom": 208,
+              "left": 474.20001220703125
+            }
+          }
+        ]
+      }
+    },
+    {
+      "label": "key-ArrowDown-10",
+      "atMs": 3296.005959000002,
+      "observed": {
+        "url": "http://127.0.0.1:18120/source/?example=stepped&theme=light&captureProbe=1",
+        "reduce": true,
+        "active": {
+          "tag": "DIV",
+          "role": "slider",
+          "name": "Value"
+        },
+        "probe": null,
+        "stage": {
+          "x": 344,
+          "y": 0,
+          "width": 592,
+          "height": 360,
+          "top": 0,
+          "right": 936,
+          "bottom": 360,
+          "left": 344
+        },
+        "controls": [
+          {
+            "tag": "MAIN",
+            "role": null,
+            "name": "Drag the handle\n0",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 344,
+              "y": 0,
+              "width": 592,
+              "height": 360,
+              "top": 0,
+              "right": 936,
+              "bottom": 360,
+              "left": 344
+            }
+          },
+          {
+            "tag": "DIV",
+            "role": "slider",
+            "name": "Value",
+            "value": "0",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 456,
+              "y": 184,
+              "width": 4,
+              "height": 24,
+              "top": 184,
+              "right": 460,
+              "bottom": 208,
+              "left": 456
+            }
+          }
+        ]
+      }
+    },
+    {
+      "label": "key-ArrowUp-11",
+      "atMs": 3574.173624999996,
+      "observed": {
+        "url": "http://127.0.0.1:18120/source/?example=stepped&theme=light&captureProbe=1",
+        "reduce": true,
+        "active": {
+          "tag": "DIV",
+          "role": "slider",
+          "name": "Value"
+        },
+        "probe": null,
+        "stage": {
+          "x": 344,
+          "y": 0,
+          "width": 592,
+          "height": 360,
+          "top": 0,
+          "right": 936,
+          "bottom": 360,
+          "left": 344
+        },
+        "controls": [
+          {
+            "tag": "MAIN",
+            "role": null,
+            "name": "Drag the handle\n5",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 344,
+              "y": 0,
+              "width": 592,
+              "height": 360,
+              "top": 0,
+              "right": 936,
+              "bottom": 360,
+              "left": 344
+            }
+          },
+          {
+            "tag": "DIV",
+            "role": "slider",
+            "name": "Value",
+            "value": "5",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 474.20001220703125,
+              "y": 184,
+              "width": 4,
+              "height": 24,
+              "top": 184,
+              "right": 478.20001220703125,
+              "bottom": 208,
+              "left": 474.20001220703125
+            }
+          }
+        ]
+      }
+    },
+    {
+      "label": "exit",
+      "atMs": 3847.532917000004,
+      "observed": {
+        "url": "http://127.0.0.1:18120/source/?example=stepped&theme=light&captureProbe=1",
+        "reduce": true,
+        "active": {
+          "tag": "DIV",
+          "role": "slider",
+          "name": "Value"
+        },
+        "probe": null,
+        "stage": {
+          "x": 344,
+          "y": 0,
+          "width": 592,
+          "height": 360,
+          "top": 0,
+          "right": 936,
+          "bottom": 360,
+          "left": 344
+        },
+        "controls": [
+          {
+            "tag": "MAIN",
+            "role": null,
+            "name": "Drag the handle\n5",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 344,
+              "y": 0,
+              "width": 592,
+              "height": 360,
+              "top": 0,
+              "right": 936,
+              "bottom": 360,
+              "left": 344
+            }
+          },
+          {
+            "tag": "DIV",
+            "role": "slider",
+            "name": "Value",
+            "value": "5",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 474.20001220703125,
+              "y": 184,
+              "width": 4,
+              "height": 24,
+              "top": 184,
+              "right": 478.20001220703125,
+              "bottom": 208,
+              "left": 474.20001220703125
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,60 @@
+Resolving dependencies...
+Downloading packages...
+  equatable 2.1.0 (3.0.0 available)
+  material_color_utilities 0.13.0 (0.13.1 available)
+  test_api 0.7.12 (0.7.15 available)
+  xml 7.0.1 (7.1.0 available)
+Got dependencies!
+4 packages have newer versions incompatible with dependency constraints.
+Try `flutter pub outdated` for more information.
+Resolving dependencies in `./example`...
+Downloading packages...
+Got dependencies in `./example`.
+00:00 +0: loading /Users/codenameakshay/.t3/worktrees/beui/t3-df4b55e2/test/motion/availability_scheduler_test.dart
+test/motion/availability_scheduler_test.dart:71:51: Error: The getter 'view' isn't defined for the type 'TestWidgetsFlutterBinding'.
+ - 'TestWidgetsFlutterBinding' is from 'package:flutter_test/src/binding.dart' ('../../../../fvm/versions/stable/packages/flutter_test/lib/src/binding.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'view'.
+    setUp(() { TestWidgetsFlutterBinding.instance.view.physicalSize = const Size(1000, 1200); TestWidgetsFlutterBinding.instance.view.devicePixelRatio = 1; });
+                                                  ^^^^
+test/motion/availability_scheduler_test.dart:71:130: Error: The getter 'view' isn't defined for the type 'TestWidgetsFlutterBinding'.
+ - 'TestWidgetsFlutterBinding' is from 'package:flutter_test/src/binding.dart' ('../../../../fvm/versions/stable/packages/flutter_test/lib/src/binding.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'view'.
+    setUp(() { TestWidgetsFlutterBinding.instance.view.physicalSize = const Size(1000, 1200); TestWidgetsFlutterBinding.instance.view.devicePixelRatio = 1; });
+                                                                                          ^^^^
+test/motion/availability_scheduler_test.dart:72:54: Error: The getter 'view' isn't defined for the type 'TestWidgetsFlutterBinding'.
+ - 'TestWidgetsFlutterBinding' is from 'package:flutter_test/src/binding.dart' ('../../../../fvm/versions/stable/packages/flutter_test/lib/src/binding.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'view'.
+    tearDown(() { TestWidgetsFlutterBinding.instance.view.resetPhysicalSize(); TestWidgetsFlutterBinding.instance.view.resetDevicePixelRatio(); });
+                                                     ^^^^
+test/motion/availability_scheduler_test.dart:72:115: Error: The getter 'view' isn't defined for the type 'TestWidgetsFlutterBinding'.
+ - 'TestWidgetsFlutterBinding' is from 'package:flutter_test/src/binding.dart' ('../../../../fvm/versions/stable/packages/flutter_test/lib/src/binding.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'view'.
+    tearDown(() { TestWidgetsFlutterBinding.instance.view.resetPhysicalSize(); TestWidgetsFlutterBinding.instance.view.resetDevicePixelRatio(); });
+                                                                                          ^^^^
+00:00 +0 -1: loading /Users/codenameakshay/.t3/worktrees/beui/t3-df4b55e2/test/motion/availability_scheduler_test.dart [E]
+  Failed to load "/Users/codenameakshay/.t3/worktrees/beui/t3-df4b55e2/test/motion/availability_scheduler_test.dart":
+  Compilation failed for testPath=/Users/codenameakshay/.t3/worktrees/beui/t3-df4b55e2/test/motion/availability_scheduler_test.dart: test/motion/availability_scheduler_test.dart:71:51: Error: The getter 'view' isn't defined for the type 'TestWidgetsFlutterBinding'.
+   - 'TestWidgetsFlutterBinding' is from 'package:flutter_test/src/binding.dart' ('../../../../fvm/versions/stable/packages/flutter_test/lib/src/binding.dart').
+  Try correcting the name to the name of an existing getter, or defining a getter or field named 'view'.
+      setUp(() { TestWidgetsFlutterBinding.instance.view.physicalSize = const Size(1000, 1200); TestWidgetsFlutterBinding.instance.view.devicePixelRatio = 1; });
+                                                    ^^^^
+  test/motion/availability_scheduler_test.dart:71:130: Error: The getter 'view' isn't defined for the type 'TestWidgetsFlutterBinding'.
+   - 'TestWidgetsFlutterBinding' is from 'package:flutter_test/src/binding.dart' ('../../../../fvm/versions/stable/packages/flutter_test/lib/src/binding.dart').
+  Try correcting the name to the name of an existing getter, or defining a getter or field named 'view'.
+      setUp(() { TestWidgetsFlutterBinding.instance.view.physicalSize = const Size(1000, 1200); TestWidgetsFlutterBinding.instance.view.devicePixelRatio = 1; });
+                                                                                                                                   ^^^^
+  test/motion/availability_scheduler_test.dart:72:54: Error: The getter 'view' isn't defined for the type 'TestWidgetsFlutterBinding'.
+   - 'TestWidgetsFlutterBinding' is from 'package:flutter_test/src/binding.dart' ('../../../../fvm/versions/stable/packages/flutter_test/lib/src/binding.dart').
+  Try correcting the name to the name of an existing getter, or defining a getter or field named 'view'.
+      tearDown(() { TestWidgetsFlutterBinding.instance.view.resetPhysicalSize(); TestWidgetsFlutterBinding.instance.view.resetDevicePixelRatio(); });
+                                                       ^^^^
+  test/motion/availability_scheduler_test.dart:72:115: Error: The getter 'view' isn't defined for the type 'TestWidgetsFlutterBinding'.
+   - 'TestWidgetsFlutterBinding' is from 'package:flutter_test/src/binding.dart' ('../../../../fvm/versions/stable/packages/flutter_test/lib/src/binding.dart').
+  Try correcting the name to the name of an existing getter, or defining a getter or field named 'view'.
+      tearDown(() { TestWidgetsFlutterBinding.instance.view.resetPhysicalSize(); TestWidgetsFlutterBinding.instance.view.resetDevicePixelRatio(); });
+                                                                                                                    ^^^^
+  .
+00:00 +0 -1: Some tests failed.
+
+Failing tests:
+  /Users/codenameakshay/.t3/worktrees/beui/t3-df4b55e2/test/motion/availability_scheduler_test.dart: loading /Users/codenameakshay/.t3/worktrees/beui/t3-df4b55e2/test/motion/availability_scheduler_test.dart

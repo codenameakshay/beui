@@ -1,0 +1,730 @@
+{
+  "url": "https://beui.dev/charts/order-book",
+  "viewport": [
+    1440,
+    1000
+  ],
+  "text": "beUI Native is free — Pro mobile blocks and screens are in presale from $99\n\nReserve\nbeUI Pro for mobile\nbeUI\nComponents\nBlocks\nAgents\nCharts\nPlayground\nSponsors\nLight theme\nLight theme\nDark theme\nDark theme\nSystem theme\nSystem theme\n1.9k\nGet Pro\n\nINTRO\n\nHome\nCHARTS\n14\nSankey Chart\nNEW\nTreemap\nCandlestick Chart\nDonut Chart\nVolume Profile\nStatus Bar\nComposition Chart\nFunnel Chart\nLiquidity Heatmap\nBump Chart\nOrder Book\nHeat Calendar\nReturns Calendar\nPrice Target Fan\nCharts\nOrder Book\nOrder Book\nCopy Page\n\nAnimated order book with bid and ask depth, spread, and volume balance.\n\nPreview\nPreview\nPreview\nUsage\nUsage\nCode\nCode\nSOL / USD\nSIMULATED\nPause\nStep\nPRICE (USD)\nSIZE (SOL)\nTOTAL\nPrice USD\tSize SOL\tCumulative total SOL\n247.20\t854\t9.7K\n\n247.05\t1.5K\t8.8K\n\n246.90\t934\t7.3K\n\n246.75\t2.4K\t6.3K\n\n246.60\t2.3K\t3.9K\n\n246.45\t237\t1.6K\n\n246.30\t400\t1.4K\n\n246.15\t740\t984\n\n246.00\t244\t244\nReference price:\n245.85\nSpread 0.30 · 0.122%\nPrice USD\tSize SOL\tCumulative total SOL\n245.70\t209\t209\n\n245.55\t451\t660\n\n245.40\t400\t1.1K\n\n245.25\t634\t1.7K\n\n245.10\t591\t2.3K\n\n244.95\t945\t3.2K\n\n244.80\t841\t4.1K\n\n244.65\t604\t4.7K\n\n244.50\t1.4K\t6.1K\n\nHover a level to see the cost of filling up to it\n\nBids 38.5%\nVisible depth\nAsks 61.5%\n\nClick a price to use it, for example in an order ticket.\n\nInstall\n\nAdd it with the shadcn CLI, or copy the source manually.\n\nCLI\nCLI\nManual\nManual\nbun\nbun\nnpm\nnpm\npnpm\npnpm\nyarn\nyarn\n$ bunx --bun shadcn add @beui/\norder-book\norder-book\nAPI Reference\nOrderBook\nbids\nreadonly OrderBookLevel[]\n\nSnapshot of buy levels. Equal prices are combined; invalid and zero sizes are omitted.\n\n—\nasks\nreadonly OrderBookLevel[]\n\nSnapshot of sell levels. Supply new arrays when the book changes.\n\n—\nlevels?\nnumber\n\nNumber of nearest levels to show on each side.\n\n—\nlastPrice?\nnumber\n\nLast traded price. Omit to show the midpoint of the best bid and ask.\n\n—\nlabel?\nstring\nOrder book\nbaseSymbol?\nstring\n—\nquoteSymbol?\nstring\n—\nformatPrice?\n((value: number) => string)\n—\nformatSize?\n((value: number) => string)\n—\nactiveLevel?\nOrderBookActiveLevel\n\nThe level whose depth is inspected: it and every better level on its side are highlighted, and `OrderBookDepthSummary` totals them. Controlled.\n\n—\ndefaultActiveLevel?\nOrderBookActiveLevel\n—\nonActiveLevelChange?\n((level: OrderBookActiveLevel) => void)\n—\nonLevelSelect?\n((level: DepthLevel, side: \"bid\" | \"ask\") => void)\n\nMakes each price a button, for example to fill an order ticket.\n\n—\nclassName?\nstring\n—\nOrderBookHeader\nclassName?\nstring\n—\nOrderBookSide\nside\n\"bid\" | \"ask\"\n—\nclassName?\nstring\n—\nOrderBookSpread\nclassName?\nstring\n—\nOrderBookBalance\nclassName?\nstring\n—\nOrderBookDepthSummary\nplaceholder?\nReactNode\nHover a level to see the cost of filling up to it\nchildren?\n((summary: DepthSummary) => ReactNode)\n\nCustom readout for the inspected levels.\n\n—\nclassName?\nstring\n—\nRelated components\nLiquidity Heatmap\n\nAnimated liquidity bands across price and time, with a price trace and depth tooltips.\n\nCandlestick Chart\n\nLive OHLC candles with volume, a last-price line, and a crosshair readout.\n\nVolume Profile\n\nAnimated volume by price, with point of control and value area highlights.\n\nAbout Order Book\n\nOrder Book is a React depth ladder for trading interfaces. You pass bid and ask snapshots, and it combines equal prices, accumulates totals from the best quote outward, and draws depth bars that animate with Framer Motion while the numbers stay still. Hovering a level highlights it and every better level on that side, and OrderBookDepthSummary shows the size, quote value and average fill price to reach it. It composes from OrderBookHeader, OrderBookSide, OrderBookSpread, OrderBookBalance and the useOrderBook hook.\n\nWhen to use it\nA crypto exchange or trading terminal needs a live bid and ask ladder next to a chart.\nAn order ticket should fill its price when a trader clicks a level in the book.\nA trading education or demo page wants to show how deep a market is and what a market order would cost.\nAccessibility\n\nAsks and bids each render as a labeled HTML table with visually hidden column headers for price, size and cumulative total, and the reference price carries a visually hidden label. When onLevelSelect is set, prices become buttons, and focusing one inspects its depth just like hover. OrderBookDepthSummary is a polite live region, so the fill estimate is announced as it changes. With reduced motion enabled, depth bars and the balance bar update without springing and the size change flash is skipped.\n\nFAQ\nHow do I build an order book component in React?\nRender OrderBook with bids and asks arrays of price and size pairs, and supply new arrays whenever the book changes. The levels prop sets how many levels show on each side, and lastPrice sets the reference price.\nHow do I show the cost of filling an order up to a price?\nAdd OrderBookDepthSummary as a child. It totals the inspected levels and shows the average price, size and quote value, and its children prop takes a function for a custom readout.\nCan I control the inspected level?\nYes. activeLevel takes a side and price and pairs with onActiveLevelChange, or use defaultActiveLevel. A level that leaves the book clears the inspection instead of pointing at another row.\n\nUpdated Oct 18, 2026\n\nbeUI\nPro\nLimited Offer\n\n300+ blocks and premium motion components for React and Next.js.\n\n$179 lifetime access\n\nExplore beUI Pro\nSponsors\n\nDIAMOND\n\nTracwell\n\nVisitor insights for growth\n\nIllos\n\nAnimated illustrations for product sites\n\nBecome a sponsor",
+  "elements": [
+    {
+      "tag": "svg",
+      "role": null,
+      "label": null,
+      "text": "",
+      "box": {
+        "x": -239.9888916015625,
+        "y": 0,
+        "width": 2880,
+        "height": 39
+      }
+    },
+    {
+      "tag": "svg",
+      "role": null,
+      "label": null,
+      "text": "",
+      "box": {
+        "x": -1260.00830078125,
+        "y": 5.84375,
+        "width": 2880,
+        "height": 39
+      }
+    },
+    {
+      "tag": "svg",
+      "role": null,
+      "label": null,
+      "text": "",
+      "box": {
+        "x": 988.78125,
+        "y": 13.5,
+        "width": 12,
+        "height": 12
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "label": "Search components",
+      "text": "Search⌘K",
+      "box": {
+        "x": 1035.84375,
+        "y": 50,
+        "width": 36,
+        "height": 36
+      }
+    },
+    {
+      "tag": "svg",
+      "role": null,
+      "label": null,
+      "text": "",
+      "box": {
+        "x": 1046.84375,
+        "y": 61,
+        "width": 14,
+        "height": 14
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": "tab",
+      "label": null,
+      "text": "Light themeLight theme",
+      "box": {
+        "x": 1083.84375,
+        "y": 52,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "tag": "svg",
+      "role": null,
+      "label": null,
+      "text": "",
+      "box": {
+        "x": 1091.84375,
+        "y": 60,
+        "width": 16,
+        "height": 16
+      }
+    },
+    {
+      "tag": "svg",
+      "role": null,
+      "label": null,
+      "text": "",
+      "box": {
+        "x": 1091.84375,
+        "y": 60,
+        "width": 16,
+        "height": 16
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": "tab",
+      "label": null,
+      "text": "Dark themeDark theme",
+      "box": {
+        "x": 1115.84375,
+        "y": 52,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "tag": "svg",
+      "role": null,
+      "label": null,
+      "text": "",
+      "box": {
+        "x": 1123.84375,
+        "y": 60,
+        "width": 16,
+        "height": 16
+      }
+    },
+    {
+      "tag": "svg",
+      "role": null,
+      "label": null,
+      "text": "",
+      "box": {
+        "x": 1123.84375,
+        "y": 60,
+        "width": 16,
+        "height": 16
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": "tab",
+      "label": null,
+      "text": "System themeSystem theme",
+      "box": {
+        "x": 1147.84375,
+        "y": 52,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "tag": "svg",
+      "role": null,
+      "label": null,
+      "text": "",
+      "box": {
+        "x": 1155.84375,
+        "y": 60,
+        "width": 16,
+        "height": 16
+      }
+    },
+    {
+      "tag": "svg",
+      "role": null,
+      "label": null,
+      "text": "",
+      "box": {
+        "x": 1155.84375,
+        "y": 60,
+        "width": 16,
+        "height": 16
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "label": "Customize theme",
+      "text": "",
+      "box": {
+        "x": 1191.84375,
+        "y": 50,
+        "width": 36,
+        "height": 36
+      }
+    },
+    {
+      "tag": "svg",
+      "role": null,
+      "label": null,
+      "text": "",
+      "box": {
+        "x": 1201.84375,
+        "y": 60,
+        "width": 16,
+        "height": 16
+      }
+    },
+    {
+      "tag": "svg",
+      "role": null,
+      "label": null,
+      "text": "",
+      "box": {
+        "x": 1248.84375,
+        "y": 61,
+        "width": 14,
+        "height": 14
+      }
+    },
+    {
+      "tag": "svg",
+      "role": null,
+      "label": null,
+      "text": "",
+      "box": {
+        "x": 1378,
+        "y": 61,
+        "width": 14,
+        "height": 14
+      }
+    },
+    {
+      "tag": "svg",
+      "role": null,
+      "label": null,
+      "text": "",
+      "box": {
+        "x": 352.6875,
+        "y": 131,
+        "width": 14,
+        "height": 14
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "label": "Copy page as Markdown",
+      "text": "Copy Page",
+      "box": {
+        "x": 920.671875,
+        "y": 164,
+        "width": 102.328125,
+        "height": 32
+      }
+    },
+    {
+      "tag": "svg",
+      "role": null,
+      "label": null,
+      "text": "",
+      "box": {
+        "x": 930.671875,
+        "y": 173,
+        "width": 14,
+        "height": 14
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "label": "More page actions",
+      "text": "",
+      "box": {
+        "x": 1024,
+        "y": 164,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "tag": "svg",
+      "role": null,
+      "label": null,
+      "text": "",
+      "box": {
+        "x": 1033,
+        "y": 173,
+        "width": 14,
+        "height": 14
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": "tab",
+      "label": null,
+      "text": "PreviewPreview",
+      "box": {
+        "x": 308,
+        "y": 268,
+        "width": 80.1875,
+        "height": 32
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": "tab",
+      "label": null,
+      "text": "UsageUsage",
+      "box": {
+        "x": 392.1875,
+        "y": 268,
+        "width": 69.40625,
+        "height": 32
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": "tab",
+      "label": null,
+      "text": "CodeCode",
+      "box": {
+        "x": 465.59375,
+        "y": 268,
+        "width": 62.40625,
+        "height": 32
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "label": "Expand preview",
+      "text": "",
+      "box": {
+        "x": 1016,
+        "y": 264,
+        "width": 40,
+        "height": 40
+      }
+    },
+    {
+      "tag": "svg",
+      "role": null,
+      "label": null,
+      "text": "",
+      "box": {
+        "x": 1028,
+        "y": 276,
+        "width": 16,
+        "height": 16
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "label": null,
+      "text": "Pause",
+      "box": {
+        "x": 819.171875,
+        "y": 360,
+        "width": 58.4375,
+        "height": 32
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "label": null,
+      "text": "Step",
+      "box": {
+        "x": 885.609375,
+        "y": 360,
+        "width": 50.390625,
+        "height": 32
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "label": null,
+      "text": "247.20",
+      "box": {
+        "x": 437,
+        "y": 450.328125,
+        "width": 43.203125,
+        "height": 16
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "label": null,
+      "text": "247.05",
+      "box": {
+        "x": 437,
+        "y": 482.328125,
+        "width": 43.203125,
+        "height": 16
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "label": null,
+      "text": "246.90",
+      "box": {
+        "x": 437,
+        "y": 514.328125,
+        "width": 43.203125,
+        "height": 16
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "label": null,
+      "text": "246.75",
+      "box": {
+        "x": 437,
+        "y": 546.328125,
+        "width": 43.203125,
+        "height": 16
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "label": null,
+      "text": "246.60",
+      "box": {
+        "x": 437,
+        "y": 578.328125,
+        "width": 43.203125,
+        "height": 16
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "label": null,
+      "text": "246.45",
+      "box": {
+        "x": 437,
+        "y": 610.328125,
+        "width": 43.203125,
+        "height": 16
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "label": null,
+      "text": "246.30",
+      "box": {
+        "x": 437,
+        "y": 642.328125,
+        "width": 43.203125,
+        "height": 16
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "label": null,
+      "text": "246.15",
+      "box": {
+        "x": 437,
+        "y": 674.328125,
+        "width": 43.203125,
+        "height": 16
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "label": null,
+      "text": "246.00",
+      "box": {
+        "x": 437,
+        "y": 706.328125,
+        "width": 43.203125,
+        "height": 16
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "label": null,
+      "text": "245.70",
+      "box": {
+        "x": 437,
+        "y": 796.328125,
+        "width": 43.203125,
+        "height": 16
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "label": null,
+      "text": "245.55",
+      "box": {
+        "x": 437,
+        "y": 828.328125,
+        "width": 43.203125,
+        "height": 16
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "label": null,
+      "text": "245.40",
+      "box": {
+        "x": 437,
+        "y": 860.328125,
+        "width": 43.203125,
+        "height": 16
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "label": null,
+      "text": "245.25",
+      "box": {
+        "x": 437,
+        "y": 892.328125,
+        "width": 43.203125,
+        "height": 16
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "label": null,
+      "text": "245.10",
+      "box": {
+        "x": 437,
+        "y": 924.328125,
+        "width": 43.203125,
+        "height": 16
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "label": null,
+      "text": "244.95",
+      "box": {
+        "x": 437,
+        "y": 956.328125,
+        "width": 43.203125,
+        "height": 16
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "label": null,
+      "text": "244.80",
+      "box": {
+        "x": 437,
+        "y": 988.328125,
+        "width": 43.203125,
+        "height": 16
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "label": null,
+      "text": "244.65",
+      "box": {
+        "x": 437,
+        "y": 1020.328125,
+        "width": 43.203125,
+        "height": 16
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "label": null,
+      "text": "244.50",
+      "box": {
+        "x": 437,
+        "y": 1052.328125,
+        "width": 43.203125,
+        "height": 16
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": "tab",
+      "label": null,
+      "text": "CLICLI",
+      "box": {
+        "x": 308,
+        "y": 1376.65625,
+        "width": 49.34375,
+        "height": 32
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": "tab",
+      "label": null,
+      "text": "ManualManual",
+      "box": {
+        "x": 361.34375,
+        "y": 1376.65625,
+        "width": 76.203125,
+        "height": 32
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": "tab",
+      "label": null,
+      "text": "bunbun",
+      "box": {
+        "x": 317,
+        "y": 1437.65625,
+        "width": 41.3125,
+        "height": 28
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": "tab",
+      "label": null,
+      "text": "npmnpm",
+      "box": {
+        "x": 360.3125,
+        "y": 1437.65625,
+        "width": 44.671875,
+        "height": 28
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": "tab",
+      "label": null,
+      "text": "pnpmpnpm",
+      "box": {
+        "x": 406.984375,
+        "y": 1437.65625,
+        "width": 51.84375,
+        "height": 28
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": "tab",
+      "label": null,
+      "text": "yarnyarn",
+      "box": {
+        "x": 460.828125,
+        "y": 1437.65625,
+        "width": 44.5,
+        "height": 28
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "label": "Copy code",
+      "text": "",
+      "box": {
+        "x": 1011,
+        "y": 1435.65625,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "tag": "svg",
+      "role": null,
+      "label": null,
+      "text": "",
+      "box": {
+        "x": 1020,
+        "y": 1444.65625,
+        "width": 14,
+        "height": 14
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "label": null,
+      "text": "About Order Book",
+      "box": {
+        "x": 292,
+        "y": 4191.21875,
+        "width": 776,
+        "height": 40
+      }
+    },
+    {
+      "tag": "svg",
+      "role": null,
+      "label": null,
+      "text": "",
+      "box": {
+        "x": 1040,
+        "y": 4203.21875,
+        "width": 16,
+        "height": 16
+      }
+    },
+    {
+      "tag": "svg",
+      "role": null,
+      "label": null,
+      "text": "",
+      "box": {
+        "x": 1299.375,
+        "y": 380.5,
+        "width": 14,
+        "height": 14
+      }
+    },
+    {
+      "tag": "svg",
+      "role": null,
+      "label": null,
+      "text": "",
+      "box": {
+        "x": 1379,
+        "y": 624.5,
+        "width": 16,
+        "height": 16
+      }
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+candidate-feedback-widget-light-reduce passed
+node:internal/modules/run_main:111
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: TypeError: Cannot read properties of undefined (reading 'disableAnimations')
+    at file:///Users/codenameakshay/.t3/worktrees/beui/t3-5c0570f2/docs/proof/v3-parity/blocks/round3/policy-flow.mjs:46:37
+    at file:///Users/codenameakshay/.t3/worktrees/beui/t3-5c0570f2/docs/proof/v3-parity/blocks/round3/policy-flow.mjs:93:7 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: false,
+  expected: true,
+  operator: '==',
+  diff: 'simple'
+}
+
+Node.js v26.12.0

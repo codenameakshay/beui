@@ -1,0 +1,15 @@
+# Reproduction
+
+Offline evidence verification: run `python3 verify.py` in this directory. It does not need Flutter, Chrome or a running server. Successful verification preserves the known failed acceptance cases.
+
+Fresh execution needs the recorded installed Flutter 3.47.1 artifacts, Dart 3.13.1, the pinned input/dependency versions, Google Chrome, Playwright-core 1.58.2, Python, Node and ffmpeg. This archive contains both complete built web outputs but does not bundle the 3.4 GB Flutter tool cache or all dependency sources. No shared SDK modification is required.
+
+The recorded scripts use the owned absolute scratch path and workspace-relative proof path. For a fresh scratch location, rebase those paths consistently before executing. `provision.py` documents the SDK and dependency copying and input pinning. To reproduce the exact inputs, copy this archive's inputs rather than a later workspace snapshot, then rebase the package configurations. The archived resolved configurations show the executed paths.
+
+Apply the final files under instrumented/ over the corresponding owned scratch paths. These final files include the corrected library/import ordering; the original instrument.py is retained as history and by itself reproduces the first compilation error. `instrumentation.patch` is the exact final diagnostic-only difference. Run compile_platform.py, then build.py. The copied kernel_worker_aot compiler builds the real platform dill used by Flutter's release dart2js compile. Save example/build/web as web/instrumented before restoring baseline sources and the original installed dart2js_platform.dill. Build again and save web/baseline.
+
+Serve one variant at a time using `python3 server.py instrumented` or `python3 server.py baseline`; the script writes the chosen ephemeral port and PID. Set TMPDIR to the owned tmp directory. The initial.mjs and full.mjs scripts use native Playwright pointer clicks, keyboard.press and keyboard.type from the archived workflow. Pass a fresh capture-directory name. QUERY=Product selects initial Product and the Product-ending full sequence; QUERY=Pro on full.mjs retains the original Pro-ending sequence. Each script runs both motion preferences. The bounded batch.py performs three initial and three Product-ending full repetitions; the extra Pro captures are separate invocations. The screenshot policy waits 450 ms after interaction, but there is no inserted wait between initial click, Meta+A and typing.
+
+The capture scripts import the prior runtime by its absolute read-only path. Install the retained exact runtime lock in a new owned directory and update that import when reproducing elsewhere. Browser profiles/temp files must remain in the owned tmp directory.
+
+Run served_check.py while each variant is served. Stop only the recorded owned server PID and verify its port closes. Preserve failed captures rather than rerunning over their directories. Reproduction is timing-dependent; a passing repetition does not refute the retained causal failures. The original traces are the evidence for this run.

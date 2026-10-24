@@ -1,0 +1,94 @@
+Waiting for another flutter command to release the startup lock...
+00:00 +0: loading /private/tmp/sortable-independent-review-20261024/candidate/test/probe_test.dart
+00:00 +0: two enabled handles preserve independent focus ownership
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test:
+Expected: <Instance of 'Text'> with `focused handle`: 'A-first'
+  Actual: Text:<Text("A-second")>
+   Which: has `focused handle` with value 'A-second' which is different.
+          Expected: A-first
+            Actual: A-second
+                      ^
+           Differ at offset 2
+
+When the exception was thrown, this was the stack:
+#4      main.<anonymous closure> (file:///private/tmp/sortable-independent-review-20261024/candidate/test/probe_test.dart:37:3)
+<asynchronous suspension>
+#5      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#6      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+This was caught by the test expectation on the following line:
+  file:///private/tmp/sortable-independent-review-20261024/candidate/test/probe_test.dart line 37
+The test description was:
+  two enabled handles preserve independent focus ownership
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:00 +0 -1: two enabled handles preserve independent focus ownership [E]
+  Test failed. See exception logs above.
+  The test description was: two enabled handles preserve independent focus ownership
+  
+00:00 +0 -1: disabled second handle does not disable first handle
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test:
+Expected: true
+  Actual: <false>
+
+When the exception was thrown, this was the stack:
+#4      main.<anonymous closure> (file:///private/tmp/sortable-independent-review-20261024/candidate/test/probe_test.dart:44:3)
+<asynchronous suspension>
+#5      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#6      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+This was caught by the test expectation on the following line:
+  file:///private/tmp/sortable-independent-review-20261024/candidate/test/probe_test.dart line 44
+The test description was:
+  disabled second handle does not disable first handle
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:00 +0 -2: disabled second handle does not disable first handle [E]
+  Test failed. See exception logs above.
+  The test description was: disabled second handle does not disable first handle
+  
+00:00 +0 -2: removing second handle leaves first usable
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test:
+Expected: true
+  Actual: <false>
+
+When the exception was thrown, this was the stack:
+#4      main.<anonymous closure> (file:///private/tmp/sortable-independent-review-20261024/candidate/test/probe_test.dart:55:3)
+<asynchronous suspension>
+#5      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#6      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+This was caught by the test expectation on the following line:
+  file:///private/tmp/sortable-independent-review-20261024/candidate/test/probe_test.dart line 55
+The test description was:
+  removing second handle leaves first usable
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:00 +0 -3: removing second handle leaves first usable [E]
+  Test failed. See exception logs above.
+  The test description was: removing second handle leaves first usable
+  
+00:00 +0 -3: key remount keeps replacement handle usable
+00:00 +1 -3: controlled Undo accept=true respects already focused external owner
+00:00 +2 -3: controlled Undo accept=false respects already focused external owner
+00:00 +3 -3: membership removes focused handle and reintroduces fresh usable handle
+00:00 +4 -3: focused root reparent and disposal preserve external focus
+00:00 +5 -3: disabled sole handle is not chosen by Undo
+00:01 +6 -3: Some tests failed.
+
+Failing tests:
+  /private/tmp/sortable-independent-review-20261024/candidate/test/probe_test.dart: disabled second handle does not disable first handle
+  /private/tmp/sortable-independent-review-20261024/candidate/test/probe_test.dart: removing second handle leaves first usable
+  /private/tmp/sortable-independent-review-20261024/candidate/test/probe_test.dart: two enabled handles preserve independent focus ownership

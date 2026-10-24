@@ -17,7 +17,7 @@ import 'theme_scope.dart';
 /// screenshot captures):
 ///   `page=guides` — Motion Guides
 ///   `slug=<catalog-slug>` — a detail page (e.g. `chat-app`)
-///   `section=components|blocks|agents` — a section index
+///   `section=components|blocks|agents|charts` — a section index
 ExplorerRoute explorerRouteFromUri(Uri uri) {
   final page = uri.queryParameters['page'];
   if (page == 'guides') return const GuidesRoute();
@@ -32,6 +32,7 @@ ExplorerRoute explorerRouteFromUri(Uri uri) {
   return IndexRoute(switch (uri.queryParameters['section']) {
     'blocks' => ExploreSection.blocks,
     'agents' => ExploreSection.agents,
+    'charts' => ExploreSection.charts,
     _ => ExploreSection.components,
   });
 }
@@ -40,6 +41,12 @@ Brightness explorerBrightnessFromUri(Uri uri) =>
     uri.queryParameters['theme'] == 'light'
     ? Brightness.light
     : Brightness.dark;
+
+/// Optional preview content width in logical pixels, excluding frame insets.
+double? explorerPreviewWidthFromUri(Uri uri) {
+  final width = double.tryParse(uri.queryParameters['previewWidth'] ?? '');
+  return width != null && width.isFinite && width > 0 ? width : null;
+}
 
 BeuiColorTheme explorerColorThemeFromUri(Uri uri) {
   final name = uri.queryParameters['color'];
@@ -98,6 +105,7 @@ class _BeuiExplorerAppState extends State<BeuiExplorerApp> {
   late Brightness _brightness = explorerBrightnessFromUri(Uri.base);
   late BeuiColorTheme _colorTheme = explorerColorThemeFromUri(Uri.base);
   late final ExplorerRoute _initialRoute = explorerRouteFromUri(Uri.base);
+  late final double? _previewWidth = explorerPreviewWidthFromUri(Uri.base);
 
   @override
   Widget build(BuildContext context) {
@@ -114,7 +122,10 @@ class _BeuiExplorerAppState extends State<BeuiExplorerApp> {
         themeMode: _brightness == Brightness.dark
             ? ThemeMode.dark
             : ThemeMode.light,
-        home: ExplorerShell(initialRoute: _initialRoute),
+        home: ExplorerShell(
+          initialRoute: _initialRoute,
+          previewWidth: _previewWidth,
+        ),
       ),
     );
   }
