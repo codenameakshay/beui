@@ -35,6 +35,7 @@ Widget _host({
   String? copyText,
   Future<void> Function()? onCopy,
   VoidCallback? onRetry,
+  VoidCallback? onContinue,
   List<BeuiCitationItem> sources = const <BeuiCitationItem>[],
   bool? sourcesOpen,
   bool defaultSourcesOpen = false,
@@ -65,6 +66,7 @@ Widget _host({
     onFeedbackChange: onFeedbackChange,
     announce: announce,
     showActions: showActions,
+    onContinue: onContinue,
     retryLabel: retryLabel,
     child: child,
   );
@@ -133,7 +135,6 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.byIcon(LucideIcons.copy), findsOneWidget);
-      // The error notice owns retry; the row does not repeat it.
       expect(find.byIcon(LucideIcons.rotate_ccw), findsNothing);
       expect(find.byIcon(LucideIcons.thumbs_up), findsNothing);
       expect(find.byIcon(LucideIcons.thumbs_down), findsNothing);
@@ -172,11 +173,12 @@ void main() {
       tester,
     ) async {
       final handle = tester.ensureSemantics();
+      var retries = 0;
       await tester.pumpWidget(
         _host(
           status: BeuiStreamingResponseStatus.error,
           copyText: 'partial answer',
-          onRetry: () {},
+          onRetry: () => retries++,
           showActions: false,
         ),
       );
@@ -184,7 +186,35 @@ void main() {
 
       expect(find.bySemanticsLabel('Retry'), findsOneWidget);
       expect(find.byIcon(LucideIcons.copy), findsNothing);
+      await tester.tap(find.bySemanticsLabel('Retry'));
+      await tester.pump();
+      expect(retries, 1);
       handle.dispose();
+    });
+
+    testWidgets('error retry alone does not leave an empty actions row', (
+      tester,
+    ) async {
+      Future<double> responseHeight({required bool showActions}) async {
+        await tester.pumpWidget(
+          _host(
+            status: BeuiStreamingResponseStatus.error,
+            onRetry: () {},
+            showActions: showActions,
+          ),
+        );
+        await tester.pumpAndSettle();
+        final responseColumn = find.descendant(
+          of: find.byType(BeuiStreamingResponse),
+          matching: find.byType(Column),
+        ).first;
+        return tester.getSize(responseColumn).height;
+      }
+
+      final withActions = await responseHeight(showActions: true);
+      final withoutActions = await responseHeight(showActions: false);
+
+      expect(withActions, withoutActions);
     });
 
     testWidgets('stopped keeps the retry icon in the action row', (
@@ -201,6 +231,57 @@ void main() {
 
       expect(find.byIcon(LucideIcons.copy), findsOneWidget);
       expect(find.byIcon(LucideIcons.rotate_ccw), findsOneWidget);
+    });
+
+    testWidgets('stopped exposes Continue in its notice', (tester) async {
+      final handle = tester.ensureSemantics();
+      var continues = 0;
+      await tester.pumpWidget(
+        _host(
+          status: BeuiStreamingResponseStatus.stopped,
+          onContinue: () => continues++,
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.bySemanticsLabel('Continue'), findsOneWidget);
+      await tester.tap(find.bySemanticsLabel('Continue'));
+      await tester.pump();
+      expect(continues, 1);
+      handle.dispose();
+    });
+
+    testWidgets('status transitions replace notices and available actions', (
+      tester,
+    ) async {
+      Future<void> show(BeuiStreamingResponseStatus status) async {
+        await tester.pumpWidget(
+          _host(
+            status: status,
+            copyText: 'partial answer',
+            onRetry: () {},
+            onContinue: () {},
+          ),
+        );
+        await tester.pumpAndSettle();
+      }
+
+      await show(BeuiStreamingResponseStatus.error);
+      expect(find.byIcon(LucideIcons.triangle_alert), findsOneWidget);
+      expect(find.byIcon(LucideIcons.rotate_ccw), findsNothing);
+
+      await show(BeuiStreamingResponseStatus.complete);
+      expect(find.byIcon(LucideIcons.triangle_alert), findsNothing);
+      expect(find.byIcon(LucideIcons.circle_stop), findsNothing);
+      expect(find.byIcon(LucideIcons.rotate_ccw), findsOneWidget);
+      expect(find.byIcon(LucideIcons.thumbs_up), findsOneWidget);
+
+      await show(BeuiStreamingResponseStatus.stopped);
+      expect(find.byIcon(LucideIcons.triangle_alert), findsNothing);
+      expect(find.byIcon(LucideIcons.circle_stop), findsOneWidget);
+      expect(find.byIcon(LucideIcons.rotate_ccw), findsOneWidget);
+      expect(find.byIcon(LucideIcons.thumbs_up), findsNothing);
+      expect(find.text('Continue'), findsOneWidget);
     });
 
     testWidgets('showActions false suppresses the actions row', (tester) async {

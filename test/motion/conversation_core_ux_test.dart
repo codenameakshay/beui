@@ -152,6 +152,68 @@ void main() {
       expect(retried, 1);
     });
 
+    testWidgets('error does not repeat notice retry in the action row', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        response(BeuiStreamingResponseStatus.error, onRetry: () {}),
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.text('Retry'), findsOneWidget);
+      expect(find.byIcon(LucideIcons.rotate_ccw), findsNothing);
+    });
+
+    testWidgets('closing an error notice removes its focused retry action', (
+      tester,
+    ) async {
+      var status = BeuiStreamingResponseStatus.error;
+      var retried = 0;
+      var continued = 0;
+      StateSetter? setTestState;
+      await tester.pumpWidget(
+        _app(
+          StatefulBuilder(
+            builder: (context, setState) {
+              setTestState = setState;
+              return BeuiStreamingResponse(
+                status: status,
+                copyText: 'partial answer',
+                onRetry: () => retried++,
+                onContinue: () => continued++,
+                showActions: false,
+                child: const Text('partial answer'),
+              );
+            },
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      for (var i = 0; i < 8 && retried == 0; i++) {
+        await tester.sendKeyEvent(LogicalKeyboardKey.tab);
+        await tester.pump();
+        await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+        await tester.pump();
+      }
+      expect(retried, 1);
+
+      setTestState!(
+        () => status = BeuiStreamingResponseStatus.streaming,
+      );
+      await tester.pumpAndSettle();
+      await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+      await tester.pump();
+      expect(continued, 0);
+      expect(find.text('Continue'), findsNothing);
+
+      setTestState!(() => status = BeuiStreamingResponseStatus.complete);
+      await tester.pumpAndSettle();
+      await tester.sendKeyEvent(LogicalKeyboardKey.space);
+      await tester.pump();
+      expect(continued, 0);
+    });
+
     testWidgets('continue is surfaced on stopped and fires', (tester) async {
       var continued = 0;
       await tester.pumpWidget(
