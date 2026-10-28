@@ -31,9 +31,10 @@ class BeuiSelectOption {
   /// The visible label (also shown in the trigger once selected).
   final String label;
 
-  /// Optional leading glyph, rendered at 16px before [label] in both the list
-  /// and the trigger. Framework-native, so any widget works — an [Icon], an
-  /// avatar, a vendor mark.
+  /// Optional leading glyph, rendered at 16px before [label] in the list and
+  /// standard trigger, and at 14px in the compact trigger's 16px slot.
+  /// Framework-native, so any widget works — an [Icon], an avatar, a vendor
+  /// mark.
   ///
   /// Options without an icon reserve no space, so a list where only some
   /// options carry one stays left-aligned on the label rather than indenting
@@ -117,9 +118,9 @@ enum BeuiSelectVariant {
   /// The bordered field trigger: 14px label, 12×8 padding, full width.
   standard,
 
-  /// A borderless 32px trigger sized to its label: 12px muted label, 8px
-  /// horizontal padding, a muted fill on hover, and a 208px panel. The
-  /// source's prompt-input model picker (`h-8 px-2 py-0 text-xs border-0`).
+  /// A borderless 32px trigger sized to its label up to 208px: 12px muted
+  /// label, 8px horizontal padding, a muted fill on hover, and a 208px panel.
+  /// The source's prompt-input model picker (`h-8 px-2 py-0 text-xs border-0`).
   compact,
 }
 
@@ -356,6 +357,36 @@ class _BeuiSelectState extends State<BeuiSelect>
         : _Placement.bottom;
   }
 
+  double _compactPanelOffsetX(BuildContext context) {
+    if (widget.variant != BeuiSelectVariant.compact) return 0;
+    final trigger = _triggerKey.currentContext?.findRenderObject();
+    final overlay = Overlay.of(
+      context,
+      rootOverlay: true,
+    ).context.findRenderObject();
+    if (trigger is! RenderBox ||
+        overlay is! RenderBox ||
+        !trigger.hasSize ||
+        !overlay.hasSize) {
+      return 0;
+    }
+
+    final triggerOrigin = trigger.localToGlobal(Offset.zero, ancestor: overlay);
+    final transformedPanelRight = trigger
+        .localToGlobal(Offset(_panelWidth, 0), ancestor: overlay)
+        .dx;
+    final transformedPanelWidth = (transformedPanelRight - triggerOrigin.dx)
+        .abs();
+    final left = triggerOrigin.dx
+        .clamp(0.0, math.max(0.0, overlay.size.width - transformedPanelWidth))
+        .toDouble();
+    final shiftedOrigin = trigger.globalToLocal(
+      triggerOrigin + Offset(left - triggerOrigin.dx, 0),
+      ancestor: overlay,
+    );
+    return shiftedOrigin.dx;
+  }
+
   @override
   void _setOpen(bool next) {
     if (next == _open) return;
@@ -448,7 +479,7 @@ class _BeuiSelectState extends State<BeuiSelect>
         onEnter: widget.enabled
             ? (_) => setState(() => _triggerHovered = true)
             : null,
-        onExit: widget.enabled
+        onExit: compact || widget.enabled
             ? (_) => setState(() => _triggerHovered = false)
             : null,
         child: GestureDetector(
@@ -462,6 +493,7 @@ class _BeuiSelectState extends State<BeuiSelect>
                   : _cornerTween.evaluate(_cornerCtrl);
               final labelText = Text(
                 label,
+                maxLines: compact ? 1 : null,
                 overflow: TextOverflow.ellipsis,
                 style: compact
                     ? TextStyle(
@@ -480,9 +512,12 @@ class _BeuiSelectState extends State<BeuiSelect>
                 opacity: widget.enabled ? 1 : 0.5,
                 child: Container(
                   height: compact ? 32 : null,
+                  constraints: compact
+                      ? const BoxConstraints(maxWidth: 208)
+                      : null,
                   decoration: BoxDecoration(
                     color: compact
-                        ? (_triggerHovered
+                        ? (widget.enabled && _triggerHovered
                               ? colors.muted
                               : const Color(0x00000000))
                         : colors.background,
@@ -565,10 +600,12 @@ class _BeuiSelectState extends State<BeuiSelect>
     final reduce = MediaQuery.disableAnimationsOf(context);
     final isTop = _placement == _Placement.top;
     final width = _panelWidth;
+    final offsetX = _compactPanelOffsetX(context);
 
     return CompositedTransformFollower(
       link: link,
       showWhenUnlinked: false,
+      offset: Offset(offsetX, 0),
       targetAnchor: isTop ? Alignment.topLeft : Alignment.bottomLeft,
       followerAnchor: isTop ? Alignment.bottomLeft : Alignment.topLeft,
       child: Focus(
@@ -1147,7 +1184,8 @@ class _MorphRowState extends State<_MorphRow> {
 /// A [BeuiSelectOption.icon] sized and tinted to match the row it sits in.
 ///
 /// `IconTheme` rather than a hard cast, so the slot accepts any widget while
-/// an [Icon] still picks up the row's colour and the source's 16px sizing.
+/// an [Icon] still picks up the row's colour and configurable glyph size
+/// (16px by default).
 class _OptionIcon extends StatelessWidget {
   const _OptionIcon({
     required this.icon,
