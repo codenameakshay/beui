@@ -145,6 +145,28 @@ void main() {
       expect(find.byIcon(LucideIcons.thumbs_up), findsNothing);
     });
 
+    testWidgets('error with onRetry exposes exactly one retry control', (
+      tester,
+    ) async {
+      final handle = tester.ensureSemantics();
+      var retries = 0;
+      await tester.pumpWidget(
+        _host(
+          status: BeuiStreamingResponseStatus.error,
+          copyText: 'partial answer',
+          onRetry: () => retries++,
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.bySemanticsLabel('Retry'), findsOneWidget);
+
+      await tester.tap(find.bySemanticsLabel('Retry'));
+      await tester.pump();
+      expect(retries, 1);
+      handle.dispose();
+    });
+
     testWidgets('showActions false suppresses the actions row', (tester) async {
       await tester.pumpWidget(
         _host(
