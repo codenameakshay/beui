@@ -204,10 +204,12 @@ void main() {
           ),
         );
         await tester.pumpAndSettle();
-        final responseColumn = find.descendant(
-          of: find.byType(BeuiStreamingResponse),
-          matching: find.byType(Column),
-        ).first;
+        final responseColumn = find
+            .descendant(
+              of: find.byType(BeuiStreamingResponse),
+              matching: find.byType(Column),
+            )
+            .first;
         return tester.getSize(responseColumn).height;
       }
 
