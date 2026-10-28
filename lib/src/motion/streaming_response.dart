@@ -34,6 +34,7 @@ enum BeuiStreamingResponseStatus {
   ///
   /// Renders a destructive-tinted notice under the partial answer and, when
   /// [BeuiStreamingResponse.onRetry] is supplied, a labelled retry control.
+  /// That control replaces the action row's retry icon, so there is only one.
   /// Before the UX pass this state was pixel-identical to [complete] and
   /// announced as plain `'Response'` — a failed answer looked finished.
   error,
@@ -154,7 +155,13 @@ class BeuiStreamingResponse extends StatefulWidget {
   /// non-null) the copy control is shown after streaming ends.
   final FutureOr<void> Function()? onCopy;
 
-  /// Optional retry handler — shows a retry control when non-null.
+  /// Optional retry handler. Shows a retry control when non-null.
+  ///
+  /// On [BeuiStreamingResponseStatus.error] that control is the labelled
+  /// button in the error notice, independent of [showActions]. In the
+  /// [BeuiStreamingResponseStatus.complete] and
+  /// [BeuiStreamingResponseStatus.stopped] states it is an icon in the action
+  /// row when [showActions] is true. It is hidden while streaming.
   final VoidCallback? onRetry;
 
   /// Optional sources shown as a compact footer disclosure after streaming.
@@ -308,9 +315,8 @@ class _BeuiStreamingResponseState extends State<BeuiStreamingResponse> {
       widget.showActions &&
       !_streaming &&
       (_canCopy ||
-          widget.onRetry != null ||
+          (widget.onRetry != null && !_error) ||
           _complete ||
-          _error ||
           _stopped ||
           _hasSources);
 
@@ -598,7 +604,7 @@ class _BeuiStreamingResponseState extends State<BeuiStreamingResponse> {
                             colors: colors,
                             onTap: _handleCopy,
                           ),
-                        if (widget.onRetry != null)
+                        if (widget.onRetry != null && !_error)
                           _ResponseAction(
                             label: strings.retry,
                             icon: agent.icons.retry,
