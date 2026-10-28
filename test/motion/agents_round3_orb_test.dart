@@ -40,7 +40,7 @@ void main() {
     final reference =
         jsonDecode(
               File(
-                'docs/proof/v3-parity/agents/round3/orb-retarget-source.json',
+                'test/fixtures/agents/orb-retarget-source.json',
               ).readAsStringSync(),
             )
             as Map<String, dynamic>;
