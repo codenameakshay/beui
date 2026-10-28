@@ -2,7 +2,9 @@ import {chromium} from '/tmp/beui-parity-capture-runtime/node_modules/playwright
 import {mkdir, writeFile, readFile, copyFile} from 'node:fs/promises';
 import {createHash} from 'node:crypto';
 import {execFileSync} from 'node:child_process';
+import {dirname} from 'node:path';
 const output = 'docs/proof/v3-parity/charts/sankey/before-mounted';
+await mkdir(dirname(output), {recursive:true});
 await mkdir(output);
 const browser = await chromium.launch({executablePath:'/Applications/Google Chrome.app/Contents/MacOS/Google Chrome', headless:true});
 try {
@@ -20,6 +22,7 @@ try {
 } finally {await browser.close();}
 const root = '/tmp/beui-charts-reference-20261023';
 const files = ['lib/registry.ts','components/charts/sankey-chart.tsx','components/charts/sankey-chart/model.ts','components/charts/sankey-chart/context.tsx','components/charts/sankey-chart/plot.tsx','components/charts/sankey-chart/tooltip.tsx','components/previews/charts/sankey-chart.preview.tsx','components/previews/charts/sankey-chart.usage.tsx','tests/sankey-chart.a11y.test.tsx'];
+await mkdir('docs/proof/v3-parity/charts/sankey/source', {recursive:true});
 const inventory=[];
 for (const path of files) {
   const bytes=await readFile(`${root}/${path}`);
