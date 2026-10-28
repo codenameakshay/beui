@@ -106,7 +106,11 @@ import 'package:flutter/material.dart';
 
 ThemeData beuiTheme(Brightness brightness) {
   final colors = BeuiColors.of(BeuiColorTheme.violet, brightness);
-  final base = ThemeData(brightness: brightness, useMaterial3: true);
+  final base = ThemeData(
+    brightness: brightness,
+    useMaterial3: true,
+    fontFamily: 'Geist', // bundle it first; see Fonts below
+  );
   return BeuiTextTheme.trackingNormal(
     base.copyWith(
       scaffoldBackgroundColor: colors.background,
@@ -118,23 +122,56 @@ ThemeData beuiTheme(Brightness brightness) {
   );
 }
 
-MaterialApp(
-  theme: beuiTheme(Brightness.light),
-  darkTheme: beuiTheme(Brightness.dark),
-  home: const MyHomePage(),
-);
+void main() {
+  runApp(
+    MaterialApp(
+      theme: beuiTheme(Brightness.light),
+      darkTheme: beuiTheme(Brightness.dark),
+      home: const Scaffold(body: Center(child: Text('Hello, beUI'))),
+    ),
+  );
+}
 ```
+
+### Fonts
+
+The package bundles no font files. `BeuiTextTheme` defaults to the source's families, Geist and Geist Mono, and some components ask for `Geist Mono` by name. If your app does not provide them, Flutter silently falls back to a platform font with different metrics, so labels and layouts drift from beui.dev.
+
+Bundle both families (SIL OFL 1.1, from [vercel/geist-font](https://github.com/vercel/geist-font)) in your app's `pubspec.yaml`, then set `fontFamily: 'Geist'` on your `ThemeData` as in step 1:
+
+```yaml
+flutter:
+  fonts:
+    - family: Geist
+      fonts:
+        - asset: assets/fonts/Geist-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/Geist-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/Geist-SemiBold.ttf
+          weight: 600
+        - asset: assets/fonts/Geist-Bold.ttf
+          weight: 700
+    - family: Geist Mono
+      fonts:
+        - asset: assets/fonts/GeistMono-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/GeistMono-Medium.ttf
+          weight: 500
+```
+
+Code surfaces ask for the generic `monospace` family. Native platforms resolve it to their system monospace. Flutter web cannot, so on web also register the Geist Mono files under `family: monospace`, as the [example app](example/pubspec.yaml) does.
 
 ### 2. Drop in a component
 
-Every stateful component mirrors Flutter's controlled + uncontrolled convention — pass `value` + `onChanged` to control it, or omit `value` to let it hold its own state.
+Most interactive components mirror Flutter's controlled + uncontrolled convention. Pass the value and its callback (`value` + `onChanged`, `open` + `onOpenChange`, …) to control the component. Omit the value to let it hold its own state, seeded from `defaultValue` / `defaultOpen` where the component has one. These are controlled-only and require both: `BeuiSwitch` and `BeuiCheckbox` (`value` + `onChanged`), and `BeuiDrawer`, `BeuiBottomSheet` and `BeuiCenterMorphModal` (`open` + `onOpenChange`). The `BeuiOverlay` foundation is controlled-only by design, and display widgets such as `BeuiAnimatedNumber` simply require `value`.
 
 ```dart
-// A spring-thumbed switch
+// A spring-thumbed switch. Controlled-only: keep `wifi` in your State.
 bool wifi = true;
 BeuiSwitch(
   value: wifi,
-  label: const Text('Wi-Fi'),
+  label: 'Wi-Fi',
   onChanged: (v) => setState(() => wifi = v),
 );
 
@@ -164,9 +201,12 @@ BeuiTooltip(
 );
 
 // A GPU shader background (mesh, grain, warp, waves, voronoi…)
-BeuiShaderBackground(
-  variant: BeuiShaderVariant.meshGradient,
-  speed: 0.6,
+SizedBox(
+  height: 240,
+  child: BeuiShaderBackground(
+    variant: BeuiShaderVariant.meshGradient,
+    speed: 0.6,
+  ),
 );
 ```
 
@@ -341,11 +381,20 @@ ThemeData(
   ],
 );
 
-BeuiMessageBubble(...);
-BeuiApprovalCard(
-  expandedChild: ..., // compact-to-expanded; omit to keep the 1.0.0 API
+BeuiMessageBubble(
+  child: BeuiMessageBubbleContent(child: Text('Ship it?')),
 );
-BeuiToolResult(...);
+BeuiApprovalCard(
+  title: 'Deploy to production',
+  compactChild: Text('3 services changed'),
+  expandedChild: Text('api, web and worker'), // compact-to-expanded; omit to keep the 1.0.0 API
+);
+BeuiToolResult(
+  tool: 'bash',
+  title: 'Run tests',
+  status: BeuiToolResultStatus.success,
+  child: Text('All tests passed'),
+);
 ```
 
 `BeuiColors` is a `ThemeExtension` ported from the source's design tokens. Read colors in your own widgets the same way components do:
