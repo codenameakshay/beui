@@ -1,3 +1,9 @@
+## Unreleased
+
+### Fixes
+
+* Streaming Response shows one retry control on error. The error notice's labelled Retry replaces the action-row retry icon, so `showActions: false` is no longer needed to avoid a duplicate. Complete and stopped responses keep the row icon.
+
 ## 3.0.0
 
 beUI 3.0.0 integrates the remaining v3 catalog families into one package:

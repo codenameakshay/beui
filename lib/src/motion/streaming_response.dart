@@ -34,6 +34,7 @@ enum BeuiStreamingResponseStatus {
   ///
   /// Renders a destructive-tinted notice under the partial answer and, when
   /// [BeuiStreamingResponse.onRetry] is supplied, a labelled retry control.
+  /// That control replaces the action row's retry icon, so there is only one.
   /// Before the UX pass this state was pixel-identical to [complete] and
   /// announced as plain `'Response'` — a failed answer looked finished.
   error,
@@ -155,6 +156,10 @@ class BeuiStreamingResponse extends StatefulWidget {
   final FutureOr<void> Function()? onCopy;
 
   /// Optional retry handler — shows a retry control when non-null.
+  ///
+  /// On [BeuiStreamingResponseStatus.error] that control is the labelled
+  /// button in the error notice, shown even when [showActions] is false. In
+  /// every other settled state it is the icon in the action row.
   final VoidCallback? onRetry;
 
   /// Optional sources shown as a compact footer disclosure after streaming.
@@ -598,7 +603,8 @@ class _BeuiStreamingResponseState extends State<BeuiStreamingResponse> {
                             colors: colors,
                             onTap: _handleCopy,
                           ),
-                        if (widget.onRetry != null)
+                        // On error the notice above owns the one retry.
+                        if (widget.onRetry != null && !_error)
                           _ResponseAction(
                             label: strings.retry,
                             icon: agent.icons.retry,

@@ -133,7 +133,8 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.byIcon(LucideIcons.copy), findsOneWidget);
-      expect(find.byIcon(LucideIcons.rotate_ccw), findsOneWidget);
+      // The error notice owns retry; the row does not repeat it.
+      expect(find.byIcon(LucideIcons.rotate_ccw), findsNothing);
       expect(find.byIcon(LucideIcons.thumbs_up), findsNothing);
       expect(find.byIcon(LucideIcons.thumbs_down), findsNothing);
 
@@ -165,6 +166,41 @@ void main() {
       await tester.pump();
       expect(retries, 1);
       handle.dispose();
+    });
+
+    testWidgets('error keeps its retry when showActions is false', (
+      tester,
+    ) async {
+      final handle = tester.ensureSemantics();
+      await tester.pumpWidget(
+        _host(
+          status: BeuiStreamingResponseStatus.error,
+          copyText: 'partial answer',
+          onRetry: () {},
+          showActions: false,
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.bySemanticsLabel('Retry'), findsOneWidget);
+      expect(find.byIcon(LucideIcons.copy), findsNothing);
+      handle.dispose();
+    });
+
+    testWidgets('stopped keeps the retry icon in the action row', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        _host(
+          status: BeuiStreamingResponseStatus.stopped,
+          copyText: 'partial answer',
+          onRetry: () {},
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.byIcon(LucideIcons.copy), findsOneWidget);
+      expect(find.byIcon(LucideIcons.rotate_ccw), findsOneWidget);
     });
 
     testWidgets('showActions false suppresses the actions row', (tester) async {
