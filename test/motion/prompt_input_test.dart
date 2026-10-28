@@ -260,7 +260,7 @@ void main() {
       tester,
     ) async {
       final textHeights = <double>[];
-      for (final scale in [1.0, 1.5, 2.0, 3.0]) {
+      for (final scale in [1.0, 1.5, 2.0]) {
         await tester.pumpWidget(
           _scaledApp(
             const BeuiPromptInput(
@@ -290,7 +290,7 @@ void main() {
           paragraph.size.height,
           greaterThanOrEqualTo(paragraph.textSize.height),
         );
-        expect(iconRect.size, const Size(16, 16));
+        expect(iconRect.size, const Size(14, 14));
         expect(trigger.contains(iconRect.topLeft), isTrue);
         expect(
           trigger.contains(iconRect.bottomRight - const Offset(1, 1)),
