@@ -1,6 +1,0 @@
-- group "Capture stage width 752 height 1000 reduced false":
-  - button "File changes 1 additions, 1 deletions. Collapse file diff src/runner.ts +1 −1 Applying changes" [expanded]:
-    - button "Copy diff"
-    - group:
-      - group: "18 18 export async function runTask() { 19 − return execute(task); 19 + const result = await execute(task);"
-  - button "Replay"

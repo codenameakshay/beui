@@ -46,3 +46,11 @@ example/pubspec.lock
 .fvm/
 # Flutter golden-test diff artifacts (transient)
 test/**/failures/
+
+# Local parity proof (captured references, candidates, frames, source copies).
+# Parity scripts in tool/ and test/charts/ write here; it never ships and stays
+# out of git. Runs up to c0878f554 are in history, for example:
+#   git archive c0878f554 docs/proof/v3-parity/audit | tar -x
+docs/proof/
+example/proof/
+.github/screenshots/charts/
