@@ -118,9 +118,10 @@ enum BeuiSelectVariant {
   /// The bordered field trigger: 14px label, 12×8 padding, full width.
   standard,
 
-  /// A borderless 32px trigger sized to its label up to 208px: 12px muted
-  /// label, 8px horizontal padding, a muted fill on hover, and a 208px panel.
-  /// The source's prompt-input model picker (`h-8 px-2 py-0 text-xs border-0`).
+  /// A borderless trigger sized to its label up to 208px: 32px tall (growing
+  /// only for large text scales), 12px muted label, 8px horizontal padding, a
+  /// muted fill on hover, and a 208px panel. The source's prompt-input model
+  /// picker (`h-8 px-2 py-0 text-xs border-0`).
   compact,
 }
 
@@ -511,9 +512,8 @@ class _BeuiSelectState extends State<BeuiSelect>
               return Opacity(
                 opacity: widget.enabled ? 1 : 0.5,
                 child: Container(
-                  height: compact ? 32 : null,
                   constraints: compact
-                      ? const BoxConstraints(maxWidth: 208)
+                      ? const BoxConstraints(minHeight: 32, maxWidth: 208)
                       : null,
                   decoration: BoxDecoration(
                     color: compact

@@ -1,5 +1,4 @@
 import 'package:beui/beui.dart';
-import 'package:beui/src/motion/select.dart' show BeuiSelectVariant;
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -96,40 +95,34 @@ Widget _morph({ValueChanged<String>? onChanged, String? defaultValue}) =>
 
 void main() {
   group('BeuiSelect compact trigger', () {
-    testWidgets(
-      'PENDING PRODUCT DECISION: 3x text in a fixed 32px trigger',
-      (tester) async {
-        await tester.pumpWidget(
-          _app(
-            MediaQuery(
-              data: const MediaQueryData(textScaler: TextScaler.linear(3)),
-              child: _compactSelect(
-                options: const [
-                  BeuiSelectOption(
-                    value: 'long',
-                    label: 'GPT',
-                    icon: Icon(Icons.star),
-                  ),
-                ],
-                value: 'long',
-              ),
+    testWidgets('3x text grows the compact trigger instead of clipping', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        _app(
+          MediaQuery(
+            data: const MediaQueryData(textScaler: TextScaler.linear(3)),
+            child: _compactSelect(
+              options: const [
+                BeuiSelectOption(
+                  value: 'long',
+                  label: 'GPT',
+                  icon: Icon(Icons.star),
+                ),
+              ],
+              value: 'long',
             ),
           ),
-        );
-        await tester.pumpAndSettle();
+        ),
+      );
+      await tester.pumpAndSettle();
 
-        expect(tester.getSize(find.byType(BeuiSelect)).height, 32);
-        final paragraph = tester.renderObject<RenderParagraph>(
-          find.text('GPT'),
-        );
-        expect(paragraph.textSize.height, lessThanOrEqualTo(32));
-        expect(paragraph.didExceedMaxLines, isFalse);
-        expect(tester.getSize(find.byIcon(Icons.star)), const Size(14, 14));
-      },
-      // Uncapped 3x text cannot fit the fixed 32px trigger without choosing
-      // whether text is capped or the footer grows.
-      skip: true,
-    );
+      final paragraph = tester.renderObject<RenderParagraph>(find.text('GPT'));
+      expect(paragraph.textSize.height, 48);
+      expect(paragraph.size.height, paragraph.textSize.height);
+      expect(tester.getSize(find.byType(BeuiSelect)).height, 48);
+      expect(tester.getSize(find.byIcon(Icons.star)), const Size(14, 14));
+    });
 
     testWidgets('caps long labels at 208px and truncates them', (tester) async {
       const label =

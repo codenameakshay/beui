@@ -260,7 +260,7 @@ void main() {
       tester,
     ) async {
       final textHeights = <double>[];
-      for (final scale in [1.0, 1.5, 2.0]) {
+      for (final scale in [1.0, 1.5, 2.0, 3.0]) {
         await tester.pumpWidget(
           _scaledApp(
             const BeuiPromptInput(
@@ -284,7 +284,8 @@ void main() {
         final paragraph = tester.renderObject<RenderParagraph>(label);
         final iconRect = tester.getRect(find.byIcon(LucideIcons.bot));
 
-        expect(trigger.height, 32);
+        // 3x needs a 48px line, so the trigger and footer grow past 32px.
+        expect(trigger.height, scale == 3.0 ? 48 : 32);
         expect(paragraph.maxLines, 1);
         expect(
           paragraph.size.height,
