@@ -112,6 +112,17 @@ double _panelNearClose(double t) {
 // BeuiSelect — the default (gooey accordion) dropdown.
 // ===========================================================================
 
+/// The trigger style of a [BeuiSelect].
+enum BeuiSelectVariant {
+  /// The bordered field trigger: 14px label, 12×8 padding, full width.
+  standard,
+
+  /// A borderless 32px trigger sized to its label: 12px muted label, 8px
+  /// horizontal padding, a muted fill on hover, and a 208px panel. The
+  /// source's prompt-input model picker (`h-8 px-2 py-0 text-xs border-0`).
+  compact,
+}
+
 /// A dropdown select whose panel unfolds out of the trigger — the Flutter port
 /// of beUI's `select` (the gooey/accordion variant), built on [BeuiOverlay] and
 /// anchored to the trigger with a [LayerLink] + [CompositedTransformFollower],
@@ -146,6 +157,7 @@ class BeuiSelect extends StatefulWidget {
     this.onChanged,
     this.placeholder = 'Select',
     this.enabled = true,
+    this.variant = BeuiSelectVariant.standard,
     super.key,
   });
 
@@ -166,6 +178,9 @@ class BeuiSelect extends StatefulWidget {
 
   /// Whether the trigger is interactive.
   final bool enabled;
+
+  /// The trigger style. Defaults to [BeuiSelectVariant.standard].
+  final BeuiSelectVariant variant;
 
   @override
   State<BeuiSelect> createState() => _BeuiSelectState();
@@ -306,6 +321,11 @@ class _BeuiSelectState extends State<BeuiSelect>
   ValueChanged<String>? get _onChanged => widget.onChanged;
 
   @override
+  double get _panelWidth => widget.variant == BeuiSelectVariant.compact
+      ? 208 // source SelectContent `w-52`
+      : super._panelWidth;
+
+  @override
   void initState() {
     super.initState();
     _cornerCtrl = AnimationController(
@@ -418,6 +438,7 @@ class _BeuiSelectState extends State<BeuiSelect>
         ? widget.options[_selectedIndex()].label
         : widget.placeholder;
     final icon = _selectedIcon;
+    final compact = widget.variant == BeuiSelectVariant.compact;
 
     return Focus(
       canRequestFocus: widget.enabled,
@@ -439,17 +460,40 @@ class _BeuiSelectState extends State<BeuiSelect>
               final near = reduce
                   ? _radius
                   : _cornerTween.evaluate(_cornerCtrl);
+              final labelText = Text(
+                label,
+                overflow: TextOverflow.ellipsis,
+                style: compact
+                    ? TextStyle(
+                        fontSize: 12,
+                        height: 16 / 12,
+                        color: colors.mutedForeground,
+                      )
+                    : TextStyle(
+                        fontSize: 14,
+                        color: selected
+                            ? colors.foreground
+                            : colors.mutedForeground,
+                      ),
+              );
               return Opacity(
                 opacity: widget.enabled ? 1 : 0.5,
                 child: Container(
+                  height: compact ? 32 : null,
                   decoration: BoxDecoration(
-                    color: colors.background,
+                    color: compact
+                        ? (_triggerHovered
+                              ? colors.muted
+                              : const Color(0x00000000))
+                        : colors.background,
                     // hover:border-(--color-border-strong)
-                    border: Border.all(
-                      color: _triggerHovered
-                          ? colors.borderStrong
-                          : colors.border,
-                    ),
+                    border: compact
+                        ? null
+                        : Border.all(
+                            color: _triggerHovered
+                                ? colors.borderStrong
+                                : colors.border,
+                          ),
                     borderRadius: _triggerCorners(near),
                     // focus-visible:ring-2 ring-foreground/20
                     boxShadow: _triggerFocused
@@ -461,28 +505,24 @@ class _BeuiSelectState extends State<BeuiSelect>
                           ]
                         : null,
                   ),
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 12,
-                    vertical: 8,
-                  ),
+                  padding: compact
+                      ? const EdgeInsets.symmetric(horizontal: 8)
+                      : const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                   child: Row(
+                    mainAxisSize: compact ? MainAxisSize.min : MainAxisSize.max,
                     children: [
                       if (icon != null) ...[
-                        _OptionIcon(icon: icon, color: colors.mutedForeground),
-                        const SizedBox(width: 8),
-                      ],
-                      Expanded(
-                        child: Text(
-                          label,
-                          overflow: TextOverflow.ellipsis,
-                          style: TextStyle(
-                            fontSize: 14,
-                            color: selected
-                                ? colors.foreground
-                                : colors.mutedForeground,
-                          ),
+                        _OptionIcon(
+                          icon: icon,
+                          color: colors.mutedForeground,
+                          glyphSize: compact ? 14 : 16,
                         ),
-                      ),
+                        SizedBox(width: compact ? 6 : 8),
+                      ],
+                      if (compact)
+                        Flexible(child: labelText)
+                      else
+                        Expanded(child: labelText),
                       const SizedBox(width: 8),
                       _Chevron(open: _open, color: colors.mutedForeground),
                     ],
@@ -1109,10 +1149,15 @@ class _MorphRowState extends State<_MorphRow> {
 /// `IconTheme` rather than a hard cast, so the slot accepts any widget while
 /// an [Icon] still picks up the row's colour and the source's 16px sizing.
 class _OptionIcon extends StatelessWidget {
-  const _OptionIcon({required this.icon, required this.color});
+  const _OptionIcon({
+    required this.icon,
+    required this.color,
+    this.glyphSize = 16,
+  });
 
   final Widget icon;
   final Color color;
+  final double glyphSize;
 
   @override
   Widget build(BuildContext context) => SizedBox(
@@ -1120,7 +1165,7 @@ class _OptionIcon extends StatelessWidget {
     height: 16,
     child: Center(
       child: IconTheme.merge(
-        data: IconThemeData(size: 16, color: color),
+        data: IconThemeData(size: glyphSize, color: color),
         child: icon,
       ),
     ),

@@ -1590,6 +1590,7 @@ class _ModelPicker extends StatelessWidget {
         value: value,
         onChanged: onChanged,
         enabled: enabled,
+        variant: BeuiSelectVariant.compact,
         placeholder: 'Choose model',
       ),
     );
