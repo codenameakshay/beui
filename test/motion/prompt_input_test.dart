@@ -1,5 +1,6 @@
 import 'package:beui/beui.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -242,6 +243,43 @@ void main() {
       await tester.tap(claude.last);
       await tester.pumpAndSettle();
       expect(model, 'claude');
+    });
+
+    testWidgets('the model picker fits inside the 32px footer', (tester) async {
+      await tester.pumpWidget(
+        _app(
+          const BeuiPromptInput(
+            models: [
+              BeuiPromptModel(value: 'opus', label: 'Claude Opus 5.5'),
+              BeuiPromptModel(value: 'gpt', label: 'GPT'),
+            ],
+            defaultModel: 'opus',
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      final composer = tester.getRect(find.byType(BeuiPromptInput));
+      final trigger = tester.getRect(find.byType(BeuiSelect));
+      final label = find.text('Claude Opus 5.5');
+      final paragraph = tester.renderObject<RenderParagraph>(label);
+
+      // source `SelectTrigger className="h-8 ..."`
+      expect(trigger.height, 32);
+      expect(composer.contains(trigger.topLeft), isTrue);
+      expect(
+        composer.contains(trigger.bottomRight - const Offset(1, 1)),
+        isTrue,
+      );
+      // The label is laid out at its full line height, not squeezed and cut.
+      expect(
+        paragraph.size.height,
+        greaterThanOrEqualTo(paragraph.textSize.height),
+      );
+      expect(
+        trigger.contains(tester.getRect(label).bottomLeft - const Offset(0, 1)),
+        isTrue,
+      );
     });
   });
 
