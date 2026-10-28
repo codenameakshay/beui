@@ -150,7 +150,7 @@ export 'src/motion/scroll_progress.dart' show BeuiScrollProgress;
 export 'src/motion/scroll_reveal.dart' show BeuiScrollReveal;
 export 'src/motion/scroll_to.dart' show BeuiScrollTo;
 export 'src/motion/select.dart'
-    show BeuiMorphSelect, BeuiSelect, BeuiSelectOption;
+    show BeuiMorphSelect, BeuiSelect, BeuiSelectOption, BeuiSelectVariant;
 export 'src/motion/shader_background/shader_background.dart'
     show BeuiShaderBackground, BeuiShaderVariant;
 export 'src/motion/shared_layout_bg.dart' show BeuiSharedLayoutBg;

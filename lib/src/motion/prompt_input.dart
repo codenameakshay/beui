@@ -885,8 +885,8 @@ class _Footer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: _footerMinH,
+    return ConstrainedBox(
+      constraints: const BoxConstraints(minHeight: _footerMinH),
       child: Row(
         // source: `mt-1 flex min-h-8 items-center gap-1`
         spacing: 4,
@@ -940,8 +940,8 @@ class _Footer extends StatelessWidget {
 // Actions (+ overlay menu)
 //
 // Source uses MorphPopover; the Flutter MorphPopover lays out in-tree and
-// cannot escape a 32px footer Row's max-height, so the panel is measured /
-// clipped wrong. Actions open through [BeuiOverlay] (root overlay) with a
+// cannot escape the footer Row's height, so the panel is measured / clipped
+// wrong. Actions open through [BeuiOverlay] (root overlay) with a
 // spring panel entrance that matches SPRING_PANEL scale+opacity feel.
 // ---------------------------------------------------------------------------
 
@@ -1590,6 +1590,7 @@ class _ModelPicker extends StatelessWidget {
         value: value,
         onChanged: onChanged,
         enabled: enabled,
+        variant: BeuiSelectVariant.compact,
         placeholder: 'Choose model',
       ),
     );

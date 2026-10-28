@@ -1,5 +1,6 @@
 import 'package:beui/beui.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -21,6 +22,17 @@ const _actions = <BeuiPromptAction>[
 
 Widget _app(Widget child, {bool reduce = false}) =>
     beuiTestApp(child, width: 400, reduce: reduce);
+
+Widget _scaledApp(Widget child, double scale) => _app(
+  Builder(
+    builder: (context) => MediaQuery(
+      data: MediaQuery.of(
+        context,
+      ).copyWith(textScaler: TextScaler.linear(scale)),
+      child: child,
+    ),
+  ),
+);
 
 void main() {
   group('BeuiPromptInput text', () {
@@ -242,6 +254,211 @@ void main() {
       await tester.tap(claude.last);
       await tester.pumpAndSettle();
       expect(model, 'claude');
+    });
+
+    testWidgets('icon and label remain visible at large text scale', (
+      tester,
+    ) async {
+      final textHeights = <double>[];
+      for (final scale in [1.0, 1.5, 2.0, 3.0]) {
+        await tester.pumpWidget(
+          _scaledApp(
+            const BeuiPromptInput(
+              models: [
+                BeuiPromptModel(
+                  value: 'gpt',
+                  label: 'GPT',
+                  icon: Icon(LucideIcons.bot),
+                ),
+              ],
+              defaultModel: 'gpt',
+            ),
+            scale,
+          ),
+        );
+        await tester.pumpAndSettle();
+
+        final composer = tester.getRect(find.byType(BeuiPromptInput));
+        final trigger = tester.getRect(find.byType(BeuiSelect));
+        final label = find.text('GPT');
+        final paragraph = tester.renderObject<RenderParagraph>(label);
+        final iconRect = tester.getRect(find.byIcon(LucideIcons.bot));
+
+        // 3x needs a 48px line, so the trigger and footer grow past 32px.
+        expect(trigger.height, scale == 3.0 ? 48 : 32);
+        expect(paragraph.maxLines, 1);
+        expect(
+          paragraph.size.height,
+          greaterThanOrEqualTo(paragraph.textSize.height),
+        );
+        expect(iconRect.size, const Size(14, 14));
+        expect(trigger.contains(iconRect.topLeft), isTrue);
+        expect(
+          trigger.contains(iconRect.bottomRight - const Offset(1, 1)),
+          isTrue,
+        );
+        expect(composer.contains(trigger.topLeft), isTrue);
+        expect(
+          composer.contains(trigger.bottomRight - const Offset(1, 1)),
+          isTrue,
+        );
+        textHeights.add(paragraph.textSize.height);
+      }
+
+      expect(textHeights[2], greaterThan(textHeights[0]));
+    });
+
+    testWidgets('long spaced model label truncates on one line within 208px', (
+      tester,
+    ) async {
+      const label =
+          'Claude Opus with an exceptionally long descriptive model name';
+      await tester.pumpWidget(
+        _app(
+          const BeuiPromptInput(
+            models: [BeuiPromptModel(value: 'opus', label: label)],
+            defaultModel: 'opus',
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      final trigger = tester.getRect(find.byType(BeuiSelect));
+      final paragraph = tester.renderObject<RenderParagraph>(find.text(label));
+
+      expect(trigger.width, lessThanOrEqualTo(208));
+      expect(paragraph.maxLines, 1);
+      expect(
+        paragraph.size.height,
+        greaterThanOrEqualTo(paragraph.textSize.height),
+      );
+      expect(paragraph.didExceedMaxLines, isTrue);
+    });
+
+    testWidgets(
+      'unknown controlled model shows placeholder and commits by keyboard',
+      (tester) async {
+        String? committed;
+        await tester.pumpWidget(
+          _app(
+            BeuiPromptInput(
+              models: _models,
+              model: 'model-added-later',
+              onModelChange: (value) => committed = value,
+            ),
+          ),
+        );
+        await tester.pumpAndSettle();
+
+        expect(find.text('Choose model'), findsOneWidget);
+        await tester.sendKeyEvent(LogicalKeyboardKey.tab);
+        await tester.pump();
+        await tester.sendKeyEvent(LogicalKeyboardKey.tab);
+        await tester.pump();
+        await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+        await tester.pumpAndSettle();
+        expect(find.text('GPT'), findsOneWidget);
+        await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+        await tester.pumpAndSettle();
+
+        expect(committed, 'gpt');
+      },
+    );
+
+    testWidgets('empty model list omits the picker', (tester) async {
+      await tester.pumpWidget(_app(const BeuiPromptInput(defaultModel: 'gpt')));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(BeuiSelect), findsNothing);
+      expect(find.text('Choose model'), findsNothing);
+
+      await tester.pumpWidget(
+        _app(const BeuiPromptInput(models: _models, defaultModel: 'gpt')),
+      );
+      await tester.pumpAndSettle();
+      expect(find.text('GPT'), findsOneWidget);
+    });
+
+    testWidgets('disabled composer keeps the model picker closed', (
+      tester,
+    ) async {
+      String? committed;
+      await tester.pumpWidget(
+        _app(
+          BeuiPromptInput(
+            models: _models,
+            defaultModel: 'gpt',
+            enabled: false,
+            onModelChange: (value) => committed = value,
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.text('GPT'), warnIfMissed: false);
+      await tester.pumpAndSettle();
+      expect(find.text('Claude'), findsNothing);
+
+      await tester.sendKeyEvent(LogicalKeyboardKey.tab);
+      await tester.pump();
+      await tester.sendKeyEvent(LogicalKeyboardKey.tab);
+      await tester.pump();
+      await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+      await tester.pumpAndSettle();
+      expect(find.text('Claude'), findsNothing);
+      expect(committed, isNull);
+
+      await tester.pumpWidget(
+        _app(
+          BeuiPromptInput(
+            models: _models,
+            defaultModel: 'gpt',
+            onModelChange: (value) => committed = value,
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('GPT'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Claude'));
+      await tester.pumpAndSettle();
+      expect(committed, 'claude');
+    });
+
+    testWidgets('the model picker fits inside the 32px footer', (tester) async {
+      await tester.pumpWidget(
+        _app(
+          const BeuiPromptInput(
+            models: [
+              BeuiPromptModel(value: 'opus', label: 'Claude Opus 5.5'),
+              BeuiPromptModel(value: 'gpt', label: 'GPT'),
+            ],
+            defaultModel: 'opus',
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      final composer = tester.getRect(find.byType(BeuiPromptInput));
+      final trigger = tester.getRect(find.byType(BeuiSelect));
+      final label = find.text('Claude Opus 5.5');
+      final paragraph = tester.renderObject<RenderParagraph>(label);
+
+      // source `SelectTrigger className="h-8 ..."`
+      expect(trigger.height, 32);
+      expect(composer.contains(trigger.topLeft), isTrue);
+      expect(
+        composer.contains(trigger.bottomRight - const Offset(1, 1)),
+        isTrue,
+      );
+      expect(
+        paragraph.size.height,
+        greaterThanOrEqualTo(paragraph.textSize.height),
+      );
+      expect(
+        trigger.contains(tester.getRect(label).bottomLeft - const Offset(0, 1)),
+        isTrue,
+      );
     });
   });
 

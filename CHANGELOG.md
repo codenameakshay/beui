@@ -3,6 +3,7 @@
 ### Fixes
 
 * Streaming Response shows one retry control on error. The error notice's labelled Retry replaces the action-row retry icon, so `showActions: false` is no longer needed to avoid a duplicate. Errors without copy or sources no longer leave an empty actions footer. Complete and stopped responses keep the row icon.
+* Prompt Input's model picker no longer clips its label and border in the 32px footer. It uses the new `BeuiSelectVariant.compact` trigger, matching the source's borderless 32px picker with a 12px label and a 208px panel.
 
 ## 3.0.0
 
