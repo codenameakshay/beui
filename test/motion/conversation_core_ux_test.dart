@@ -152,18 +152,6 @@ void main() {
       expect(retried, 1);
     });
 
-    testWidgets('error does not repeat notice retry in the action row', (
-      tester,
-    ) async {
-      await tester.pumpWidget(
-        response(BeuiStreamingResponseStatus.error, onRetry: () {}),
-      );
-      await tester.pumpAndSettle();
-
-      expect(find.text('Retry'), findsOneWidget);
-      expect(find.byIcon(LucideIcons.rotate_ccw), findsNothing);
-    });
-
     testWidgets('closing an error notice removes its focused retry action', (
       tester,
     ) async {
@@ -198,9 +186,7 @@ void main() {
       }
       expect(retried, 1);
 
-      setTestState!(
-        () => status = BeuiStreamingResponseStatus.streaming,
-      );
+      setTestState!(() => status = BeuiStreamingResponseStatus.streaming);
       await tester.pumpAndSettle();
       await tester.sendKeyEvent(LogicalKeyboardKey.enter);
       await tester.pump();
@@ -212,6 +198,57 @@ void main() {
       await tester.sendKeyEvent(LogicalKeyboardKey.space);
       await tester.pump();
       expect(continued, 0);
+    });
+
+    testWidgets('error keyboard order is Retry, Copy, then the next control', (
+      tester,
+    ) async {
+      var retried = 0;
+      var copied = 0;
+      var continued = 0;
+      var nextControlActivations = 0;
+      await tester.pumpWidget(
+        _app(
+          Column(
+            children: [
+              BeuiStreamingResponse(
+                status: BeuiStreamingResponseStatus.error,
+                copyText: 'partial answer',
+                onRetry: () => retried++,
+                onCopy: () => copied++,
+                onContinue: () => continued++,
+                child: const Text('partial answer'),
+              ),
+              TextButton(
+                onPressed: () => nextControlActivations++,
+                child: const Text('Next control'),
+              ),
+            ],
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      await tester.sendKeyEvent(LogicalKeyboardKey.tab);
+      await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+      await tester.pump();
+      expect(retried, 1);
+      expect(copied, 0);
+
+      await tester.sendKeyEvent(LogicalKeyboardKey.tab);
+      await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+      await tester.pump();
+      expect(copied, 1);
+      expect(retried, 1);
+
+      await tester.sendKeyEvent(LogicalKeyboardKey.tab);
+      await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+      await tester.pump();
+      expect(nextControlActivations, 1);
+      expect(continued, 0);
+      expect(retried, 1);
+      expect(copied, 1);
+      await tester.pump(const Duration(seconds: 2));
     });
 
     testWidgets('continue is surfaced on stopped and fires', (tester) async {

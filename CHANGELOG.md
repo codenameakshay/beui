@@ -2,7 +2,7 @@
 
 ### Fixes
 
-* Streaming Response shows one retry control on error. The error notice's labelled Retry replaces the action-row retry icon, so `showActions: false` is no longer needed to avoid a duplicate. Complete and stopped responses keep the row icon.
+* Streaming Response shows one retry control on error. The error notice's labelled Retry replaces the action-row retry icon, so `showActions: false` is no longer needed to avoid a duplicate. Errors without copy or sources no longer leave an empty actions footer. Complete and stopped responses keep the row icon.
 
 ## 3.0.0
 
