@@ -1,1 +1,0 @@
-bool get sankeyHoverCapable => true;

@@ -70,7 +70,7 @@ Browser oracle: installed Google Chrome **155.0.8059.86**, headless, viewport
 1280x1000, device scale factor 1. `oracle.json` contains 22 measured cases,
 computed table styles, accepted col styles, inputs, and exact outputs. `oracle.mjs`
 uses the existing documented Playwright workflow from
-`docs/proof/v3-parity/resume-20261023/table-followup/beui-table-research.mjs`.
+[`beui-table-research.mjs`](https://github.com/codenameakshay/beui/blob/c0878f554a9b44799ad4b727f626980df941cd05/docs/proof/v3-parity/resume-20261023/table-followup/beui-table-research.mjs).
 It requires `/tmp/beui-parity-capture-runtime/node_modules/playwright-core/index.mjs`
 and `/Applications/Google Chrome.app/Contents/MacOS/Google Chrome`.
 
@@ -92,7 +92,7 @@ new fixture artifacts. Review changes when testing a different Chrome version.
 ## Original observations retained separately
 
 The two `original-*.json` files are byte-for-byte copies of existing evidence in
-`docs/proof/v3-parity/resume-20261023/table-followup/`:
+[`table-followup/`](https://github.com/codenameakshay/beui/tree/c0878f554a9b44799ad4b727f626980df941cd05/docs/proof/v3-parity/resume-20261023/table-followup):
 
 - `beui-table-research.json`, SHA256
   `6e7a6231c6bb6c3c1cc8c402b4e1ce22aef0d009f046a50178783add65857d4d`.

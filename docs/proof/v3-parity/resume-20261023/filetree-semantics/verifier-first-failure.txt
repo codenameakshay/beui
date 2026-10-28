@@ -1,5 +1,0 @@
-The first verifier required every MP4 decoded count to equal its original PNG count and failed at:
-assert counts['capture.mp4']==len(d['frames'])
-AssertionError
-
-The timestamp audit identifies attempt-controls2/source-reduce-accept: 90 originals, 89 MP4 decoded frames. Originals and the FFV1 replay remain intact. The final verifier validates and reports actual MP4 counts against the retained audit, and still requires exact counts and exact RGB for every FFV1 replay frame. No media was replaced to hide the loss.

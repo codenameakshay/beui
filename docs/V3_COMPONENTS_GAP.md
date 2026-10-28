@@ -116,4 +116,4 @@ Public `Beui*` names (Install target → widget):
 
 ## Review status
 
-[Review record](proof/v3-components/REVIEW.md) records the repaired lifecycle, reduced-motion, accessibility, and demo-caller findings with RED evidence and exact central commands. The parent verified 212 local tests passing across 20 affected files and clean analysis of 48 touched Dart files. Goldens were skipped; no app, simulator, or device proof was produced. Existing screenshots and scores predate the repairs and do not certify their visuals. Named parity gaps above remain.
+[Review record](https://github.com/codenameakshay/beui/blob/c0878f554a9b44799ad4b727f626980df941cd05/docs/proof/v3-components/REVIEW.md) records the repaired lifecycle, reduced-motion, accessibility, and demo-caller findings with RED evidence and exact central commands. The parent verified 212 local tests passing across 20 affected files and clean analysis of 48 touched Dart files. Goldens were skipped; no app, simulator, or device proof was produced. Existing screenshots and scores predate the repairs and do not certify their visuals. Named parity gaps above remain.

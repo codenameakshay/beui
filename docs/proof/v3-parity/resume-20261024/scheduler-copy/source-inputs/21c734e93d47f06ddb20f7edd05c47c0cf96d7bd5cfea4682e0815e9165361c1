@@ -1,4 +1,0 @@
-import React,{useState} from 'react';import{createRoot}from'react-dom/client';import{AvailabilityScheduler}from '@/components/motion/availability-scheduler';
-const days=['mon','tue','wed','thu','fri','sat','sun'];
-const initial=Object.fromEntries(days.map(d=>[d,{enabled:d!=='tue'&&d!=='sat',ranges:[{id:d+'-fixed',start:d==='mon'?'08:30':'10:00',end:d==='mon'?'16:30':'12:00'}]}]));
-function App(){const[value,set]=useState(initial),[calls,record]=useState([]);const reject=new URLSearchParams(location.search).get('owner')==='reject';globalThis.__fixture={value,calls,reject};return <div style={{width:600}}><AvailabilityScheduler value={value} onChange={v=>{record(c=>[...c,v]);if(!reject)set(v)}}/></div>}createRoot(document.getElementById('root')).render(<App/>);

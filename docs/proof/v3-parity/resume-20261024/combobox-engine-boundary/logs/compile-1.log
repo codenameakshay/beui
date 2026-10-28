@@ -1,19 +1,0 @@
-Compiling test bundle dart2js-canvaskit-engine...
-ERROR: Failed to compile test /private/tmp/beui-initial-edit-engine-r8/engine/src/flutter/lib/web_ui/test/engine/semantics/initial_edit_boundary_test.dart. Dart2js exited with exit code 1
-  semantics/initial_edit_boundary_test.dart                                       The bundle dart2js-canvaskit-engine compiled with some failures in 1079ms.
-Compilation failures:
-  semantics/initial_edit_boundary_test.dart
-Pipeline experienced the following failures:
-  "compile_bundle": Failed to compile dart2js-canvaskit-engine.
-#0      CompileBundleStep.run (file:///private/tmp/beui-initial-edit-engine-r8/engine/src/flutter/lib/web_ui/dev/steps/compile_bundle_step.dart:158:7)
-<asynchronous suspension>
-#1      Pipeline.run (file:///private/tmp/beui-initial-edit-engine-r8/engine/src/flutter/lib/web_ui/dev/pipeline.dart:136:9)
-<asynchronous suspension>
-#2      TestCommand.run (file:///private/tmp/beui-initial-edit-engine-r8/engine/src/flutter/lib/web_ui/dev/test_runner.dart:405:7)
-<asynchronous suspension>
-#3      CommandRunner.runCommand (package:args/command_runner.dart:212:13)
-<asynchronous suspension>
-#4      main (file:///private/tmp/beui-initial-edit-engine-r8/engine/src/flutter/lib/web_ui/dev/felt.dart:41:26)
-<asynchronous suspension>
-
-Test pipeline failed.

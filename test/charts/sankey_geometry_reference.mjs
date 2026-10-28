@@ -9,4 +9,4 @@ for(const [width,height,nodeWidth,nodePadding] of [[640,320,12,16],[512,180,8,80
   const data=cleanSankey(nodes,links),layout=layoutSankey(data,{width,height,nodeWidth,nodePadding,colors:SANKEY_COLORS});
   fixtures.push({nodes,links,width,height,nodeWidth,nodePadding,cleaned:data,layout});
 }
-await writeFile('docs/proof/v3-parity/charts/sankey/source/geometry.json',JSON.stringify({source:'a76e57c9bbc2837e96420b2610e9c82a3271bb05',fixtures},null,2),{flag:'wx'});
+await writeFile('test/fixtures/sankey/geometry.json',JSON.stringify({source:'a76e57c9bbc2837e96420b2610e9c82a3271bb05',fixtures},null,2),{flag:'wx'});

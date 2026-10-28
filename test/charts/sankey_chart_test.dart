@@ -59,9 +59,7 @@ dynamic flowPainter(WidgetTester t, String id) => t
 void main() {
   test('actual demo cubic centerlines match source SVG interior samples', () {
     final reference = jsonDecode(
-      File(
-        'docs/proof/v3-parity/charts/sankey/source/curves.json',
-      ).readAsStringSync(),
+      File('test/fixtures/sankey/curves.json').readAsStringSync(),
     );
     for (final f in reference['fixtures'] as List) {
       final layout = beuiLayoutSankey(
@@ -108,9 +106,7 @@ void main() {
     () {
       final reference =
           jsonDecode(
-                File(
-                  'docs/proof/v3-parity/charts/sankey/source/geometry.json',
-                ).readAsStringSync(),
+                File('test/fixtures/sankey/geometry.json').readAsStringSync(),
               )
               as Map<String, dynamic>;
       for (final f in reference['fixtures'] as List) {
