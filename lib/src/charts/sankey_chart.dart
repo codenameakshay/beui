@@ -189,10 +189,7 @@ class _SankeyState extends State<BeuiSankeyChart> {
 
   String format(double v) {
     if (widget.formatValue != null) return widget.formatValue!(v);
-    return beuiChartFormatNumber(
-      v,
-      maximumFractionDigits: 2,
-    ).replaceFirst(RegExp(r'\.?0+$'), '');
+    return beuiChartFormatNumber(v, maximumFractionDigits: 2);
   }
 
   @override

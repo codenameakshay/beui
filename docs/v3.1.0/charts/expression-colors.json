@@ -1,0 +1,155 @@
+{
+  "audit": "chart-expression-colors",
+  "source": {
+    "repository": "starc007/ui-components",
+    "revision": "1ab921e62283e788a686bc4bafa1de5ff56104ea",
+    "path": "/Users/codenameakshay/.t3/artifacts/beui-v3.1.0/source-1ab921e6",
+    "themeInputs": {
+      "--ink-l": {
+        "light": "0.5",
+        "dark": "1",
+        "setBy": [
+          "components/charts/price-target-fan.tsx:14",
+          "components/charts/returns-calendar.tsx:14"
+        ]
+      },
+      "--foreground": {
+        "light": "oklch(15% 0 0)",
+        "dark": "oklch(96% 0 0)"
+      },
+      "--success": "oklch(70% 0.18 155)",
+      "--warning": "oklch(78% 0.18 75)",
+      "--accent": {
+        "light": "oklch(72% 0.18 195)",
+        "dark": "oklch(80% 0.18 195)"
+      },
+      "--destructive": "var(--danger)",
+      "--danger": "oklch(62% 0.22 25)"
+    },
+    "hashesSha256": {
+      "components/charts/price-target-fan.tsx": "87671dcda04dec3f712fb0d2ffbd4728195de31878469d942d74699638d47d25",
+      "components/charts/price-target-fan/context.ts": "97d1dbae6d2c7978f65f6a8309155faec5ad25a69d51fc4c7b42c3ea64d0f2ea",
+      "components/charts/price-target-fan/header.tsx": "e5f9fb6154c2083f1064a2a154590ada5f9b6f40d9da32826fdfbfe05ad98223",
+      "components/charts/price-target-fan/plot.tsx": "1aa87c7ad3893178bc4aff12a52ba6da82df4b842af16cceaf534a4c52b01990",
+      "components/charts/price-target-fan/series.tsx": "6c66b9a3f860f0200569d235ba84a4d7a47984908c1095ed7956ffcb2b9e306b",
+      "components/charts/price-target-fan/tooltip.tsx": "9844db9092eb100f4bd51e975d0230ad5fe2db863cfb00a5cf3bec4786e4a0c6",
+      "components/charts/price-target-fan/utils.ts": "2409395d9845883cf0a7c339e5d99b02c84c25eef60057b85fc82c00693e4711",
+      "components/charts/returns-calendar.tsx": "1e50c58747f0767de89fc848ab92682003526e266ba0ec5bc7d21adbb34d0f4d",
+      "components/charts/returns-calendar/grid.tsx": "e068dfeef4be4abf26ba042151cb96214994fdbaeef34a4c1dfc0519aeedd8cb",
+      "components/charts/returns-calendar/utils.ts": "13200d6ccf5a528b85dc4231c142d5210aced3ebeebb063d2dd29713fbeabfa9",
+      "components/charts/returns-calendar/tooltip.tsx": "99cff276d03ad7b15929727481dc4c3a3fa8a95a27131cbb807f587e78c38d97",
+      "components/charts/returns-calendar/context.ts": "478237f8037b39b7b9ec975472610bcb4a42a6c7f6d67b52e98a9f1a13967435",
+      "lib/theme-css.ts": "a12e5a4a1ef47d195fd642308bcdbe00afafa7a4d725eb412559d1937d398919",
+      "app/globals.css": "cb4af3f7a95b15d67acbf578778b9cc7ad52953cd93c76393d8b9eda1ed00516"
+    }
+  },
+  "expressions": {
+    "fanInkTemplate": "oklch(from {color} min(l, var(--ink-l, 1)) c h)",
+    "fanInkByMode": {
+      "light": [
+        "oklch(from var(--success) min(l, 0.5) c h)",
+        "oklch(from var(--warning) min(l, 0.5) c h)",
+        "oklch(from var(--accent) min(l, 0.5) c h)",
+        "oklch(from var(--destructive) min(l, 0.5) c h)"
+      ],
+      "dark": [
+        "oklch(from var(--success) min(l, 1) c h)",
+        "oklch(from var(--warning) min(l, 1) c h)",
+        "oklch(from var(--accent) min(l, 1) c h)",
+        "oklch(from var(--destructive) min(l, 1) c h)"
+      ]
+    },
+    "fanRawColors": {
+      "UP": "var(--success)",
+      "MID": "var(--accent)",
+      "LOW": "var(--warning)"
+    },
+    "calendarRange": 8,
+    "calendarTint": "color-mix(in srgb, {UP|DOWN} {Math.round(min(abs(v)/range,1)*55 + (on ? 24 : 8))}%, transparent)",
+    "calendarTintInputs": {
+      "UP": "var(--success)",
+      "DOWN": "var(--destructive)"
+    },
+    "monthText": "color-mix(in srgb, var(--foreground) {Math.round(85 + min(abs(v)/range,1)*15)}%, transparent)",
+    "annualText": "oklch(from {var(--success)|var(--destructive)} min(l, var(--ink-l, 1)) c h)",
+    "annualNeutralFill": "color-mix(in srgb, var(--foreground) 6%, transparent)"
+  },
+  "literalExpectations": [
+    {"v": 0, "tone": "up", "tintNormal": "color-mix(in srgb, var(--success) 8%, transparent)", "tintHot": "color-mix(in srgb, var(--success) 24%, transparent)", "monthText": "color-mix(in srgb, var(--foreground) 85%, transparent)"},
+    {"v": 1, "tone": "up", "tintNormal": "color-mix(in srgb, var(--success) 15%, transparent)", "tintHot": "color-mix(in srgb, var(--success) 31%, transparent)", "monthText": "color-mix(in srgb, var(--foreground) 87%, transparent)"},
+    {"v": 2, "tone": "up", "tintNormal": "color-mix(in srgb, var(--success) 22%, transparent)", "tintHot": "color-mix(in srgb, var(--success) 38%, transparent)", "monthText": "color-mix(in srgb, var(--foreground) 89%, transparent)"},
+    {"v": 4, "tone": "up", "tintNormal": "color-mix(in srgb, var(--success) 36%, transparent)", "tintHot": "color-mix(in srgb, var(--success) 52%, transparent)", "monthText": "color-mix(in srgb, var(--foreground) 93%, transparent)"},
+    {"v": 8, "tone": "up", "tintNormal": "color-mix(in srgb, var(--success) 63%, transparent)", "tintHot": "color-mix(in srgb, var(--success) 79%, transparent)", "monthText": "color-mix(in srgb, var(--foreground) 100%, transparent)"},
+    {"v": -2, "tone": "down", "tintNormal": "color-mix(in srgb, var(--destructive) 22%, transparent)", "tintHot": "color-mix(in srgb, var(--destructive) 38%, transparent)", "monthText": "color-mix(in srgb, var(--foreground) 89%, transparent)"}
+  ],
+  "localInputs": {
+    "light": {
+      "foreground": "0xFF0B0B0B",
+      "success": "0xFF00BE6A",
+      "warning": "0xFFF9A300",
+      "destructive": "0xFFEE343B",
+      "monoAccent": "0xFF00C5C7"
+    },
+    "dark": {
+      "foreground": "0xFFF2F2F2",
+      "success": "0xFF00BE6A",
+      "warning": "0xFFF9A300",
+      "destructive": "0xFFEE343B",
+      "monoAccent": "0xFF00DFE1"
+    },
+    "accentOverridesByTheme": {
+      "violet": ["0xFF7552DB", "0xFFA490FF"],
+      "blue": ["0xFF026FD7", "0xFF59A0F9"],
+      "green": ["0xFF218A45", "0xFF53BE70"],
+      "amber": ["0xFFE69825", "0xFFF5AE39"],
+      "bloodOrange": ["0xFFD84A00", "0xFFFA7A45"],
+      "rose": ["0xFFD5305A", "0xFFF46A82"],
+      "red": ["0xFFD40924", "0xFFF75D59"],
+      "teal": ["0xFF00877B", "0xFF00BEAF"],
+      "indigo": ["0xFF484DD2", "0xFF8393FF"],
+      "lime": ["0xFF7EBA27", "0xFF96D448"]
+    },
+    "interpretation": "Accent array entries are local [light,dark] theme values. Pinned source generic CSS establishes base light/dark variables only; custom consumer CSS can override them. These converted local values are not browser-effective color measurements."
+  },
+  "localDrift": [
+    {
+      "sourceRole": "Fan target price/header percentage/tooltip accent text ink cap",
+      "localLocation": "lib/src/charts/price_target_fan.dart:_targetColor, header build, target label, tooltip metric",
+      "finding": "Relative OKLCH transform absent; current text paths consume raw target/theme Color. Fan header also chooses success/destructive by signed change rather than active target color or source fallback UP/LOW."
+    },
+    {
+      "sourceRole": "Returns monthly tint",
+      "localLocation": "lib/src/charts/returns_calendar.dart:_ReturnsCell.build",
+      "finding": "Flutter tint alpha is continuous; source rounds the percent integer."
+    },
+    {
+      "sourceRole": "Returns monthly text mix",
+      "localLocation": "lib/src/charts/returns_calendar.dart:_ReturnsCell.build",
+      "finding": "Flutter foreground alpha is continuous; source rounds the percent integer."
+    },
+    {
+      "sourceRole": "Returns annual total ink",
+      "localLocation": "lib/src/charts/returns_calendar.dart:_ReturnsCell.build",
+      "finding": "Flutter uses raw success/destructive; source applies relative OKLCH lightness cap in light mode."
+    },
+    {
+      "sourceRole": "Returns tooltip signed metric ink",
+      "localLocation": "lib/src/charts/returns_calendar.dart:_ReturnsCell.build, BeuiReturnsCalendarTooltip",
+      "finding": "Source tooltip.tsx:48 caps signed metric color with ink(UP/DOWN). Flutter supplies string content to the shared tooltip and exposes an empty composition slot, without separate metric color routing or the cap."
+    }
+  ],
+  "localHashesSha256": {
+    "lib/src/charts/price_target_fan.dart": "fd69a1645129a7b7d6ee0c0d66235c0a205561e4c3d7c10d4abba780abcc5533",
+    "lib/src/charts/returns_calendar.dart": "882bb44da61296982464f840a90399a6f4299a7e1ddaff178ffdabaeb73d2e4b",
+    "lib/src/charts/_shared.dart": "bff6d6f11e95cb9cc0003daa7c1da69118f9386c1baacd3f2b0cc099874a9b56",
+    "lib/src/theme/beui_colors.g.dart": "8007f157f654ef5724426059e81b3c7c34b067336df555e1d7693dc9f7cd101c"
+  },
+  "status": {
+    "sourceExpressionArithmetic": "derived offline",
+    "sourceBrowserComputedColors": "not verified",
+    "sourceVsFlutterVisualParity": "not claimed",
+    "arbitraryCssParity": "not claimed",
+    "productionOrTestFilesChanged": false,
+    "buildOrDeviceRun": false
+  }
+}

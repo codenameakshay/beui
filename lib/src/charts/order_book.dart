@@ -232,7 +232,11 @@ class _BeuiOrderBookState extends State<BeuiOrderBook>
         : _book.midpoint;
     final formatPrice =
         widget.formatPrice ??
-        (value) => beuiChartFormatNumber(value, maximumFractionDigits: 2);
+        (value) => beuiChartFormatNumber(
+          value,
+          maximumFractionDigits: 2,
+          minimumFractionDigits: 2,
+        );
     final formatSize =
         widget.formatSize ??
         (value) => beuiChartFormatNumber(value, compact: true);

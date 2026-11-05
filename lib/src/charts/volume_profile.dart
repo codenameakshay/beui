@@ -201,16 +201,10 @@ class _BeuiVolumeProfileState extends State<BeuiVolumeProfile>
 
   String Function(double) get price =>
       widget.formatPrice ??
-      (v) => beuiChartFormatNumber(
-        v,
-        maximumFractionDigits: 2,
-      ).replaceFirst(RegExp(r'\.?0+$'), '');
+      (v) => beuiChartFormatNumber(v, maximumFractionDigits: 2);
   String Function(double) get volume =>
       widget.formatVolume ??
-      (v) => beuiChartFormatNumber(
-        v,
-        maximumFractionDigits: 2,
-      ).replaceFirst(RegExp(r'\.?0+$'), '');
+      (v) => beuiChartFormatNumber(v, maximumFractionDigits: 2);
   @override
   void initState() {
     super.initState();
