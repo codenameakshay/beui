@@ -29,7 +29,7 @@ dependencies:
   # arrived in 1.31, trash_2 became trash in 1.41), so bump it to whatever
   # version the newest glyph we reference needs, and re-run `flutter analyze`
   # after any bump.
-  flutter_lucide: ">=1.41.0 <2.0.0"
+  flutter_lucide: ">=1.41.0 <1.64.0"
   # Zone-scoped `clock.now()` for the one component that reads a wall clock
   # (BeuiAgentProgress's elapsed timer). Identical to DateTime.now() in
   # production, but flutter_test's fake async overrides it — so a widget whose
