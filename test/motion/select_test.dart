@@ -76,6 +76,33 @@ Rect _panelRectForOption(WidgetTester tester, String label) {
   return panel.localToGlobal(Offset.zero) & panel.size;
 }
 
+double _rowRevealY(WidgetTester tester, String label) {
+  final value = label.startsWith('Row ')
+      ? 'row-${label.substring(4)}'
+      : label.toLowerCase();
+  return tester
+      .widget<Transform>(find.byKey(ValueKey('beui-select-row-reveal-$value')))
+      .transform
+      .getTranslation()
+      .y;
+}
+
+double _rowRevealOpacity(WidgetTester tester, String label) {
+  final value = label.startsWith('Row ')
+      ? 'row-${label.substring(4)}'
+      : label.toLowerCase();
+  return tester
+      .widget<Opacity>(
+        find
+            .ancestor(
+              of: find.byKey(ValueKey('beui-select-row-reveal-$value')),
+              matching: find.byType(Opacity),
+            )
+            .first,
+      )
+      .opacity;
+}
+
 Container _triggerContainer(WidgetTester tester) => tester.widget<Container>(
   find
       .descendant(of: find.byType(BeuiSelect), matching: find.byType(Container))
@@ -187,6 +214,22 @@ void main() {
       trigger = _triggerContainer(tester);
       expect((trigger.decoration! as BoxDecoration).boxShadow, isNotEmpty);
       await tester.pumpAndSettle();
+    });
+
+    testWidgets('pointer focus does not show the keyboard focus ring', (
+      tester,
+    ) async {
+      await tester.pumpWidget(_app(_compactSelect(options: _options)));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Pick'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Banana'));
+      await tester.pumpAndSettle();
+
+      expect(
+        (_triggerContainer(tester).decoration! as BoxDecoration).boxShadow,
+        isNull,
+      );
     });
 
     testWidgets('keeps the 208px panel on-screen at the right edge', (
@@ -482,28 +525,166 @@ void main() {
   });
 
   group('BeuiSelect motion fidelity', () {
-    testWidgets('options stagger with blur under normal motion', (
+    testWidgets('all option rows reveal together in 120ms without blur', (
       tester,
     ) async {
       await tester.pumpWidget(_app(_select()));
       await tester.pumpAndSettle();
       await tester.tap(find.text('Pick'));
-      await tester.pump(); // one frame into the open — mid-stagger
-      await tester.pump(const Duration(milliseconds: 40));
-      // A blur ImageFilter is applied to still-entering option rows.
-      expect(find.byType(ImageFiltered), findsWidgets);
+      await tester.pump(Duration.zero);
+      await tester.pump(const Duration(milliseconds: 30));
+      const easeOut = Cubic(0.16, 1, 0.3, 1);
+      final expectedProgress = easeOut.transform(0.25);
+      expect(
+        _rowRevealOpacity(tester, 'Apple'),
+        closeTo(expectedProgress, 0.001),
+      );
+      expect(
+        _rowRevealY(tester, 'Apple'),
+        closeTo(-4 * (1 - expectedProgress), 0.001),
+      );
+      expect(
+        _rowRevealOpacity(tester, 'Banana'),
+        _rowRevealOpacity(tester, 'Apple'),
+      );
+      expect(_rowRevealY(tester, 'Banana'), _rowRevealY(tester, 'Apple'));
+      expect(_rowRevealY(tester, 'Cherry'), _rowRevealY(tester, 'Apple'));
+      expect(find.byType(ImageFiltered), findsNothing);
+      await tester.pump(const Duration(milliseconds: 90));
+      expect(_rowRevealY(tester, 'Apple'), closeTo(0, 0.05));
+      expect(_rowRevealY(tester, 'Banana'), closeTo(0, 0.05));
+      expect(_rowRevealY(tester, 'Cherry'), closeTo(0, 0.05));
+      expect(_rowRevealOpacity(tester, 'Apple'), 1);
       await tester.pumpAndSettle();
     });
 
-    testWidgets('reduced motion drops the option blur', (tester) async {
+    testWidgets('rows exit together over 80ms', (tester) async {
+      await tester.pumpWidget(_app(_select()));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Pick'));
+      await tester.pump(Duration.zero);
+      await tester.pumpAndSettle();
+      await tester.sendKeyEvent(LogicalKeyboardKey.escape);
+      await tester.pump(Duration.zero);
+      await tester.pump(const Duration(milliseconds: 40));
+      const easeOut = Cubic(0.16, 1, 0.3, 1);
+      final expectedProgress = 1 - easeOut.transform(0.5);
+      expect(
+        _rowRevealOpacity(tester, 'Apple'),
+        closeTo(expectedProgress, 0.001),
+      );
+      expect(
+        _rowRevealY(tester, 'Apple'),
+        closeTo(-4 * (1 - expectedProgress), 0.001),
+      );
+      expect(
+        _rowRevealOpacity(tester, 'Banana'),
+        _rowRevealOpacity(tester, 'Apple'),
+      );
+      expect(_rowRevealY(tester, 'Banana'), _rowRevealY(tester, 'Apple'));
+      expect(_rowRevealY(tester, 'Cherry'), _rowRevealY(tester, 'Apple'));
+      await tester.pump(const Duration(milliseconds: 40));
+      expect(_rowRevealY(tester, 'Apple'), -4);
+      expect(_rowRevealY(tester, 'Banana'), -4);
+      expect(_rowRevealY(tester, 'Cherry'), -4);
+      expect(_rowRevealOpacity(tester, 'Apple'), 0);
+      expect(_rowRevealOpacity(tester, 'Banana'), 0);
+      expect(_rowRevealOpacity(tester, 'Cherry'), 0);
+      await tester.pumpAndSettle();
+    });
+
+    testWidgets('long-list rows share readiness instead of staggering', (
+      tester,
+    ) async {
+      final options = [
+        for (var i = 0; i < 12; i++)
+          BeuiSelectOption(value: 'row-$i', label: 'Row $i'),
+      ];
+      await tester.pumpWidget(
+        _app(SizedBox(width: 220, child: BeuiSelect(options: options))),
+      );
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Select'));
+      await tester.pump(Duration.zero);
+      await tester.pump(const Duration(milliseconds: 30));
+      final offsets = [
+        for (var i = 0; i < options.length; i++) _rowRevealY(tester, 'Row $i'),
+      ];
+      expect(offsets.toSet(), hasLength(1));
+      expect(offsets.first, lessThan(0));
+      await tester.pump(const Duration(milliseconds: 90));
+      for (var i = 0; i < options.length; i++) {
+        expect(_rowRevealY(tester, 'Row $i'), closeTo(0, 0.05));
+      }
+      await tester.pumpAndSettle();
+    });
+
+    testWidgets('reduced motion keeps rows static and fades the panel', (
+      tester,
+    ) async {
       await tester.pumpWidget(_app(_select(), reduce: true));
       await tester.pumpAndSettle();
       await tester.tap(find.text('Pick'));
-      await tester.pump();
-      await tester.pump(const Duration(milliseconds: 40));
+      await tester.pump(Duration.zero);
+      await tester.pump(Duration.zero);
+      await tester.pump(const Duration(milliseconds: 60));
       expect(find.byType(ImageFiltered), findsNothing);
+      expect(
+        find.byKey(const ValueKey('beui-select-row-reveal-apple')),
+        findsNothing,
+      );
+      final panelOpacity = tester
+          .widgetList<Opacity>(
+            find.ancestor(
+              of: find.text('Apple'),
+              matching: find.byType(Opacity),
+            ),
+          )
+          .map((opacity) => opacity.opacity)
+          .firstWhere((opacity) => opacity > 0 && opacity < 1);
+      expect(panelOpacity, greaterThan(0));
+      expect(panelOpacity, lessThan(1));
+      await tester.pump(const Duration(milliseconds: 60));
+      expect(
+        tester
+            .widgetList<Opacity>(
+              find.ancestor(
+                of: find.text('Apple'),
+                matching: find.byType(Opacity),
+              ),
+            )
+            .map((opacity) => opacity.opacity)
+            .every((opacity) => opacity == 1),
+        isTrue,
+      );
+      await tester.sendKeyEvent(LogicalKeyboardKey.escape);
+      await tester.pump(Duration.zero);
+      await tester.pump(const Duration(milliseconds: 60));
+      final exitOpacity = tester
+          .widgetList<Opacity>(
+            find.ancestor(
+              of: find.text('Apple'),
+              matching: find.byType(Opacity),
+            ),
+          )
+          .map((opacity) => opacity.opacity)
+          .firstWhere((opacity) => opacity < 1);
+      expect(exitOpacity, greaterThan(0));
+      await tester.pump(const Duration(milliseconds: 60));
+      expect(
+        tester
+            .widgetList<Opacity>(
+              find.ancestor(
+                of: find.text('Apple'),
+                matching: find.byType(Opacity),
+              ),
+            )
+            .map((opacity) => opacity.opacity)
+            .firstWhere((opacity) => opacity < 1),
+        0,
+      );
       await tester.pumpAndSettle();
-      expect(find.text('Apple'), findsOneWidget);
+      expect(find.text('Apple'), findsNothing);
     });
   });
 

@@ -225,6 +225,7 @@ export 'src/motion/animated_sidebar.dart'
         BeuiAnimatedSidebarCollapsible,
         BeuiAnimatedSidebarGroup,
         BeuiAnimatedSidebarItem,
+        BeuiAnimatedSidebarProvider,
         BeuiAnimatedSidebarScope,
         BeuiAnimatedSidebarSide,
         BeuiAnimatedSidebarTrigger,
