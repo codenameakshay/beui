@@ -32,10 +32,27 @@ class BeuiTextShimmer extends StatefulWidget {
     this.baseColor,
     this.highlightColor,
     super.key,
-  });
+  }) : _child = null;
 
-  /// The text to shimmer.
+  /// Creates a shimmer over an arbitrary widget subtree.
+  ///
+  /// The child retains layout, semantics, focus, and callback ownership. The
+  /// gradient masks all painted alpha, including non-text paint.
+  const BeuiTextShimmer.child(
+    Widget child, {
+    this.duration = const Duration(milliseconds: 2500),
+    this.style,
+    this.textAlign,
+    this.baseColor,
+    this.highlightColor,
+    super.key,
+  }) : text = '',
+       _child = child;
+
+  /// The text to shimmer. Empty when created with [BeuiTextShimmer.child].
   final String text;
+
+  final Widget? _child;
 
   /// One full sweep duration (source `duration`, default 2.5s).
   final Duration duration;
@@ -101,16 +118,24 @@ class _BeuiTextShimmerState extends State<BeuiTextShimmer>
     final colors = BeuiColors.resolve(context);
     final base = widget.baseColor ?? colors.mutedForeground;
     final highlight = widget.highlightColor ?? colors.foreground;
-    final style = widget.style ?? DefaultTextStyle.of(context).style;
-
-    final text = Text(widget.text, style: style, textAlign: widget.textAlign);
+    final child = widget._child == null
+        ? Text(
+            widget.text,
+            style: widget.style ?? DefaultTextStyle.of(context).style,
+            textAlign: widget.textAlign,
+          )
+        : DefaultTextStyle.merge(
+            style: widget.style,
+            textAlign: widget.textAlign,
+            child: widget._child!,
+          );
 
     // RepaintBoundary: the shimmer repaints every frame forever — isolate it so
     // the loop never dirties ancestor layers.
     return RepaintBoundary(
       child: AnimatedBuilder(
         animation: _controller,
-        child: text,
+        child: child,
         builder: (context, child) {
           return ShaderMask(
             blendMode: BlendMode.srcIn,
