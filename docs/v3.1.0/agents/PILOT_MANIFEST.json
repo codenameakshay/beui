@@ -1,0 +1,82 @@
+{
+  "schema": 1,
+  "scope": "Message, MessageBubble and ToolApproval constructor defaults only",
+  "sourceRevision": "1ab921e62283e788a686bc4bafa1de5ff56104ea",
+  "widgetBaseline": "792ad82dca47cdf317fdd94f0bb9251724f562e2",
+  "dependencyOnlyHead": "fb29650b9ed9243e97e83cc9dd1773a7b6d8232d",
+  "sdk": "Flutter 3.44.4 / Dart 3.12.2",
+  "flutterLucide": "1.63.0",
+  "artifactRoot": "/Users/codenameakshay/.t3/artifacts/beui-v3.1.0/agents/pilot-message-defaults-2026-11-05",
+  "immutableInputManifestSha256": "05706f53fe84fe863dc2a4e96155b94d8a497d93fe18987a7a9a1f45145cebae",
+  "acquisitionReviewSha256": "d4f64e528d9b1ed60f36095b007db3bd16d7bbc3ec7b57e88c091e208fba3547",
+  "captures": [
+    {
+      "id": "source-message",
+      "stillSha256": "ad98f7db717cf1828c0b73ef33ddf7896695ee20d10cb47a89370aa397e55c46",
+      "videoSha256": "c5996aa13e3a9da015e3ad2b4fcbeea1e4965e0b6c0032ea399731cd48189a8a",
+      "decodedFrames": 171
+    },
+    {
+      "id": "before-message",
+      "stillSha256": "55a3fd0b453a4b8136206a91db4e8e70e9d882bc25a3c019379738502fa32bda",
+      "videoSha256": "f041d0e95826d988607336a9aa10d6c54477f8749d9ccdae9db62a2002a780cf",
+      "decodedFrames": 150
+    },
+    {
+      "id": "source-message-bubble",
+      "stillSha256": "e53954ea23804260b2f1c608dd224ec632abc0b6305ec0decd97d446641359aa",
+      "videoSha256": "ed5133151bcce673ff26892a6ef4ae709210eaa97888359ebb23d8793f934709",
+      "decodedFrames": 193
+    },
+    {
+      "id": "before-message-bubble",
+      "stillSha256": "8edfdde9e50cf04343d00973ebb4176a1e2487308b6a5c761a83685243728eac",
+      "videoSha256": "048046ad884f0394420ae8f0c82fb2eb2983de9715769c30d8c42f781507854e",
+      "decodedFrames": 152
+    },
+    {
+      "id": "source-tool-approval",
+      "stillSha256": "175ccc950aa573e6da9765e9d0146806b63d39584977fac31ff4971ceb6d10c4",
+      "videoSha256": "ca61a0729cc612f36645fc4523cd7b4954828e2c6bc8c6f511725b6cb4ba71d1",
+      "decodedFrames": 180
+    },
+    {
+      "id": "before-tool-approval",
+      "stillSha256": "7168637770e0145f654919e851f03b28197f6e4d8d5d49336e010c49412cd76f",
+      "videoSha256": "7de860ca481127590f287d738bedb9a83f9a7af4070b42aee77e15987cc62de2",
+      "decodedFrames": 104
+    }
+  ],
+  "independentStateReview": {
+    "stills": "All six nonblank rest frames reviewed; hashes revalidated after implementation.",
+    "messageFinalFrames": "Source and before submitted Pilot parity check, rendered their assistant reply and emptied the composer.",
+    "approvalFinalFrames": "Source and before Allow once reached Completed with evidence closed.",
+    "defaultsLimitation": "Previews explicitly configure state. Widget regressions, not gallery captures, prove omitted defaults.",
+    "renderingIssue": "Before-Message video final frame has missing icon glyphs despite its MCP still rendering icons. Root independently found tofu already in the first timed frame before events. document.fonts readiness is not engine-font proof. Open, not erased."
+  },
+  "regressionGate": {
+    "before": {"passed": 6, "failed": 3, "log": "docs/proof/v3.1.0/agents/before/source-default-regressions-reviewed.log"},
+    "after": {"passed": 9, "failed": 0},
+    "fourSuiteRun": {"passed": 61, "failed": 1, "failure": "Unskipped ToolApproval golden differs by 8 pixels, matching unchanged baseline failure."},
+    "afterLog": "after-focused-tests.log",
+    "afterLogSha256": "80a0a1abf1b17179ea0ec055336cf535c9fc76e92c731a24d4dfba5b5396de4f",
+    "goldenFixture": "Explicit defaultOpen:true preserves the original open-evidence golden composition. Golden bytes and tolerance unchanged.",
+    "afterAndBaselineGoldenTestImageSha256": "de3c5c08486ef53afb2731355e387ca3c1117721f5abe81766bc98b0b1c157d7"
+  },
+  "analysis": {
+    "root": "No issues found, Flutter 3.44.4",
+    "rootLogSha256": "f6b685efb7d26d34e822860b941657d86ba56bc9beec83e097b6a188e2ce1f8c",
+    "example": "No issues found, Flutter 3.44.4",
+    "exampleLogSha256": "e145b2591f1329ba7fff64fb0cf9d6be187d75f1245f77a56b4d6086bc6b3066"
+  },
+  "actualMcpDiagnostics": {
+    "report": "PILOT_DIAGNOSTICS.md",
+    "selectionSha256": "0c8ecb9ca582be8702188a56aaa57a46b4fc2dfe5cdbdf505bbed4fcbf3cc225",
+    "staticLogSha256": "54b765016dddb9ad83f256d16d59600598b0669955e726d239bdc1999ef2894c",
+    "motionLogSha256": "b0b025da6eacdb1a666fc1da41e1b00cf79eb2c8133bba4326a6e0cfc74ab513",
+    "static": "Processed source-before pre-input pair; visible design differences remain.",
+    "motion": "Processed 30 paired crops; timing inconclusive, cadence not verified. Energy is not animation fidelity."
+  },
+  "verdict": "Defaults regression repaired locally. Acquisition and diagnostic proof only. No full visual, motion-timing, performance, native or release acceptance.",
+  "remainingGates": ["Source-after state comparison", "Reduced-motion captures", "Complete state coverage", "Native proof", "Performance proof under serialized load", "Exact-head PR and CI"]
+}
