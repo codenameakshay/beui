@@ -14,7 +14,7 @@ Widget citationsDemo(BuildContext context) =>
     ? const _CompactCitationsDemo()
     : const _CitationsDemo();
 
-const _items = <BeuiCitationItem>[
+const _compactItems = <BeuiCitationItem>[
   BeuiCitationItem(
     id: 'motion',
     title: Text('Motion documentation'),
@@ -32,6 +32,27 @@ const _items = <BeuiCitationItem>[
     title: Text('React documentation'),
     domain: Text('react.dev'),
     url: 'https://react.dev/learn',
+  ),
+];
+
+const _items = <BeuiCitationItem>[
+  BeuiCitationItem(
+    id: 'motion',
+    title: Text('Motion documentation'),
+    domain: Text('motion.dev'),
+    url: 'https://motion.dev/docs/react',
+  ),
+  BeuiCitationItem(
+    id: 'wai',
+    title: Text('WAI accessibility patterns'),
+    domain: Text('w3.org'),
+    url: 'https://www.w3.org/WAI/ARIA/apg/',
+  ),
+  BeuiCitationItem(
+    id: 'guidelines',
+    title: Text('Motion guidelines'),
+    domain: Text('Design handbook · PDF'),
+    icon: Icon(LucideIcons.file_text),
   ),
 ];
 
@@ -96,7 +117,24 @@ class _CitationsDemoState extends State<_CitationsDemo> {
   @override
   Widget build(BuildContext context) {
     final colors = Theme.of(context).extension<BeuiColors>()!;
-    final shown = _items.take(_visible).toList(growable: false);
+    final shown = _items
+        .take(_visible)
+        .map((citation) {
+          if (citation.url == null) return citation;
+          return BeuiCitationItem(
+            id: citation.id,
+            title: citation.title,
+            domain: citation.domain,
+            url: citation.url,
+            icon: citation.icon,
+            onTap: () {
+              ScaffoldMessenger.maybeOf(context)?.showSnackBar(
+                SnackBar(content: Text('Would open ${citation.url}')),
+              );
+            },
+          );
+        })
+        .toList(growable: false);
 
     return Center(
       child: ConstrainedBox(
@@ -131,6 +169,7 @@ class _CitationsDemoState extends State<_CitationsDemo> {
                               baseline: TextBaseline.alphabetic,
                               child: BeuiCitation(
                                 citationId: 'motion',
+                                index: 1,
                                 idPrefix: 'preview-source',
                               ),
                             ),
@@ -143,10 +182,25 @@ class _CitationsDemoState extends State<_CitationsDemo> {
                               baseline: TextBaseline.alphabetic,
                               child: BeuiCitation(
                                 citationId: 'wai',
+                                index: 2,
                                 idPrefix: 'preview-source',
                               ),
                             ),
-                            const TextSpan(text: ' as the list grows.'),
+                            const TextSpan(
+                              text:
+                                  ' as the list grows, keeping exits shorter than entrances ',
+                            ),
+                            WidgetSpan(
+                              alignment: PlaceholderAlignment.baseline,
+                              baseline: TextBaseline.alphabetic,
+                              child: BeuiCitation(
+                                citationId: 'guidelines',
+                                index: 3,
+                                idPrefix: 'preview-source',
+                                label: 'Citation 3: Motion guidelines',
+                              ),
+                            ),
+                            const TextSpan(text: '.'),
                           ],
                         ),
                       ),
@@ -155,15 +209,6 @@ class _CitationsDemoState extends State<_CitationsDemo> {
                         idPrefix: 'preview-source',
                         citations: shown,
                         defaultOpen: true,
-                        // A real app wires this to url_launcher; the package
-                        // never opens URLs itself.
-                        onCitationTap: (citation) {
-                          ScaffoldMessenger.maybeOf(context)?.showSnackBar(
-                            SnackBar(
-                              content: Text('Would open ${citation.url}'),
-                            ),
-                          );
-                        },
                       ),
                     ],
                   ),
@@ -199,11 +244,14 @@ class _CompactCitationsDemo extends StatelessWidget {
           children: [
             const SectionLabel('Stack — overlapping favicon chips'),
             const SizedBox(height: 16),
-            const BeuiCitationStack(citations: _items),
+            const BeuiCitationStack(citations: _compactItems),
             const SizedBox(height: 40),
             const SectionLabel('List — always-expanded rows'),
             const SizedBox(height: 16),
-            BeuiCitationList(citations: _items, idPrefix: 'compact-list'),
+            BeuiCitationList(
+              citations: _compactItems,
+              idPrefix: 'compact-list',
+            ),
           ],
         ),
       ),

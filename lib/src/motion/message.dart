@@ -145,7 +145,7 @@ class BeuiMessage extends StatefulWidget {
   const BeuiMessage({
     required this.from,
     required this.children,
-    this.animateIn = true,
+    this.animateIn = false,
     this.semanticLabel,
     super.key,
   });
@@ -155,8 +155,8 @@ class BeuiMessage extends StatefulWidget {
 
   /// Plays the trailing-edge pop-up once when this row mounts.
   ///
-  /// Defaults to **true**. The source defaults it off, which meant
-  /// nothing in the library animated out of the box.
+  /// Defaults to **false**, matching the source. Pass `true` to opt into the
+  /// mount-only trailing-edge pop-up.
   ///
   /// The entrance is mount-only and keyed off widget identity, not off this
   /// flag: a row that stays mounted while its content streams pops exactly

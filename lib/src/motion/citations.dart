@@ -38,6 +38,7 @@ class BeuiCitationItem {
     required this.title,
     this.domain,
     this.url,
+    this.icon,
     this.onTap,
   });
 
@@ -61,6 +62,12 @@ class BeuiCitationItem {
   /// [BeuiCitations.onCitationTap]) — e.g. to `url_launcher` — to make the row
   /// live.
   final String? url;
+
+  /// Optional decorative icon shown instead of the URL favicon.
+  ///
+  /// When non-null, no favicon image is requested. The icon is excluded from
+  /// semantics just like the favicon it replaces.
+  final Widget? icon;
 
   /// Called when the citation row is activated.
   final VoidCallback? onTap;
@@ -241,6 +248,7 @@ class BeuiCitation extends StatefulWidget {
     required this.citationId,
     required this.idPrefix,
     this.index,
+    this.label,
     this.onPressed,
     super.key,
   });
@@ -254,6 +262,11 @@ class BeuiCitation extends StatefulWidget {
   /// after that the registry's position wins. Passing a value that disagrees
   /// with the rendered order is a bug and asserts in debug builds.
   final int? index;
+
+  /// Accessible name override. When null, uses the derived row number, or the
+  /// explicit [index] as a fallback before the related list registers its
+  /// order. Without either, the fallback is `View citation`.
+  final String? label;
 
   /// Must match the related [BeuiCitations.idPrefix] / [BeuiCitationList.idPrefix].
   final String idPrefix;
@@ -269,6 +282,7 @@ class BeuiCitation extends StatefulWidget {
 class _BeuiCitationState extends State<BeuiCitation> {
   bool _hovered = false;
   bool _focused = false;
+  bool _hasFocus = false;
   Listenable? _revision;
 
   @override
@@ -343,8 +357,10 @@ class _BeuiCitationState extends State<BeuiCitation> {
         onExit: (_) => setState(() => _hovered = false),
         cursor: SystemMouseCursors.click,
         child: FocusableActionDetector(
+          includeFocusSemantics: false,
           mouseCursor: SystemMouseCursors.click,
           onShowFocusHighlight: (v) => setState(() => _focused = v),
+          onFocusChange: (v) => setState(() => _hasFocus = v),
           actions: <Type, Action<Intent>>{
             ActivateIntent: CallbackAction<ActivateIntent>(
               onInvoke: (_) {
@@ -356,12 +372,19 @@ class _BeuiCitationState extends State<BeuiCitation> {
           child: GestureDetector(
             behavior: HitTestBehavior.opaque,
             onTap: _activate,
+            excludeFromSemantics: true,
             child: Semantics(
               container: true,
               button: true,
-              label: display == null
-                  ? 'View citation'
-                  : 'View citation $display',
+              focusable: true,
+              focused: _hasFocus,
+              excludeSemantics: true,
+              onTap: _activate,
+              label:
+                  widget.label ??
+                  (display == null
+                      ? 'View citation'
+                      : 'View citation $display'),
               child: Transform.translate(
                 // -translate-y-0.5 (2 logical px)
                 offset: const Offset(0, -2),
@@ -429,6 +452,7 @@ class BeuiCitationFavicon extends StatefulWidget {
   /// Creates a citation favicon.
   const BeuiCitationFavicon({
     this.url,
+    this.icon,
     this.size = 20,
     this.imageSize = 16,
     this.decoration,
@@ -437,6 +461,12 @@ class BeuiCitationFavicon extends StatefulWidget {
 
   /// Source page URL — favicon is resolved via [beuiFaviconUrl].
   final String? url;
+
+  /// Optional decorative icon drawn instead of acquiring a URL favicon.
+  ///
+  /// The exact widget is placed in the favicon slot and excluded from
+  /// semantics. When null, [url] keeps the existing image/fallback behavior.
+  final Widget? icon;
 
   /// Outer slot size (source `size-5` = 20, stack uses `size-6` = 24).
   final double size;
@@ -453,21 +483,36 @@ class BeuiCitationFavicon extends StatefulWidget {
 
 class _BeuiCitationFaviconState extends State<BeuiCitationFavicon> {
   String? _failedUrl;
+  int _faviconGeneration = 0;
 
   @override
   void didUpdateWidget(BeuiCitationFavicon old) {
     super.didUpdateWidget(old);
     if (old.url != widget.url) _failedUrl = null;
+    if (old.url != widget.url || old.icon != widget.icon) {
+      _faviconGeneration++;
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     final colors = BeuiColors.resolve(context);
-    final favicon = widget.url != null ? beuiFaviconUrl(widget.url!) : null;
+    final favicon = widget.icon == null && widget.url != null
+        ? beuiFaviconUrl(widget.url!)
+        : null;
     final showImage = favicon != null && _failedUrl != favicon;
+    final generation = _faviconGeneration;
 
     Widget child;
-    if (showImage) {
+    if (widget.icon != null) {
+      child = IconTheme.merge(
+        data: IconThemeData(
+          size: widget.imageSize * 0.875,
+          color: colors.mutedForeground,
+        ),
+        child: widget.icon!,
+      );
+    } else if (showImage) {
       child = Image.network(
         favicon,
         width: widget.imageSize,
@@ -477,7 +522,9 @@ class _BeuiCitationFaviconState extends State<BeuiCitationFavicon> {
         errorBuilder: (_, _, _) {
           // Schedule state write after this frame to avoid setState during build.
           WidgetsBinding.instance.addPostFrameCallback((_) {
-            if (mounted && _failedUrl != favicon) {
+            if (mounted &&
+                generation == _faviconGeneration &&
+                _failedUrl != favicon) {
               setState(() => _failedUrl = favicon);
             }
           });
@@ -559,6 +606,7 @@ class BeuiCitationStack extends StatelessWidget {
                 left: i * (chip - overlap),
                 child: BeuiCitationFavicon(
                   url: shown[i].url,
+                  icon: shown[i].icon,
                   size: chip,
                   imageSize: 16,
                   decoration: BoxDecoration(
@@ -804,6 +852,12 @@ class _BeuiCitationsState extends State<BeuiCitations> {
   Widget build(BuildContext context) {
     final reduce = MediaQuery.disableAnimationsOf(context);
     final colors = BeuiColors.resolve(context);
+    // Publish even while the disclosure is empty. The nested list is absent in
+    // that state, so it cannot clear a previously published row order itself.
+    _CitationAnchors.setOrder(
+      _resolvedPrefix,
+      widget.citations.map((citation) => citation.id).toList(growable: false),
+    );
 
     // Advisory, not fatal: a URL-only row is a legitimate (and now correctly
     // *static*) configuration, so this guides rather than crashes.
@@ -1054,7 +1108,10 @@ class _CitationRowState extends State<_CitationRow> {
       ), // px-1.5 py-1
       child: Row(
         children: [
-          BeuiCitationFavicon(url: widget.citation.url),
+          BeuiCitationFavicon(
+            url: widget.citation.url,
+            icon: widget.citation.icon,
+          ),
           const SizedBox(width: 8), // gap-2
           Expanded(
             child: Wrap(

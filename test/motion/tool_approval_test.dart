@@ -14,7 +14,7 @@ Widget _host({
   BeuiToolApprovalSeverity severity = BeuiToolApprovalSeverity.normal,
   BeuiToolApprovalGrant? grant,
   bool? open,
-  bool? defaultOpen = false,
+  bool? defaultOpen,
   bool? allowAlways,
   ValueChanged<bool>? onOpenChange,
   VoidCallback? onApprove,
@@ -323,11 +323,7 @@ void main() {
       expect(first.left - card.left, lessThan(40));
     });
 
-    // ---------------------------------------------------------------------
-    // A1 — the command is visible at the moment of approval
-    // ---------------------------------------------------------------------
-
-    testWidgets('details open by default when there are parameters', (
+    testWidgets('details stay closed by default when there are parameters', (
       tester,
     ) async {
       await tester.pumpWidget(
@@ -335,8 +331,19 @@ void main() {
       );
       await tester.pumpAndSettle();
 
-      // Being asked to allow `terminal.run` with the command folded away is
-      // not consent. `defaultOpen: null` resolves to parameters.isNotEmpty.
+      expect(find.text('View details'), findsOneWidget);
+      expect(find.text('ui-components'), findsNothing);
+      expect(find.textContaining('bun test'), findsNothing);
+    });
+
+    testWidgets('explicit defaultOpen:true opts into visible evidence', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        _host(defaultOpen: true, parameters: _sampleParams),
+      );
+      await tester.pumpAndSettle();
+
       expect(find.text('ui-components'), findsOneWidget);
       expect(find.textContaining('bun test'), findsOneWidget);
     });
@@ -347,7 +354,7 @@ void main() {
       await tester.pumpWidget(_host(defaultOpen: null));
       await tester.pumpAndSettle();
 
-      // Nothing behind the chevron means no chevron at all.
+      // Nothing behind the disclosure means there is no disclosure control.
       expect(find.text('View details'), findsNothing);
     });
 
@@ -875,6 +882,7 @@ void main() {
                 BeuiToolApproval(
                   tool: 'terminal.run',
                   description: 'Run the validation suite.',
+                  defaultOpen: true,
                   parameters: const [
                     BeuiToolApprovalParameter(
                       id: 'command',
