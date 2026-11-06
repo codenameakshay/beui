@@ -13,10 +13,10 @@ All local implementations are under `lib/src/charts/`.
 | Source | Local implementation | Scope and current limit |
 |---|---|---|
 | `xy/`, `line-chart.tsx` | `_xy.dart`, `_xy_parts.dart`, `line_chart.dart` | New. Line and area series, snapping crosshair, tooltip, keyboard and screen-reader inspector. Per-coordinate springs through the motor facade. |
-| `bar-chart.tsx` | `bar_chart.dart` | New. Grouped, stacked, vertical and horizontal bars on the shared XY parts. Stacked totals beyond `double` range are not handled (open below). |
-| `sparkline.tsx` | `sparkline.dart` | New. Line and area variants, gaps, delta badge and optional inspector. Delta colors are the source's fixed Tailwind values (open below). |
+| `bar-chart.tsx` | `bar_chart.dart` | New. Grouped, stacked, vertical and horizontal bars on the shared XY parts. Stacked totals clamp to the largest finite `double`, and bar lengths cap just past the plot edge. |
+| `sparkline.tsx` | `sparkline.dart` | New. Line and area variants, gaps, delta badge and optional inspector. Delta colors are the source's fixed Tailwind values, a documented exception to the `BeuiColors` rule. |
 | `donut-chart.tsx` | `donut_chart.dart` | Ring geometry, legend, center content, hover and focus aligned with the source. |
-| `price-target-fan.tsx` | `price_target_fan.dart` | Source 520px host, responsive plot, header typography and 1.5px history stroke. Reduced motion keeps the source zero-duration target dim. |
+| `price-target-fan.tsx` | `price_target_fan.dart` | Source 520px content-height host, responsive plot, header typography and 1.5px history stroke. Reduced motion keeps the source zero-duration target dim. |
 | `returns-calendar.tsx` | `returns_calendar.dart` | Year typography, tint percentages, selection outlines and annual colors. Reduced motion mounts cells and rings at their targets, as the source does. |
 | shared color and number helpers | `_shared.dart` | CSS color literals (including `#RRGGBBAA`) and source maximum-precision number output. Committed in `9fa84bddd`. |
 
@@ -43,6 +43,16 @@ Each run froze its local import closure and six configs before and after, and bo
 | Full example suite, all 18 test files, root1 | 66 passed, exit 0 | `7ca0135dacb3a2f1cc7011befc06f9c5981f1cb92d85865d491a5659791915bb` |
 | Release-web build, root2 | Exit 0, 353 files | `ce28805f2fe39556adfb11196ddc5559f8f4872119a225b04d1c236c4cad6b0f` |
 
+After the three product decisions, on head `712c679d2`:
+
+| Run | Result | Log SHA-256 |
+|---|---|---|
+| Root analysis, root4 | Exit 0, no issues | `53f5c4b36c9007a9e5158984d4b268006979ed1c39a5b752154a85025dd6e738` |
+| Example analysis, root4 | Exit 0, no issues | `44cf9ab6c9826ddcf67859f115e29eecf618528e1c02d21df15f28d6bf646a5a` |
+| Full package suite, all 202 test files, root2 | 2966 passed, 32 golden errors, exit 1 | `b37e23d17260f5104a2fdc00fa4398ce963388480dd03d15c8f6f744817ac2df` |
+
+The follow-up review fix `bf6069327` then passed the seven affected suites, 135 cases, exit 0 (`1b5b1450794cd5325f07e8ead50030b77867b19c4504c21c0016809eb97beb74`).
+
 `dart format --set-exit-if-changed` on `lib`, `test`, `example/lib` and `tool` changed 0 of 573 files.
 
 All 35 errors are golden pixel mismatches. No golden was regenerated or skipped.
@@ -59,9 +69,7 @@ Those local receipts are not accessible PR media.
 
 ## Open acceptance gates
 
-- The full local golden gate is not green. The four intended visual changes need an approved golden update on the CI SDK. The Donut cause must be established first.
-- Two finite `1e308` stacked bar values sum to infinity, and the domain ignores that total. Options: reject the overflowing total, or define its rendering and readout.
-- Sparkline delta colors are the source's fixed Tailwind values, which conflicts with the `BeuiColors` rule. Options: keep a documented source-parity exception, or add theme tokens for positive and negative change.
+- The Heatmap, Fan and Returns goldens were regenerated on Flutter 3.44.4 for their intended source changes. The Donut golden still fails, and its arc-edge cause is not established. The other 31 mismatches match the unchanged baseline.
 - The Returns wave still uses a raw `AnimationController`. A motor version must keep the cell's tree shape stable.
 - Matched source, unchanged-before and current-after media, timing, performance and native interaction are not accepted.
 - All 17 pages and 17 preview units still need final per-state and per-variant inventory acceptance.
