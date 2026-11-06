@@ -706,6 +706,62 @@ void main() {
     await tester.pumpAndSettle();
     expect(tester.takeException(), isNull);
     expect(model.totals, [double.maxFinite, 2]);
+    expect(model.domain.max.isFinite, isTrue);
+    expect(model.domain.ticks.every((tick) => tick.isFinite), isTrue);
+    expect(model.formatValue(model.totals[0]), isNot(contains('∞')));
+    expect(model.formatValue(model.totals[0]), isNot(contains('NaN')));
+  });
+
+  testWidgets('values above an explicit max do not overflow geometry', (
+    tester,
+  ) async {
+    for (final layout in BeuiBarChartLayout.values) {
+      for (final orientation in BeuiBarChartOrientation.values) {
+        for (final reduce in [false, true]) {
+          await tester.pumpWidget(
+            _app(
+              SizedBox(
+                width: 420,
+                child: BeuiBarChart(
+                  max: 1,
+                  layout: layout,
+                  orientation: orientation,
+                  series: const [
+                    BeuiBarChartSeries(
+                      id: 'x',
+                      name: 'X',
+                      color: '#2563eb',
+                      values: [1e308],
+                    ),
+                    BeuiBarChartSeries(
+                      id: 'y',
+                      name: 'Y',
+                      color: '#0d9488',
+                      values: [1e308],
+                    ),
+                  ],
+                  categories: const ['A'],
+                  child: const BeuiBarChartPlot(),
+                ),
+              ),
+              disableAnimations: reduce,
+            ),
+          );
+          await tester.pumpAndSettle();
+          expect(tester.takeException(), isNull);
+          expect(
+            tester
+                .widgetList<Transform>(find.byType(Transform))
+                .every(
+                  (transform) => transform.transform.storage.every(
+                    (value) => value.isFinite,
+                  ),
+                ),
+            isTrue,
+          );
+        }
+      }
+    }
   });
 
   testWidgets('empty categories keep a valid empty plot fallback', (

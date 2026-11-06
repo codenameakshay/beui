@@ -485,7 +485,14 @@ class _BeuiBarChartPlotState extends State<BeuiBarChartPlot>
             : math.max(0.0, width - widget.labelWidth - 2 * _right);
         final slot = bandLength / count;
         final maxValue = model.domain.max == 0 ? 1.0 : model.domain.max;
-        double scale(num value) => value / maxValue * valueLength;
+        double scale(num value) {
+          final ratio = value.toDouble() / maxValue;
+          // Keep overflow geometry beyond the viewport clip and bar end cap.
+          final maxRatio = 1 + 40 / math.max(valueLength, 1);
+          return (ratio.isFinite ? math.min(ratio, maxRatio) : maxRatio) *
+              valueLength;
+        }
+
         double valueAt(num value) =>
             vertical ? valueStart - scale(value) : valueStart + scale(value);
         final visible = model.visibleRows;

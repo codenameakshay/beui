@@ -711,9 +711,117 @@ void main() {
   ) async {
     await _pumpChart(tester, _chart(), reduce: true);
     final host = tester.getSize(find.byType(BeuiPriceTargetFan));
-    final content = tester.getSize(find.byType(BeuiPriceTargetPlot));
+    final header = tester.getSize(find.byType(BeuiPriceTargetHeader));
+    final plot = tester.getSize(find.byType(BeuiPriceTargetPlot));
     expect(host.height, lessThan(640));
-    expect(host.height, greaterThanOrEqualTo(content.height));
+    expect(host.height, header.height + plot.height);
+  });
+
+  testWidgets('default fan sizes to content in unbounded-height parents', (
+    tester,
+  ) async {
+    final fan = _chart();
+    await tester.pumpWidget(
+      beuiTestApp(
+        Column(mainAxisSize: MainAxisSize.min, children: [fan]),
+        reduce: true,
+        width: 640,
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    final host = tester.getSize(find.byType(BeuiPriceTargetFan));
+    final contentHeight =
+        tester.getSize(find.byType(BeuiPriceTargetHeader)).height +
+        tester.getSize(find.byType(BeuiPriceTargetPlot)).height;
+    expect(tester.takeException(), isNull);
+    expect(host.height, contentHeight);
+
+    await tester.pumpWidget(
+      beuiTestApp(
+        ListView(shrinkWrap: true, children: [_chart()]),
+        reduce: true,
+        width: 640,
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    final listHost = tester.getSize(find.byType(BeuiPriceTargetFan));
+    final listContentHeight =
+        tester.getSize(find.byType(BeuiPriceTargetHeader)).height +
+        tester.getSize(find.byType(BeuiPriceTargetPlot)).height;
+    expect(tester.takeException(), isNull);
+    expect(listHost.height, listContentHeight);
+  });
+
+  testWidgets(
+    'custom child controls host height without losing viewport size',
+    (tester) async {
+      final shortChart = BeuiPriceTargetFan(
+        current: 178.52,
+        targets: _targets,
+        child: const SizedBox(height: 80, child: Text('short custom child')),
+      );
+      await tester.pumpWidget(
+        beuiTestApp(
+          SizedBox(
+            height: 400,
+            child: Align(alignment: Alignment.topLeft, child: shortChart),
+          ),
+          reduce: true,
+          width: 640,
+        ),
+      );
+      await tester.pumpAndSettle();
+      expect(tester.getSize(find.byType(BeuiPriceTargetFan)).height, 80);
+
+      final viewportKey = const ValueKey('custom-fan-viewport');
+      await tester.pumpWidget(
+        beuiTestApp(
+          SizedBox(
+            height: 400,
+            child: BeuiPriceTargetFan(
+              current: 178.52,
+              targets: _targets,
+              child: ListView(
+                key: viewportKey,
+                children: const [SizedBox(height: 800)],
+              ),
+            ),
+          ),
+          reduce: true,
+          width: 640,
+        ),
+      );
+      await tester.pumpAndSettle();
+      expect(tester.takeException(), isNull);
+      expect(tester.getSize(find.byType(BeuiPriceTargetFan)).height, 400);
+      expect(tester.getSize(find.byKey(viewportKey)).height, 400);
+    },
+  );
+
+  testWidgets('wide host places the fan at directional start', (tester) async {
+    Future<void> pumpDirection(TextDirection direction) async {
+      await tester.pumpWidget(
+        beuiTestApp(
+          Directionality(textDirection: direction, child: _chart()),
+          reduce: true,
+          width: 700,
+        ),
+      );
+      await tester.pumpAndSettle();
+    }
+
+    await pumpDirection(TextDirection.ltr);
+    final ltrHost = tester.getRect(find.byType(BeuiPriceTargetFan));
+    final ltrPlot = tester.getRect(find.byType(BeuiPriceTargetPlot));
+    expect(ltrPlot.left, ltrHost.left);
+
+    await pumpDirection(TextDirection.rtl);
+    final rtlHost = tester.getRect(find.byType(BeuiPriceTargetFan));
+    final rtlPlot = tester.getRect(find.byType(BeuiPriceTargetPlot));
+    expect(rtlPlot.right, rtlHost.right);
+    expect(rtlPlot.left - rtlHost.left, 180);
   });
 
   testWidgets('reduced-motion rest state matches golden', (tester) async {
