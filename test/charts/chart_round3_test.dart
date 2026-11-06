@@ -257,23 +257,23 @@ void main() {
     final mouse = await tester.createGesture(kind: PointerDeviceKind.mouse);
     await mouse.addPointer();
     await mouse.moveTo(
-      tester.getCenter(find.bySemanticsLabel('A, 110.00: 10 units')),
+      tester.getCenter(find.bySemanticsLabel('A, 110: 10 units')),
     );
     await tester.pump();
     await mouse.moveTo(Offset.zero);
     await tester.pump();
     await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
     await tester.pumpAndSettle();
-    expect(find.text('A · 100.00'), findsOneWidget);
+    expect(find.text('A · 100'), findsOneWidget);
     await tester.sendKeyEvent(LogicalKeyboardKey.end);
     await tester.pumpAndSettle();
-    expect(find.text('B · 100.00'), findsOneWidget);
+    expect(find.text('B · 100'), findsOneWidget);
     await tester.sendKeyEvent(LogicalKeyboardKey.home);
     await tester.pumpAndSettle();
-    expect(find.text('A · 100.00'), findsOneWidget);
+    expect(find.text('A · 100'), findsOneWidget);
     await tester.sendKeyEvent(LogicalKeyboardKey.escape);
     await tester.pumpAndSettle();
-    expect(find.text('A · 100.00'), findsNothing);
+    expect(find.text('A · 100'), findsNothing);
     await mouse.removePointer();
   });
 
