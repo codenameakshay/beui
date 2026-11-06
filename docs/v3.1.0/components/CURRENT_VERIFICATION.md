@@ -89,11 +89,27 @@ beui-v3.1.0 task artifact directory. They are not public PR attachments.
 The committed unit receipts record earlier focused checks and their limits.
 They remain historical records, not claims that all current acceptance gates pass.
 
+## Final review pass
+
+A cross-model review of `792ad82d..f005d0c4c` found two defects. Both are fixed with tests that fail without them.
+`ffd6b3b8a` mirrors the Pagination indicator and page movement in right-to-left layouts.
+`d0b9ce8a3` keeps AdaptiveStepper steps finite when finite bounds overflow their difference. This defect predates the branch.
+Select keeps exact-prefix typeahead, because the source-parity tests require it.
+
+| Run, head `d0b9ce8a3` | Result | Log SHA-256 |
+|---|---|---|
+| Root analysis, review1 | Exit 0, no issues | `f6f2359e08e47e6e61c8a742d0325fdf57bc0d32c8b5211cd08169c95da5178a` |
+| Example analysis, review1 | Exit 0, no issues | `44cf9ab6c9826ddcf67859f115e29eecf618528e1c02d21df15f28d6bf646a5a` |
+| Full package suite, all 199 test files, review1 | 2889 passed, 31 golden errors, exit 1 | `4cf82716549a48ca8114efe5014ff62e83c05e49aad29de2718b164e5788e021` |
+
+All 31 errors are golden pixel mismatches. The failing tests write 32 candidate images, all byte-identical to the unchanged-baseline candidates from `835f4396d`.
+No golden was changed or skipped.
+
 ## Open acceptance gates
 
-The branch remains draft until these obligations have evidence:
+The PR was marked ready for merge at the user's request on 2026-11-06. These gates remain open:
 
-- Full root and example checks, with every unchanged golden failure classified.
+- The cause of the 31 baseline golden mismatches on this machine.
 - Matched source, unchanged-before, and current-after visual and motion review.
 - Accessible PR screenshots and recordings. Local-only paths do not satisfy this gate.
 - Native interaction checks and calibrated performance evidence.
