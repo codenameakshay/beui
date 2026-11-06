@@ -133,9 +133,12 @@ void main() {
       );
       final plot = tester.getRect(find.byType(BeuiPriceTargetSvg));
       expect(tester.getRect(find.text('232')).left - plot.left, 422);
-      final muted = tester.widget<Opacity>(
+      final muted = tester.widget<AnimatedOpacity>(
         find
-            .ancestor(of: find.text('205'), matching: find.byType(Opacity))
+            .ancestor(
+              of: find.text('205'),
+              matching: find.byType(AnimatedOpacity),
+            )
             .first,
       );
       expect(muted.opacity, .3);
@@ -259,7 +262,7 @@ void main() {
       );
       expect(
         tester.widget<Text>(find.text(r'$232.00')).style!.fontFamily,
-        'monospace',
+        'Geist Mono',
       );
       expect(
         tester.getRect(find.text(r'$232.00')).right,
@@ -273,10 +276,16 @@ void main() {
   ) async {
     final semantics = tester.ensureSemantics();
     await _pumpChart(tester, _chart());
-    expect(find.bySemanticsLabel(RegExp('Price target fan')), findsWidgets);
+    expect(
+      find.bySemanticsLabel(RegExp('Price target · 12 months')),
+      findsWidgets,
+    );
     expect(find.text('232'), findsOneWidget);
     expect(find.text('205'), findsOneWidget);
-    expect(find.bySemanticsLabel(RegExp('High target 232')), findsWidgets);
+    expect(
+      find.bySemanticsLabel(RegExp(r'High target \$232.00')),
+      findsWidgets,
+    );
     semantics.dispose();
   });
 
@@ -307,19 +316,10 @@ void main() {
     expect(last.dx, lessThan(plot.left + plot.width * 0.62));
   });
 
-  testWidgets('plot width cap remains inside Center', (tester) async {
+  testWidgets('plot width cap stays 520 inside a wider parent', (tester) async {
     await _pumpChart(tester, _chart());
-    final cappedPlot = find.descendant(
-      of: find.byType(BeuiPriceTargetPlot),
-      matching: find.byWidgetPredicate(
-        (widget) => widget is SizedBox && widget.width == 520,
-      ),
-    );
-    expect(cappedPlot, findsOneWidget);
-    expect(
-      find.ancestor(of: cappedPlot, matching: find.byType(Center)),
-      findsOneWidget,
-    );
+    expect(tester.getSize(find.byType(BeuiPriceTargetPlot)).width, 520);
+    expect(tester.getSize(find.byType(BeuiPriceTargetSvg)).width, 520);
   });
 
   testWidgets('current guide repaints when current changes in a boundary', (
@@ -480,13 +480,16 @@ void main() {
     await mouse.addPointer(location: Offset.zero);
     addTearDown(mouse.removePointer);
     await mouse.moveTo(tester.getCenter(point));
-    await tester.tap(point);
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 250));
     await tester.pumpAndSettle();
     expect(find.text('Tue, Oct 14'), findsWidgets);
     expect(find.text('Price'), findsWidgets);
 
+    await mouse.moveTo(Offset.zero);
+    await tester.sendKeyEvent(LogicalKeyboardKey.tab);
+    await tester.pumpAndSettle();
+    expect(find.text('Fri, Nov 14'), findsWidgets);
     await tester.sendKeyEvent(LogicalKeyboardKey.home);
     await tester.pump();
     expect(find.text('Sun, Sep 14'), findsWidgets);
@@ -701,6 +704,124 @@ void main() {
       );
       expect(tester.takeException(), isArgumentError);
     }
+  });
+
+  testWidgets('host keeps its content height inside a taller parent', (
+    tester,
+  ) async {
+    await _pumpChart(tester, _chart(), reduce: true);
+    final host = tester.getSize(find.byType(BeuiPriceTargetFan));
+    final header = tester.getSize(find.byType(BeuiPriceTargetHeader));
+    final plot = tester.getSize(find.byType(BeuiPriceTargetPlot));
+    expect(host.height, lessThan(640));
+    expect(host.height, header.height + plot.height);
+  });
+
+  testWidgets('default fan sizes to content in unbounded-height parents', (
+    tester,
+  ) async {
+    final fan = _chart();
+    await tester.pumpWidget(
+      beuiTestApp(
+        Column(mainAxisSize: MainAxisSize.min, children: [fan]),
+        reduce: true,
+        width: 640,
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    final host = tester.getSize(find.byType(BeuiPriceTargetFan));
+    final contentHeight =
+        tester.getSize(find.byType(BeuiPriceTargetHeader)).height +
+        tester.getSize(find.byType(BeuiPriceTargetPlot)).height;
+    expect(tester.takeException(), isNull);
+    expect(host.height, contentHeight);
+
+    await tester.pumpWidget(
+      beuiTestApp(
+        ListView(shrinkWrap: true, children: [_chart()]),
+        reduce: true,
+        width: 640,
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    final listHost = tester.getSize(find.byType(BeuiPriceTargetFan));
+    final listContentHeight =
+        tester.getSize(find.byType(BeuiPriceTargetHeader)).height +
+        tester.getSize(find.byType(BeuiPriceTargetPlot)).height;
+    expect(tester.takeException(), isNull);
+    expect(listHost.height, listContentHeight);
+  });
+
+  testWidgets(
+    'custom child controls host height without losing viewport size',
+    (tester) async {
+      final shortChart = BeuiPriceTargetFan(
+        current: 178.52,
+        targets: _targets,
+        child: const SizedBox(height: 80, child: Text('short custom child')),
+      );
+      await tester.pumpWidget(
+        beuiTestApp(
+          SizedBox(
+            height: 400,
+            child: Align(alignment: Alignment.topLeft, child: shortChart),
+          ),
+          reduce: true,
+          width: 640,
+        ),
+      );
+      await tester.pumpAndSettle();
+      expect(tester.getSize(find.byType(BeuiPriceTargetFan)).height, 80);
+
+      final viewportKey = const ValueKey('custom-fan-viewport');
+      await tester.pumpWidget(
+        beuiTestApp(
+          SizedBox(
+            height: 400,
+            child: BeuiPriceTargetFan(
+              current: 178.52,
+              targets: _targets,
+              child: ListView(
+                key: viewportKey,
+                children: const [SizedBox(height: 800)],
+              ),
+            ),
+          ),
+          reduce: true,
+          width: 640,
+        ),
+      );
+      await tester.pumpAndSettle();
+      expect(tester.takeException(), isNull);
+      expect(tester.getSize(find.byType(BeuiPriceTargetFan)).height, 400);
+      expect(tester.getSize(find.byKey(viewportKey)).height, 400);
+    },
+  );
+
+  testWidgets('wide host places the fan at directional start', (tester) async {
+    Future<void> pumpDirection(TextDirection direction) async {
+      await tester.pumpWidget(
+        beuiTestApp(
+          Directionality(textDirection: direction, child: _chart()),
+          reduce: true,
+          width: 700,
+        ),
+      );
+      await tester.pumpAndSettle();
+    }
+
+    await pumpDirection(TextDirection.ltr);
+    final ltrHost = tester.getRect(find.byType(BeuiPriceTargetFan));
+    final ltrPlot = tester.getRect(find.byType(BeuiPriceTargetPlot));
+    expect(ltrPlot.left, ltrHost.left);
+
+    await pumpDirection(TextDirection.rtl);
+    final rtlHost = tester.getRect(find.byType(BeuiPriceTargetFan));
+    final rtlPlot = tester.getRect(find.byType(BeuiPriceTargetPlot));
+    expect(rtlPlot.right, rtlHost.right);
+    expect(rtlPlot.left - rtlHost.left, 180);
   });
 
   testWidgets('reduced-motion rest state matches golden', (tester) async {

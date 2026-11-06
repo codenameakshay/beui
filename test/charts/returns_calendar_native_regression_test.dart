@@ -205,9 +205,7 @@ void main() {
       await show([2024, 2025], missing: true);
       expect(node(tester, 1, 2), same(march));
       expect(march.hasPrimaryFocus, isTrue);
-      final tip = tester.widget<BeuiChartTooltip>(
-        find.ancestor(of: cell(1, 2), matching: find.byType(BeuiChartTooltip)),
-      );
+      final tip = tester.widget<BeuiTooltip>(find.byType(BeuiTooltip));
       expect(tip.open, isTrue);
       final ticker = (tip.content as Wrap).children
           .whereType<BeuiChartTicker>()
@@ -224,6 +222,10 @@ void main() {
       await tester.pumpAndSettle();
       await show([2024, 2025]);
       expect(january.context?.mounted, isFalse);
+      expect(find.text('Jan 2025'), findsNothing);
+      await tester.sendKeyEvent(LogicalKeyboardKey.tab);
+      await tester.pumpAndSettle();
+      expect(node(tester, 1, 0).hasPrimaryFocus, isTrue);
       expect(find.text('Jan 2025'), findsWidgets);
     });
 

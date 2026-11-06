@@ -229,11 +229,11 @@ void main() {
           ),
         );
         expect(tester.takeException(), isNull);
-        final invalidCell = find.bySemanticsLabel('14:00, 100.00: 40 SOL');
+        final invalidCell = find.bySemanticsLabel('14:00, 100: 40 SOL');
         expect(invalidCell, findsNWidgets(2));
         await tester.tap(invalidCell.first);
         await tester.pump();
-        expect(find.text('14:00 · 100.00 · 40 SOL'), findsNothing);
+        expect(find.text('14:00 · 100 · 40 SOL'), findsNothing);
 
         final gesture = await tester.createGesture(
           kind: PointerDeviceKind.mouse,
@@ -243,17 +243,17 @@ void main() {
         await tester.pump();
         await tester.pump(const Duration(milliseconds: 250));
         await tester.pumpAndSettle();
-        expect(find.text('14:00 · 100.00'), findsOneWidget);
-        expect(find.text('14:00 · 100.00 · 40 SOL'), findsNothing);
+        expect(find.text('14:00 · 100'), findsOneWidget);
+        expect(find.text('14:00 · 100 · 40 SOL'), findsNothing);
         expect(find.textContaining('Market '), findsNothing);
 
         await gesture.moveTo(tester.getCenter(invalidCell.last));
         await tester.pump();
         await tester.pump(const Duration(milliseconds: 250));
         await tester.pumpAndSettle();
-        expect(find.text('14:00 · 100.00'), findsOneWidget);
-        expect(find.text('14:00 · 100.00 · 40 SOL'), findsNothing);
-        expect(find.text('Market 100.50'), findsOneWidget);
+        expect(find.text('14:00 · 100'), findsOneWidget);
+        expect(find.text('14:00 · 100 · 40 SOL'), findsNothing);
+        expect(find.text('Market 100.5'), findsOneWidget);
         await gesture.removePointer();
         semantics.dispose();
       },
@@ -265,11 +265,11 @@ void main() {
   ) async {
     final semantics = tester.ensureSemantics();
     await tester.pumpWidget(_surface());
-    expect(find.bySemanticsLabel('14:00, 101.00: 20 SOL'), findsOneWidget);
-    expect(find.bySemanticsLabel('14:02, 99.00: 10 SOL'), findsOneWidget);
+    expect(find.bySemanticsLabel('14:00, 101: 20 SOL'), findsOneWidget);
+    expect(find.bySemanticsLabel('14:02, 99: 10 SOL'), findsOneWidget);
     expect(find.text('Resting liquidity · SOL'), findsOneWidget);
     expect(
-      tester.getSemantics(find.bySemanticsLabel('14:02, 100.00: No data')),
+      tester.getSemantics(find.bySemanticsLabel('14:02, 100: No data')),
       isNotNull,
     );
     semantics.dispose();
@@ -280,7 +280,7 @@ void main() {
   ) async {
     final semantics = tester.ensureSemantics();
     await tester.pumpWidget(_surface());
-    await tester.tap(find.bySemanticsLabel('14:00, 101.00: 20 SOL'));
+    await tester.tap(find.bySemanticsLabel('14:00, 101: 20 SOL'));
     await tester.pump();
     expect(
       tester
@@ -297,11 +297,11 @@ void main() {
           .widgetList<BeuiChartTooltip>(find.byType(BeuiChartTooltip))
           .where((tooltip) => tooltip.open == true)
           .map((tooltip) => (tooltip.content as BeuiChartTooltipCard).title),
-      ['14:02 · 101.00'],
+      ['14:02 · 101'],
     );
     await tester.sendKeyEvent(LogicalKeyboardKey.escape);
     await tester.pump();
-    expect(find.text('14:02 · 99.00 · 10 SOL'), findsNothing);
+    expect(find.text('14:02 · 99 · 10 SOL'), findsNothing);
     semantics.dispose();
   });
 
@@ -309,7 +309,7 @@ void main() {
     tester,
   ) async {
     await tester.pumpWidget(_surface());
-    final cell = find.bySemanticsLabel('14:00, 101.00: 20 SOL');
+    final cell = find.bySemanticsLabel('14:00, 101: 20 SOL');
     final gesture = await tester.createGesture(kind: PointerDeviceKind.mouse);
     await gesture.addPointer(location: Offset.zero);
     await gesture.moveTo(tester.getCenter(cell));

@@ -14,22 +14,22 @@ class _DonutChartDemo extends StatefulWidget {
 class _DonutChartDemoState extends State<_DonutChartDemo> {
   String? _selected;
   static const segments = [
-    BeuiDonutSegment(id: 'team', label: 'Team', value: 42900, color: '#2563eb'),
+    BeuiDonutSegment(id: 'team', name: 'Team', value: 42900, color: '#2563eb'),
     BeuiDonutSegment(
       id: 'business',
-      label: 'Business',
+      name: 'Business',
       value: 31250,
       color: '#38bdf8',
     ),
     BeuiDonutSegment(
       id: 'enterprise',
-      label: 'Enterprise',
+      name: 'Enterprise',
       value: 22600,
       color: '#0d9488',
     ),
     BeuiDonutSegment(
       id: 'starter',
-      label: 'Starter',
+      name: 'Starter',
       value: 18400,
       color: '#fbbf24',
     ),

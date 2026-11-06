@@ -35,8 +35,13 @@ const beuiBumpPalette = <Color>[
   Color(0xFFA3A33A),
 ];
 
-/// Parses a source CSS color: hex (`#rgb` / `#rrggbb` / `#rrggbbaa`) or a
-/// handful of `var(--token)` aliases the chart family actually uses.
+/// Parses chart CSS colors, including hex, RGB/HSL, named colors, and the
+/// chart theme's supported `var(--token)` aliases.
+///
+/// CSS expressions requiring a browser style context (for example `var()`
+/// fallbacks, `color()`, `color-mix()`, and relative colors) cannot be resolved
+/// here and use [fallback] (or the primary theme color). `currentColor` maps
+/// to the chart foreground token because this API has no DOM inheritance tree.
 Color beuiChartColor(String? css, BeuiColors colors, {Color? fallback}) {
   if (css == null || css.isEmpty) return fallback ?? colors.primary;
   final trimmed = css.trim();
@@ -55,14 +60,31 @@ Color beuiChartColor(String? css, BeuiColors colors, {Color? fallback}) {
       _ => fallback ?? colors.primary,
     };
   }
-  return _parseHex(trimmed) ?? fallback ?? colors.primary;
+  final lower = trimmed.toLowerCase();
+  if (lower == 'currentcolor') return colors.foreground;
+  if (lower == 'transparent') return const Color(0x00000000);
+  return _parseHex(trimmed) ??
+      _parseRgb(trimmed) ??
+      _parseHsl(trimmed) ??
+      (_cssNamedColors[lower] == null
+          ? null
+          : Color(0xFF000000 | _cssNamedColors[lower]!)) ??
+      fallback ??
+      colors.primary;
 }
 
 Color? _parseHex(String css) {
   var hex = css;
-  if (hex.startsWith('#')) hex = hex.substring(1);
+  final hasCssPrefix = hex.startsWith('#');
+  if (hasCssPrefix) hex = hex.substring(1);
   if (hex.length == 3) {
     hex = '${hex[0]}${hex[0]}${hex[1]}${hex[1]}${hex[2]}${hex[2]}';
+  } else if (hasCssPrefix && hex.length == 4) {
+    // CSS #RGBA stores alpha last, while Flutter Color stores it first.
+    hex =
+        '${hex[3]}${hex[3]}${hex[0]}${hex[0]}${hex[1]}${hex[1]}${hex[2]}${hex[2]}';
+  } else if (hasCssPrefix && hex.length == 8) {
+    hex = '${hex.substring(6)}${hex.substring(0, 6)}';
   }
   if (hex.length == 6) hex = 'FF$hex';
   if (hex.length != 8) return null;
@@ -71,41 +93,393 @@ Color? _parseHex(String css) {
   return Color(value);
 }
 
+Color? _parseRgb(String css) {
+  final match = RegExp(
+    r'^rgba?\((.*)\)$',
+    caseSensitive: false,
+  ).firstMatch(css.trim());
+  if (match == null) return null;
+  final parts = _splitCssComponents(match.group(1)!);
+  if (parts == null || (parts.length != 3 && parts.length != 4)) return null;
+  final channels = <int>[];
+  for (final part in parts.take(3)) {
+    final value = _cssNumber(part);
+    if (value == null) return null;
+    final channel = part.trim().endsWith('%') ? value * 255 / 100 : value;
+    channels.add(channel.clamp(0, 255).round());
+  }
+  final alpha = parts.length == 4 ? _cssAlpha(parts[3]) : 1.0;
+  if (alpha == null) return null;
+  return Color.fromARGB(
+    (alpha * 255).round().clamp(0, 255),
+    channels[0],
+    channels[1],
+    channels[2],
+  );
+}
+
+Color? _parseHsl(String css) {
+  final match = RegExp(
+    r'^hsla?\((.*)\)$',
+    caseSensitive: false,
+  ).firstMatch(css.trim());
+  if (match == null) return null;
+  final parts = _splitCssComponents(match.group(1)!);
+  if (parts == null || (parts.length != 3 && parts.length != 4)) return null;
+  final hue = _parseHue(parts[0]);
+  final saturation = _cssPercent(parts[1]);
+  final lightness = _cssPercent(parts[2]);
+  final alpha = parts.length == 4 ? _cssAlpha(parts[3]) : 1.0;
+  if (hue == null || saturation == null || lightness == null || alpha == null) {
+    return null;
+  }
+  final h = ((hue % 360) + 360) % 360 / 360;
+  final s = saturation.clamp(0, 1);
+  final l = lightness.clamp(0, 1);
+  final chroma = (1 - (2 * l - 1).abs()) * s;
+  final x = chroma * (1 - ((h * 6) % 2 - 1).abs());
+  final m = l - chroma / 2;
+  final rgb = switch ((h * 6).floor()) {
+    0 => (chroma, x, 0.0),
+    1 => (x, chroma, 0.0),
+    2 => (0.0, chroma, x),
+    3 => (0.0, x, chroma),
+    4 => (x, 0.0, chroma),
+    _ => (chroma, 0.0, x),
+  };
+  return Color.fromARGB(
+    (alpha * 255).round().clamp(0, 255),
+    ((rgb.$1 + m) * 255).round().clamp(0, 255),
+    ((rgb.$2 + m) * 255).round().clamp(0, 255),
+    ((rgb.$3 + m) * 255).round().clamp(0, 255),
+  );
+}
+
+List<String>? _splitCssComponents(String body) {
+  final source = body.trim();
+  if (source.isEmpty) return null;
+  if (source.contains(',')) {
+    if (source.contains('/')) return null;
+    final result = source.split(',').map((part) => part.trim()).toList();
+    return result.any((part) => part.isEmpty) ? null : result;
+  }
+  final slashParts = source.split('/');
+  if (slashParts.length > 2) return null;
+  final channels = slashParts.first.trim().split(RegExp(r'\s+'));
+  if (slashParts.length == 1) return channels;
+  final alpha = slashParts[1].trim();
+  if (alpha.isEmpty || alpha.contains(RegExp(r'\s'))) return null;
+  return [...channels, alpha];
+}
+
+double? _cssNumber(String input) {
+  final value = input.trim();
+  if (!RegExp(r'^[+-]?(?:\d+(?:\.\d*)?|\.\d+)%?$').hasMatch(value)) {
+    return null;
+  }
+  final number = double.tryParse(value.replaceFirst('%', ''));
+  return number != null && number.isFinite ? number : null;
+}
+
+double? _cssPercent(String input) {
+  final value = input.trim();
+  if (!value.endsWith('%')) return null;
+  final number = _cssNumber(value);
+  return number == null ? null : number / 100;
+}
+
+double? _cssAlpha(String input) {
+  final value = input.trim();
+  final number = _cssNumber(value);
+  if (number == null) return null;
+  return (value.endsWith('%') ? number / 100 : number).clamp(0, 1);
+}
+
+double? _parseHue(String input) {
+  final value = input.trim().toLowerCase();
+  final match = RegExp(
+    r'^([+-]?(?:\d+(?:\.\d*)?|\.\d+))(deg|grad|rad|turn)?$',
+  ).firstMatch(value);
+  if (match == null) return null;
+  final number = double.tryParse(match.group(1)!);
+  if (number == null || !number.isFinite) return null;
+  final degrees = switch (match.group(2)) {
+    'turn' => number * 360,
+    'grad' => number * 0.9,
+    'rad' => number * 180 / 3.141592653589793,
+    _ => number,
+  };
+  return degrees.isFinite ? degrees : null;
+}
+
+// CSS Color 4's 148 opaque named colors, encoded as RGB hex values.
+const _cssNamedColors = <String, int>{
+  'aliceblue': 0xF0F8FF,
+  'antiquewhite': 0xFAEBD7,
+  'aqua': 0x00FFFF,
+  'aquamarine': 0x7FFFD4,
+  'azure': 0xF0FFFF,
+  'beige': 0xF5F5DC,
+  'bisque': 0xFFE4C4,
+  'black': 0x000000,
+  'blanchedalmond': 0xFFEBCD,
+  'blue': 0x0000FF,
+  'blueviolet': 0x8A2BE2,
+  'brown': 0xA52A2A,
+  'burlywood': 0xDEB887,
+  'cadetblue': 0x5F9EA0,
+  'chartreuse': 0x7FFF00,
+  'chocolate': 0xD2691E,
+  'coral': 0xFF7F50,
+  'cornflowerblue': 0x6495ED,
+  'cornsilk': 0xFFF8DC,
+  'crimson': 0xDC143C,
+  'cyan': 0x00FFFF,
+  'darkblue': 0x00008B,
+  'darkcyan': 0x008B8B,
+  'darkgoldenrod': 0xB8860B,
+  'darkgray': 0xA9A9A9,
+  'darkgreen': 0x006400,
+  'darkgrey': 0xA9A9A9,
+  'darkkhaki': 0xBDB76B,
+  'darkmagenta': 0x8B008B,
+  'darkolivegreen': 0x556B2F,
+  'darkorange': 0xFF8C00,
+  'darkorchid': 0x9932CC,
+  'darkred': 0x8B0000,
+  'darksalmon': 0xE9967A,
+  'darkseagreen': 0x8FBC8F,
+  'darkslateblue': 0x483D8B,
+  'darkslategray': 0x2F4F4F,
+  'darkslategrey': 0x2F4F4F,
+  'darkturquoise': 0x00CED1,
+  'darkviolet': 0x9400D3,
+  'deeppink': 0xFF1493,
+  'deepskyblue': 0x00BFFF,
+  'dimgray': 0x696969,
+  'dimgrey': 0x696969,
+  'dodgerblue': 0x1E90FF,
+  'firebrick': 0xB22222,
+  'floralwhite': 0xFFFAF0,
+  'forestgreen': 0x228B22,
+  'fuchsia': 0xFF00FF,
+  'gainsboro': 0xDCDCDC,
+  'ghostwhite': 0xF8F8FF,
+  'gold': 0xFFD700,
+  'goldenrod': 0xDAA520,
+  'gray': 0x808080,
+  'green': 0x008000,
+  'greenyellow': 0xADFF2F,
+  'grey': 0x808080,
+  'honeydew': 0xF0FFF0,
+  'hotpink': 0xFF69B4,
+  'indianred': 0xCD5C5C,
+  'indigo': 0x4B0082,
+  'ivory': 0xFFFFF0,
+  'khaki': 0xF0E68C,
+  'lavender': 0xE6E6FA,
+  'lavenderblush': 0xFFF0F5,
+  'lawngreen': 0x7CFC00,
+  'lemonchiffon': 0xFFFACD,
+  'lightblue': 0xADD8E6,
+  'lightcoral': 0xF08080,
+  'lightcyan': 0xE0FFFF,
+  'lightgoldenrodyellow': 0xFAFAD2,
+  'lightgray': 0xD3D3D3,
+  'lightgreen': 0x90EE90,
+  'lightgrey': 0xD3D3D3,
+  'lightpink': 0xFFB6C1,
+  'lightsalmon': 0xFFA07A,
+  'lightseagreen': 0x20B2AA,
+  'lightskyblue': 0x87CEFA,
+  'lightslategray': 0x778899,
+  'lightslategrey': 0x778899,
+  'lightsteelblue': 0xB0C4DE,
+  'lightyellow': 0xFFFFE0,
+  'lime': 0x00FF00,
+  'limegreen': 0x32CD32,
+  'linen': 0xFAF0E6,
+  'magenta': 0xFF00FF,
+  'maroon': 0x800000,
+  'mediumaquamarine': 0x66CDAA,
+  'mediumblue': 0x0000CD,
+  'mediumorchid': 0xBA55D3,
+  'mediumpurple': 0x9370DB,
+  'mediumseagreen': 0x3CB371,
+  'mediumslateblue': 0x7B68EE,
+  'mediumspringgreen': 0x00FA9A,
+  'mediumturquoise': 0x48D1CC,
+  'mediumvioletred': 0xC71585,
+  'midnightblue': 0x191970,
+  'mintcream': 0xF5FFFA,
+  'mistyrose': 0xFFE4E1,
+  'moccasin': 0xFFE4B5,
+  'navajowhite': 0xFFDEAD,
+  'navy': 0x000080,
+  'oldlace': 0xFDF5E6,
+  'olive': 0x808000,
+  'olivedrab': 0x6B8E23,
+  'orange': 0xFFA500,
+  'orangered': 0xFF4500,
+  'orchid': 0xDA70D6,
+  'palegoldenrod': 0xEEE8AA,
+  'palegreen': 0x98FB98,
+  'paleturquoise': 0xAFEEEE,
+  'palevioletred': 0xDB7093,
+  'papayawhip': 0xFFEFD5,
+  'peachpuff': 0xFFDAB9,
+  'peru': 0xCD853F,
+  'pink': 0xFFC0CB,
+  'plum': 0xDDA0DD,
+  'powderblue': 0xB0E0E6,
+  'purple': 0x800080,
+  'rebeccapurple': 0x663399,
+  'red': 0xFF0000,
+  'rosybrown': 0xBC8F8F,
+  'royalblue': 0x4169E1,
+  'saddlebrown': 0x8B4513,
+  'salmon': 0xFA8072,
+  'sandybrown': 0xF4A460,
+  'seagreen': 0x2E8B57,
+  'seashell': 0xFFF5EE,
+  'sienna': 0xA0522D,
+  'silver': 0xC0C0C0,
+  'skyblue': 0x87CEEB,
+  'slateblue': 0x6A5ACD,
+  'slategray': 0x708090,
+  'slategrey': 0x708090,
+  'snow': 0xFFFAFA,
+  'springgreen': 0x00FF7F,
+  'steelblue': 0x4682B4,
+  'tan': 0xD2B48C,
+  'teal': 0x008080,
+  'thistle': 0xD8BFD8,
+  'tomato': 0xFF6347,
+  'turquoise': 0x40E0D0,
+  'violet': 0xEE82EE,
+  'wheat': 0xF5DEB3,
+  'white': 0xFFFFFF,
+  'whitesmoke': 0xF5F5F5,
+  'yellow': 0xFFFF00,
+  'yellowgreen': 0x9ACD32,
+};
+
 /// Locale-free integer/decimal grouping matching `toLocaleString('en-US')`.
 String beuiChartFormatNumber(
   num value, {
   int maximumFractionDigits = 0,
+  int minimumFractionDigits = 0,
   bool compact = false,
 }) {
-  if (compact) return _compact(value);
+  final special = _formatNonFinite(value);
+  if (special != null) return special;
+  final maximum = maximumFractionDigits.clamp(0, 20);
+  final minimum = minimumFractionDigits.clamp(0, maximum);
+  if (compact) {
+    // The pre-existing compact helper always used one fractional digit. Keep
+    // that contract when callers omit precision (the default is zero for the
+    // non-compact formatter), while allowing a non-zero max to tune it.
+    return _compact(value, maximumFractionDigits: maximum == 0 ? 1 : maximum);
+  }
   final sign = value.isNegative ? '-' : '';
   final abs = value.abs();
-  if (maximumFractionDigits <= 0) {
-    return '$sign${_group(abs.round().toString())}';
+  final rounded = _roundDecimal(abs, maximum);
+  final digits = rounded.toString().padLeft(maximum + 1, '0');
+  final whole = maximum == 0
+      ? digits
+      : digits.substring(0, digits.length - maximum);
+  var fraction = maximum == 0 ? '' : digits.substring(digits.length - maximum);
+  while (fraction.length > minimum && fraction.endsWith('0')) {
+    fraction = fraction.substring(0, fraction.length - 1);
   }
-  final factor = _pow10(maximumFractionDigits);
-  final scaled = (abs * factor).round();
-  final whole = scaled ~/ factor;
-  final frac = (scaled % factor).toString().padLeft(maximumFractionDigits, '0');
-  return '$sign${_group(whole.toString())}.$frac';
+  return '$sign${_group(whole)}${fraction.isEmpty ? '' : '.$fraction'}';
 }
 
-String _compact(num value) {
+String? _formatNonFinite(num value) {
+  if (value.isNaN) return 'NaN';
+  if (value.isInfinite) return value.isNegative ? '-∞' : '∞';
+  return null;
+}
+
+String _compact(num value, {required int maximumFractionDigits}) {
   final abs = value.abs();
   final sign = value.isNegative ? '-' : '';
-  if (abs >= 1e9) return '$sign${(abs / 1e9).toStringAsFixed(1)}B';
-  if (abs >= 1e6) return '$sign${(abs / 1e6).toStringAsFixed(1)}M';
-  if (abs >= 1e3) return '$sign${(abs / 1e3).toStringAsFixed(1)}K';
-  return '$sign${abs.round()}';
+  const scales = <({int exponent, String suffix})>[
+    (exponent: 3, suffix: 'K'),
+    (exponent: 6, suffix: 'M'),
+    (exponent: 9, suffix: 'B'),
+    (exponent: 12, suffix: 'T'),
+  ];
+  var scaleIndex = -1;
+  for (var index = 0; index < scales.length; index++) {
+    if (abs >= _pow10Double(scales[index].exponent)) scaleIndex = index;
+  }
+
+  // Round the source decimal representation after moving its decimal point;
+  // dividing a large double by a scale first can lose a boundary digit.
+  var scaleExponent = scaleIndex < 0 ? 0 : scales[scaleIndex].exponent;
+  var rounded = _roundDecimal(
+    abs,
+    maximumFractionDigits,
+    scaleExponent: -scaleExponent,
+  );
+  final promotionThreshold =
+      BigInt.from(1000) * BigInt.from(10).pow(maximumFractionDigits);
+  if (scaleIndex < 0 && rounded >= promotionThreshold) {
+    scaleIndex = 0;
+    scaleExponent = scales[scaleIndex].exponent;
+    rounded = _roundDecimal(
+      abs,
+      maximumFractionDigits,
+      scaleExponent: -scaleExponent,
+    );
+  } else if (scaleIndex >= 0 &&
+      rounded >= promotionThreshold &&
+      scaleIndex + 1 < scales.length) {
+    scaleIndex++;
+    scaleExponent = scales[scaleIndex].exponent;
+    rounded = _roundDecimal(
+      abs,
+      maximumFractionDigits,
+      scaleExponent: -scaleExponent,
+    );
+  }
+  final digits = rounded.toString().padLeft(maximumFractionDigits + 1, '0');
+  final whole = maximumFractionDigits == 0
+      ? digits
+      : digits.substring(0, digits.length - maximumFractionDigits);
+  var fraction = maximumFractionDigits == 0
+      ? ''
+      : digits.substring(digits.length - maximumFractionDigits);
+  while (fraction.endsWith('0')) {
+    fraction = fraction.substring(0, fraction.length - 1);
+  }
+  final suffix = scaleIndex < 0 ? '' : scales[scaleIndex].suffix;
+  // ICU compact formatting leaves a four-digit mantissa such as 1000T
+  // ungrouped, but groups longer mantissas (for example 10,000T).
+  final groupedWhole = whole.length > 4 ? _group(whole) : whole;
+  return '$sign$groupedWhole${fraction.isEmpty ? '' : '.$fraction'}$suffix';
 }
 
-int _pow10(int n) {
-  var v = 1;
-  for (var i = 0; i < n; i++) {
-    v *= 10;
-  }
-  return v;
+BigInt _roundDecimal(num value, int fractionDigits, {int scaleExponent = 0}) {
+  final text = value.toString().toLowerCase();
+  final parts = text.split('e');
+  final exponent = parts.length == 2 ? int.parse(parts[1]) : 0;
+  final decimal = parts.first;
+  final point = decimal.indexOf('.');
+  final decimalDigits = point < 0 ? 0 : decimal.length - point - 1;
+  final digits = decimal.replaceAll('.', '');
+  final integer = BigInt.parse(digits);
+  final shift = fractionDigits + exponent + scaleExponent - decimalDigits;
+  if (shift >= 0) return integer * BigInt.from(10).pow(shift);
+  final divisor = BigInt.from(10).pow(-shift);
+  final quotient = integer ~/ divisor;
+  final remainder = integer % divisor;
+  return quotient +
+      (remainder * BigInt.two >= divisor ? BigInt.one : BigInt.zero);
 }
+
+double _pow10Double(int n) => BigInt.from(10).pow(n).toDouble();
 
 String _group(String digits) {
   final buf = StringBuffer();

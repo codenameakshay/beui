@@ -625,6 +625,9 @@ export 'src/charts/_shared.dart'
         beuiChartPercent,
         beuiChartSignedPercent,
         beuiChartToTooltipSide;
+export 'src/charts/line_chart.dart';
+export 'src/charts/bar_chart.dart';
+export 'src/charts/sparkline.dart';
 export 'src/charts/treemap.dart';
 export 'src/charts/sankey_chart.dart';
 export 'src/charts/candlestick_chart.dart';
