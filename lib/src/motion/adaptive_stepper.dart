@@ -117,11 +117,17 @@ class _BeuiAdaptiveStepperState extends State<BeuiAdaptiveStepper> {
 
   double _nextValue(bool increase) {
     final value = _value;
-    final offset = (value - _lower) / _stride;
+    final difference = value - _lower;
+    final offset = difference.isFinite
+        ? difference / _stride
+        : value / _stride - _lower / _stride;
     final index = increase
-        ? (offset + 1e-10).floor() + 1
-        : (offset - 1e-10).ceil() - 1;
-    final raw = _lower + index * _stride;
+        ? (offset + 1e-10).floorToDouble() + 1
+        : (offset - 1e-10).ceilToDouble() - 1;
+    var raw = _lower + index * _stride;
+    if (!raw.isFinite) {
+      raw = (_lower / _stride + index) * _stride;
+    }
     return _clamp(double.parse(raw.toStringAsFixed(10)), _lower, _upper);
   }
 
