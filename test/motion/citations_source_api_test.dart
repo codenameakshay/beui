@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:io';
+import 'dart:ui' show Tristate;
 
 import 'package:beui/beui.dart';
 import 'package:flutter/material.dart';
@@ -344,6 +345,10 @@ void main() {
         markerSemantics.getSemanticsData().hasAction(SemanticsAction.tap),
         isTrue,
       );
+      expect(
+        markerSemantics.getSemanticsData().flagsCollection.isFocused,
+        Tristate.isFalse,
+      );
       markerSemantics.owner!.performAction(
         markerSemantics.id,
         SemanticsAction.tap,
@@ -358,9 +363,23 @@ void main() {
       await tester.pumpAndSettle();
       expect(tester.getRect(find.byType(BeuiCitation)), before);
       expect(Focus.of(tester.element(find.text('1'))).hasFocus, isTrue);
+      final focusedMarker = tester.getSemantics(
+        find.bySemanticsLabel('Open source one'),
+      );
+      expect(
+        focusedMarker,
+        isSemantics(label: 'Open source one', isButton: true),
+      );
+      expect(
+        focusedMarker.getSemanticsData().flagsCollection.isFocused,
+        Tristate.isTrue,
+      );
       await tester.sendKeyEvent(LogicalKeyboardKey.enter);
       await tester.pump();
       expect(activations, 3);
+      await tester.sendKeyEvent(LogicalKeyboardKey.space);
+      await tester.pump();
+      expect(activations, 4);
       semantics.dispose();
     },
   );

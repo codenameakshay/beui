@@ -282,6 +282,7 @@ class BeuiCitation extends StatefulWidget {
 class _BeuiCitationState extends State<BeuiCitation> {
   bool _hovered = false;
   bool _focused = false;
+  bool _hasFocus = false;
   Listenable? _revision;
 
   @override
@@ -356,8 +357,10 @@ class _BeuiCitationState extends State<BeuiCitation> {
         onExit: (_) => setState(() => _hovered = false),
         cursor: SystemMouseCursors.click,
         child: FocusableActionDetector(
+          includeFocusSemantics: false,
           mouseCursor: SystemMouseCursors.click,
           onShowFocusHighlight: (v) => setState(() => _focused = v),
+          onFocusChange: (v) => setState(() => _hasFocus = v),
           actions: <Type, Action<Intent>>{
             ActivateIntent: CallbackAction<ActivateIntent>(
               onInvoke: (_) {
@@ -373,6 +376,8 @@ class _BeuiCitationState extends State<BeuiCitation> {
             child: Semantics(
               container: true,
               button: true,
+              focusable: true,
+              focused: _hasFocus,
               excludeSemantics: true,
               onTap: _activate,
               label:
@@ -847,6 +852,12 @@ class _BeuiCitationsState extends State<BeuiCitations> {
   Widget build(BuildContext context) {
     final reduce = MediaQuery.disableAnimationsOf(context);
     final colors = BeuiColors.resolve(context);
+    // Publish even while the disclosure is empty. The nested list is absent in
+    // that state, so it cannot clear a previously published row order itself.
+    _CitationAnchors.setOrder(
+      _resolvedPrefix,
+      widget.citations.map((citation) => citation.id).toList(growable: false),
+    );
 
     // Advisory, not fatal: a URL-only row is a legitimate (and now correctly
     // *static*) configuration, so this guides rather than crashes.

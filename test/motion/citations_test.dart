@@ -813,4 +813,39 @@ void main() {
       matchesGoldenFile('goldens/beui_citations.png'),
     );
   });
+  testWidgets('marker drops stale position when citations become empty', (
+    tester,
+  ) async {
+    final semantics = tester.ensureSemantics();
+    var citations = _sample(count: 1);
+    late StateSetter update;
+
+    await tester.pumpWidget(
+      StatefulBuilder(
+        builder: (context, setState) {
+          update = setState;
+          return _host(
+            citations: citations,
+            defaultOpen: true,
+            idPrefix: 'empty-transition',
+            above: const [
+              BeuiCitation(citationId: 'motion', idPrefix: 'empty-transition'),
+            ],
+          );
+        },
+      ),
+    );
+    await tester.pumpAndSettle();
+    expect(find.bySemanticsLabel('View citation 1'), findsOneWidget);
+
+    update(() => citations = const []);
+    await tester.pumpAndSettle();
+    expect(find.bySemanticsLabel('View citation'), findsOneWidget);
+    expect(find.bySemanticsLabel('View citation 1'), findsNothing);
+
+    update(() => citations = _sample(count: 1));
+    await tester.pumpAndSettle();
+    expect(find.bySemanticsLabel('View citation 1'), findsOneWidget);
+    semantics.dispose();
+  });
 }
