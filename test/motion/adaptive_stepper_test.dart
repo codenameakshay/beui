@@ -95,6 +95,77 @@ void main() {
     expect(find.bySemanticsLabel('Increase value'), findsNothing);
   });
 
+  testWidgets('steps across finite bounds whose difference overflows', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      beuiTestApp(
+        const BeuiAdaptiveStepper(
+          defaultValue: 1e308,
+          min: -1e308,
+          max: 1e308,
+          step: 1e308,
+          children: [
+            BeuiAdaptiveStepperDecrement(),
+            BeuiAdaptiveStepperValue(),
+            BeuiAdaptiveStepperIncrement(),
+          ],
+        ),
+      ),
+    );
+
+    await tester.tap(find.bySemanticsLabel('Decrease value'));
+    await tester.pump();
+
+    expect(find.text('0'), findsOneWidget);
+
+    await tester.pumpWidget(
+      beuiTestApp(
+        const BeuiAdaptiveStepper(
+          key: ValueKey('negative-range'),
+          defaultValue: -1e308,
+          min: -1e308,
+          max: 1e308,
+          step: 1e308,
+          children: [
+            BeuiAdaptiveStepperDecrement(),
+            BeuiAdaptiveStepperValue(),
+            BeuiAdaptiveStepperIncrement(),
+          ],
+        ),
+      ),
+    );
+
+    await tester.tap(find.bySemanticsLabel('Increase value'));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 200));
+
+    expect(find.text('0'), findsOneWidget);
+
+    var nextValue = double.nan;
+    await tester.pumpWidget(
+      beuiTestApp(
+        BeuiAdaptiveStepper(
+          key: const ValueKey('overflowing-raw'),
+          value: 0,
+          min: -1e308,
+          max: 1e308,
+          step: 1e308,
+          onChanged: (value) => nextValue = value,
+          children: const [
+            BeuiAdaptiveStepperDecrement(),
+            BeuiAdaptiveStepperValue(),
+            BeuiAdaptiveStepperIncrement(),
+          ],
+        ),
+      ),
+    );
+    await tester.tap(find.bySemanticsLabel('Increase value'));
+    await tester.pump();
+
+    expect(nextValue, 1e308);
+  });
+
   testWidgets('formatValueText changes the announced text, not the number', (
     tester,
   ) async {
