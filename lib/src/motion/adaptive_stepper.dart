@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
@@ -252,11 +253,27 @@ class BeuiAdaptiveStepperDecrement extends StatelessWidget {
 /// The live value surface, which expands to occupy space freed by a bound.
 class BeuiAdaptiveStepperValue extends StatelessWidget {
   /// Creates the displayed value.
-  const BeuiAdaptiveStepperValue({super.key});
+  ///
+  /// When [builder] is provided, it receives the effective clamped value and
+  /// returns decorative content. Keep the builder pure; it must not mutate
+  /// state, invoke stepper actions, or request focus. Its returned widgets are
+  /// excluded from normal semantics, focus traversal, and pointer handling,
+  /// but those wrappers do not sandbox arbitrary side effects in the builder.
+  const BeuiAdaptiveStepperValue({this.builder, super.key});
+
+  /// Builds decorative value content from the effective clamped value.
+  ///
+  /// The result is displayed inside the existing value surface. The value
+  /// surface owns the numeric transition identity, while the parent stepper
+  /// remains responsible for spoken value text and all actions.
+  final Widget Function(BuildContext context, double effectiveClampedValue)?
+  builder;
 
   @override
   Widget build(BuildContext context) {
     final scope = _AdaptiveStepperScope.of(context);
+    final valueBuilder = builder;
+    final customValue = valueBuilder?.call(context, scope.value);
     final reduce = MediaQuery.disableAnimationsOf(context);
     final colors = BeuiColors.resolve(context);
     final rect = _valueRect(scope);
@@ -272,41 +289,72 @@ class BeuiAdaptiveStepperValue extends StatelessWidget {
           fit: StackFit.expand,
           children: [
             ExcludeSemantics(
-              child: Center(
-                child: AnimatedSwitcher(
-                  duration: Duration(milliseconds: reduce ? 0 : 180),
-                  reverseDuration: Duration(milliseconds: reduce ? 0 : 120),
-                  switchInCurve: beuiEaseOut,
-                  switchOutCurve: beuiEaseOut,
-                  transitionBuilder: (child, animation) {
-                    final distance = reduce ? 0.0 : scope.direction * 0.32;
-                    final exiting = animation.status == AnimationStatus.reverse;
-                    return FadeTransition(
-                      opacity: animation,
-                      child: SlideTransition(
-                        position: Tween<Offset>(
-                          begin: exiting ? Offset.zero : Offset(0, distance),
-                          end: exiting ? Offset(0, -distance) : Offset.zero,
-                        ).animate(animation),
-                        child: child,
+              child: valueBuilder == null
+                  ? Center(
+                      child: AnimatedSwitcher(
+                        duration: Duration(milliseconds: reduce ? 0 : 180),
+                        reverseDuration: Duration(
+                          milliseconds: reduce ? 0 : 120,
+                        ),
+                        switchInCurve: beuiEaseOut,
+                        switchOutCurve: beuiEaseOut,
+                        transitionBuilder: (child, animation) {
+                          final distance = reduce
+                              ? 0.0
+                              : scope.direction * 0.32;
+                          final exiting =
+                              animation.status == AnimationStatus.reverse;
+                          return FadeTransition(
+                            opacity: animation,
+                            child: SlideTransition(
+                              position: Tween<Offset>(
+                                begin: exiting
+                                    ? Offset.zero
+                                    : Offset(0, distance),
+                                end: exiting
+                                    ? Offset(0, -distance)
+                                    : Offset.zero,
+                              ).animate(animation),
+                              child: child,
+                            ),
+                          );
+                        },
+                        child: Text(
+                          scope.displayValue,
+                          key: ValueKey<String>(scope.displayValue),
+                          maxLines: 1,
+                          overflow: TextOverflow.fade,
+                          softWrap: false,
+                          style: TextStyle(
+                            color: colors.foreground,
+                            fontSize: 18,
+                            fontWeight: FontWeight.w600,
+                            fontFeatures: const [FontFeature.tabularFigures()],
+                          ),
+                        ),
                       ),
-                    );
-                  },
-                  child: Text(
-                    scope.displayValue,
-                    key: ValueKey<String>(scope.displayValue),
-                    maxLines: 1,
-                    overflow: TextOverflow.fade,
-                    softWrap: false,
-                    style: TextStyle(
-                      color: colors.foreground,
-                      fontSize: 18,
-                      fontWeight: FontWeight.w600,
-                      fontFeatures: const [FontFeature.tabularFigures()],
+                    )
+                  : ExcludeFocus(
+                      child: IgnorePointer(
+                        child: Center(
+                          child: _AdaptiveStepperCustomValueSwitcher(
+                            value: scope.value,
+                            reduce: reduce,
+                            child: DefaultTextStyle.merge(
+                              style: TextStyle(
+                                color: colors.foreground,
+                                fontSize: 18,
+                                fontWeight: FontWeight.w600,
+                                fontFeatures: const [
+                                  FontFeature.tabularFigures(),
+                                ],
+                              ),
+                              child: customValue!,
+                            ),
+                          ),
+                        ),
+                      ),
                     ),
-                  ),
-                ),
-              ),
             ),
           ],
         ),
@@ -319,6 +367,202 @@ class BeuiAdaptiveStepperValue extends StatelessWidget {
       motion: movement,
       converter: const RectMotionConverter(),
       builder: (context, current, _) => output(current),
+    );
+  }
+}
+
+class _AdaptiveStepperCustomValueSwitcher extends StatefulWidget {
+  const _AdaptiveStepperCustomValueSwitcher({
+    required this.value,
+    required this.reduce,
+    required this.child,
+  });
+
+  final double value;
+  final bool reduce;
+  final Widget child;
+
+  @override
+  State<_AdaptiveStepperCustomValueSwitcher> createState() =>
+      _AdaptiveStepperCustomValueSwitcherState();
+}
+
+class _AdaptiveStepperCustomValueSwitcherState
+    extends State<_AdaptiveStepperCustomValueSwitcher> {
+  int _nextId = 0;
+  late List<_CustomValueEntry> _entries;
+
+  @override
+  void initState() {
+    super.initState();
+    _entries = [
+      _CustomValueEntry(id: _nextId++, child: widget.child, animateIn: false),
+    ];
+  }
+
+  @override
+  void didUpdateWidget(_AdaptiveStepperCustomValueSwitcher oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.reduce != widget.reduce && widget.reduce) {
+      _entries = [
+        _CustomValueEntry(
+          id: _entries.last.id,
+          child: widget.child,
+          animateIn: false,
+        ),
+      ];
+    } else if (oldWidget.reduce != widget.reduce) {
+      _entries = [
+        for (final entry in _entries)
+          entry.id == _entries.last.id
+              ? entry.copyWith(child: widget.child, animateIn: false)
+              : entry,
+      ];
+    } else if (oldWidget.value != widget.value) {
+      if (widget.reduce) {
+        _entries = [
+          _CustomValueEntry(
+            id: _nextId++,
+            child: widget.child,
+            animateIn: false,
+          ),
+        ];
+      } else {
+        _entries = [
+          for (final entry in _entries) entry.copyWith(exiting: true),
+          _CustomValueEntry(
+            id: _nextId++,
+            child: widget.child,
+            animateIn: true,
+          ),
+        ];
+      }
+    } else {
+      _entries = [
+        for (final entry in _entries)
+          if (entry.id == _entries.last.id)
+            entry.copyWith(child: widget.child)
+          else
+            entry,
+      ];
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) => Stack(
+    alignment: Alignment.center,
+    children: [
+      for (final entry in _entries)
+        _AdaptiveStepperCustomValueEntry(
+          key: ValueKey<int>(entry.id),
+          entry: entry,
+          reduce: widget.reduce,
+          onExitComplete: () {
+            if (!mounted) return;
+            setState(() {
+              _entries = _entries
+                  .where((candidate) => candidate.id != entry.id)
+                  .toList();
+            });
+          },
+        ),
+    ],
+  );
+}
+
+class _CustomValueEntry {
+  const _CustomValueEntry({
+    required this.id,
+    required this.child,
+    required this.animateIn,
+    this.exiting = false,
+  });
+
+  final int id;
+  final Widget child;
+  final bool animateIn;
+  final bool exiting;
+
+  _CustomValueEntry copyWith({Widget? child, bool? animateIn, bool? exiting}) =>
+      _CustomValueEntry(
+        id: id,
+        child: child ?? this.child,
+        animateIn: animateIn ?? this.animateIn,
+        exiting: exiting ?? this.exiting,
+      );
+}
+
+class _AdaptiveStepperCustomValueEntry extends StatefulWidget {
+  const _AdaptiveStepperCustomValueEntry({
+    required this.entry,
+    required this.reduce,
+    required this.onExitComplete,
+    super.key,
+  });
+
+  final _CustomValueEntry entry;
+  final bool reduce;
+  final VoidCallback onExitComplete;
+
+  @override
+  State<_AdaptiveStepperCustomValueEntry> createState() =>
+      _AdaptiveStepperCustomValueEntryState();
+}
+
+class _AdaptiveStepperCustomValueEntryState
+    extends State<_AdaptiveStepperCustomValueEntry> {
+  Timer? _exitTimer;
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.entry.exiting) _scheduleExit();
+  }
+
+  @override
+  void didUpdateWidget(_AdaptiveStepperCustomValueEntry oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (!oldWidget.entry.exiting && widget.entry.exiting) _scheduleExit();
+  }
+
+  void _scheduleExit() {
+    _exitTimer?.cancel();
+    _exitTimer = Timer(const Duration(milliseconds: 120), () {
+      if (mounted) widget.onExitComplete();
+    });
+  }
+
+  @override
+  void dispose() {
+    _exitTimer?.cancel();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final exiting = widget.entry.exiting;
+    if (widget.reduce) {
+      return exiting ? const SizedBox.shrink() : widget.entry.child;
+    }
+    return MotionBuilder<Offset>(
+      from: widget.entry.animateIn && !exiting ? const Offset(0.35, 2) : null,
+      value: exiting ? const Offset(0, 2) : const Offset(1, 0),
+      motion: CurvedMotion(
+        Duration(milliseconds: exiting ? 120 : 180),
+        beuiEaseOut,
+      ),
+      converter: const OffsetMotionConverter(),
+      builder: (context, channel, child) => Opacity(
+        opacity: channel.dx,
+        child: ImageFiltered(
+          imageFilter: ui.ImageFilter.blur(
+            sigmaX: channel.dy,
+            sigmaY: channel.dy,
+          ),
+          child: child,
+        ),
+      ),
+      child: widget.entry.child,
     );
   }
 }
@@ -351,6 +595,7 @@ class _AdaptiveStepperAction extends StatefulWidget {
 class _AdaptiveStepperActionState extends State<_AdaptiveStepperAction> {
   bool _hovered = false;
   bool _focused = false;
+  bool _inputFocused = false;
   bool _pressed = false;
 
   @override
@@ -370,84 +615,79 @@ class _AdaptiveStepperActionState extends State<_AdaptiveStepperAction> {
     final label = widget.increase ? 'Increase value' : 'Decrease value';
 
     Widget actionAt(Rect target) {
-      final action = Focus(
-        canRequestFocus: !scope.disabled && !hidden,
-        skipTraversal: hidden || scope.disabled,
-        child: FocusableActionDetector(
-          enabled: !scope.disabled && !hidden,
-          focusNode: focusNode,
-          mouseCursor: scope.disabled || hidden
-              ? SystemMouseCursors.basic
-              : SystemMouseCursors.click,
-          shortcuts: const <ShortcutActivator, Intent>{
-            SingleActivator(LogicalKeyboardKey.enter): ActivateIntent(),
-            SingleActivator(LogicalKeyboardKey.space): ActivateIntent(),
-          },
-          actions: <Type, Action<Intent>>{
-            ActivateIntent: CallbackAction<ActivateIntent>(
-              onInvoke: (_) {
-                if (!scope.disabled && !hidden) {
-                  (widget.increase ? scope.increment : scope.decrement)(true);
-                }
-                return null;
-              },
-            ),
-          },
-          onShowFocusHighlight: (value) => setState(() => _focused = value),
-          onShowHoverHighlight: (value) => setState(() => _hovered = value),
-          child: Listener(
-            onPointerDown: (_) => setState(() => _pressed = true),
-            onPointerUp: (_) => setState(() => _pressed = false),
-            onPointerCancel: (_) => setState(() => _pressed = false),
-            child: GestureDetector(
-              behavior: HitTestBehavior.opaque,
-              onTap: scope.disabled || hidden
-                  ? null
-                  : () => (widget.increase ? scope.increment : scope.decrement)(
-                      false,
+      final action = FocusableActionDetector(
+        enabled: !scope.disabled && !hidden,
+        focusNode: focusNode,
+        mouseCursor: scope.disabled || hidden
+            ? SystemMouseCursors.basic
+            : SystemMouseCursors.click,
+        shortcuts: const <ShortcutActivator, Intent>{
+          SingleActivator(LogicalKeyboardKey.enter): ActivateIntent(),
+          SingleActivator(LogicalKeyboardKey.space): ActivateIntent(),
+        },
+        actions: <Type, Action<Intent>>{
+          ActivateIntent: CallbackAction<ActivateIntent>(
+            onInvoke: (_) {
+              if (!scope.disabled && !hidden) {
+                (widget.increase ? scope.increment : scope.decrement)(true);
+              }
+              return null;
+            },
+          ),
+        },
+        onFocusChange: (value) => setState(() => _inputFocused = value),
+        onShowFocusHighlight: (value) => setState(() => _focused = value),
+        onShowHoverHighlight: (value) => setState(() => _hovered = value),
+        child: Listener(
+          onPointerDown: (_) => setState(() => _pressed = true),
+          onPointerUp: (_) => setState(() => _pressed = false),
+          onPointerCancel: (_) => setState(() => _pressed = false),
+          child: GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            onTap: scope.disabled || hidden
+                ? null
+                : () => (widget.increase ? scope.increment : scope.decrement)(
+                    false,
+                  ),
+            child: MouseRegion(
+              onEnter: (_) => setState(() => _hovered = true),
+              onExit: (_) => setState(() => _hovered = false),
+              child: AnimatedOpacity(
+                opacity: hidden ? 0 : 1,
+                duration: Duration(milliseconds: reduce ? 0 : 140),
+                child: AnimatedContainer(
+                  duration: const Duration(milliseconds: 120),
+                  decoration: BoxDecoration(
+                    color: !hidden && _hovered
+                        ? colors.muted
+                        : Colors.transparent,
+                    borderRadius: BorderRadius.circular(24),
+                    border: Border.all(
+                      color: _focused ? colors.ring : Colors.transparent,
+                      width: _focused ? 2 : 1,
                     ),
-              child: MouseRegion(
-                onEnter: (_) => setState(() => _hovered = true),
-                onExit: (_) => setState(() => _hovered = false),
-                child: AnimatedOpacity(
-                  opacity: hidden ? 0 : 1,
-                  duration: Duration(milliseconds: reduce ? 0 : 140),
-                  child: AnimatedContainer(
-                    duration: const Duration(milliseconds: 120),
-                    decoration: BoxDecoration(
-                      color: !hidden && _hovered
-                          ? colors.muted
-                          : Colors.transparent,
-                      borderRadius: BorderRadius.circular(24),
-                      border: Border.all(
-                        color: _focused ? colors.ring : Colors.transparent,
-                        width: _focused ? 2 : 1,
+                  ),
+                  child: Center(
+                    child: SingleMotionBuilder(
+                      value: _pressed && !reduce && !hidden ? 0.94 : 1.0,
+                      motion: motionFor(
+                        context,
+                        beuiSpringPress,
+                        isMovement: true,
                       ),
-                    ),
-                    child: Center(
-                      child: SingleMotionBuilder(
-                        value: _pressed && !reduce && !hidden ? 0.94 : 1.0,
-                        motion: motionFor(
-                          context,
-                          beuiSpringPress,
-                          isMovement: true,
-                        ),
-                        builder: (context, scale, child) => Transform.scale(
-                          scale: scale,
-                          child: IconTheme(
-                            data: IconThemeData(
-                              color: scope.disabled
-                                  ? colors.mutedForeground.withValues(
-                                      alpha: 0.5,
-                                    )
-                                  : colors.foreground,
-                              size: 20,
-                            ),
-                            child: child ?? widget.child,
+                      builder: (context, scale, child) => Transform.scale(
+                        scale: scale,
+                        child: IconTheme(
+                          data: IconThemeData(
+                            color: scope.disabled
+                                ? colors.mutedForeground.withValues(alpha: 0.5)
+                                : colors.foreground,
+                            size: 20,
                           ),
+                          child: child ?? widget.child,
                         ),
-                        child: widget.child,
                       ),
+                      child: widget.child,
                     ),
                   ),
                 ),
@@ -461,10 +701,18 @@ class _AdaptiveStepperActionState extends State<_AdaptiveStepperAction> {
         child: hidden
             ? ExcludeSemantics(child: action)
             : Semantics(
+                container: true,
                 button: true,
                 label: label,
                 enabled: !scope.disabled,
-                child: action,
+                focused: scope.disabled ? null : _inputFocused,
+                onFocus: scope.disabled ? null : focusNode.requestFocus,
+                onTap: scope.disabled
+                    ? null
+                    : () => (widget.increase
+                          ? scope.increment
+                          : scope.decrement)(false),
+                child: ExcludeSemantics(child: action),
               ),
       );
     }

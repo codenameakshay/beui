@@ -5,7 +5,7 @@ import 'package:flutter/widgets.dart';
 
 import '../tokens/motion.dart';
 import '_engine.dart';
-import '_format.dart';
+import '_number_ticker_format.dart';
 import '_scroll_geometry.dart';
 
 /// A slot-machine number — the Flutter port of beUI's `number-ticker`.
@@ -45,13 +45,20 @@ class BeuiNumberTicker extends StatefulWidget {
     this.blur = false,
     this.locale = false,
     this.startOnView = true,
+    this.decimals = 0,
     this.format,
+    this.formatNumber,
     this.style,
     super.key,
   });
 
-  /// The current value. Rounded to the nearest integer before display.
+  /// The current value, rounded to [decimals] places before display.
   final num value;
+
+  /// Fractional places retained by the built-in formatter (default `0`).
+  /// Negative values use zero places. Built-in formatting supports 0–100;
+  /// custom [formatNumber] callbacks are not subject to that output limit.
+  final int decimals;
 
   /// Left-pad the formatted digits to this width with leading zeros.
   final int? pad;
@@ -80,8 +87,19 @@ class BeuiNumberTicker extends StatefulWidget {
   /// and arms on the first layout.
   final bool startOnView;
 
-  /// Custom formatter. Takes precedence over [locale]. Receives the rounded int.
+  /// Legacy integer formatter, retained for compatibility.
+  ///
+  /// It takes precedence over built-in formatting and deliberately ignores
+  /// [decimals]. When both custom formatters are provided, [formatNumber] wins.
+  /// Non-finite values throw [ArgumentError] on this integer-only path.
   final String Function(int value)? format;
+
+  /// Custom formatter receiving the value rounded with the source's
+  /// multiply/`Math.round`/divide rule. Takes precedence over [format] and
+  /// built-in locale/fixed formatting.
+  /// NaN and infinities pass through this callback. Very large [decimals]
+  /// can overflow the source rounding factor and supply NaN.
+  final String Function(num roundedValue)? formatNumber;
 
   /// Text style. Falls back to the ambient [DefaultTextStyle].
   final TextStyle? style;
@@ -151,25 +169,15 @@ class _BeuiNumberTickerState extends State<BeuiNumberTicker>
   }
 
   String _format() {
-    final rounded = widget.value.round();
-    final String s;
-    if (widget.format != null) {
-      s = widget.format!(rounded);
-    } else if (widget.locale) {
-      s = _grouped(rounded);
-    } else {
-      s = rounded.toString();
-    }
+    final s = beuiFormatTickerNumber(
+      value: widget.value,
+      decimals: widget.decimals,
+      locale: widget.locale,
+      legacyFormat: widget.format,
+      formatNumber: widget.formatNumber,
+    );
     final pad = widget.pad;
     return pad != null ? s.padLeft(pad, '0') : s;
-  }
-
-  // Locale-free thousands grouping (server-safe, like the source's
-  // `toLocaleString()` default).
-  static String _grouped(int value) {
-    final neg = value < 0;
-    final grouped = beuiGroupThousands(value.abs().toString());
-    return neg ? '-$grouped' : grouped;
   }
 
   @override
