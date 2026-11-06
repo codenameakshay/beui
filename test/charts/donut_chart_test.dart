@@ -53,7 +53,14 @@ void main() {
         ),
       );
       await tester.pumpAndSettle();
-      final center = tester.getRect(find.byType(BeuiDonutCenter));
+      final center = tester.getRect(
+        find.descendant(
+          of: find.byType(BeuiDonutCenter),
+          matching: find.byWidgetPredicate(
+            (w) => w is ConstrainedBox && w.constraints.maxWidth == 134.4,
+          ),
+        ),
+      );
       final digits = tester.getRect(find.byType(BeuiDigitSwap));
       final plot = tester.getRect(find.byType(BeuiDonutPlot));
       expect(center.width, closeTo(134.4, .001));
@@ -99,7 +106,17 @@ void main() {
       expect(tester.getRect(track).left - row.left, 34);
       expect(tester.getSize(track).height, 4);
       expect(
-        tester.getSize(find.byType(BeuiDonutCenter)).width,
+        tester
+            .getSize(
+              find.descendant(
+                of: find.byType(BeuiDonutCenter),
+                matching: find.byWidgetPredicate(
+                  (w) =>
+                      w is ConstrainedBox && w.constraints.maxWidth == 143.36,
+                ),
+              ),
+            )
+            .width,
         closeTo(143.36, .001),
       );
     },
@@ -227,7 +244,9 @@ void main() {
       await tester.pump();
       expect(changed, 'team');
       FocusNode focus(String id) => tester
-          .widget<TextButton>(find.byKey(ValueKey('donut-legend-$id')))
+          .widget<FocusableActionDetector>(
+            find.byKey(ValueKey('donut-legend-$id')),
+          )
           .focusNode!;
       expect(focus('team').hasPrimaryFocus, isTrue);
       await tester.sendKeyEvent(LogicalKeyboardKey.arrowRight);
@@ -398,7 +417,7 @@ void main() {
     expect(arcs, findsNWidgets(3));
     for (var index = 0; index < 3; index++) {
       final arc = arcs.at(index);
-      expect(arc, paints..arc(style: PaintingStyle.stroke));
+      expect(arc, paints..path(style: PaintingStyle.stroke));
       for (final opacity in tester.widgetList<Opacity>(
         find.ancestor(of: arc, matching: find.byType(Opacity)),
       )) {
