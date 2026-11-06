@@ -263,7 +263,7 @@ class _BeuiBloomMenuState extends State<BeuiBloomMenu>
   }
 
   KeyEventResult _handleGridKey(FocusNode node, KeyEvent event) {
-    if (event is! KeyDownEvent || widget.items.isEmpty) {
+    if (!_open || event is! KeyDownEvent || widget.items.isEmpty) {
       return KeyEventResult.ignored;
     }
     final last = widget.items.length - 1;
@@ -483,6 +483,7 @@ class _BeuiBloomMenuState extends State<BeuiBloomMenu>
                   reduce: reduce,
                   onClose: () => _setOpen(false, returnFocus: true),
                   onSelect: (label) {
+                    if (!_open) return;
                     widget.onSelect?.call(label);
                     if (mounted) _setOpen(false, returnFocus: true);
                   },

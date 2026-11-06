@@ -301,6 +301,40 @@ void main() {
       );
     }
 
+    testWidgets('closing menu ignores repeated keyboard selection', (
+      tester,
+    ) async {
+      final beforeMenu = FocusNode(debugLabel: 'before bloom menu');
+      addTearDown(beforeMenu.dispose);
+      final selected = <String>[];
+      await tester.pumpWidget(
+        _app(beforeMenu: beforeMenu, onSelect: selected.add),
+      );
+      await _openByKey(tester, beforeMenu, LogicalKeyboardKey.arrowDown);
+      await tester.pumpAndSettle();
+      await _sendKey(tester, LogicalKeyboardKey.enter);
+      await _sendKey(tester, LogicalKeyboardKey.enter);
+      expect(selected, ['Doc']);
+      await tester.pump(const Duration(milliseconds: 800));
+    });
+
+    testWidgets('closing menu ignores pointer selection during exit', (
+      tester,
+    ) async {
+      final beforeMenu = FocusNode(debugLabel: 'before bloom menu');
+      addTearDown(beforeMenu.dispose);
+      final selected = <String>[];
+      await tester.pumpWidget(
+        _app(beforeMenu: beforeMenu, onSelect: selected.add),
+      );
+      await _openByKey(tester, beforeMenu, LogicalKeyboardKey.arrowDown);
+      await tester.pumpAndSettle();
+      await _sendKey(tester, LogicalKeyboardKey.enter);
+      await tester.tap(find.text('Table'));
+      expect(selected, ['Doc']);
+      await tester.pump(const Duration(milliseconds: 800));
+    });
+
     testWidgets('Escape closes and returns focus to the trigger', (
       tester,
     ) async {
