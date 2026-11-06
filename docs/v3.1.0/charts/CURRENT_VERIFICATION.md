@@ -69,7 +69,7 @@ Those local receipts are not accessible PR media.
 
 ## Open acceptance gates
 
-- The Heatmap, Fan and Returns goldens were regenerated on Flutter 3.44.4 for their intended source changes. The Donut golden still fails, and its arc-edge cause is not established. The other 31 mismatches match the unchanged baseline.
+- The Heatmap, Fan and Returns goldens were regenerated on Flutter 3.44.4 for their intended source changes. The Donut golden still fails, and its arc-edge cause is not established. The other 31 failing tests write 32 candidate images, all byte-identical to the unchanged-baseline candidates.
 - The Returns wave still uses a raw `AnimationController`. A motor version must keep the cell's tree shape stable.
 - Matched source, unchanged-before and current-after media, timing, performance and native interaction are not accepted.
 - All 17 pages and 17 preview units still need final per-state and per-variant inventory acceptance.
