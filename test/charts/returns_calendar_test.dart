@@ -115,9 +115,7 @@ void main() {
       await tester.pump();
       await tester.pump(const Duration(milliseconds: 250));
       await tester.pumpAndSettle();
-      final tooltip = tester.widget<BeuiChartTooltip>(
-        find.ancestor(of: cell, matching: find.byType(BeuiChartTooltip)),
-      );
+      final tooltip = tester.widget<BeuiTooltip>(find.byType(BeuiTooltip));
       expect(
         ((tooltip.content as Wrap).children.first as Text).data,
         '$name 2024',
