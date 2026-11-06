@@ -521,7 +521,7 @@ class _BeuiFileUploadState extends State<BeuiFileUpload> {
   }
 
   bool get _maxReached =>
-      widget.maxFiles != null && _items.length >= widget.maxFiles!;
+      widget.maxFiles != null && _acceptedItems.length >= widget.maxFiles!;
 
   Future<void> _finishPicker(
     UploadPickerOperation operation,
@@ -554,7 +554,7 @@ class _BeuiFileUploadState extends State<BeuiFileUpload> {
     final current = _items;
     final remaining = widget.maxFiles == null
         ? incoming.length
-        : widget.maxFiles! - current.length;
+        : widget.maxFiles! - _acceptedItems.length;
     final available = remaining < 0 ? 0 : remaining;
     final take = widget.multiple || available == 0 ? available : 1;
     final selected = incoming.take(take).toList(growable: false);
@@ -615,7 +615,7 @@ class _BeuiFileUploadState extends State<BeuiFileUpload> {
     final colors = BeuiColors.resolve(context);
     final reduce = MediaQuery.disableAnimationsOf(context);
     final maxReached =
-        widget.maxFiles != null && _items.length >= widget.maxFiles!;
+        widget.maxFiles != null && _acceptedItems.length >= widget.maxFiles!;
     final canAcquire = !widget.disabled && !maxReached;
     final browse = widget.onBrowse ?? _browse;
 
@@ -644,7 +644,7 @@ class _BeuiFileUploadState extends State<BeuiFileUpload> {
             variant: widget.variant,
             title: maxReached ? 'Upload limit reached' : resolvedTitle,
             description: maxReached
-                ? '${_items.length} of ${widget.maxFiles} files added'
+                ? '${_acceptedItems.length} of ${widget.maxFiles} files added'
                 : resolvedDescription,
             browseLabel: widget.browseLabel,
             enabled: canAcquire,

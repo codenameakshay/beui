@@ -115,6 +115,38 @@ void main() {
   tearDown(() => FileSelectorPlatform.instance = _originalSelector);
 
   group('BeuiFileUpload v3.1 acquisition', () {
+    testWidgets('oversized picks do not consume queue slots', (tester) async {
+      final rejected = <BeuiFileUploadItem>[];
+      await tester.pumpWidget(
+        _wrap(
+          BeuiFileUpload(
+            maxFiles: 1,
+            maxFileSize: 1,
+            onRejected: rejected.addAll,
+          ),
+        ),
+      );
+      await tester.tap(find.text('Browse files'));
+      _selector.filesResult!.complete([
+        _file('large.txt', [1, 2, 3]),
+      ]);
+      await tester.pump();
+      await tester.pump();
+      expect(rejected.map((item) => item.name), ['large.txt']);
+      expect(find.text('Upload limit reached'), findsNothing);
+      _selector.filesResult = Completer<List<XFile>>();
+      await tester.tap(find.text('Browse files'));
+      expect(_selector.openFilesCalls, 2);
+      _selector.filesResult!.complete([
+        _file('small.txt', [1]),
+      ]);
+      await tester.pump();
+      await tester.pump();
+      expect(find.text('small.txt'), findsOneWidget);
+      expect(find.text('1 of 1 files added'), findsOneWidget);
+      expect(rejected.map((item) => item.name), ['large.txt']);
+    });
+
     testWidgets('proposes uploading metadata before lazy raw file callbacks', (
       tester,
     ) async {
