@@ -133,9 +133,12 @@ void main() {
       );
       final plot = tester.getRect(find.byType(BeuiPriceTargetSvg));
       expect(tester.getRect(find.text('232')).left - plot.left, 422);
-      final muted = tester.widget<Opacity>(
+      final muted = tester.widget<AnimatedOpacity>(
         find
-            .ancestor(of: find.text('205'), matching: find.byType(Opacity))
+            .ancestor(
+              of: find.text('205'),
+              matching: find.byType(AnimatedOpacity),
+            )
             .first,
       );
       expect(muted.opacity, .3);
@@ -259,7 +262,7 @@ void main() {
       );
       expect(
         tester.widget<Text>(find.text(r'$232.00')).style!.fontFamily,
-        'monospace',
+        'Geist Mono',
       );
       expect(
         tester.getRect(find.text(r'$232.00')).right,
@@ -273,10 +276,16 @@ void main() {
   ) async {
     final semantics = tester.ensureSemantics();
     await _pumpChart(tester, _chart());
-    expect(find.bySemanticsLabel(RegExp('Price target fan')), findsWidgets);
+    expect(
+      find.bySemanticsLabel(RegExp('Price target · 12 months')),
+      findsWidgets,
+    );
     expect(find.text('232'), findsOneWidget);
     expect(find.text('205'), findsOneWidget);
-    expect(find.bySemanticsLabel(RegExp('High target 232')), findsWidgets);
+    expect(
+      find.bySemanticsLabel(RegExp(r'High target \$232.00')),
+      findsWidgets,
+    );
     semantics.dispose();
   });
 
@@ -307,19 +316,10 @@ void main() {
     expect(last.dx, lessThan(plot.left + plot.width * 0.62));
   });
 
-  testWidgets('plot width cap remains inside Center', (tester) async {
+  testWidgets('plot width cap stays 520 inside a wider parent', (tester) async {
     await _pumpChart(tester, _chart());
-    final cappedPlot = find.descendant(
-      of: find.byType(BeuiPriceTargetPlot),
-      matching: find.byWidgetPredicate(
-        (widget) => widget is SizedBox && widget.width == 520,
-      ),
-    );
-    expect(cappedPlot, findsOneWidget);
-    expect(
-      find.ancestor(of: cappedPlot, matching: find.byType(Center)),
-      findsOneWidget,
-    );
+    expect(tester.getSize(find.byType(BeuiPriceTargetPlot)).width, 520);
+    expect(tester.getSize(find.byType(BeuiPriceTargetSvg)).width, 520);
   });
 
   testWidgets('current guide repaints when current changes in a boundary', (
@@ -480,13 +480,16 @@ void main() {
     await mouse.addPointer(location: Offset.zero);
     addTearDown(mouse.removePointer);
     await mouse.moveTo(tester.getCenter(point));
-    await tester.tap(point);
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 250));
     await tester.pumpAndSettle();
     expect(find.text('Tue, Oct 14'), findsWidgets);
     expect(find.text('Price'), findsWidgets);
 
+    await mouse.moveTo(Offset.zero);
+    await tester.sendKeyEvent(LogicalKeyboardKey.tab);
+    await tester.pumpAndSettle();
+    expect(find.text('Fri, Nov 14'), findsWidgets);
     await tester.sendKeyEvent(LogicalKeyboardKey.home);
     await tester.pump();
     expect(find.text('Sun, Sep 14'), findsWidgets);
