@@ -60,9 +60,19 @@ The relevant-suite list is not a full-suite gate. Hosted CI is the full-suite ru
 Bulk receipts live under `/Users/codenameakshay/.t3/artifacts/beui-v3.1.0/agents/` on the verification machine.
 Those local receipts are not accessible PR media.
 
+## Full-suite run
+
+| Run, head `2b3205c05` | Result | Log SHA-256 |
+|---|---|---|
+| Full package suite, all 195 test files, review1 | 2780 passed, 31 golden errors, exit 1 | `8dc28ebb5170999312e95dab0d3d6fd9adda94aab0c08bb9232f8491ac12de77` |
+
+All 31 errors are golden pixel mismatches. The failing tests write 32 candidate images, all byte-identical to the unchanged-baseline candidates from `835f4396d`.
+
 ## Open acceptance gates
 
-- The full local test/golden gate is not green. The eight golden mismatches exist on the unchanged baseline too. Their lower-level cause is not established.
+The PR was marked ready for merge at the user's request on 2026-11-06. These gates remain open:
+
+- The full local golden gate is not green. All 31 mismatches also fail on the unchanged baseline, so this branch adds no raster drift. Their lower-level cause is not established.
 - The pilot media cover the preserved demo flows. The demo opts in to entrance motion and seeds ToolApproval open, so the media do not show the omitted defaults. The regression tests cover those defaults.
 - Timing, performance, reduced-motion browser behavior, all-state coverage and native interaction are not accepted. Recorded frame gaps of about 183, 200 and 500 ms remain unexplained.
 - `ShaderMask` colors all painted alpha, so `.child` shimmer over mixed non-text content differs from source CSS text clipping.
