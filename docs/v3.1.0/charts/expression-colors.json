@@ -135,7 +135,7 @@
     {
       "sourceRole": "Returns tooltip signed metric ink",
       "localLocation": "lib/src/charts/returns_calendar.dart:_ReturnsCell.build, BeuiReturnsCalendarTooltip",
-      "finding": "Source tooltip.tsx:48 caps signed metric color with ink(UP/DOWN). Flutter supplies string content to the shared tooltip and exposes an empty composition slot, without separate metric color routing or the cap."
+      "finding": "Source tooltip.tsx:48 caps signed metric color with ink(UP/DOWN). Flutter already composes a muted label and separately styled shared BeuiChartTicker in a Wrap passed to the shared tooltip. Its metric uses raw success/destructive without the light-mode cap."
     }
   ],
   "localHashesSha256": {

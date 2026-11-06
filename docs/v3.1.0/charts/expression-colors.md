@@ -52,9 +52,10 @@ and `tint(v, range, on)` as a `color-mix(in srgb, hue pct, transparent)` where
 - Annual neutral fill is transparent foreground at 6% (or background while
   hot); focus/selection ring uses foreground. These do not use the hue cap.
 - `returns-calendar/tooltip.tsx:48` also applies `ink()` to its signed metric.
-  The local grid supplies a string tooltip to the shared chart tooltip instead
-  of composing a separately capped metric. This consumer also lacks the source
-  color routing; annual cell text is not the only calendar `ink()` consumer.
+  The local grid composes a muted label and shared `BeuiChartTicker` in a
+  `Wrap`, then passes that widget to the shared chart tooltip. Its signed metric
+  uses raw success/destructive colors without the source cap. Annual cell text
+  is not the only calendar `ink()` consumer.
 
 ## Literal expected source expressions
 
@@ -139,7 +140,7 @@ check per relevant theme.
 | Calendar selected month outline | `:782-785` | Uses fixed alpha `.65`; source's visual cell selection ring is foreground `RING`, while the separate transient hover border is raw UP/DOWN. Compare source state/role, not only hue strength. |
 | Calendar month numeral foreground mix | `:797-799` | Uses continuous `.85 + intensity * .15`; source rounds the corresponding percentage (e.g. 1→87%, 2→89%, 4→93%). |
 | Calendar annual numeral `ink(UP/DOWN)` | `:795-797` | Uses raw success/destructive; missing source light cap (`--ink-l=0.5`). |
-| Calendar tooltip signed metric `ink(UP/DOWN)` | Grid string tooltip passed to `_ReturnsCell`, then `BeuiChartTooltip` at `:720`; `BeuiReturnsCalendarTooltip` at `:885` returns an empty slot | No separately styled signed metric or relative-OKLCH cap. The shared tooltip must remain shared when the chart composes the source content. |
+| Calendar tooltip signed metric `ink(UP/DOWN)` | Grid `Wrap` at `:546` contains a muted label and shared `BeuiChartTicker`; its metric style at `:561` uses raw success/destructive, then `_ReturnsCell` passes the widget to `BeuiChartTooltip` at `:720` | The signed metric already has separate styling, but lacks the relative-OKLCH cap. Keep the shared ticker and tooltip when repairing the chart color. |
 | Calendar annual neutral fill | `:767-772` | `.06` foreground alpha matches source's 6% expression in strength; exact effective color depends on source background/theme compositing. |
 | Theme resolution | `lib/src/theme/beui_colors.g.dart`; `BeuiColors` is passed into charts | Generic light/dark neutral tokens match the pinned CSS conversion inputs. Local brand variants alter `accent`; source browser output under a matching consumer override has not been captured here. |
 

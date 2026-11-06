@@ -149,7 +149,7 @@ Using Flutter/Dart 3.44.4/3.12.2 from `/Users/codenameakshay/fvm/versions/3.44.4
 - `flutter analyze lib/src/charts/_shared.dart test/charts/shared_source_contract_test.dart` — no issues.
 - `flutter test --no-pub --concurrency 1 test/charts/shared_source_contract_test.dart --reporter expanded` — 30 tests passed.
 - `flutter test --no-pub --concurrency 1 test/charts/order_book_test.dart --plain-name 'shows sorted order tables, midpoint spread and live depth summary' --reporter expanded` — passed; fixed `100.00` / `2.00` / `98.40` behavior remains intact.
-- `flutter test --no-pub --concurrency 1 test/charts/finance_source_contract_test.dart --reporter expanded` — 8 tests reached, with the pre-existing Price Target default-label assertion failing at line 472 (`Price target · 12 months: mean $205.00, now $178.52` not found). That widget/test is outside this helper repair and remains unchanged.
+- `flutter test --no-pub --concurrency 1 test/charts/finance_source_contract_test.dart --reporter expanded` ran nine cases, with eight passes and one failure. The pre-existing Price Target default-label assertion fails at line 472 (`Price target · 12 months: mean $205.00, now $178.52` not found). That widget/test is outside this helper repair and remains unchanged. The retained final log SHA-256 is `416c529b58972f2a922123c7129335b648a8aa75611e17b82ee148549c9fee84`.
 
 Attempt logs are retained outside git under ignored
 `docs/proof/v3.1.0/charts/helper-tests/` with unique timestamped names. These
