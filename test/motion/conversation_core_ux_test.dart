@@ -1133,22 +1133,29 @@ void main() {
   });
 
   // -------------------------------------------------------------------------
-  group('C12 — motion is on by default and derived from key identity', () {
-    testWidgets('a message animates in without being asked', (tester) async {
-      await tester.pumpWidget(
-        _app(
-          const Center(
-            child: BeuiMessage(
-              from: BeuiMessageFrom.user,
-              children: [
-                BeuiMessageContent(children: [Text('hi')]),
-              ],
-            ),
-          ),
+  group('C12 — motion is opt-in and derived from key identity', () {
+    testWidgets('a message animates in only when asked', (tester) async {
+      Widget build({required Key key, bool? animateIn}) => _app(
+        Center(
+          child: animateIn == null
+              ? BeuiMessage(
+                  key: key,
+                  from: BeuiMessageFrom.user,
+                  children: const [
+                    BeuiMessageContent(children: [Text('hi')]),
+                  ],
+                )
+              : BeuiMessage(
+                  key: key,
+                  from: BeuiMessageFrom.user,
+                  animateIn: animateIn,
+                  children: const [
+                    BeuiMessageContent(children: [Text('hi')]),
+                  ],
+                ),
         ),
       );
-      await tester.pump();
-      final opacity = tester
+      List<double> opacities() => tester
           .widgetList<Opacity>(
             find.descendant(
               of: find.byType(BeuiMessage),
@@ -1157,10 +1164,23 @@ void main() {
           )
           .map((o) => o.opacity)
           .toList();
+
+      await tester.pumpWidget(build(key: const ValueKey('default')));
+      await tester.pump();
       expect(
-        opacity.any((o) => o < 1.0),
+        opacities().every((o) => o == 1.0),
         isTrue,
-        reason: 'the entrance plays by default',
+        reason: 'the source default does not play the entrance',
+      );
+
+      await tester.pumpWidget(
+        build(key: const ValueKey('opt-in'), animateIn: true),
+      );
+      await tester.pump();
+      expect(
+        opacities().any((o) => o < 1.0),
+        isTrue,
+        reason: 'animateIn: true plays the entrance',
       );
       await tester.pumpAndSettle();
     });
@@ -1177,6 +1197,7 @@ void main() {
                 BeuiMessage(
                   key: ValueKey(i),
                   from: BeuiMessageFrom.assistant,
+                  animateIn: true,
                   children: [
                     BeuiMessageContent(children: [Text('row $i')]),
                   ],

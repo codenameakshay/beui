@@ -51,6 +51,12 @@ No golden was regenerated or skipped.
 A cross-model review of `792ad82d..b998e85a1` found two defects. Both are fixed in `24cf07190` with regression tests:
 an emptied `BeuiCitations` kept stale marker numbers, and the labelled marker did not expose its focus state.
 
+Hosted CI on `ba3650e9e` ran the whole package suite and found two failures outside the relevant-suite list above.
+`conversation_core_ux_test.dart` C12 still asserted the superseded `animateIn: true` default.
+The C12 cases now assert the source default and opt in explicitly for the entrance and no-replay checks.
+That file plus the source-default suite pass 63 cases, exit 0 (`conversation-ux-c12-20261106-root1`).
+The relevant-suite list is not a full-suite gate. Hosted CI is the full-suite run.
+
 Bulk receipts live under `/Users/codenameakshay/.t3/artifacts/beui-v3.1.0/agents/` on the verification machine.
 Those local receipts are not accessible PR media.
 
