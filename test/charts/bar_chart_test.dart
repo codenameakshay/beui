@@ -668,6 +668,46 @@ void main() {
     },
   );
 
+  testWidgets('stacked totals beyond double range clamp to the finite max', (
+    tester,
+  ) async {
+    late BeuiBarChartModel model;
+    await tester.pumpWidget(
+      _app(
+        SizedBox(
+          width: 420,
+          child: BeuiBarChart(
+            layout: BeuiBarChartLayout.stacked,
+            series: const [
+              BeuiBarChartSeries(
+                id: 'x',
+                name: 'X',
+                color: '#2563eb',
+                values: [1e308, 1],
+              ),
+              BeuiBarChartSeries(
+                id: 'y',
+                name: 'Y',
+                color: '#0d9488',
+                values: [1e308, 1],
+              ),
+            ],
+            categories: const ['A', 'B'],
+            child: Builder(
+              builder: (context) {
+                model = BeuiBarChart.of(context);
+                return const BeuiBarChartPlot();
+              },
+            ),
+          ),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+    expect(tester.takeException(), isNull);
+    expect(model.totals, [double.maxFinite, 2]);
+  });
+
   testWidgets('empty categories keep a valid empty plot fallback', (
     tester,
   ) async {

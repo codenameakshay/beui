@@ -464,7 +464,9 @@ class _BeuiPriceTargetFanState extends State<BeuiPriceTargetFan>
               ? math.min(520.0, constraints.maxWidth)
               : 520.0;
           return Align(
-            alignment: Alignment.topLeft,
+            alignment: AlignmentDirectional.topStart,
+            // Size to content like the source block host; do not fill height.
+            heightFactor: 1,
             child: SizedBox(
               width: width,
               child:

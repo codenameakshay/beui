@@ -258,7 +258,11 @@ class _BeuiBarChartState extends State<BeuiBarChart> {
     final visible = data.rows.where((row) => !hidden.contains(row.id)).toList();
     final totals = List<double>.generate(
       data.categories.length,
-      (i) => visible.fold<double>(0, (sum, row) => sum + (row.values[i] ?? 0)),
+      // Values are nonnegative, so clamping keeps an overflowing stack finite.
+      (i) => visible.fold<double>(
+        0,
+        (sum, row) => math.min(sum + (row.values[i] ?? 0), double.maxFinite),
+      ),
     );
     final order = List<int>.generate(data.categories.length, (i) => i);
     if (widget.sort != BeuiBarChartSort.none) {

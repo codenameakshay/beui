@@ -382,6 +382,10 @@ class _BeuiSparklineState extends State<BeuiSparkline> {
 
 enum _SparklineTrend { flat, up, down }
 
+// Source-parity exception to the BeuiColors rule: source `sparkline.tsx`
+// hardcodes Tailwind emerald and rose for the delta badge, with separate
+// light and dark shades. `BeuiColors.success` is one brightness-independent
+// color, so it cannot reproduce them.
 Color _emerald(BuildContext context) =>
     Theme.of(context).brightness == Brightness.dark
     ? const Color(

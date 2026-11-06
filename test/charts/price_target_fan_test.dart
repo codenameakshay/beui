@@ -706,6 +706,16 @@ void main() {
     }
   });
 
+  testWidgets('host keeps its content height inside a taller parent', (
+    tester,
+  ) async {
+    await _pumpChart(tester, _chart(), reduce: true);
+    final host = tester.getSize(find.byType(BeuiPriceTargetFan));
+    final content = tester.getSize(find.byType(BeuiPriceTargetPlot));
+    expect(host.height, lessThan(640));
+    expect(host.height, greaterThanOrEqualTo(content.height));
+  });
+
   testWidgets('reduced-motion rest state matches golden', (tester) async {
     await _pumpChart(tester, _chart(), reduce: true);
     await tester.pump();
