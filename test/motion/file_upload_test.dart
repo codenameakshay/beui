@@ -227,8 +227,6 @@ void main() {
 
     testWidgets('remove button is keyboard-activatable', (tester) async {
       final removed = <String>[];
-      // No onBrowse: the dropzone is disabled and drops out of tab order,
-      // so the first Tab lands directly on the row's remove control.
       await tester.pumpWidget(
         _wrap(
           BeuiFileUpload(
@@ -245,6 +243,8 @@ void main() {
         ),
       );
       await tester.pump(const Duration(milliseconds: 400));
+      await tester.sendKeyEvent(LogicalKeyboardKey.tab);
+      await tester.pumpAndSettle();
       await tester.sendKeyEvent(LogicalKeyboardKey.tab);
       await tester.pumpAndSettle();
       await tester.sendKeyEvent(LogicalKeyboardKey.enter);

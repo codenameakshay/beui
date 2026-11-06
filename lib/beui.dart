@@ -83,6 +83,7 @@ export 'src/motion/feedback_widget.dart'
         BeuiFeedbackSentiment,
         BeuiFeedbackWidget,
         BeuiFeedbackWidgetStyle;
+export 'src/motion/upload_file.dart' show BeuiUploadFile;
 export 'src/motion/file_upload.dart'
     show
         BeuiFileUpload,
@@ -559,6 +560,19 @@ export 'src/motion/tooltip.dart'
     show BeuiTooltipContent, BeuiTooltipProvider, BeuiTooltipTrigger;
 
 // v3-blocks exports
+export 'src/motion/mines.dart' show BeuiMines, beuiFormatMinesMultiplier;
+export 'src/motion/mines_round.dart'
+    show
+        BeuiMinesPhase,
+        BeuiMinesTile,
+        MinesCashOut,
+        MinesReveal,
+        MinesRound,
+        beuiMinesMultiplier;
+export 'src/motion/plinko.dart'
+    show BeuiPlinko, BeuiPlinkoValue, beuiPlinkoSlots;
+export 'src/motion/card_dealer.dart'
+    show BeuiCardDealer, BeuiCardDealerCard, BeuiCardDealerZone;
 export 'src/motion/card_folder.dart' show BeuiCardFolder;
 export 'src/motion/morphing_search.dart'
     show BeuiMorphingSearch, BeuiMorphingSearchItem;

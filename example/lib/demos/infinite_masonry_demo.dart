@@ -7,11 +7,8 @@ import 'package:flutter/material.dart';
 /// `infinite-masonry.preview.tsx`: the "Visual index" gallery that pages in six
 /// more tiles as you approach the end.
 ///
-/// The source cards show remote Unsplash photographs. The package ships no
-/// assets of its own, so each card keeps the source's exact
-/// `imageHeight` but fills that box with a flat `muted` panel; everything
-/// around it — the header, the captions, the categories, the page size and the
-/// tile rhythm — is the preview's.
+/// The source cards show remote Unsplash photographs, matching their original
+/// image URLs and heights.
 Widget infiniteMasonryDemo(BuildContext context) =>
     const _InfiniteMasonryDemo();
 
@@ -21,23 +18,61 @@ class _Tile {
     required this.id,
     required this.title,
     required this.category,
+    required this.image,
     required this.imageHeight,
   });
 
   final String id;
   final String title;
   final String category;
+  final String image;
   final double imageHeight;
 }
 
 /// Source `gallerySource` — six repeating entries.
-const _source = <({String title, String category, double imageHeight})>[
-  (title: 'Soft geometry', category: 'Architecture', imageHeight: 260),
-  (title: 'Open horizon', category: 'Landscape', imageHeight: 190),
-  (title: 'Working rhythm', category: 'Workspace', imageHeight: 230),
-  (title: 'Shared table', category: 'Studio', imageHeight: 300),
-  (title: 'In session', category: 'People', imageHeight: 210),
-  (title: 'After hours', category: 'Office', imageHeight: 280),
+const _source = <({String title, String category, String image, double imageHeight})>[
+  (
+    title: 'Soft geometry',
+    category: 'Architecture',
+    image:
+        'https://images.unsplash.com/photo-1511818966892-d7d671e672a2?auto=format&fit=crop&w=720&q=80',
+    imageHeight: 260,
+  ),
+  (
+    title: 'Open horizon',
+    category: 'Landscape',
+    image:
+        'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=720&q=80',
+    imageHeight: 190,
+  ),
+  (
+    title: 'Working rhythm',
+    category: 'Workspace',
+    image:
+        'https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=720&q=80',
+    imageHeight: 230,
+  ),
+  (
+    title: 'Shared table',
+    category: 'Studio',
+    image:
+        'https://images.unsplash.com/photo-1524758631624-e2822e304c36?auto=format&fit=crop&w=720&q=80',
+    imageHeight: 300,
+  ),
+  (
+    title: 'In session',
+    category: 'People',
+    image:
+        'https://images.unsplash.com/photo-1521737711867-e3b97375f902?auto=format&fit=crop&w=720&q=80',
+    imageHeight: 210,
+  ),
+  (
+    title: 'After hours',
+    category: 'Office',
+    image:
+        'https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&w=720&q=80',
+    imageHeight: 280,
+  ),
 ];
 
 const _pageSize = 6;
@@ -53,6 +88,7 @@ List<_Tile> _createItems(int start, int count) => [
         // Source suffixes the pass number: `${title} ${floor(i / 6) + 1}`.
         title: '${source.title} ${index ~/ _source.length + 1}',
         category: source.category,
+        image: source.image,
         imageHeight: source.imageHeight,
       );
     }(),
@@ -185,10 +221,14 @@ class _GalleryCard extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        // Stands in for the source's remote photograph.
-        SizedBox(
+        Image.network(
+          tile.image,
+          semanticLabel: tile.title,
+          fit: BoxFit.cover,
+          width: double.infinity,
           height: tile.imageHeight,
-          child: ColoredBox(color: colors.muted),
+          errorBuilder: (context, error, stackTrace) =>
+              ColoredBox(color: colors.muted),
         ),
         Padding(
           padding: const EdgeInsets.all(12), // p-3

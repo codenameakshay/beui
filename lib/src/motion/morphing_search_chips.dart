@@ -10,6 +10,7 @@ import '../theme/beui_colors.dart';
 import '../tokens/icons.dart';
 import '../tokens/motion.dart';
 import '_engine.dart';
+import 'search_recents_storage.dart';
 
 /// Direction in which the suggestions surface opens.
 enum BeuiMorphingSearchChipsSide { auto, bottom, top }
@@ -75,10 +76,11 @@ class BeuiMorphingSearchChips extends StatefulWidget {
   /// Called when recents change.
   final ValueChanged<List<String>>? onRecentsChange;
 
-  /// In-process persistence key for uncontrolled recents.
+  /// Persistence key for uncontrolled recents. Web uses localStorage; other
+  /// platforms keep them in process memory. An empty key disables persistence.
   final String? storageKey;
 
-  /// Maximum persisted recent terms.
+  /// Maximum recent terms to keep.
   final int maxRecents;
 
   /// Available suggestions.
@@ -134,9 +136,6 @@ class BeuiMorphingSearchChips extends StatefulWidget {
       _BeuiMorphingSearchChipsState();
 }
 
-// Deliberately process-local: no plugin dependency; widgets sharing a key share recents.
-final Map<String, List<String>> _recentsByStorageKey = {};
-
 const _chipsEnter = SpringMotion(
   SpringDescription(mass: .8, stiffness: 380, damping: 28),
 );
@@ -147,7 +146,7 @@ const _chipsExit = SpringMotion(
 class _BeuiMorphingSearchChipsState extends State<BeuiMorphingSearchChips> {
   late List<String> _chips = [...widget.chips ?? widget.defaultChips];
   late String _query = widget.query ?? widget.defaultQuery;
-  late List<String> _recents = [...widget.recents ?? _initialRecents()];
+  late List<String> _recents = [...widget.defaultRecents];
   late bool _internalOpen = widget.defaultOpen;
   final _controller = TextEditingController();
   late final _focus = FocusNode(onKeyEvent: _onKey);
@@ -160,9 +159,8 @@ class _BeuiMorphingSearchChipsState extends State<BeuiMorphingSearchChips> {
   int _active = 0;
   int? _markedChip;
 
-  List<String> _initialRecents() => widget.storageKey == null
-      ? widget.defaultRecents
-      : (_recentsByStorageKey[widget.storageKey] ?? widget.defaultRecents);
+  bool get _hasRecentsStorageKey =>
+      widget.storageKey != null && widget.storageKey!.isNotEmpty;
   bool get _isOpen => (widget.open ?? _internalOpen) && !widget.disabled;
   List<String> get _currentChips => widget.chips ?? _chips;
   String get _currentQuery => widget.query ?? _query;
@@ -173,6 +171,7 @@ class _BeuiMorphingSearchChipsState extends State<BeuiMorphingSearchChips> {
     super.initState();
     _controller.text = _currentQuery;
     _focus.addListener(_onFocusChange);
+    _scheduleRecentsHydration();
   }
 
   @override
@@ -198,9 +197,23 @@ class _BeuiMorphingSearchChipsState extends State<BeuiMorphingSearchChips> {
         (oldWidget.open != true && widget.open == true)) {
       _resetActiveRow();
     }
-    if (oldWidget.storageKey != widget.storageKey && widget.recents == null) {
-      _recents = [..._initialRecents()];
+    if ((oldWidget.storageKey != widget.storageKey ||
+            oldWidget.maxRecents != widget.maxRecents ||
+            (oldWidget.recents == null) != (widget.recents == null)) &&
+        widget.recents == null) {
+      _scheduleRecentsHydration();
     }
+  }
+
+  void _scheduleRecentsHydration() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted || widget.recents != null || !_hasRecentsStorageKey) return;
+      final stored = searchRecentsStorage.read(
+        widget.storageKey!,
+        widget.maxRecents,
+      );
+      if (stored != null) setState(() => _recents = stored);
+    });
   }
 
   @override
@@ -234,8 +247,8 @@ class _BeuiMorphingSearchChipsState extends State<BeuiMorphingSearchChips> {
   void _setRecents(List<String> value) {
     value = value.take(widget.maxRecents).toList();
     if (widget.recents == null) setState(() => _recents = value);
-    if (widget.storageKey case final key?) {
-      if (widget.recents == null) _recentsByStorageKey[key] = [...value];
+    if (widget.recents == null && _hasRecentsStorageKey) {
+      searchRecentsStorage.write(widget.storageKey!, value);
     }
     widget.onRecentsChange?.call(value);
   }
@@ -560,8 +573,8 @@ class _BeuiMorphingSearchChipsState extends State<BeuiMorphingSearchChips> {
             converter: const SizeMotionConverter(),
             motion: motionFor(context, _chipsEnter, isMovement: true),
             builder: (context, size, child) => SizedBox(
-              width: size.width,
-              height: size.height,
+              width: math.max(0, size.width),
+              height: math.max(0, size.height),
               child: ClipRect(child: child),
             ),
             child: bar,
@@ -684,9 +697,9 @@ class _BeuiMorphingSearchChipsState extends State<BeuiMorphingSearchChips> {
             ),
           ),
         );
-        final panelWidth = math.min(
-          560.0,
-          MediaQuery.sizeOf(context).width - 32,
+        final panelWidth = math.max(
+          0.0,
+          math.min(560.0, MediaQuery.sizeOf(context).width - 32),
         );
         final seed = const Size(112, 40);
         final target = Size(panelWidth, panelHeight);
@@ -706,8 +719,8 @@ class _BeuiMorphingSearchChipsState extends State<BeuiMorphingSearchChips> {
                   isMovement: true,
                 ),
                 builder: (context, size, child) => SizedBox(
-                  width: size.width,
-                  height: size.height,
+                  width: math.max(0, size.width),
+                  height: math.max(0, size.height),
                   child: ClipRect(
                     child: OverflowBox(
                       alignment: side == BeuiMorphingSearchChipsSide.top

@@ -1,9 +1,12 @@
 import 'dart:math' as math;
 import 'dart:ui' show lerpDouble;
 
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart' show OverflowBoxFit;
 import 'package:flutter/services.dart';
 
+import '../overlay/beui_overlay.dart';
 import '../theme/beui_colors.dart';
 import '../tokens/icons.dart';
 import '../tokens/motion.dart';
@@ -20,7 +23,9 @@ class BeuiNotificationStackItem {
   const BeuiNotificationStackItem({
     required this.id,
     required this.title,
+    this.titleWidget,
     this.description,
+    this.descriptionWidget,
     this.trailing,
   });
 
@@ -30,13 +35,26 @@ class BeuiNotificationStackItem {
   /// Primary line (source `title`).
   final String title;
 
+  /// Optional rich title content, retaining [title] for existing callers.
+  final Widget? titleWidget;
+
   /// Optional secondary line (source `description`).
   final String? description;
+
+  /// Optional rich description content, retaining [description].
+  final Widget? descriptionWidget;
 
   /// Optional trailing content — a timestamp, badge, avatar (source
   /// `trailing`). Rendered at the source's `text-xs` muted scale unless it
   /// carries its own style.
   final Widget? trailing;
+}
+
+class _TapSnapshot {
+  const _TapSnapshot({required this.expanded, required this.pointerType});
+
+  final bool expanded;
+  final PointerDeviceKind pointerType;
 }
 
 // Source geometry tokens (notification-stack.tsx).
@@ -51,14 +69,9 @@ const double _cardRadius = 16; // rounded-2xl
 const double _surfaceRadius = 24; // rounded-3xl
 const double _defaultMaxWidth = 352; // max-w-[22rem]
 
-// Source card transition — {duration: 0.32, ease: EASE_OUT} for the y + inset
-// (clipPath) fan-out. The footer carries `layout="position"` with SPRING_LAYOUT
-// and the background `layout` with {0.26, EASE_OUT}; in this port the whole
-// surface morph (cards, footer position and the bg-muted surface) is driven by a
-// single [beuiSpringLayout] progress so the growing card, the footer and the
-// surface never separate into a seam (see the class doc). The label roll keeps
-// its own timing via [BeuiActionSwapText].
-const Duration _arrowDuration = Duration(milliseconds: 240);
+const Duration _cardDuration = Duration(milliseconds: 320);
+const Duration _backgroundDuration = Duration(milliseconds: 260);
+const Duration _arrowDuration = Duration(milliseconds: 220);
 
 /// A single collapsible stacked-notification "inbox" card — the Flutter port of
 /// beUI's `NotificationStack`.
@@ -73,17 +86,14 @@ const Duration _arrowDuration = Duration(milliseconds: 240);
 ///
 /// Expansion is controllable ([expanded] / [defaultExpanded] /
 /// [onExpandedChange], the value + callback pattern). Interactions mirror the
-/// source: focus expands, blur collapses, Escape collapses and blurs; a tap
+/// source: focus expands, blur collapses, Escape collapses while retaining focus; a tap
 /// expands when collapsed, or fires [onViewAll] (falling back to collapsing)
 /// when already expanded.
 ///
-/// **Motion.** The surface morph rides [beuiSpringLayout] — the source's
-/// `layout` family, which drives its background and footer. The source addition
-/// of a distinct 0.32s/0.26s `EASE_OUT` for the cards/background is unified onto
-/// the one layout spring here so the card list, the footer and the surface
-/// resize as a single body with no seam. The widget grows *downward* as it
-/// expands (rather than the source's upward overflow out of a fixed footprint),
-/// so its hit area always covers the fanned list and hover never flickers.
+/// **Motion.** Cards use the source 320ms `EASE_OUT`, the background uses its
+/// 260ms `EASE_OUT`, and the footer position uses [beuiSpringLayout]. The host
+/// keeps the invisible primary-card-plus-footer footprint and the surface fans
+/// upward from its fixed bottom edge.
 ///
 /// Reduced motion ([MediaQuery.disableAnimationsOf]) snaps the expansion — the
 /// morph is pure movement, so it is dropped — while the label roll degrades to
@@ -149,7 +159,11 @@ class BeuiNotificationStack extends StatefulWidget {
 class _BeuiNotificationStackState extends State<BeuiNotificationStack> {
   late bool _internalExpanded = widget.defaultExpanded;
   final FocusNode _focusNode = FocusNode(debugLabel: 'BeuiNotificationStack');
+  final Object _tapRegionGroup = Object();
   bool _hasFocus = false;
+  bool _focusVisible = false;
+  _TapSnapshot? _tapSnapshot;
+  bool _tapExpanded = false;
 
   // Card-height measurement — the source relies on CSS grid auto-sizing; here we
   // measure each card at full width once so the fan-out can position variable
@@ -159,13 +173,27 @@ class _BeuiNotificationStackState extends State<BeuiNotificationStack> {
   int? _measuredSig;
   int? _pendingSig;
 
+  @override
+  void initState() {
+    super.initState();
+    FocusManager.instance.addHighlightModeListener(_onHighlightModeChange);
+  }
+
   bool get _isControlled => widget.expanded != null;
   bool get _expanded => widget.expanded ?? _internalExpanded;
 
   @override
   void dispose() {
+    FocusManager.instance.removeHighlightModeListener(_onHighlightModeChange);
     _focusNode.dispose();
     super.dispose();
+  }
+
+  void _onHighlightModeChange(FocusHighlightMode mode) {
+    final visible = _hasFocus && mode == FocusHighlightMode.traditional;
+    if (visible != _focusVisible && mounted) {
+      setState(() => _focusVisible = visible);
+    }
   }
 
   void _setExpanded(bool next) {
@@ -181,16 +209,30 @@ class _BeuiNotificationStackState extends State<BeuiNotificationStack> {
   // --- interactions (mirror the source handlers) ---------------------------
 
   void _onFocusChange(bool focused) {
-    _hasFocus = focused;
+    setState(() {
+      _hasFocus = focused;
+      _focusVisible =
+          focused &&
+          FocusManager.instance.highlightMode == FocusHighlightMode.traditional;
+    });
     _setExpanded(focused);
   }
 
   KeyEventResult _onKey(FocusNode node, KeyEvent event) {
+    if (event is KeyDownEvent) _tapSnapshot = null;
     if (event is KeyDownEvent &&
         event.logicalKey == LogicalKeyboardKey.escape &&
         _expanded) {
+      _tapSnapshot = null;
+      _tapExpanded = false;
       _setExpanded(false);
-      _focusNode.unfocus();
+      return KeyEventResult.handled;
+    }
+    if (event is KeyDownEvent &&
+        (event.logicalKey == LogicalKeyboardKey.enter ||
+            event.logicalKey == LogicalKeyboardKey.space)) {
+      _tapSnapshot = null;
+      _onTap();
       return KeyEventResult.handled;
     }
     return KeyEventResult.ignored;
@@ -199,15 +241,33 @@ class _BeuiNotificationStackState extends State<BeuiNotificationStack> {
   void _onTap() {
     // Decide on the state the tap started from (the source reads the pre-focus
     // value): collapsed → expand; expanded → onViewAll, else collapse.
-    if (!_expanded) {
+    final snapshot = _tapSnapshot;
+    final wasExpanded = snapshot?.expanded ?? _expanded;
+    _tapSnapshot = null;
+    if (!wasExpanded) {
+      _tapExpanded =
+          snapshot != null && snapshot.pointerType != PointerDeviceKind.mouse;
       _focusNode.requestFocus();
       _setExpanded(true);
     } else if (widget.onViewAll != null) {
+      _tapExpanded = false;
       widget.onViewAll!.call();
     } else {
+      _tapExpanded = false;
       _setExpanded(false);
-      _focusNode.unfocus();
     }
+  }
+
+  void _onPointerDown(PointerDownEvent event) {
+    _tapSnapshot = _TapSnapshot(expanded: _expanded, pointerType: event.kind);
+  }
+
+  void _onPointerCancel(PointerCancelEvent event) => _tapSnapshot = null;
+
+  void _onTapOutside(PointerDownEvent event) {
+    if (!_tapExpanded || !_expanded) return;
+    _tapExpanded = false;
+    _setExpanded(false);
   }
 
   // --- measurement ---------------------------------------------------------
@@ -215,15 +275,18 @@ class _BeuiNotificationStackState extends State<BeuiNotificationStack> {
   int _signature(double width, List<BeuiNotificationStackItem> visible) {
     final scale = MediaQuery.textScalerOf(context).scale(14);
     return Object.hash(
-      width.round(),
+      width,
       scale,
+      Theme.of(context).textTheme.bodyMedium?.fontFamily,
       Object.hashAll(
         visible.map(
           (it) => Object.hash(
             it.id,
-            it.title.length,
-            it.description?.length ?? -1,
-            it.trailing != null,
+            it.title.hashCode,
+            it.titleWidget?.hashCode ?? 0,
+            it.description?.hashCode ?? 0,
+            it.descriptionWidget?.hashCode ?? 0,
+            it.trailing?.hashCode ?? 0,
           ),
         ),
       ),
@@ -285,8 +348,18 @@ class _BeuiNotificationStackState extends State<BeuiNotificationStack> {
           _ensureMeasured(sig);
 
           final heights = _heights;
-          final measured = heights != null && heights.length == visible.length;
-          final target = _expanded ? 1.0 : 0.0;
+          final measured =
+              heights != null &&
+              heights.length == visible.length &&
+              _measuredSig == sig;
+          final overflowExtent = measured
+              ? heights
+                    .skip(1)
+                    .fold<double>(
+                      0,
+                      (extent, height) => extent + height + _cardGap,
+                    )
+              : 0.0;
 
           Widget surface;
           if (!measured) {
@@ -297,21 +370,17 @@ class _BeuiNotificationStackState extends State<BeuiNotificationStack> {
               contentWidth,
               visible,
               heights,
-              target,
+              _expanded,
               colors,
             );
           } else {
-            surface = SingleMotionBuilder(
-              value: target,
-              motion: beuiSpringLayout,
-              builder: (context, p, _) => _surface(
-                width,
-                contentWidth,
-                visible,
-                heights,
-                p.clamp(0.0, 1.0),
-                colors,
-              ),
+            surface = _surface(
+              width,
+              contentWidth,
+              visible,
+              heights,
+              _expanded,
+              colors,
             );
           }
 
@@ -321,20 +390,32 @@ class _BeuiNotificationStackState extends State<BeuiNotificationStack> {
             left: 0,
             top: 0,
             width: contentWidth,
-            child: ExcludeSemantics(
-              child: IgnorePointer(
-                child: Opacity(
-                  opacity: 0,
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      for (var i = 0; i < visible.length; i++)
-                        KeyedSubtree(
-                          key: _measureKeys[i],
-                          child: _card(visible[i], 1, colors),
-                        ),
-                    ],
+            height: 0,
+            child: OverflowBox(
+              alignment: Alignment.topLeft,
+              minHeight: 0,
+              maxHeight: double.infinity,
+              child: ExcludeFocus(
+                child: ExcludeSemantics(
+                  child: IgnorePointer(
+                    child: Opacity(
+                      opacity: 0,
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          for (var i = 0; i < visible.length; i++)
+                            KeyedSubtree(
+                              key: _measureKeys[i],
+                              child: _card(
+                                visible[i],
+                                colors,
+                                contentVisible: true,
+                              ),
+                            ),
+                        ],
+                      ),
+                    ),
                   ),
                 ),
               ),
@@ -353,18 +434,96 @@ class _BeuiNotificationStackState extends State<BeuiNotificationStack> {
                       width: width,
                       height: _collapsedSurfaceHeight(heights),
                     ),
-                    Positioned(left: 0, right: 0, bottom: 0, child: surface),
+                    Positioned(
+                      left: 0,
+                      right: 0,
+                      bottom: 0,
+                      height: _collapsedSurfaceHeight(heights),
+                      child: OverflowBox(
+                        alignment: Alignment.bottomCenter,
+                        minHeight: 0,
+                        maxHeight: double.infinity,
+                        child: _pointerSurface(
+                          surface,
+                          overflowHitTargetOpen:
+                              _expanded && overflowExtent > 0,
+                        ),
+                      ),
+                    ),
                     measure,
                   ],
                 )
-              : Stack(clipBehavior: Clip.none, children: [surface, measure]);
+              : Stack(
+                  clipBehavior: Clip.none,
+                  children: [
+                    OverflowBox(
+                      fit: OverflowBoxFit.deferToChild,
+                      alignment: Alignment.bottomCenter,
+                      minHeight: 0,
+                      maxHeight: double.infinity,
+                      child: _pointerSurface(
+                        surface,
+                        overflowHitTargetOpen: false,
+                      ),
+                    ),
+                    measure,
+                  ],
+                );
 
-          return _interactive(
-            colors,
-            // Badge + aria report the TOTAL count (source `items.length`), not
-            // the capped number of peeking cards.
-            widget.items.length,
-            host,
+          return BeuiOverlay(
+            open: _expanded && overflowExtent > 0,
+            barrier: false,
+            trapFocus: false,
+            enterDuration: reduce ? Duration.zero : _backgroundDuration,
+            exitDuration: reduce ? Duration.zero : _backgroundDuration,
+            overlayBuilder: (context, animation, link) => AnimatedBuilder(
+              animation: animation,
+              builder: (context, _) {
+                final hitHeight =
+                    _collapsedSurfaceHeight(heights!) +
+                    overflowExtent * animation.value;
+                return CompositedTransformFollower(
+                  link: link,
+                  targetAnchor: Alignment.bottomLeft,
+                  followerAnchor: Alignment.bottomLeft,
+                  showWhenUnlinked: false,
+                  child: ExcludeSemantics(
+                    child: SizedBox(
+                      width: width,
+                      height: hitHeight,
+                      child: TapRegion(
+                        groupId: _tapRegionGroup,
+                        child: MouseRegion(
+                          cursor: SystemMouseCursors.click,
+                          onEnter: (_) => _setExpanded(true),
+                          onExit: (_) {
+                            if (!_hasFocus) {
+                              _tapExpanded = false;
+                              _setExpanded(false);
+                            }
+                          },
+                          child: Listener(
+                            onPointerDown: _onPointerDown,
+                            onPointerCancel: _onPointerCancel,
+                            child: GestureDetector(
+                              behavior: HitTestBehavior.opaque,
+                              onTap: _onTap,
+                              child: const SizedBox.expand(),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                );
+              },
+            ),
+            child: _interactive(
+              // Badge + aria report the TOTAL count (source `items.length`), not
+              // the capped number of peeking cards.
+              widget.items.length,
+              host,
+            ),
           );
         },
       ),
@@ -373,34 +532,52 @@ class _BeuiNotificationStackState extends State<BeuiNotificationStack> {
 
   // --- interactive wrapper -------------------------------------------------
 
-  Widget _interactive(BeuiColors colors, int count, Widget child) {
+  Widget _interactive(int count, Widget child) {
+    return Focus(
+      focusNode: _focusNode,
+      onFocusChange: _onFocusChange,
+      onKeyEvent: _onKey,
+      child: child,
+    );
+  }
+
+  Widget _pointerSurface(Widget child, {required bool overflowHitTargetOpen}) {
+    final count = widget.items.length;
     final label = _expanded
         ? '$count notifications. ${widget.expandedLabel}.'
         : '$count notifications. Expand notifications.';
-
-    final wrapped = BeuiFocusRing(
-      focused: _hasFocus,
-      borderRadius: BorderRadius.circular(_surfaceRadius),
-      child: child,
-    );
-
     return Semantics(
       button: true,
+      expanded: _expanded,
+      focusable: true,
+      focused: _hasFocus,
       label: label,
-      child: Focus(
-        focusNode: _focusNode,
-        onFocusChange: _onFocusChange,
-        onKeyEvent: _onKey,
+      excludeSemantics: true,
+      child: TapRegion(
+        groupId: _tapRegionGroup,
+        consumeOutsideTaps: _tapExpanded && _expanded,
+        onTapOutside: _onTapOutside,
         child: MouseRegion(
           cursor: SystemMouseCursors.click,
           onEnter: (_) => _setExpanded(true),
           onExit: (_) {
-            if (!_hasFocus) _setExpanded(false);
+            if (!_hasFocus && !overflowHitTargetOpen) {
+              _tapExpanded = false;
+              _setExpanded(false);
+            }
           },
-          child: GestureDetector(
-            behavior: HitTestBehavior.opaque,
-            onTap: _onTap,
-            child: wrapped,
+          child: Listener(
+            onPointerDown: _onPointerDown,
+            onPointerCancel: _onPointerCancel,
+            child: GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTap: _onTap,
+              child: BeuiFocusRing(
+                focused: _focusVisible,
+                borderRadius: BorderRadius.circular(_surfaceRadius),
+                child: child,
+              ),
+            ),
           ),
         ),
       ),
@@ -414,11 +591,7 @@ class _BeuiNotificationStackState extends State<BeuiNotificationStack> {
   /// real (animating) panel absolutely against the host's bottom — so the
   /// expanded deck never pushes the layout around, it just grows upward.
   double _collapsedSurfaceHeight(List<double> heights) {
-    var stack = 0.0;
-    for (var i = 0; i < heights.length; i++) {
-      stack = math.max(stack, i * _stackPeek + heights[i]);
-    }
-    return stack +
+    return heights.first +
         _footerTopMargin +
         _footerHeight +
         _surfacePadding * 2; // p-3 both sides
@@ -429,74 +602,87 @@ class _BeuiNotificationStackState extends State<BeuiNotificationStack> {
     double contentWidth,
     List<BeuiNotificationStackItem> visible,
     List<double> heights,
-    double p,
+    bool expanded,
     BeuiColors colors,
   ) {
     final n = visible.length;
-
-    // Collapsed vs expanded geometry. The surface itself lays the cards out
-    // downward from its own top; the host pins the surface's *bottom* (source
-    // `absolute inset-x-0 bottom-0`), so growing it fans the deck upward.
     var expandedCursor = 0.0;
-    var collapsedStackHeight = 0.0;
     final collapsedTops = List<double>.filled(n, 0);
     final expandedTops = List<double>.filled(n, 0);
     for (var i = 0; i < n; i++) {
       collapsedTops[i] = i * _stackPeek;
       expandedTops[i] = expandedCursor;
       expandedCursor += heights[i] + _cardGap;
-      collapsedStackHeight = math.max(
-        collapsedStackHeight,
-        collapsedTops[i] + heights[i],
-      );
     }
     final expandedStackHeight = expandedCursor - _cardGap;
-
-    final stackHeight = lerpDouble(
-      collapsedStackHeight,
-      expandedStackHeight,
-      p,
-    )!;
-    final footerTop = stackHeight + _footerTopMargin;
-    final contentHeight = footerTop + _footerHeight;
+    final collapsedStackHeight = heights.first;
+    final collapsedFooterTop = collapsedStackHeight + _footerTopMargin;
+    final expandedFooterTop = expandedStackHeight + _footerTopMargin;
+    final collapsedHeight = collapsedFooterTop + _footerHeight;
+    final expandedHeight = expandedFooterTop + _footerHeight;
+    final reduce = MediaQuery.disableAnimationsOf(context);
+    final target = expanded ? 1.0 : 0.0;
+    final cardDuration = reduce ? Duration.zero : _cardDuration;
+    final bgDuration = reduce ? Duration.zero : _backgroundDuration;
 
     final children = <Widget>[];
-    // Paint back-to-front so the primary (card 0) sits on top of the peeks.
     for (var i = n - 1; i >= 0; i--) {
-      final top = lerpDouble(collapsedTops[i], expandedTops[i], p)!;
-      final inset = lerpDouble(i * _stackInset, 0, p)!;
-      final opacity = i == 0 ? 1.0 : p.clamp(0.0, 1.0);
       children.add(
-        Positioned(
-          top: top,
-          left: inset,
-          right: inset,
-          child: _card(visible[i], opacity, colors),
+        AnimatedPositioned(
+          duration: cardDuration,
+          curve: beuiEaseOut,
+          top: expanded ? expandedTops[i] : collapsedTops[i],
+          left: expanded ? 0 : i * _stackInset,
+          right: expanded ? 0 : i * _stackInset,
+          child: _card(visible[i], colors, contentVisible: expanded || i == 0),
         ),
+      );
+    }
+    Widget footerContent = _footer(colors, widget.items.length);
+    if (reduce) {
+      footerContent = Transform.translate(
+        offset: Offset(0, expanded ? expandedFooterTop : collapsedFooterTop),
+        child: footerContent,
+      );
+    } else {
+      footerContent = SingleMotionBuilder(
+        value: expanded ? expandedFooterTop : collapsedFooterTop,
+        motion: beuiSpringLayout,
+        builder: (context, footerTop, child) =>
+            Transform.translate(offset: Offset(0, footerTop), child: child),
+        child: footerContent,
       );
     }
     children.add(
       Positioned(
-        top: footerTop,
-        left: 4, // px-1
+        top: 0,
+        left: 4,
         right: 4,
         height: _footerHeight,
-        child: _footer(colors, widget.items.length),
+        child: footerContent,
       ),
     );
 
-    return Container(
-      width: width,
-      padding: const EdgeInsets.all(_surfacePadding),
-      decoration: BoxDecoration(
-        color: colors.muted,
-        borderRadius: BorderRadius.circular(_surfaceRadius),
-      ),
-      child: SizedBox(
-        width: contentWidth,
-        height: contentHeight,
-        child: Stack(clipBehavior: Clip.none, children: children),
-      ),
+    return TweenAnimationBuilder<double>(
+      tween: Tween<double>(begin: target, end: target),
+      duration: bgDuration,
+      curve: beuiEaseOut,
+      builder: (context, progress, _) {
+        final height = lerpDouble(collapsedHeight, expandedHeight, progress)!;
+        return Container(
+          width: width,
+          padding: const EdgeInsets.all(_surfacePadding),
+          decoration: BoxDecoration(
+            color: colors.muted,
+            borderRadius: BorderRadius.circular(_surfaceRadius),
+          ),
+          child: SizedBox(
+            width: contentWidth,
+            height: height,
+            child: Stack(clipBehavior: Clip.none, children: children),
+          ),
+        );
+      },
     );
   }
 
@@ -518,7 +704,7 @@ class _BeuiNotificationStackState extends State<BeuiNotificationStack> {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          _card(visible.first, 1, colors),
+          _card(visible.first, colors, contentVisible: true),
           const SizedBox(height: _footerTopMargin),
           SizedBox(
             height: _footerHeight,
@@ -536,9 +722,9 @@ class _BeuiNotificationStackState extends State<BeuiNotificationStack> {
 
   Widget _card(
     BeuiNotificationStackItem item,
-    double opacity,
-    BeuiColors colors,
-  ) {
+    BeuiColors colors, {
+    required bool contentVisible,
+  }) {
     return Container(
       clipBehavior: Clip.antiAlias,
       decoration: BoxDecoration(
@@ -551,8 +737,11 @@ class _BeuiNotificationStackState extends State<BeuiNotificationStack> {
         ),
       ),
       padding: const EdgeInsets.symmetric(horizontal: 16), // px-4
-      child: Opacity(
-        opacity: opacity,
+      child: Visibility(
+        visible: contentVisible,
+        maintainSize: true,
+        maintainAnimation: true,
+        maintainState: true,
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 16), // py-4
           child: Column(
@@ -563,15 +752,19 @@ class _BeuiNotificationStackState extends State<BeuiNotificationStack> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Expanded(
-                    child: Text(
-                      item.title,
-                      style: TextStyle(
-                        fontSize: 14, // text-sm
-                        height: 1.375, // leading-snug
-                        fontWeight: FontWeight.w500,
-                        color: colors.foreground,
-                      ),
-                    ),
+                    child:
+                        item.titleWidget ??
+                        Text(
+                          item.title,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                            fontSize: 14, // text-sm
+                            height: 1.375, // leading-snug
+                            fontWeight: FontWeight.w500,
+                            color: colors.foreground,
+                          ),
+                        ),
                   ),
                   if (item.trailing != null)
                     Padding(
@@ -586,17 +779,19 @@ class _BeuiNotificationStackState extends State<BeuiNotificationStack> {
                     ),
                 ],
               ),
-              if (item.description != null)
+              if (item.description != null || item.descriptionWidget != null)
                 Padding(
                   padding: const EdgeInsets.only(top: 6), // gap-1.5
-                  child: Text(
-                    item.description!,
-                    style: TextStyle(
-                      fontSize: 12, // text-xs
-                      height: 1.625, // leading-relaxed
-                      color: colors.mutedForeground,
-                    ),
-                  ),
+                  child:
+                      item.descriptionWidget ??
+                      Text(
+                        item.description!,
+                        style: TextStyle(
+                          fontSize: 12,
+                          height: 1.625,
+                          color: colors.mutedForeground,
+                        ),
+                      ),
                 ),
             ],
           ),

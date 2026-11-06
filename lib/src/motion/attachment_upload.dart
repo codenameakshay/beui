@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:math' as math;
+import 'dart:typed_data';
 import 'dart:ui' show PathMetric;
 
 import 'package:flutter/material.dart';
@@ -13,6 +14,10 @@ import '../tokens/motion.dart';
 import '_engine.dart';
 import '_focus_ring.dart';
 import 'file_upload.dart' show beuiFormatBytes;
+import 'upload_acquisition.dart' show pickUploadFiles, uploadDropTarget;
+import 'upload_acquisition_capability.dart'
+    show UploadFileCapability, UploadPickerOperation;
+import 'upload_file.dart' show BeuiUploadFile;
 import 'tooltip.dart';
 
 // ---------------------------------------------------------------------------
@@ -101,12 +106,10 @@ enum BeuiAttachmentStatus {
 
 /// One attachment row (source `AttachmentUploadItem`).
 ///
-/// The Flutter port carries **metadata only**. The source's `file: File` handle
-/// and its `previewUrl`/`href` object-URLs have no plugin-free analog, so the
-/// image bitmap arrives as a framework-native [ImageProvider] ([preview]) that
-/// the consumer builds from whatever picker they use, and [href] stays an opaque
-/// string the consumer opens via [BeuiAttachmentUpload.onOpenLink] (spec §7 —
-/// the package ships no `file_picker`/`url_launcher` dependency).
+/// File-backed rows retain a plugin-neutral lazy capability in [file], while
+/// the displayed image remains a framework-native [ImageProvider] in [preview].
+/// [href] stays an opaque string the consumer opens via
+/// [BeuiAttachmentUpload.onOpenLink].
 @immutable
 class BeuiAttachmentUploadItem {
   /// Creates an attachment row.
@@ -122,6 +125,7 @@ class BeuiAttachmentUploadItem {
     this.status = BeuiAttachmentStatus.idle,
     this.progress,
     this.error,
+    this.file,
   }) : assert(
          progress == null || (progress >= 0 && progress <= 1),
          'progress is a 0-1 fraction.',
@@ -174,6 +178,9 @@ class BeuiAttachmentUploadItem {
   /// [BeuiAttachmentStatus.failed]. Falls back to "Upload failed".
   final String? error;
 
+  /// The selected file's lazy, repeatable content capability.
+  final BeuiUploadFile? file;
+
   /// Copy with fields replaced (`clearError` drops the failure note).
   BeuiAttachmentUploadItem copyWith({
     String? name,
@@ -186,6 +193,7 @@ class BeuiAttachmentUploadItem {
     BeuiAttachmentStatus? status,
     double? progress,
     String? error,
+    BeuiUploadFile? file,
     bool clearError = false,
   }) => BeuiAttachmentUploadItem(
     id: id,
@@ -199,6 +207,7 @@ class BeuiAttachmentUploadItem {
     status: status ?? this.status,
     progress: progress ?? this.progress,
     error: clearError ? null : (error ?? this.error),
+    file: file ?? this.file,
   );
 }
 
@@ -291,26 +300,10 @@ IconData _kindIcon(BeuiAttachmentKind kind) => switch (kind) {
 /// second of the two patterns on `blocks/file-upload`; the first is
 /// [BeuiFileUpload](../motion/file_upload.dart)).
 ///
-/// **Documented reduced parity (spec §7)** — mirroring the decision already
-/// taken for the sibling `BeuiFileUpload`:
-///
-/// * The published package ships **no file-picker dependency**, so the source's
-///   `<input type="file">` plumbing (`accept`, `multiple`, `onFilesAdded`'s
-///   `File[]` argument) is **not** ported. The dropzone fires [onBrowse]; the
-///   consumer runs whatever picker fits their platform and hands the resulting
-///   metadata back through [BeuiAttachmentUploadController.add], which runs the
-///   source's gate, callbacks and arrival motion unchanged. How many files a
-///   picker returns — the source's `multiple` — is likewise the consumer's
-///   call.
-/// * OS drag-and-drop is desktop-only and needs a plugin, so the widget does not
-///   listen for drops. The full drag-over motion is still reachable: drive
-///   [dragging] from your drop-target plugin.
-/// * Opening a link row needs `url_launcher`; the widget renders the affordance
-///   and reports through [onOpenLink].
-///
-/// Everything else ports one-to-one: the rejection reasons, the size and count
-/// limits, the upload/complete/failed states, retry, the pending-removal
-/// spinner, the audio toggle, the image preview overlay and all of the motion.
+/// File selection and supported desktop/web drops use private platform
+/// adapters. The widget retains its existing controller and state ownership;
+/// [onBrowse] remains an exclusive custom-picker override. Opening a link row
+/// remains the consumer's job through [onOpenLink].
 class BeuiAttachmentUpload extends StatefulWidget {
   /// Creates an attachment workspace.
   const BeuiAttachmentUpload({
@@ -321,6 +314,9 @@ class BeuiAttachmentUpload extends StatefulWidget {
     this.onBrowse,
     this.onAttachmentsAdded,
     this.onAttachmentsRejected,
+    this.onFilesAdded,
+    this.onFilesRejected,
+    this.onAcquisitionError,
     this.onRemove,
     this.onRetry,
     this.onOpenLink,
@@ -330,6 +326,9 @@ class BeuiAttachmentUpload extends StatefulWidget {
     this.onCancel,
     this.maxFiles = 12,
     this.maxFileSize = _defaultMaxFileSize,
+    this.accept,
+    this.multiple = true,
+    this.enableDrop = true,
     this.disabled = false,
     this.dragging = false,
     this.title = 'Drag and drop or browse files',
@@ -351,8 +350,8 @@ class BeuiAttachmentUpload extends StatefulWidget {
   /// [BeuiAttachmentUploadController].
   final BeuiAttachmentUploadController? controller;
 
-  /// Fires when the dropzone is activated (tap, Enter or Space). Open your
-  /// picker here, then call [BeuiAttachmentUploadController.add].
+  /// Exclusively overrides built-in picker activation (tap, Enter or Space).
+  /// Open your picker here, then call [BeuiAttachmentUploadController.add].
   final VoidCallback? onBrowse;
 
   /// Fires with the candidates that cleared the gate (source `onFilesAdded`,
@@ -367,6 +366,25 @@ class BeuiAttachmentUpload extends StatefulWidget {
     BeuiAttachmentRejectReason reason,
   )?
   onAttachmentsRejected;
+
+  /// Fires after [onValueChange] and [onAttachmentsAdded] for accepted files.
+  final void Function(
+    List<BeuiAttachmentUploadItem> items,
+    List<BeuiUploadFile> files,
+  )?
+  onFilesAdded;
+
+  /// Fires after the matching [onAttachmentsRejected] callback for each raw
+  /// file rejection group.
+  final void Function(
+    List<BeuiUploadFile> files,
+    BeuiAttachmentRejectReason reason,
+  )?
+  onFilesRejected;
+
+  /// Reports picker or drop acquisition failures independently of consumer
+  /// callback failures.
+  final void Function(Object error, StackTrace stackTrace)? onAcquisitionError;
 
   /// Fires with an audio row and the position the user scrubbed to.
   ///
@@ -413,15 +431,23 @@ class BeuiAttachmentUpload extends StatefulWidget {
   /// Per-attachment byte ceiling used by the add gate.
   final int maxFileSize;
 
+  /// Optional chooser hint. Drops are not filtered by this value.
+  final String? accept;
+
+  /// Whether the picker may return multiple files.
+  final bool multiple;
+
+  /// Enables desktop and web drop acquisition. Mobile remains tap-to-pick.
+  final bool enableDrop;
+
   /// Disables the dropzone and the add pipeline.
   final bool disabled;
 
-  /// Whether a drag is currently hovering the dropzone.
+  /// Whether an external drag is currently hovering the dropzone.
   ///
-  /// The port has no OS drop listener of its own (see the class docs); wire this
-  /// from a desktop drop-target plugin to get the source's drag-over motion —
-  /// the glyph lifts and swells, the dashed frame goes solid-foreground and the
-  /// shell scales to 1.006.
+  /// This can compose with the built-in desktop/web drop target. The glyph lifts
+  /// and swells, the dashed frame goes solid-foreground and the shell scales to
+  /// 1.006.
   final bool dragging;
 
   /// Dropzone headline.
@@ -443,7 +469,23 @@ class _RowEntry {
   _RowEntry(this.item);
 
   BeuiAttachmentUploadItem item;
+  BeuiAttachmentUploadItem? displayItem;
   bool exiting = false;
+}
+
+const _automaticPreviewByteLimit = 8 * 1024 * 1024;
+
+enum _FilePreviewState { queued, reading, complete, skipped, failed, cancelled }
+
+class _FilePreviewLoad {
+  _FilePreviewLoad(this.file, this.generation, this.state);
+
+  final BeuiUploadFile file;
+  final int generation;
+  _FilePreviewState state;
+  ImageProvider? provider;
+  StreamIterator<List<int>>? iterator;
+  Future<void>? iteratorCleanup;
 }
 
 class _BeuiAttachmentUploadState extends State<BeuiAttachmentUpload> {
@@ -456,6 +498,13 @@ class _BeuiAttachmentUploadState extends State<BeuiAttachmentUpload> {
   final Set<String> _completeIds = <String>{};
   final Set<String> _removingIds = <String>{};
   final Set<Timer> _timers = <Timer>{};
+  final Map<String, _FilePreviewLoad> _filePreviewLoads = {};
+  _FilePreviewLoad? _activeFilePreview;
+  int _filePreviewGeneration = 0;
+  bool _filePreviewDisposing = false;
+  UploadPickerOperation? _pickerOperation;
+  int _acquisitionGeneration = 0;
+  bool _dropDragging = false;
 
   /// The row whose image the overlay shows. Kept set while the overlay plays
   /// its exit so the layer still has something to render; [_previewOpen] is the
@@ -482,11 +531,20 @@ class _BeuiAttachmentUploadState extends State<BeuiAttachmentUpload> {
       }
       widget.controller?._state = this;
     }
+    if ((widget.disabled && !oldWidget.disabled) ||
+        (oldWidget.onBrowse == null && widget.onBrowse != null)) {
+      _cancelAcquisition();
+    }
     _sync();
   }
 
   @override
   void dispose() {
+    _cancelAcquisition();
+    _filePreviewDisposing = true;
+    for (final load in _filePreviewLoads.values) {
+      _cancelFilePreview(load);
+    }
     if (widget.controller?._state == this) widget.controller!._state = null;
     for (final timer in _timers) {
       timer.cancel();
@@ -522,27 +580,192 @@ class _BeuiAttachmentUploadState extends State<BeuiAttachmentUpload> {
   /// gone closes itself (source's `previewItem` effect).
   void _sync() {
     final byId = {for (final item in _items) item.id: item};
+    for (final entry in _filePreviewLoads.entries.toList()) {
+      final item = byId[entry.key];
+      if (item == null ||
+          item.preview != null ||
+          item.kind != BeuiAttachmentKind.image ||
+          !identical(item.file, entry.value.file)) {
+        _clearFilePreview(entry.key);
+      }
+    }
     final known = {for (final entry in _entries) entry.item.id};
     for (final entry in _entries) {
       final match = byId[entry.item.id];
       if (match != null) {
         entry
           ..item = match
+          ..displayItem = _withFilePreview(match)
           ..exiting = false;
       } else {
         entry.exiting = true;
       }
     }
     for (final item in _items) {
-      if (!known.contains(item.id)) _entries.add(_RowEntry(item));
+      if (!known.contains(item.id)) {
+        _entries.add(_RowEntry(item)..displayItem = _withFilePreview(item));
+      }
     }
     final preview = _previewItem;
-    if (preview != null && !byId.containsKey(preview.id)) _previewOpen = false;
+    if (preview != null) {
+      final current = byId[preview.id];
+      final generatedPreview =
+          current != null &&
+          current.preview == null &&
+          current.file != null &&
+          identical(current.file, preview.file);
+      if (current == null ||
+          !identical(current.file, preview.file) ||
+          (!generatedPreview && current.preview != preview.preview)) {
+        _previewOpen = false;
+      }
+    }
+  }
+
+  BeuiAttachmentUploadItem _withFilePreview(BeuiAttachmentUploadItem item) {
+    final file = item.file;
+    if (item.kind != BeuiAttachmentKind.image || file == null) return item;
+    if (item.preview != null) {
+      _clearFilePreview(item.id);
+      return item;
+    }
+
+    var load = _filePreviewLoads[item.id];
+    if (load == null || !identical(load.file, file)) {
+      _clearFilePreview(item.id);
+      final state = file.size > _automaticPreviewByteLimit
+          ? _FilePreviewState.skipped
+          : _FilePreviewState.queued;
+      load = _FilePreviewLoad(file, ++_filePreviewGeneration, state);
+      _filePreviewLoads[item.id] = load;
+      _startNextFilePreview();
+    }
+    return load.provider == null ? item : item.copyWith(preview: load.provider);
+  }
+
+  bool _isCurrentFilePreview(String id, _FilePreviewLoad load) =>
+      mounted &&
+      identical(_filePreviewLoads[id], load) &&
+      _filePreviewLoads[id]?.generation == load.generation &&
+      _items.any(
+        (item) =>
+            item.id == id &&
+            item.preview == null &&
+            item.kind == BeuiAttachmentKind.image &&
+            identical(item.file, load.file),
+      );
+
+  Future<void> _readFilePreview(String id, _FilePreviewLoad load) async {
+    final retained = BytesBuilder(copy: false);
+    StreamIterator<List<int>>? iterator;
+    var overflow = false;
+    try {
+      final activeIterator = StreamIterator<List<int>>(load.file.openRead());
+      iterator = activeIterator;
+      load.iterator = activeIterator;
+      while (await activeIterator.moveNext()) {
+        if (!_isCurrentFilePreview(id, load) ||
+            load.state != _FilePreviewState.reading) {
+          return;
+        }
+        final chunk = activeIterator.current;
+        if (chunk.length > _automaticPreviewByteLimit - retained.length) {
+          overflow = true;
+          load.state = _FilePreviewState.skipped;
+          await _cleanupFilePreviewIterator(load, activeIterator);
+          return;
+        }
+        retained.add(chunk);
+      }
+    } catch (error, stackTrace) {
+      if (_isCurrentFilePreview(id, load) &&
+          load.state == _FilePreviewState.reading) {
+        load.state = _FilePreviewState.failed;
+        widget.onAcquisitionError?.call(error, stackTrace);
+      }
+    } finally {
+      if (iterator != null && load.state != _FilePreviewState.complete) {
+        await _cleanupFilePreviewIterator(load, iterator);
+      }
+      if (iterator != null && identical(load.iterator, iterator)) {
+        load.iterator = null;
+      }
+      if (!overflow && load.state == _FilePreviewState.reading) {
+        load.state = _FilePreviewState.complete;
+      }
+      if (identical(_activeFilePreview, load)) _activeFilePreview = null;
+      _startNextFilePreview();
+    }
+    if (overflow ||
+        load.state != _FilePreviewState.complete ||
+        !_isCurrentFilePreview(id, load)) {
+      return;
+    }
+    final provider = ResizeImage(
+      MemoryImage(retained.takeBytes()),
+      width: 1024,
+      height: 1024,
+      policy: ResizeImagePolicy.fit,
+    );
+    setState(() {
+      load.provider = provider;
+      for (final entry in _entries) {
+        if (entry.item.id == id) {
+          entry.displayItem = _withFilePreview(entry.item);
+          break;
+        }
+      }
+    });
+  }
+
+  void _startNextFilePreview() {
+    if (_filePreviewDisposing || _activeFilePreview != null) {
+      return;
+    }
+    for (final entry in _filePreviewLoads.entries) {
+      final load = entry.value;
+      if (load.state != _FilePreviewState.queued) continue;
+      load.state = _FilePreviewState.reading;
+      _activeFilePreview = load;
+      unawaited(_readFilePreview(entry.key, load));
+      return;
+    }
+  }
+
+  Future<void> _cleanupFilePreviewIterator(
+    _FilePreviewLoad load,
+    StreamIterator<List<int>> iterator,
+  ) {
+    final existing = load.iteratorCleanup;
+    if (existing != null) return existing;
+    return load.iteratorCleanup = iterator.cancel().catchError((Object _) {});
+  }
+
+  void _cancelFilePreview(_FilePreviewLoad load) {
+    if (load.state != _FilePreviewState.cancelled) {
+      load.state = _FilePreviewState.cancelled;
+    }
+    final iterator = load.iterator;
+    if (iterator != null) {
+      unawaited(_cleanupFilePreviewIterator(load, iterator));
+    }
+    final provider = load.provider;
+    if (provider != null) {
+      PaintingBinding.instance.imageCache.evict(provider, includeLive: true);
+    }
+  }
+
+  void _clearFilePreview(String id) {
+    final load = _filePreviewLoads.remove(id);
+    if (load != null) _cancelFilePreview(load);
   }
 
   // -- source `addFiles` ------------------------------------------------------
 
-  void _addAttachments(List<BeuiAttachmentUploadItem> incoming) {
+  void _addAttachments(
+    List<BeuiAttachmentUploadItem> incoming, {
+    bool respectMultiple = false,
+  }) {
     if (widget.disabled || incoming.isEmpty) return;
 
     final items = _items;
@@ -552,10 +775,14 @@ class _BeuiAttachmentUploadState extends State<BeuiAttachmentUpload> {
         incoming,
         BeuiAttachmentRejectReason.maxFiles,
       );
+      _notifyFilesRejected(incoming, BeuiAttachmentRejectReason.maxFiles);
       return;
     }
 
-    final selected = incoming.take(availableSlots).toList();
+    final selectedLimit = respectMultiple && !widget.multiple
+        ? math.min(1, availableSlots)
+        : availableSlots;
+    final selected = incoming.take(selectedLimit).toList();
     final oversized = <BeuiAttachmentUploadItem>[];
     final accepted = <BeuiAttachmentUploadItem>[];
     for (final candidate in selected) {
@@ -571,12 +798,15 @@ class _BeuiAttachmentUploadState extends State<BeuiAttachmentUpload> {
         oversized,
         BeuiAttachmentRejectReason.tooLarge,
       );
+      _notifyFilesRejected(oversized, BeuiAttachmentRejectReason.tooLarge);
     }
-    if (incoming.length > selected.length) {
+    if (incoming.length > selectedLimit) {
+      final rejected = incoming.sublist(selectedLimit);
       widget.onAttachmentsRejected?.call(
-        incoming.sublist(selected.length),
+        rejected,
         BeuiAttachmentRejectReason.maxFiles,
       );
+      _notifyFilesRejected(rejected, BeuiAttachmentRejectReason.maxFiles);
     }
 
     if (accepted.isEmpty) return;
@@ -599,6 +829,112 @@ class _BeuiAttachmentUploadState extends State<BeuiAttachmentUpload> {
       });
     });
     widget.onAttachmentsAdded?.call(accepted);
+    final fileItems = accepted.where((item) => item.file != null).toList();
+    final files = _filesFor(fileItems);
+    if (files.isNotEmpty) widget.onFilesAdded?.call(fileItems, files);
+  }
+
+  List<BeuiUploadFile> _filesFor(List<BeuiAttachmentUploadItem> items) =>
+      items.map((item) => item.file).whereType<BeuiUploadFile>().toList();
+
+  void _notifyFilesRejected(
+    List<BeuiAttachmentUploadItem> items,
+    BeuiAttachmentRejectReason reason,
+  ) {
+    final files = _filesFor(items);
+    if (files.isNotEmpty) widget.onFilesRejected?.call(files, reason);
+  }
+
+  bool _isCurrentAcquisition(int generation) =>
+      mounted && generation == _acquisitionGeneration && !widget.disabled;
+
+  void _cancelAcquisition() {
+    _acquisitionGeneration++;
+    final operation = _pickerOperation;
+    _pickerOperation = null;
+    operation?.cancel();
+  }
+
+  void _activate() {
+    if (widget.disabled || _items.length >= widget.maxFiles) return;
+    final onBrowse = widget.onBrowse;
+    if (onBrowse != null) {
+      onBrowse();
+      return;
+    }
+    _cancelAcquisition();
+
+    final generation = ++_acquisitionGeneration;
+    final operation = pickUploadFiles(
+      accept: widget.accept,
+      multiple: widget.multiple,
+    );
+    _pickerOperation = operation;
+    unawaited(_finishPicker(operation, generation));
+  }
+
+  Future<void> _finishPicker(
+    UploadPickerOperation operation,
+    int generation,
+  ) async {
+    late final List<UploadFileCapability> files;
+    try {
+      files = await operation.result;
+    } catch (error, stackTrace) {
+      if (identical(_pickerOperation, operation)) _pickerOperation = null;
+      if (_isCurrentAcquisition(generation)) {
+        widget.onAcquisitionError?.call(error, stackTrace);
+      }
+      return;
+    }
+    if (identical(_pickerOperation, operation)) _pickerOperation = null;
+    if (!_isCurrentAcquisition(generation) || files.isEmpty) return;
+    _addAttachments(_itemsFromFiles(files), respectMultiple: true);
+  }
+
+  Future<void> _handleDrop(List<UploadFileCapability> files) async {
+    if (!mounted || widget.disabled || !widget.enableDrop || files.isEmpty) {
+      return;
+    }
+    _cancelAcquisition();
+    final generation = _acquisitionGeneration;
+    if (!_isCurrentAcquisition(generation)) return;
+    _addAttachments(_itemsFromFiles(files), respectMultiple: true);
+  }
+
+  List<BeuiAttachmentUploadItem> _itemsFromFiles(
+    List<UploadFileCapability> files,
+  ) => [
+    for (var index = 0; index < files.length; index++)
+      _attachmentFromFile(files[index], index),
+  ];
+
+  BeuiAttachmentUploadItem _attachmentFromFile(
+    UploadFileCapability file,
+    int index,
+  ) {
+    final capability = BeuiUploadFile(
+      name: file.name,
+      size: file.size,
+      mimeType: file.mimeType,
+      readAsBytes: file.readBytes,
+      openRead: file.openRead,
+    );
+    final mimeType = file.mimeType?.toLowerCase() ?? '';
+    final kind = mimeType.startsWith('image/')
+        ? BeuiAttachmentKind.image
+        : mimeType.startsWith('audio/')
+        ? BeuiAttachmentKind.audio
+        : BeuiAttachmentKind.file;
+    return BeuiAttachmentUploadItem(
+      id: '${DateTime.now().microsecondsSinceEpoch}-$index-${file.name}',
+      name: file.name,
+      kind: kind,
+      size: file.size,
+      currentTime: kind == BeuiAttachmentKind.audio ? Duration.zero : null,
+      duration: kind == BeuiAttachmentKind.audio ? Duration.zero : null,
+      file: capability,
+    );
   }
 
   // -- source `requestRemove` / `finalizeRemove` ------------------------------
@@ -629,24 +965,41 @@ class _BeuiAttachmentUploadState extends State<BeuiAttachmentUpload> {
     final items = _items;
     final maxReached = items.length >= widget.maxFiles;
     final uploadOrder = _uploadingIds.toList();
+    final acquisitionEnabled = !widget.disabled && !maxReached;
+    final dropzone = _Dropzone(
+      colors: colors,
+      reduce: reduce,
+      dragging: widget.dragging || _dropDragging,
+      enabled: acquisitionEnabled,
+      dimmed: widget.disabled || maxReached,
+      title: maxReached ? 'Attachment limit reached' : widget.title,
+      description: maxReached
+          ? '${items.length} of ${widget.maxFiles} attachments added'
+          : widget.description ??
+                'Maximum ${_formatMaxSize(widget.maxFileSize)} file size',
+      onBrowse: _activate,
+    );
+    final acquisitionDropzone = uploadDropTarget(
+      enabled: widget.enableDrop && acquisitionEnabled,
+      child: dropzone,
+      onDragChanged: (dragging) {
+        if (mounted && _dropDragging != dragging) {
+          setState(() => _dropDragging = dragging);
+        }
+      },
+      onFilesDropped: _handleDrop,
+      onAcquisitionError: (error) {
+        if (mounted && !widget.disabled && widget.enableDrop) {
+          widget.onAcquisitionError?.call(error, StackTrace.current);
+        }
+      },
+    );
 
     final workspace = Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       mainAxisSize: MainAxisSize.min,
       children: [
-        _Dropzone(
-          colors: colors,
-          reduce: reduce,
-          dragging: widget.dragging,
-          enabled: !widget.disabled && !maxReached && widget.onBrowse != null,
-          dimmed: widget.disabled || maxReached,
-          title: maxReached ? 'Attachment limit reached' : widget.title,
-          description: maxReached
-              ? '${items.length} of ${widget.maxFiles} attachments added'
-              : widget.description ??
-                    'Maximum ${_formatMaxSize(widget.maxFileSize)} file size',
-          onBrowse: widget.onBrowse,
-        ),
+        acquisitionDropzone,
         if (_entries.isNotEmpty)
           Padding(
             padding: const EdgeInsets.only(top: 32), // mt-8
@@ -675,7 +1028,7 @@ class _BeuiAttachmentUploadState extends State<BeuiAttachmentUpload> {
                       for (final entry in _entries)
                         _AttachmentRow(
                           key: ValueKey(entry.item.id),
-                          item: entry.item,
+                          item: entry.displayItem ?? entry.item,
                           colors: colors,
                           reduce: reduce,
                           exiting: entry.exiting,
@@ -719,15 +1072,23 @@ class _BeuiAttachmentUploadState extends State<BeuiAttachmentUpload> {
                                   entry.item.href == null
                               ? null
                               : () => widget.onOpenLink!(entry.item),
-                          onPreview: entry.item.preview == null
+                          onPreview: entry.displayItem?.preview == null
                               ? null
                               : (originRect) => setState(() {
                                   _previewOrigin = originRect;
-                                  _previewItem = entry.item;
+                                  _previewItem =
+                                      entry.displayItem ?? entry.item;
                                   _previewOpen = true;
                                 }),
                           onExited: () {
-                            if (mounted) setState(() => _entries.remove(entry));
+                            if (mounted) {
+                              setState(() => _entries.remove(entry));
+                              if (!_items.any(
+                                (item) => item.id == entry.item.id,
+                              )) {
+                                _clearFilePreview(entry.item.id);
+                              }
+                            }
                           },
                         ),
                     ],
