@@ -395,24 +395,26 @@ class _BeuiNotificationStackState extends State<BeuiNotificationStack> {
               alignment: Alignment.topLeft,
               minHeight: 0,
               maxHeight: double.infinity,
-              child: ExcludeSemantics(
-                child: IgnorePointer(
-                  child: Opacity(
-                    opacity: 0,
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        for (var i = 0; i < visible.length; i++)
-                          KeyedSubtree(
-                            key: _measureKeys[i],
-                            child: _card(
-                              visible[i],
-                              colors,
-                              contentVisible: true,
+              child: ExcludeFocus(
+                child: ExcludeSemantics(
+                  child: IgnorePointer(
+                    child: Opacity(
+                      opacity: 0,
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          for (var i = 0; i < visible.length; i++)
+                            KeyedSubtree(
+                              key: _measureKeys[i],
+                              child: _card(
+                                visible[i],
+                                colors,
+                                contentVisible: true,
+                              ),
                             ),
-                          ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
                 ),

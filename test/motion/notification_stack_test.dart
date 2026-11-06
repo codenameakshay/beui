@@ -44,6 +44,48 @@ const List<BeuiNotificationStackItem> _items = [
 
 void main() {
   group('BeuiNotificationStack', () {
+    testWidgets('measurement copies of rich content are not tab stops', (
+      tester,
+    ) async {
+      final after = FocusNode(debugLabel: 'after notifications');
+      addTearDown(after.dispose);
+      await tester.pumpWidget(
+        _wrap(
+          Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              BeuiNotificationStack(
+                items: [
+                  BeuiNotificationStackItem(
+                    id: 'rich',
+                    title: 'Rich notification',
+                    titleWidget: TextButton(
+                      onPressed: () {},
+                      child: const Text('Notification action'),
+                    ),
+                  ),
+                ],
+              ),
+              TextButton(
+                focusNode: after,
+                onPressed: () {},
+                child: const Text('After notifications'),
+              ),
+            ],
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+      _stackFocusNode(tester).requestFocus();
+      await tester.pumpAndSettle();
+      await tester.sendKeyEvent(LogicalKeyboardKey.tab);
+      await tester.pumpAndSettle();
+      expect(after.hasFocus, isFalse);
+      await tester.sendKeyEvent(LogicalKeyboardKey.tab);
+      await tester.pumpAndSettle();
+      expect(after.hasFocus, isTrue);
+    });
+
     testWidgets('renders items and the collapsed footer label', (tester) async {
       await tester.pumpWidget(
         _wrap(const BeuiNotificationStack(items: _items)),
