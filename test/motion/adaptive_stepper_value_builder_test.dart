@@ -406,25 +406,67 @@ void main() {
   testWidgets('Tab traversal and bound focus transfer stay parent-owned', (
     tester,
   ) async {
-    await tester.pumpWidget(
-      _stepper(
-        defaultValue: 1,
-        max: 2,
-        builder: (context, value) => Text('value ${value.toInt()}'),
-      ),
-    );
-    await tester.pump();
-    await tester.sendKeyEvent(LogicalKeyboardKey.tab);
-    await tester.pump();
-    expect(FocusManager.instance.primaryFocus?.debugLabel, 'Decrease value');
-    await tester.sendKeyEvent(LogicalKeyboardKey.tab);
-    await tester.pump();
-    expect(FocusManager.instance.primaryFocus?.debugLabel, 'Increase value');
+    final semantics = tester.ensureSemantics();
+    try {
+      await tester.pumpWidget(
+        _stepper(
+          defaultValue: 1,
+          max: 2,
+          builder: (context, value) => Text('value ${value.toInt()}'),
+        ),
+      );
+      await tester.pump();
+      await tester.sendKeyEvent(LogicalKeyboardKey.tab);
+      await tester.pump();
+      expect(FocusManager.instance.primaryFocus?.debugLabel, 'Decrease value');
+      expect(
+        tester.getSemantics(find.bySemanticsLabel('Decrease value')),
+        matchesSemantics(
+          label: 'Decrease value',
+          isButton: true,
+          hasEnabledState: true,
+          isEnabled: true,
+          isFocusable: true,
+          isFocused: true,
+          hasTapAction: true,
+          hasFocusAction: true,
+        ),
+      );
+      await tester.sendKeyEvent(LogicalKeyboardKey.tab);
+      await tester.pump();
+      expect(FocusManager.instance.primaryFocus?.debugLabel, 'Increase value');
+      expect(
+        tester
+            .getSemantics(find.bySemanticsLabel('Increase value'))
+            .getSemanticsData()
+            .flagsCollection
+            .isFocused,
+        ui.Tristate.isTrue,
+      );
+      expect(
+        tester
+            .getSemantics(find.bySemanticsLabel('Decrease value'))
+            .getSemanticsData()
+            .flagsCollection
+            .isFocused,
+        ui.Tristate.isFalse,
+      );
 
-    await tester.sendKeyEvent(LogicalKeyboardKey.enter);
-    await tester.pumpAndSettle();
-    expect(find.text('value 2'), findsOneWidget);
-    expect(FocusManager.instance.primaryFocus?.debugLabel, 'Decrease value');
+      await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+      await tester.pumpAndSettle();
+      expect(find.text('value 2'), findsOneWidget);
+      expect(FocusManager.instance.primaryFocus?.debugLabel, 'Decrease value');
+      expect(
+        tester
+            .getSemantics(find.bySemanticsLabel('Decrease value'))
+            .getSemanticsData()
+            .flagsCollection
+            .isFocused,
+        ui.Tristate.isTrue,
+      );
+    } finally {
+      semantics.dispose();
+    }
   });
 
   testWidgets(

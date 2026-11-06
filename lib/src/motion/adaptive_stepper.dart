@@ -595,6 +595,7 @@ class _AdaptiveStepperAction extends StatefulWidget {
 class _AdaptiveStepperActionState extends State<_AdaptiveStepperAction> {
   bool _hovered = false;
   bool _focused = false;
+  bool _inputFocused = false;
   bool _pressed = false;
 
   @override
@@ -634,6 +635,7 @@ class _AdaptiveStepperActionState extends State<_AdaptiveStepperAction> {
             },
           ),
         },
+        onFocusChange: (value) => setState(() => _inputFocused = value),
         onShowFocusHighlight: (value) => setState(() => _focused = value),
         onShowHoverHighlight: (value) => setState(() => _hovered = value),
         child: Listener(
@@ -703,6 +705,8 @@ class _AdaptiveStepperActionState extends State<_AdaptiveStepperAction> {
                 button: true,
                 label: label,
                 enabled: !scope.disabled,
+                focused: scope.disabled ? null : _inputFocused,
+                onFocus: scope.disabled ? null : focusNode.requestFocus,
                 onTap: scope.disabled
                     ? null
                     : () => (widget.increase
