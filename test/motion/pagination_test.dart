@@ -1,4 +1,5 @@
 import 'package:beui/src/motion/pagination.dart';
+import 'package:beui/src/theme/beui_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/semantics.dart';
 import 'package:flutter/services.dart';
@@ -487,5 +488,60 @@ void main() {
     await tester.pump(const Duration(milliseconds: 60));
     expect(_renderedOpacityFor(tester, '8'), greaterThan(0));
     expect(_renderedOpacityFor(tester, '8'), lessThan(1));
+  });
+
+  testWidgets('active indicator tracks the selected page in RTL', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      beuiTestApp(
+        const Directionality(
+          textDirection: TextDirection.rtl,
+          child: BeuiPagination(totalPages: 20, defaultPage: 2),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    final foreground = BeuiColors.light().foreground;
+    final indicator = find.byWidgetPredicate(
+      (widget) =>
+          widget is DecoratedBox &&
+          widget.decoration is BoxDecoration &&
+          (widget.decoration as BoxDecoration).color == foreground,
+    );
+    expect(indicator, findsOneWidget);
+    expect(
+      tester.getCenter(indicator).dx,
+      closeTo(tester.getCenter(find.text('2')).dx, 0.01),
+    );
+    await tester.tap(find.text('3'));
+    await tester.pumpAndSettle();
+    expect(
+      tester.getCenter(indicator).dx,
+      closeTo(tester.getCenter(find.text('3')).dx, 0.01),
+    );
+  });
+
+  testWidgets('active indicator tracks the selected page in LTR', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      beuiTestApp(const BeuiPagination(totalPages: 20, defaultPage: 2)),
+    );
+    await tester.pumpAndSettle();
+
+    final foreground = BeuiColors.light().foreground;
+    final indicator = find.byWidgetPredicate(
+      (widget) =>
+          widget is DecoratedBox &&
+          widget.decoration is BoxDecoration &&
+          (widget.decoration as BoxDecoration).color == foreground,
+    );
+    expect(indicator, findsOneWidget);
+    expect(
+      tester.getCenter(indicator).dx,
+      closeTo(tester.getCenter(find.text('2')).dx, 0.01),
+    );
   });
 }

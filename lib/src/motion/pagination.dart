@@ -667,7 +667,11 @@ class _PaginationWindowState extends State<_PaginationWindow> {
       if (oldPosition != null) {
         final newExtent =
             (widget.compact ? 32.0 : 36.0) + (widget.compact ? 2.0 : 4.0);
-        final targetPosition = index * newExtent;
+        final targetPosition = _targetLeft(
+          index,
+          extent: newExtent,
+          entryCount: widget.entries.length,
+        );
         entry.offset = Offset(oldPosition - targetPosition, 0);
         if (entry.offset != Offset.zero) {
           // Re-keying cancels the old spring at its *rendered* value and starts
@@ -788,11 +792,26 @@ class _PaginationWindowState extends State<_PaginationWindow> {
       (entry) => entry is BeuiPaginationPage && entry.page == widget.current,
     );
     if (index < 0) return;
-    final extent =
-        (widget.compact ? 32.0 : 36.0) + (widget.compact ? 2.0 : 4.0);
     final size = widget.compact ? 32.0 : 36.0;
-    final next = Rect.fromLTWH(index * extent, 0, size, size);
+    final extent = size + (widget.compact ? 2.0 : 4.0);
+    final next = Rect.fromLTWH(
+      _targetLeft(index, extent: extent, entryCount: widget.entries.length),
+      0,
+      size,
+      size,
+    );
     if (next != _activeRect) setState(() => _activeRect = next);
+  }
+
+  double _targetLeft(
+    int index, {
+    required double extent,
+    required int entryCount,
+  }) {
+    if (Directionality.of(context) != TextDirection.rtl) {
+      return index * extent;
+    }
+    return (entryCount - 1 - index) * extent;
   }
 
   void _markExitOpacityDone(_VisibleEntry entry) {
