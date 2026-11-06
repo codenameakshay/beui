@@ -18,6 +18,7 @@ import '../demos/animated_toast_stack_demo.dart';
 import '../demos/approval_card_demo.dart';
 import '../demos/arc_picker_demo.dart';
 import '../demos/aspect_ratio_demo.dart';
+import '../demos/avatar_group_demo.dart';
 import '../demos/availability_scheduler_demo.dart';
 import '../demos/bloom_menu_demo.dart';
 import '../demos/bounce_sidebar_demo.dart';
@@ -70,6 +71,7 @@ import '../demos/not_found_demo.dart';
 import '../demos/notification_stack_demo.dart';
 import '../demos/number_demo.dart';
 import '../demos/otp_input_demo.dart';
+import '../demos/pagination_demo.dart';
 import '../demos/popover_demo.dart';
 import '../demos/popover_morph_demo.dart';
 import '../demos/prediction_market_card_demo.dart';
@@ -291,6 +293,22 @@ const List<ExploreEntry> kComponents = [
     isNew: true,
     blurb: 'Color swatches with a spring-gliding selection ring.',
     builder: colorSelectorDemo,
+  ),
+  ExploreEntry(
+    title: 'Animated Pagination',
+    slug: 'pagination',
+    section: ExploreSection.components,
+    isNew: true,
+    blurb: 'Spring-animated pagination with page ranges and jump controls.',
+    builder: paginationDemo,
+  ),
+  ExploreEntry(
+    title: 'Animated Avatar Group',
+    slug: 'avatar-group',
+    section: ExploreSection.components,
+    isNew: true,
+    blurb: 'Overlapping member avatars with an expandable overflow group.',
+    builder: avatarGroupDemo,
   ),
   ExploreEntry(
     title: 'Animated Breadcrumb',

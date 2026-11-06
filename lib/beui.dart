@@ -31,6 +31,8 @@ export 'src/motion/action_swap.dart'
         BeuiActionSwapVariant;
 export 'src/motion/animated_badge.dart'
     show BeuiAnimatedBadge, BeuiAnimatedBadgeSize, BeuiAnimatedBadgeStatus;
+export 'src/motion/avatar_group.dart'
+    show BeuiAvatar, BeuiAvatarGroup, BeuiAvatarGroupMember, BeuiAvatarSize;
 export 'src/motion/animated_number.dart' show BeuiAnimatedNumber;
 export 'src/motion/animated_toast_stack.dart'
     show
@@ -123,6 +125,16 @@ export 'src/motion/number_ticker.dart' show BeuiNumberTicker;
 export 'src/motion/otp_input.dart' show BeuiOtpInput, BeuiOtpStatus;
 export 'src/motion/overflow_actions.dart'
     show BeuiOverflowActionItem, BeuiOverflowActions, BeuiOverflowActionsSize;
+export 'src/motion/pagination.dart'
+    show
+        BeuiPagination,
+        BeuiPaginationEllipsis,
+        BeuiPaginationGap,
+        BeuiPaginationItem,
+        BeuiPaginationLinkBuilder,
+        BeuiPaginationLinkProps,
+        BeuiPaginationPage,
+        beuiPaginationRange;
 export 'src/motion/prediction_market.dart'
     show
         BeuiPredictionMarket,
@@ -225,6 +237,7 @@ export 'src/motion/animated_sidebar.dart'
         BeuiAnimatedSidebarCollapsible,
         BeuiAnimatedSidebarGroup,
         BeuiAnimatedSidebarItem,
+        BeuiAnimatedSidebarProvider,
         BeuiAnimatedSidebarScope,
         BeuiAnimatedSidebarSide,
         BeuiAnimatedSidebarTrigger,
