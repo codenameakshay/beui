@@ -4,6 +4,7 @@ import 'dart:math' as math;
 import 'package:clock/clock.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/semantics.dart';
 
@@ -290,7 +291,7 @@ class BeuiTooltip extends StatefulWidget {
   State<BeuiTooltip> createState() => _BeuiTooltipState();
 }
 
-class _BeuiTooltipState extends State<BeuiTooltip> {
+class _BeuiTooltipState extends State<BeuiTooltip> with WidgetsBindingObserver {
   static int _nextSemanticsId = 0;
   final String _semanticsIdentifier = 'beui-tooltip-${_nextSemanticsId++}';
   final Object _owner = Object();
@@ -311,11 +312,14 @@ class _BeuiTooltipState extends State<BeuiTooltip> {
   ({Path corridor, Rect source, Rect target})? _grace;
   Timer? _timer;
   Offset? _pointerGlobal;
-  Offset _collisionShift = Offset.zero;
   BeuiTooltipSide? _resolvedSide;
   _TooltipProviderState? _provider;
+  bool _positionPending = false;
+  bool _positioned = false;
   bool _anchorWatchPending = false;
   Rect? _lastAnchorBounds;
+  Offset _surfacePosition = Offset.zero;
+  final List<ScrollPosition> _anchorScrollPositions = <ScrollPosition>[];
 
   GlobalKey get _anchorKey => widget.externalAnchor ?? _triggerKey;
 
@@ -324,6 +328,7 @@ class _BeuiTooltipState extends State<BeuiTooltip> {
     super.initState();
     installTooltipSemanticsMoveGuard();
     _tooltipSession.clients++;
+    WidgetsBinding.instance.addObserver(this);
     GestureBinding.instance.pointerRouter.addGlobalRoute(_onGlobalPointer);
     HardwareKeyboard.instance.addHandler(_onKeyboardModality);
     SemanticsBinding.instance.addSemanticsActionListener(_onSemanticAction);
@@ -337,6 +342,10 @@ class _BeuiTooltipState extends State<BeuiTooltip> {
     SemanticsBinding.instance.removeSemanticsActionListener(_onSemanticAction);
     _triggerFocus.dispose();
     _tooltipSession.detach(_owner);
+    for (final position in _anchorScrollPositions) {
+      position.removeListener(_onAnchorScroll);
+    }
+    WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
 
@@ -392,9 +401,14 @@ class _BeuiTooltipState extends State<BeuiTooltip> {
         oldWidget.externalAnchor != widget.externalAnchor ||
         oldWidget.anchorLink != widget.anchorLink) {
       _resolvedSide = null;
-      _collisionShift = Offset.zero;
       if (widget.avoidCollisions && _open) _measureCollision();
     }
+    if (_open) _measureCollision();
+  }
+
+  @override
+  void didChangeMetrics() {
+    if (_open) _measureCollision();
   }
 
   void _show({bool immediate = false}) {
@@ -461,7 +475,10 @@ class _BeuiTooltipState extends State<BeuiTooltip> {
     final box = key.currentContext?.findRenderObject() as RenderBox?;
     return box == null || !box.attached || !box.hasSize
         ? null
-        : box.localToGlobal(Offset.zero) & box.size;
+        : MatrixUtils.transformRect(
+            box.getTransformTo(null),
+            Offset.zero & box.size,
+          );
   }
 
   void _startGrace(Offset exit, GlobalKey from, GlobalKey to) {
@@ -515,73 +532,148 @@ class _BeuiTooltipState extends State<BeuiTooltip> {
   }
 
   void _measureCollision() {
-    if (!widget.avoidCollisions) return;
+    if (_positionPending) return;
+    if (SchedulerBinding.instance.schedulerPhase ==
+        SchedulerPhase.postFrameCallbacks) {
+      _updatePosition();
+      return;
+    }
+    _positionPending = true;
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!mounted || !_open || !widget.avoidCollisions) return;
-      final trigger =
-          _anchorKey.currentContext?.findRenderObject() as RenderBox?;
-      final surface =
-          _surfaceKey.currentContext?.findRenderObject() as RenderBox?;
-      if (trigger == null ||
-          surface == null ||
-          !trigger.hasSize ||
-          !surface.hasSize) {
-        return;
-      }
-      final media = MediaQuery.maybeOf(context);
-      if (media == null) return;
-      final origin = trigger.localToGlobal(Offset.zero);
-      final triggerRect = origin & trigger.size;
-      final anchorRect =
-          widget.followCursor && !_focused && _pointerGlobal != null
-          ? Rect.fromCenter(center: _pointerGlobal!, width: 1, height: 1)
-          : triggerRect;
-      final size = surface.size;
-      final preferred = widget.side;
-      var side = preferred;
-      final room = <BeuiTooltipSide, double>{
-        BeuiTooltipSide.top: anchorRect.top,
-        BeuiTooltipSide.bottom: media.size.height - anchorRect.bottom,
-        BeuiTooltipSide.left: anchorRect.left,
-        BeuiTooltipSide.right: media.size.width - anchorRect.right,
+      _positionPending = false;
+      _updatePosition();
+    });
+  }
+
+  void _updatePosition() {
+    if (!mounted || !_open) return;
+    final trigger = _anchorKey.currentContext?.findRenderObject() as RenderBox?;
+    final surface =
+        _surfaceKey.currentContext?.findRenderObject() as RenderBox?;
+    if (trigger == null ||
+        surface == null ||
+        !trigger.hasSize ||
+        !surface.hasSize) {
+      return;
+    }
+    _syncAnchorScrollListeners(_anchorKey.currentContext!);
+    final overlay = Overlay.of(context, rootOverlay: true);
+    final overlayBox = overlay.context.findRenderObject() as RenderBox?;
+    if (overlayBox == null || !overlayBox.attached || !overlayBox.hasSize) {
+      return;
+    }
+    final triggerRect = MatrixUtils.transformRect(
+      trigger.getTransformTo(overlayBox),
+      Offset.zero & trigger.size,
+    );
+    final anchorRect =
+        widget.followCursor && !_focused && _pointerGlobal != null
+        ? Rect.fromCenter(
+            center: overlayBox.globalToLocal(_pointerGlobal!),
+            width: 1,
+            height: 1,
+          )
+        : triggerRect;
+    final size = surface.size;
+    final preferred = widget.side;
+    var side = preferred;
+    final room = <BeuiTooltipSide, double>{
+      BeuiTooltipSide.top: anchorRect.top,
+      BeuiTooltipSide.bottom: overlayBox.size.height - anchorRect.bottom,
+      BeuiTooltipSide.left: anchorRect.left,
+      BeuiTooltipSide.right: overlayBox.size.width - anchorRect.right,
+    };
+    final needed =
+        (BeuiTooltipSide.top == preferred ||
+            preferred == BeuiTooltipSide.bottom)
+        ? size.height + widget.sideOffset
+        : size.width + widget.sideOffset;
+    if (widget.avoidCollisions && room[preferred]! < needed) {
+      final opposite = switch (preferred) {
+        BeuiTooltipSide.top => BeuiTooltipSide.bottom,
+        BeuiTooltipSide.bottom => BeuiTooltipSide.top,
+        BeuiTooltipSide.left => BeuiTooltipSide.right,
+        BeuiTooltipSide.right => BeuiTooltipSide.left,
       };
-      final needed =
-          (BeuiTooltipSide.top == preferred ||
-              preferred == BeuiTooltipSide.bottom)
+      final oppositeNeeded =
+          (opposite == BeuiTooltipSide.top ||
+              opposite == BeuiTooltipSide.bottom)
           ? size.height + widget.sideOffset
           : size.width + widget.sideOffset;
-      if (room[preferred]! < needed) {
-        final opposite = switch (preferred) {
-          BeuiTooltipSide.top => BeuiTooltipSide.bottom,
-          BeuiTooltipSide.bottom => BeuiTooltipSide.top,
-          BeuiTooltipSide.left => BeuiTooltipSide.right,
-          BeuiTooltipSide.right => BeuiTooltipSide.left,
-        };
-        final oppositeNeeded =
-            (opposite == BeuiTooltipSide.top ||
-                opposite == BeuiTooltipSide.bottom)
-            ? size.height + widget.sideOffset
-            : size.width + widget.sideOffset;
-        if (room[opposite]! > room[preferred]! &&
-            room[opposite]! >= oppositeNeeded) {
-          side = opposite;
+      if (room[opposite]! > room[preferred]! &&
+          room[opposite]! >= oppositeNeeded) {
+        side = opposite;
+      }
+    }
+    final anchorPoint = _anchorOrigin(anchorRect, side);
+    final positioned = _surfaceOrigin(anchorPoint, size, side, widget.align);
+    final shift = widget.avoidCollisions
+        ? Offset(
+            math.max(8 - positioned.dx, 0) -
+                math.max(
+                  positioned.dx + size.width - overlayBox.size.width + 8,
+                  0,
+                ),
+            math.max(8 - positioned.dy, 0) -
+                math.max(
+                  positioned.dy + size.height - overlayBox.size.height + 8,
+                  0,
+                ),
+          )
+        : Offset.zero;
+    final actualPosition = positioned + shift;
+    if (!_positioned ||
+        _resolvedSide != side ||
+        _surfacePosition != actualPosition) {
+      setState(() {
+        _positioned = true;
+        _resolvedSide = side;
+        _surfacePosition = actualPosition;
+      });
+    }
+  }
+
+  void _onAnchorScroll() => _measureCollision();
+
+  void _watchAnchorFrames() {
+    if (_anchorWatchPending) return;
+    _anchorWatchPending = true;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _anchorWatchPending = false;
+      if (!mounted || !_open) return;
+      final bounds = _bounds(_anchorKey);
+      if (_lastAnchorBounds != bounds) {
+        _lastAnchorBounds = bounds;
+        if (bounds == null) {
+          setState(() => _positioned = false);
+        } else {
+          _measureCollision();
         }
       }
-      final anchorPoint = _anchorOrigin(anchorRect, side);
-      final positioned = _surfaceOrigin(anchorPoint, size, side, widget.align);
-      final shift = Offset(
-        math.max(8 - positioned.dx, 0) -
-            math.max(positioned.dx + size.width - media.size.width + 8, 0),
-        math.max(8 - positioned.dy, 0) -
-            math.max(positioned.dy + size.height - media.size.height + 8, 0),
-      );
-      if (_resolvedSide != side || _collisionShift != shift) {
-        setState(() {
-          _resolvedSide = side;
-          _collisionShift = shift;
-        });
-      }
+      // Observe owner-requested frames; a stationary anchor requests no frame.
+      _watchAnchorFrames();
     });
+  }
+
+  void _syncAnchorScrollListeners(BuildContext anchorContext) {
+    final positions = <ScrollPosition>{};
+    anchorContext.visitAncestorElements((element) {
+      if (element.widget is Scrollable && element is StatefulElement) {
+        positions.add((element.state as ScrollableState).position);
+      }
+      return true;
+    });
+    for (final position in _anchorScrollPositions.toList()) {
+      if (!positions.contains(position)) {
+        position.removeListener(_onAnchorScroll);
+        _anchorScrollPositions.remove(position);
+      }
+    }
+    for (final position in positions) {
+      if (_anchorScrollPositions.contains(position)) continue;
+      _anchorScrollPositions.add(position);
+      position.addListener(_onAnchorScroll);
+    }
   }
 
   @override
@@ -679,52 +771,36 @@ class _BeuiTooltipState extends State<BeuiTooltip> {
   Widget _buildTooltip(
     BuildContext context,
     Animation<double> animation,
-    LayerLink link,
+    LayerLink _,
     BeuiTooltipSide side,
   ) {
-    _watchExternalAnchor();
+    _watchAnchorFrames();
+    _measureCollision();
     if (widget.externalAnchor != null && _bounds(_anchorKey) == null) {
       return const SizedBox.shrink();
     }
     final colors = BeuiColors.resolve(context);
     final reduce = MediaQuery.disableAnimationsOf(context);
-    _measureCollision();
-    final spec = _spec(side, widget.align);
-    final trigger = _anchorKey.currentContext?.findRenderObject() as RenderBox?;
-    final pointerOffset =
-        widget.followCursor &&
-            !_focused &&
-            _pointerGlobal != null &&
-            trigger != null
-        ? _pointerGlobal! -
-              trigger.localToGlobal(Offset.zero) -
-              Offset(trigger.size.width / 2, trigger.size.height / 2)
-        : Offset.zero;
-    final actualOffset = spec.gap + _collisionShift + pointerOffset;
+    final spec = _spec(side);
 
-    return CompositedTransformFollower(
-      link: widget.anchorLink ?? link,
-      showWhenUnlinked: false,
-      targetAnchor: widget.followCursor && !_focused && _pointerGlobal != null
-          ? Alignment.center
-          : spec.targetAnchor,
-      followerAnchor: spec.followerAnchor,
-      offset: actualOffset,
+    return Positioned(
+      left: _surfacePosition.dx,
+      top: _surfacePosition.dy,
       child: KeyedSubtree(
         key: _surfaceKey,
-        child: MouseRegion(
-          onEnter: (_) {
-            _grace = null;
-            _timer?.cancel();
-            _timer = null;
-          },
-          onExit: (event) {
-            if (!_focused) {
-              _startGrace(event.position, _surfaceKey, _triggerKey);
-            }
-          },
-          child: IgnorePointer(
-            ignoring: widget.followCursor || !_open,
+        child: IgnorePointer(
+          ignoring: widget.followCursor || !_open || !_positioned,
+          child: MouseRegion(
+            onEnter: (_) {
+              _grace = null;
+              _timer?.cancel();
+              _timer = null;
+            },
+            onExit: (event) {
+              if (!_focused) {
+                _startGrace(event.position, _surfaceKey, _triggerKey);
+              }
+            },
             child: AnimatedBuilder(
               animation: animation,
               child: Semantics(
@@ -743,7 +819,10 @@ class _BeuiTooltipState extends State<BeuiTooltip> {
                 return Transform.scale(
                   scale: reduce ? 1 : 0.94 + 0.06 * progress,
                   alignment: spec.origin,
-                  child: Opacity(opacity: progress, child: surface),
+                  child: Opacity(
+                    opacity: _positioned ? progress : 0,
+                    child: surface,
+                  ),
                 );
               },
             ),
@@ -751,27 +830,6 @@ class _BeuiTooltipState extends State<BeuiTooltip> {
         ),
       ),
     );
-  }
-
-  void _watchExternalAnchor() {
-    if (widget.externalAnchor == null || _anchorWatchPending) return;
-    _anchorWatchPending = true;
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _anchorWatchPending = false;
-      if (!mounted || !_open || widget.externalAnchor == null) return;
-      final bounds = _bounds(_anchorKey);
-      if (_lastAnchorBounds != bounds) {
-        setState(() {
-          _lastAnchorBounds = bounds;
-          _resolvedSide = null;
-          _collisionShift = Offset.zero;
-        });
-        _measureCollision();
-      }
-      // Observe frames already requested by the target's owner. Do not keep
-      // the application rendering just because a stationary tooltip is open.
-      _watchExternalAnchor();
-    });
   }
 
   Widget _surface(BeuiColors colors, BeuiTooltipSide side) {
@@ -835,66 +893,12 @@ class _BeuiTooltipState extends State<BeuiTooltip> {
     );
   }
 
-  _TooltipSpec _spec(BeuiTooltipSide side, BeuiTooltipAlign align) {
-    final start = align == BeuiTooltipAlign.start;
-    final end = align == BeuiTooltipAlign.end;
+  _TooltipSpec _spec(BeuiTooltipSide side) {
     return switch (side) {
-      BeuiTooltipSide.top => _TooltipSpec(
-        targetAnchor: start
-            ? Alignment.topLeft
-            : end
-            ? Alignment.topRight
-            : Alignment.topCenter,
-        followerAnchor: start
-            ? Alignment.bottomLeft
-            : end
-            ? Alignment.bottomRight
-            : Alignment.bottomCenter,
-        gap: Offset(0, -widget.sideOffset),
-        origin: Alignment.bottomCenter,
-      ),
-      BeuiTooltipSide.bottom => _TooltipSpec(
-        targetAnchor: start
-            ? Alignment.bottomLeft
-            : end
-            ? Alignment.bottomRight
-            : Alignment.bottomCenter,
-        followerAnchor: start
-            ? Alignment.topLeft
-            : end
-            ? Alignment.topRight
-            : Alignment.topCenter,
-        gap: Offset(0, widget.sideOffset),
-        origin: Alignment.topCenter,
-      ),
-      BeuiTooltipSide.left => _TooltipSpec(
-        targetAnchor: start
-            ? Alignment.topLeft
-            : end
-            ? Alignment.bottomLeft
-            : Alignment.centerLeft,
-        followerAnchor: start
-            ? Alignment.topRight
-            : end
-            ? Alignment.bottomRight
-            : Alignment.centerRight,
-        gap: Offset(-widget.sideOffset, 0),
-        origin: Alignment.centerRight,
-      ),
-      BeuiTooltipSide.right => _TooltipSpec(
-        targetAnchor: start
-            ? Alignment.topRight
-            : end
-            ? Alignment.bottomRight
-            : Alignment.centerRight,
-        followerAnchor: start
-            ? Alignment.topLeft
-            : end
-            ? Alignment.bottomLeft
-            : Alignment.centerLeft,
-        gap: Offset(widget.sideOffset, 0),
-        origin: Alignment.centerLeft,
-      ),
+      BeuiTooltipSide.top => _TooltipSpec(origin: Alignment.bottomCenter),
+      BeuiTooltipSide.bottom => _TooltipSpec(origin: Alignment.topCenter),
+      BeuiTooltipSide.left => _TooltipSpec(origin: Alignment.centerRight),
+      BeuiTooltipSide.right => _TooltipSpec(origin: Alignment.centerLeft),
     };
   }
 
@@ -980,15 +984,7 @@ Path _graceCorridor(Offset exit, Rect target) {
 }
 
 class _TooltipSpec {
-  const _TooltipSpec({
-    required this.targetAnchor,
-    required this.followerAnchor,
-    required this.gap,
-    required this.origin,
-  });
-  final Alignment targetAnchor;
-  final Alignment followerAnchor;
-  final Offset gap;
+  const _TooltipSpec({required this.origin});
   final Alignment origin;
 }
 
