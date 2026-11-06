@@ -83,6 +83,19 @@ The fourth hunk made Infinite Masonry load with `prefetch: 0`. Root rejected it:
 All 31 errors are golden pixel mismatches. The failing tests write 32 candidate images, all byte-identical to the unchanged-baseline candidates from `835f4396d`.
 This full run supersedes the earlier 38-suite relevant run. No golden was changed or skipped.
 
+## Integration with Components
+
+`2929e87d9` merges the Components branch (#33) so this PR applies cleanly after it. The only conflict was one gallery import line; both the pagination and plinko imports are kept.
+
+| Run, merged head `2929e87d9` | Result | Log SHA-256 |
+|---|---|---|
+| Root analysis, merge1 | Exit 0, no issues | `f46ae769346836194dc9b2d6a2a7f07de84f8c9269ad6c4ac9e1375cd7d64412` |
+| Example analysis, merge1 | Exit 0, no issues | `f90f10ce2e6878c11fcece248b526b7fc6a4a99e0dd7bdc78c50f3fa3eefe87c` |
+| Full package suite, all 211 test files, merge1 | 3062 passed, 31 golden errors, exit 1 | `8dbf9de2623b83d301153d9a3be8410df63f35c305a1ddb2805b27d768d2e516` |
+| Full example suite, merge1 | 67 passed, exit 0 | `1fc3e8afbfcb18ebe1f7cdc61376d7b056fbd9884dfebf14c360b80462d88416` |
+
+All 31 errors are golden pixel mismatches, and their 32 candidate images are byte-identical to the unchanged-baseline candidates.
+
 ## Open acceptance gates
 
 The PR was marked ready for merge at the user's request on 2026-11-06. These gates remain open:
