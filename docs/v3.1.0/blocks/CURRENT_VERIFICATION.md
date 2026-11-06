@@ -67,10 +67,27 @@ Each reviewed runtime manifest checks both conditional import branches and uncha
 Bulk receipts live under `/Users/codenameakshay/.t3/artifacts/beui-v3.1.0/blocks/` on the verification machine.
 Those local receipts are not accessible PR media.
 
+## Final review pass
+
+A cross-model review of `792ad82d..651d5acb0` found four defects. Three are fixed with tests that fail without them:
+`aebabdcf7` ignores Bloom Menu selections during its exit, `0c475e5ee` counts only accepted files toward `maxFiles`, and `beee0924a` keeps the Notification Stack measurement copies out of focus traversal.
+The fourth hunk made Infinite Masonry load with `prefetch: 0`. Root rejected it: the source `lastVisibleIndex < Math.max(0, items.length - prefetch)` guard never loads in that case either.
+`927344d4d` syncs the canonical Components AdaptiveStepper overflow fix and its test byte for byte.
+
+| Run, head `927344d4d` | Result | Log SHA-256 |
+|---|---|---|
+| Root analysis, review1 | Exit 0, no issues | `30415ee02e1e0b6b31a7eb255340758e9fee779a0544b6783ec5e9d7a4e12b24` |
+| Example analysis, review1 | Exit 0, no issues | `44cf9ab6c9826ddcf67859f115e29eecf618528e1c02d21df15f28d6bf646a5a` |
+| Full package suite, all 205 test files, review1 | 2938 passed, 31 golden errors, exit 1 | `dfa3049859dd5fd40bceb81f17f8ed63dd3d03155c13e715367a0f74fada4bd0` |
+
+All 31 errors are golden pixel mismatches. The failing tests write 32 candidate images, all byte-identical to the unchanged-baseline candidates from `835f4396d`.
+This full run supersedes the earlier 38-suite relevant run. No golden was changed or skipped.
+
 ## Open acceptance gates
 
-- The full local test/golden gate is not green. Existing golden mismatches remain unskipped and unregenerated. Their causes are not interchangeable.
-- All ten failed candidate PNGs in the current relevant run are byte-identical to the preserved unchanged-baseline candidates. This rules out new raster drift in those captures, not the existing mismatch or its unresolved cause.
+The PR was marked ready for merge at the user's request on 2026-11-06. These gates remain open:
+
+- The full local golden gate is not green. All 31 mismatches also fail on the unchanged baseline, so this branch adds no raster drift. Their lower-level cause is not established.
 - Matched source, unchanged-before, and current-after media is incomplete. No visual or motion score certifies the family.
 - Real browser picker cancellation, drop behavior, durable-recents reload, web-reader backpressure, and native delayed reads require platform verification.
 - Native changed-widget interactions, six-platform acquisition, and performance evidence remain open.
