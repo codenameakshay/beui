@@ -39,6 +39,19 @@ The port's defining goal is **motion fidelity**. Framer Motion springs are param
 - **Agents:** `BeuiMessage.animateIn` and `BeuiMessageBubble.animateIn` now default to `false`; uncontrolled Tool Approval starts closed. Pass `animateIn: true` or `defaultOpen: true` to opt in. Citations take item icons and accessible marker labels, and Thinking Shimmer can shimmer rich content.
 - **Charts:** Line Chart, Bar Chart and Sparkline. Donut, Price Target Fan and Returns Calendar match the source.
 
+<table>
+  <tr>
+    <td width="33%"><img src="https://raw.githubusercontent.com/codenameakshay/beui/main/.github/screenshots/gifs/v3.1/line-chart.gif" alt="Line Chart" /><br/><sub><b>Line Chart</b> — crosshair inspection and morphing data</sub></td>
+    <td width="33%"><img src="https://raw.githubusercontent.com/codenameakshay/beui/main/.github/screenshots/gifs/v3.1/bar-chart.gif" alt="Bar Chart" /><br/><sub><b>Bar Chart</b> — grouped, stacked, horizontal and sorted</sub></td>
+    <td width="33%"><img src="https://raw.githubusercontent.com/codenameakshay/beui/main/.github/screenshots/gifs/v3.1/plinko.gif" alt="Plinko" /><br/><sub><b>Plinko</b> — animated balls, peg flashes and payouts</sub></td>
+  </tr>
+  <tr>
+    <td width="33%"><img src="https://raw.githubusercontent.com/codenameakshay/beui/main/.github/screenshots/gifs/v3.1/card-dealer.gif" alt="Card Dealer" /><br/><sub><b>Card Dealer</b> — deal, play, shuffle and sort a hand</sub></td>
+    <td width="33%"><img src="https://raw.githubusercontent.com/codenameakshay/beui/main/.github/screenshots/gifs/v3.1/pagination.gif" alt="Pagination" /><br/><sub><b>Pagination</b> — spring indicator with page jumps</sub></td>
+    <td width="33%"><img src="https://raw.githubusercontent.com/codenameakshay/beui/main/.github/screenshots/gifs/v3.1/mines.gif" alt="Mines" /><br/><sub><b>Mines</b> — reveal gems, then cash out</sub></td>
+  </tr>
+</table>
+
 ### Using the 3.1.0 APIs
 
 - Avatar Group takes `List<BeuiAvatarGroupMember>` with stable `id` values, names and optional image URLs. `max` defaults to 4. Use `expanded` / `onExpandedChange` for controlled expansion or `defaultExpanded` for internal state.
