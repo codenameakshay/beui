@@ -24,7 +24,7 @@ beUI is a Flutter widget library that ports the [beUI](https://beui.dev) React m
 
 The port's defining goal is **motion fidelity**. Framer Motion springs are parameterized by `stiffness`, `damping`, and `mass` — the exact same physical parameters as Flutter's `SpringDescription` — so the source's spring tokens carry over unchanged (trajectories validated within tolerance, not pixel-matched to Framer). Components don't approximate the feel with `Curves.elasticOut`; they use the real physics through [`motor`](https://pub.dev/packages/motor).
 
-- 🎬 **Spring-accurate motion** — five spring tokens + three easings ported verbatim from the source's `ease.ts`.
+- 🎬 **Spring-accurate motion** — eight spring tokens + three easings ported verbatim from the source, including snap and scroll springs for reduced motion and scroll-linked effects.
 - 🎨 **Themeable** — `BeuiColors` for palette, `BeuiAgentTheme` for AI-agent typography/shape/layout/icons, and `ThemeData.fontFamily` for the typeface.
 - ♿ **Reduced-motion aware** — one resolver drops *movement* while keeping opacity/color feedback (not a blanket duration-zeroing).
 - 🧩 **Native APIs** — controlled/uncontrolled `value` + `onChanged` pairs, framework-native `IconData`/`Widget` icon props, variants as Dart enums.
@@ -34,10 +34,58 @@ The port's defining goal is **motion fidelity**. Framer Motion springs are param
 
 ## What's new in 3.1.0
 
-- **Components:** Avatar Group and Pagination. Stepper takes custom values, Number Ticker shows decimals, and Select, Sidebar, Tooltip and focus handling are repaired.
+- **Components:** Avatar Group and Pagination. Adaptive Stepper accepts custom value content, Number Ticker supports `decimals` and `formatNumber`, and Select, Sidebar, Tooltip and focus handling are repaired.
 - **Blocks:** Card Dealer, Mines and Plinko. File Upload and Attachment Upload use the platform file picker and drag and drop.
-- **Agents:** Citations take item icons and accessible marker labels, and Thinking Shimmer can shimmer rich content.
+- **Agents:** `BeuiMessage.animateIn` and `BeuiMessageBubble.animateIn` now default to `false`; uncontrolled Tool Approval starts closed. Pass `animateIn: true` or `defaultOpen: true` to opt in. Citations take item icons and accessible marker labels, and Thinking Shimmer can shimmer rich content.
 - **Charts:** Line Chart, Bar Chart and Sparkline. Donut, Price Target Fan and Returns Calendar match the source.
+
+### Using the 3.1.0 APIs
+
+- Avatar Group takes `List<BeuiAvatarGroupMember>` with stable `id` values, names and optional image URLs. `max` defaults to 4. Use `expanded` / `onExpandedChange` for controlled expansion or `defaultExpanded` for internal state.
+- Pagination uses one-based `page` / `onPageChange` or `defaultPage`, with `siblings`, `boundaries` and `jump` controls. `beuiPaginationRange` returns typed page and ellipsis entries. `getHref` supplies destinations; `linkBuilder` supplies the actual link widget. The consumer owns navigation.
+- `BeuiAdaptiveStepperValue.builder` receives the clamped numeric value and builds decorative content. Use the parent stepper's `formatValueText` for spoken text. The builder's content does not receive pointer input, focus or semantics.
+- `BeuiNumberTicker.decimals` defaults to 0. `formatNumber` receives the rounded numeric value and takes precedence over the legacy integer `format` callback. The legacy callback ignores `decimals`.
+- `BeuiTextShimmer.child(widget)` and `BeuiThinkingShimmer.child(widget)` mask arbitrary painted content, not only text.
+- Card Dealer takes caller-owned `cards` implementing `BeuiCardDealerCard`, with stable IDs, a `zone` and a label. Supply `renderFace`; update the card list after `onCardSelect` to move cards between deck, hand and pile.
+- Mines also exports the UI-independent `MinesRound`, result types and multiplier helpers. Plinko accepts custom `slots` and reports the landing slot and value through `onLand`.
+- Line and Bar charts expose series, plot, tooltip and legend APIs. Line adds line/area variants, interpolation, `domain` and `status`; Bar adds `layout`, `orientation` and `sort`. Sparkline sample inspection is opt-in with `interactive: true`; `showDelta` is also opt-in.
+- `BeuiSelectVariant.compact` provides the borderless 32px trigger used by Prompt Input's model picker.
+- Tooltip's `externalAnchor` and `anchorLink` must be supplied together. `BeuiTooltip.composed` accepts `BeuiTooltipTrigger` and `BeuiTooltipContent` slots.
+
+```dart
+BeuiPagination(totalPages: 20, defaultPage: 1, jump: 5);
+BeuiAdaptiveStepper(
+  formatValueText: (value) => '${value.toInt()} items',
+  children: [
+    const BeuiAdaptiveStepperDecrement(),
+    BeuiAdaptiveStepperValue(
+      builder: (context, value) => Text('${value.toInt()} items'),
+    ),
+    const BeuiAdaptiveStepperIncrement(),
+  ],
+);
+BeuiNumberTicker(value: 12.34, decimals: 2);
+BeuiTextShimmer.child(const Text.rich(TextSpan(text: 'Working')));
+BeuiLineChart(
+  categories: const ['Mon', 'Tue'],
+  series: const [
+    BeuiLineChartSeries(
+      id: 'visits', name: 'Visits', color: '#14b8a6', values: [10, 15],
+    ),
+  ],
+);
+BeuiSparkline(data: const [10, 15, 12], label: 'Visits', interactive: true);
+```
+
+### File acquisition and upload ownership
+
+`BeuiFileUpload` and `BeuiAttachmentUpload` include a platform file picker and desktop/web drop target. `onBrowse` replaces only the picker action. `enableDrop: false` disables the built-in drop target. `accept` is a picker hint, not drop validation; `multiple` controls picker selection.
+
+Use `onFilesAdded` to receive accepted items and their `BeuiUploadFile` descriptors. Each descriptor has `name`, `size`, optional `mimeType`, `readAsBytes()` and `openRead()`. Reads are lazy and repeatable. Retain the descriptor yourself if you need it after the widget is disposed. `onAcquisitionError` reports picker/drop failures, not errors thrown by your callbacks. Attachment Upload also has `onFilesRejected` with a rejection reason.
+
+These widgets do not send files to a server. Provide your own transport and update the controlled `value` list through `onValueChange` to report progress, completion or failure. Attachment previews are bounded; they are not a replacement for validating the complete file.
+
+The package now directly depends on `file_selector`, `super_drag_and_drop` and `web`, in addition to its existing dependencies. Native plugin build requirements apply even if your app does not display an upload widget. See [pubspec.yaml](pubspec.yaml) for exact constraints and the [changelog](CHANGELOG.md) for compatibility notes. Dart 3.12.2 or a compatible later 3.x SDK and Flutter 3.44.2 or later are required.
 
 ## 3.0.0 highlights
 
@@ -277,7 +325,7 @@ Mirrors the [beui.dev](https://beui.dev) sidebar order. ✨ marks entries new in
 | Scroll Animation | `BeuiSmoothScroll`, `BeuiScrollProgress`, `BeuiScrollReveal`, `BeuiScrollTo`, `BeuiParallax` | Smooth-scroll provider (vertical or horizontal), reading-progress indicator, reveal, scroll-to and parallax |
 | Range Slider | `BeuiInlineSlider`, `BeuiRangeSlider`, `BeuiFluidSlider`, `BeuiWaveSlider`, `BeuiBubbleSlider`, `BeuiRulerSlider` | Six sliders: inline label/value, ticked bar thumb, thumbless liquid fill, equalizer wave, velocity-leaning bubble, and a scale that scrolls under a fixed needle |
 | Wheel Picker | `BeuiWheelPicker` | iOS-style 3D picker drum with momentum snap |
-| Table | `BeuiTable` | Virtualized table smooth at 10k+ rows: sort, select, resize, reorder, edit, async |
+| Table | `BeuiTable` | Virtualized table with sorting, selection, resizing, reordering, editing and async loading |
 | Shader Background | `BeuiShaderBackground` | 21 GPU shader backgrounds (mesh, grain, warp, waves, voronoi…) |
 | Cylinder Carousel | `BeuiCylinderCarousel` | Items line the inside of a cylinder; drag or scroll with springy snap |
 | Loader | `BeuiLoader` | Loading indicator with seventeen variants from one size prop |
@@ -310,7 +358,7 @@ Mirrors the [beui.dev](https://beui.dev) sidebar order. ✨ marks entries new in
 | OTP Input | `BeuiOtpInput` | One-time-code field with per-cell focus and a success check |
 | Sign Up Form | `BeuiSignUpForm` | Registration form with punish-late errors, strength meter, and stateful submit |
 | Bloom Menu | `BeuiBloomMenu` | Radial action menu that blooms open from a floating trigger |
-| Feedback Widget | `BeuiFeedbackWidget` | Feedback popover that keeps drafts, validates inline and morphs to a success state |
+| Feedback Widget | `BeuiFeedbackWidget` | Feedback popover that retains rejected submissions, clears drafts on close and morphs to a success state |
 | Mines ✨ | `BeuiMines` | Mines board with payout readouts and a cash-out flow |
 | 404 / Not Found | `BeuiNotFoundGlitch`, `…Magnetic`, `…Spotlight`, `…Stacked`, `…Terminal` | Five expressive 404 treatments |
 
@@ -319,7 +367,7 @@ Mirrors the [beui.dev](https://beui.dev) sidebar order. ✨ marks entries new in
 | Component | Widget(s) | What it does |
 | --- | --- | --- |
 | Prompt Input | `BeuiPromptInput` | Auto-growing composer with attachment chips, a keyboarded model picker and animated send/stop |
-| Message | `BeuiMessage` | Primitives for rows, avatars, metadata, live markers and a mount-only pop-up |
+| Message | `BeuiMessage` | Primitives for rows, avatars, metadata, live markers and an opt-in mount-only pop-up |
 | Message Bubble | `BeuiMessageBubble` | Conversational surface with tones, alignment, grouping and expandable content |
 | Message Scroller | `BeuiMessageScroller` | Viewport that follows streamed output, releases when the reader scrolls away, and offers a jump-to-latest pill |
 | Streaming Response | `BeuiStreamingResponse` | Response surface with completion actions, a visible failed state and a stopped/continue path |
@@ -415,7 +463,7 @@ BeuiToolResult(
 `BeuiColors` is a `ThemeExtension` ported from the source's design tokens. Read colors in your own widgets the same way components do:
 
 ```dart
-final colors = Theme.of(context).extension<BeuiColors>()!;
+final colors = BeuiColors.resolve(context);
 Container(color: colors.card /* colors.foreground, .primary, .border, .muted, … */);
 ```
 
@@ -442,10 +490,13 @@ The whole library speaks one motion language, defined once in `lib/src/tokens/mo
 | `beuiSpringPanel` | stiffness 420 · damping 40 · mass 0.5 | Overlay panel entrances (modals, sheets) |
 | `beuiSpringLayout` | stiffness 360 · damping 32 · mass 0.6 | Shared-layout glides (pills, indicators) |
 | `beuiSpringMouse` | stiffness 200 · damping 15 · mass 0.3 | Cursor-follow physics (magnetic, tilt) |
+| `beuiSpringGlide` | stiffness 700 · damping 50 · mass 0.5 | Slider thumb and fill |
+| `beuiSpringSnap` | stiffness 700 · damping 60 · mass 1 | Reduced-motion settle |
+| `beuiSpringScroll` | stiffness 120 · damping 30 · mass 0.6 | Scroll-linked follow motion |
 
 Plus three easings — `beuiEaseOut`, `beuiEaseInOut`, `beuiEaseDrawer` — and helpers `beuiBlurSigma(px)` (CSS-blur → Flutter sigma) and `motionFor(context, token, isMovement:)` (the reduced-motion resolver).
 
-**Reduced motion** is respected everywhere: with the OS setting on, movement-bearing tokens collapse to movement-free motion while opacity/color transitions are preserved — motion that *explains* rather than *distracts*. See the Motion Guides page in the [live gallery](https://codenameakshay.github.io/beui/).
+**Reduced motion:** `motionFor` replaces movement-bearing tokens with movement-free motion while preserving opacity/color transitions. Individual effects can freeze or snap instead; text shimmer holds a static highlight and Number Ticker snaps its digits. See the Motion Guides page in the [live gallery](https://codenameakshay.github.io/beui/).
 
 ## Icons
 
