@@ -1,4 +1,37 @@
-## Unreleased
+## 3.1.0
+
+beUI 3.1.0 adds Avatar Group, Pagination, three blocks and three charts, and aligns more widgets with the source.
+
+### Compatibility changes
+
+* beUI now depends on `file_selector` and `super_drag_and_drop` for File Upload and Attachment Upload. `super_drag_and_drop` builds native code: Android apps need `minSdkVersion 23` and the NDK, which the first build downloads if it is missing. On the other platforms it downloads precompiled binaries, unless Rust is installed. See its [setup notes](https://pub.dev/packages/super_drag_and_drop).
+* `flutter_lucide` is capped below 1.64.0, because 1.64.0 removes glyphs that beUI uses.
+* Three Agents defaults now match the source. `BeuiMessage.animateIn` and `BeuiMessageBubble.animateIn` default to `false`, and an uncontrolled `BeuiToolApproval` starts closed. To keep the old behavior, pass `animateIn: true` or `defaultOpen: true`.
+* Chart readouts use the source number format, so a value shows as `100`, not `100.00`. Donut, Price Target Fan and Returns Calendar render differently to match the source. The Price Target Fan host now sizes to its content.
+
+### Components
+
+* Add `BeuiAvatarGroup` (with `BeuiAvatar`) and `BeuiPagination`.
+* Stepper accepts custom values and keeps steps finite near the `double` limit. Number Ticker formats decimals.
+* `BeuiTextShimmer.child` shimmers rich content.
+* Select and Animated Sidebar match the source more closely. Tooltip anchors in overlay space and supports external anchors.
+* Pagination places its indicator correctly in right-to-left layouts.
+
+### Blocks
+
+* Add Card Dealer (`BeuiCardDealer`), Mines (`BeuiMines`) and Plinko (`BeuiPlinko`), with gallery routes.
+* File Upload and Attachment Upload use the platform file picker and drag and drop, read files lazily through `BeuiUploadFile`, and show bounded previews that can be cancelled. Rejected files no longer count toward `maxFiles`.
+* Bloom Menu ignores selections during its exit. Notification Stack keeps one tab stop per item. Infinite Masonry mounts only the visible window. Morphing Search Chips keeps recents in browser storage on the web.
+
+### Agents
+
+* Citations accept an item `icon` and an accessible marker `label`. Each marker is one focusable button, and markers drop stale numbers when the list empties.
+* `BeuiThinkingShimmer.child` shimmers rich content.
+
+### Charts
+
+* Add `BeuiLineChart`, `BeuiBarChart` and `BeuiSparkline` on a shared axis, inspector and point tracker.
+* CSS color literals parse without throwing. Stacked bar totals and bar lengths stay finite near the `double` limit.
 
 ### Fixes
 

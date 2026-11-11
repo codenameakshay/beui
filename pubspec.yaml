@@ -1,6 +1,6 @@
 name: beui
 description: "Spring-physics motion components for Flutter — a one-to-one port of the beUI React library, from switches and docks to shader backgrounds."
-version: 3.0.0
+version: 3.1.0
 repository: https://github.com/codenameakshay/beui
 homepage: https://codenameakshay.github.io/beui/
 issue_tracker: https://github.com/codenameakshay/beui/issues
@@ -30,8 +30,8 @@ dependencies:
   # version the newest glyph we reference needs, and re-run `flutter analyze`
   # after any bump.
   flutter_lucide: ">=1.41.0 <1.64.0"
-  file_selector: 1.1.0
-  super_drag_and_drop: 0.9.1
+  file_selector: ^1.1.0
+  super_drag_and_drop: ^0.9.1
   web: ^1.1.1
   # Zone-scoped `clock.now()` for the one component that reads a wall clock
   # (BeuiAgentProgress's elapsed timer). Identical to DateTime.now() in
