@@ -1,8 +1,13 @@
+import 'dart:async';
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import 'upload_acquisition.dart';
+import 'upload_acquisition_capability.dart'
+    show UploadFileCapability, UploadPickerOperation;
+import 'upload_file.dart';
 import '../theme/beui_colors.dart';
 import '../tokens/icons.dart';
 import '../tokens/motion.dart';
@@ -36,9 +41,7 @@ enum BeuiFileUploadVariant {
 
 /// One queued file (source `FileUploadItem`).
 ///
-/// The Flutter port carries metadata only — actual file handles come from
-/// whatever picker/drop plugin the consumer wires up (spec §7: the package
-/// itself ships no file-picker dependency).
+/// A queued file and its optional lazy content capability.
 @immutable
 class BeuiFileUploadItem {
   /// Creates a queue row.
@@ -50,6 +53,7 @@ class BeuiFileUploadItem {
     this.progress,
     this.status = BeuiFileUploadStatus.queued,
     this.error,
+    this.file,
   });
 
   /// Stable identity.
@@ -73,12 +77,18 @@ class BeuiFileUploadItem {
   /// Error note appended to the meta line when failed.
   final String? error;
 
+  /// Optional lazy content access for a file acquired by the built-in picker
+  /// or drop target.
+  final BeuiUploadFile? file;
+
   /// Copy with fields replaced (`clearError` drops the error note).
   BeuiFileUploadItem copyWith({
     double? progress,
     BeuiFileUploadStatus? status,
     String? error,
     bool clearError = false,
+    BeuiUploadFile? file,
+    bool clearFile = false,
   }) => BeuiFileUploadItem(
     id: id,
     name: name,
@@ -87,6 +97,7 @@ class BeuiFileUploadItem {
     progress: progress ?? this.progress,
     status: status ?? this.status,
     error: clearError ? null : (error ?? this.error),
+    file: clearFile ? null : (file ?? this.file),
   );
 }
 
@@ -190,12 +201,10 @@ IconData _fileIcon(BeuiFileUploadItem item) {
 /// An upload queue with a dropzone, progress rows, retry/remove — the Flutter
 /// port of beUI's `FileUpload` block.
 ///
-/// **Documented reduced parity** (spec §7): the web source owns a native
-/// `<input type=file>` and OS drag-drop; Flutter has no plugin-free analog,
-/// so the dropzone fires [onBrowse] and the consumer feeds picked files back
-/// through `value`/`defaultValue` (with [BeuiFileUploadItem] metadata) using
-/// whatever picker or drop plugin fits their platform. Everything visual —
-/// rows, status morphs, progress motion — is ported one-to-one.
+/// The built-in picker and desktop/web drop target feed the queue through
+/// [onValueChange]. Supply [onBrowse] to exclusively replace the picker action.
+/// Files carry a lazy [BeuiUploadFile] capability; reading their contents is
+/// still the consumer's responsibility.
 ///
 /// The dropzone and every row action are keyboard-reachable: Tab focuses
 /// them, Enter/Space activate them, and focus paints a [BeuiFocusRing]
@@ -209,7 +218,12 @@ class BeuiFileUpload extends StatefulWidget {
     this.value,
     this.defaultValue = const [],
     this.onValueChange,
+    this.onFilesAdded,
     this.onBrowse,
+    this.accept,
+    this.multiple = true,
+    this.enableDrop = true,
+    this.onAcquisitionError,
     this.onRemove,
     this.onCancel,
     this.onRetry,
@@ -235,8 +249,27 @@ class BeuiFileUpload extends StatefulWidget {
   /// Fires with the queue the widget wants (after remove/retry).
   final ValueChanged<List<BeuiFileUploadItem>>? onValueChange;
 
-  /// Fires when the dropzone is activated — open your picker here.
+  /// Replaces the built-in picker when supplied. It does not handle drops.
   final VoidCallback? onBrowse;
+
+  /// Optional picker type hint. Drops are not filtered by this value.
+  final String? accept;
+
+  /// Whether the built-in picker can select more than one file.
+  final bool multiple;
+
+  /// Enables the built-in desktop/web drop target.
+  final bool enableDrop;
+
+  /// Reports picker or drop acquisition failures, not consumer callback errors.
+  final void Function(Object error, StackTrace stackTrace)? onAcquisitionError;
+
+  /// Called after [onValueChange] for each newly accepted, size-valid batch.
+  final void Function(
+    List<BeuiFileUploadItem> items,
+    List<BeuiUploadFile> files,
+  )?
+  onFilesAdded;
 
   /// Fires with the removed row.
   final ValueChanged<BeuiFileUploadItem>? onRemove;
@@ -285,10 +318,8 @@ class BeuiFileUpload extends StatefulWidget {
   /// Trailing browse chip label.
   final String browseLabel;
 
-  /// Set true only if you have wired a real drop target (a desktop drop
-  /// plugin); it opts the default [title]/[description] copy into
-  /// drag-and-drop wording. The package ships no drop handling of its own —
-  /// this flag changes only what the dropzone says, not what it does.
+  /// Retains the legacy drag-and-drop copy choice for default labels.
+  /// [enableDrop] controls the built-in desktop/web target.
   final bool dragAndDrop;
 
   @override
@@ -317,6 +348,9 @@ class _BeuiFileUploadState extends State<BeuiFileUpload> {
   final List<_RowEntry> _entries = [];
   _RejectionSlot? _rejectionSlot;
   String _lastRejectedKey = '';
+  UploadPickerOperation? _pickerOperation;
+  int _pickerGeneration = 0;
+  bool _dragging = false;
 
   List<BeuiFileUploadItem> get _items => widget.value ?? _internal;
 
@@ -353,6 +387,9 @@ class _BeuiFileUploadState extends State<BeuiFileUpload> {
   @override
   void didUpdateWidget(BeuiFileUpload oldWidget) {
     super.didUpdateWidget(oldWidget);
+    if (widget.disabled || widget.onBrowse != null) {
+      _cancelPicker();
+    }
     _syncDerived();
   }
 
@@ -442,11 +479,145 @@ class _BeuiFileUploadState extends State<BeuiFileUpload> {
   }
 
   @override
+  void dispose() {
+    _cancelPicker();
+    super.dispose();
+  }
+
+  void _cancelPicker() {
+    final operation = _pickerOperation;
+    if (operation == null) return;
+    _pickerGeneration++;
+    _pickerOperation = null;
+    operation.cancel();
+  }
+
+  void _browse() {
+    final override = widget.onBrowse;
+    if (override != null) {
+      override();
+      return;
+    }
+    if (!mounted || widget.disabled || _maxReached) {
+      return;
+    }
+
+    _cancelPicker();
+    final generation = ++_pickerGeneration;
+    late final UploadPickerOperation operation;
+    try {
+      operation = pickUploadFiles(
+        accept: widget.accept,
+        multiple: widget.multiple,
+      );
+    } catch (error, stackTrace) {
+      if (mounted && generation == _pickerGeneration) {
+        widget.onAcquisitionError?.call(error, stackTrace);
+      }
+      return;
+    }
+    _pickerOperation = operation;
+    unawaited(_finishPicker(operation, generation));
+  }
+
+  bool get _maxReached =>
+      widget.maxFiles != null && _acceptedItems.length >= widget.maxFiles!;
+
+  Future<void> _finishPicker(
+    UploadPickerOperation operation,
+    int generation,
+  ) async {
+    late final List<UploadFileCapability> files;
+    try {
+      files = await operation.result;
+    } catch (error, stackTrace) {
+      if (!_isCurrentPicker(operation, generation)) return;
+      _pickerOperation = null;
+      if (widget.disabled || _maxReached) return;
+      widget.onAcquisitionError?.call(error, stackTrace);
+      return;
+    }
+
+    if (!_isCurrentPicker(operation, generation)) return;
+    _pickerOperation = null;
+    _addFiles(files);
+  }
+
+  bool _isCurrentPicker(UploadPickerOperation operation, int generation) =>
+      mounted &&
+      identical(_pickerOperation, operation) &&
+      generation == _pickerGeneration;
+
+  void _addFiles(List<UploadFileCapability> incoming) {
+    if (!mounted || widget.disabled || incoming.isEmpty || _maxReached) return;
+
+    final current = _items;
+    final remaining = widget.maxFiles == null
+        ? incoming.length
+        : widget.maxFiles! - _acceptedItems.length;
+    final available = remaining < 0 ? 0 : remaining;
+    final take = widget.multiple || available == 0 ? available : 1;
+    final selected = incoming.take(take).toList(growable: false);
+    if (selected.isEmpty) return;
+
+    final added = [
+      for (var index = 0; index < selected.length; index++)
+        _itemFromFile(selected[index], index),
+    ];
+    _setItems([...current, ...added]);
+    if (!mounted) return;
+
+    final maxSize = widget.maxFileSize;
+    if (maxSize == null) {
+      widget.onFilesAdded?.call(added, [for (final item in added) item.file!]);
+      return;
+    }
+    final acceptedIndexes = <int>[];
+    for (var index = 0; index < added.length; index++) {
+      if (added[index].size <= maxSize) acceptedIndexes.add(index);
+    }
+    if (acceptedIndexes.isNotEmpty) {
+      widget.onFilesAdded?.call(
+        [for (final index in acceptedIndexes) added[index]],
+        [for (final index in acceptedIndexes) added[index].file!],
+      );
+    }
+  }
+
+  BeuiFileUploadItem _itemFromFile(UploadFileCapability file, int index) {
+    final id = '${DateTime.now().microsecondsSinceEpoch}-$index-${file.name}';
+    return BeuiFileUploadItem(
+      id: id,
+      name: file.name,
+      size: file.size,
+      type: file.mimeType,
+      progress: 0,
+      status: BeuiFileUploadStatus.uploading,
+      file: _publicFile(file),
+    );
+  }
+
+  BeuiUploadFile _publicFile(UploadFileCapability file) => BeuiUploadFile(
+    name: file.name,
+    size: file.size,
+    mimeType: file.mimeType,
+    readAsBytes: file.readBytes,
+    openRead: file.openRead,
+  );
+
+  void _reportDropError(Object error) {
+    if (!mounted || widget.disabled) return;
+    widget.onAcquisitionError?.call(error, StackTrace.current);
+  }
+
+  @override
   Widget build(BuildContext context) {
     final colors = BeuiColors.resolve(context);
     final reduce = MediaQuery.disableAnimationsOf(context);
     final maxReached =
-        widget.maxFiles != null && _items.length >= widget.maxFiles!;
+        widget.maxFiles != null && _acceptedItems.length >= widget.maxFiles!;
+    final canAcquire = !widget.disabled && !maxReached;
+    final browse = widget.onBrowse ?? _browse;
 
     final resolvedTitle =
         widget.title ?? (widget.dragAndDrop ? 'Drop files here' : 'Add files');
@@ -460,18 +631,29 @@ class _BeuiFileUploadState extends State<BeuiFileUpload> {
       mainAxisSize: MainAxisSize.min,
       spacing: 12, // space-y-3
       children: [
-        _Dropzone(
-          variant: widget.variant,
-          title: maxReached ? 'Upload limit reached' : resolvedTitle,
-          description: maxReached
-              ? '${_items.length} of ${widget.maxFiles} files added'
-              : resolvedDescription,
-          browseLabel: widget.browseLabel,
-          enabled: !widget.disabled && !maxReached && widget.onBrowse != null,
-          dimmed: widget.disabled || maxReached,
-          reduce: reduce,
-          colors: colors,
-          onBrowse: widget.onBrowse,
+        uploadDropTarget(
+          enabled: canAcquire && widget.enableDrop,
+          onDragChanged: (value) {
+            if (mounted && _dragging != value) {
+              setState(() => _dragging = value);
+            }
+          },
+          onFilesDropped: (files) async => _addFiles(files),
+          onAcquisitionError: _reportDropError,
+          child: _Dropzone(
+            variant: widget.variant,
+            title: maxReached ? 'Upload limit reached' : resolvedTitle,
+            description: maxReached
+                ? '${_acceptedItems.length} of ${widget.maxFiles} files added'
+                : resolvedDescription,
+            browseLabel: widget.browseLabel,
+            enabled: canAcquire,
+            dimmed: widget.disabled || maxReached,
+            reduce: reduce,
+            colors: colors,
+            onBrowse: browse,
+            dragging: _dragging,
+          ),
         ),
         if (_rejectionSlot != null)
           _RejectionNotice(
@@ -528,6 +710,7 @@ class _Dropzone extends StatefulWidget {
     required this.reduce,
     required this.colors,
     required this.onBrowse,
+    required this.dragging,
   });
 
   final BeuiFileUploadVariant variant;
@@ -539,6 +722,7 @@ class _Dropzone extends StatefulWidget {
   final bool reduce;
   final BeuiColors colors;
   final VoidCallback? onBrowse;
+  final bool dragging;
 
   @override
   State<_Dropzone> createState() => _DropzoneState();
@@ -556,7 +740,7 @@ class _DropzoneState extends State<_Dropzone> {
 
     // The cloud icon lifts 2px while hovered/dragged-over (source dragging).
     final iconBox = SingleMotionBuilder(
-      value: _hovered && !widget.reduce ? -2.0 : 0.0,
+      value: (_hovered || widget.dragging) && !widget.reduce ? -2.0 : 0.0,
       motion: const CurvedMotion(Duration(milliseconds: 160), beuiEaseOut),
       builder: (context, dy, child) =>
           Transform.translate(offset: Offset(0, dy), child: child),
@@ -613,7 +797,9 @@ class _DropzoneState extends State<_Dropzone> {
         vertical: 8,
       ),
       decoration: BoxDecoration(
-        color: _hovered ? colors.muted : Colors.transparent,
+        color: (_hovered || widget.dragging)
+            ? colors.muted
+            : Colors.transparent,
         border: Border.all(color: colors.border),
         borderRadius: BorderRadius.circular(999),
       ),
@@ -635,7 +821,7 @@ class _DropzoneState extends State<_Dropzone> {
         color: colors.background,
         borderRadius: BorderRadius.circular(24), // rounded-3xl
         border: Border.all(
-          color: _hovered
+          color: (_hovered || widget.dragging)
               ? colors.foreground.withValues(alpha: 0.4)
               : colors.border,
         ),

@@ -79,6 +79,13 @@ const beuiSpringMouse = SpringMotion(
   SpringDescription(mass: 0.3, stiffness: 200, damping: 15),
 );
 
+/// Slider thumb and fill glide (source `lib/ease.ts` `SPRING_GLIDE`).
+///
+/// stiffness 700 · damping 50 · mass 0.5.
+const beuiSpringGlide = SpringMotion(
+  SpringDescription(mass: 0.5, stiffness: 700, damping: 50),
+);
+
 // ---------------------------------------------------------------------------
 // Easing curves → Cubic, for use inside motor.CurvedMotion(duration, curve).
 //

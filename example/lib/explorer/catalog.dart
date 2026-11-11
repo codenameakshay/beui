@@ -18,6 +18,7 @@ import '../demos/animated_toast_stack_demo.dart';
 import '../demos/approval_card_demo.dart';
 import '../demos/arc_picker_demo.dart';
 import '../demos/aspect_ratio_demo.dart';
+import '../demos/avatar_group_demo.dart';
 import '../demos/availability_scheduler_demo.dart';
 import '../demos/bloom_menu_demo.dart';
 import '../demos/bounce_sidebar_demo.dart';
@@ -26,6 +27,7 @@ import '../demos/breadcrumb_demo.dart';
 import '../demos/bouncy_accordion_demo.dart';
 import '../demos/button_demo.dart';
 import '../demos/card_demo.dart';
+import '../demos/card_dealer_demo.dart';
 import '../demos/card_folder_demo.dart';
 import '../demos/center_morph_modal_demo.dart';
 import '../demos/chat_app_demo.dart';
@@ -61,6 +63,7 @@ import '../demos/marquee_demo.dart';
 import '../demos/message_bubble_demo.dart';
 import '../demos/message_demo.dart';
 import '../demos/message_scroller_demo.dart';
+import '../demos/mines_demo.dart';
 import '../demos/morphing_modal_demo.dart';
 import '../demos/morphing_search_demo.dart';
 import '../demos/morphing_search_chips_demo.dart';
@@ -70,6 +73,8 @@ import '../demos/not_found_demo.dart';
 import '../demos/notification_stack_demo.dart';
 import '../demos/number_demo.dart';
 import '../demos/otp_input_demo.dart';
+import '../demos/pagination_demo.dart';
+import '../demos/plinko_demo.dart';
 import '../demos/popover_demo.dart';
 import '../demos/popover_morph_demo.dart';
 import '../demos/prediction_market_card_demo.dart';
@@ -291,6 +296,22 @@ const List<ExploreEntry> kComponents = [
     isNew: true,
     blurb: 'Color swatches with a spring-gliding selection ring.',
     builder: colorSelectorDemo,
+  ),
+  ExploreEntry(
+    title: 'Animated Pagination',
+    slug: 'pagination',
+    section: ExploreSection.components,
+    isNew: true,
+    blurb: 'Spring-animated pagination with page ranges and jump controls.',
+    builder: paginationDemo,
+  ),
+  ExploreEntry(
+    title: 'Animated Avatar Group',
+    slug: 'avatar-group',
+    section: ExploreSection.components,
+    isNew: true,
+    blurb: 'Overlapping member avatars with an expandable overflow group.',
+    builder: avatarGroupDemo,
   ),
   ExploreEntry(
     title: 'Animated Breadcrumb',
@@ -621,7 +642,7 @@ const List<ExploreEntry> kComponents = [
   ),
 ];
 
-/// Blocks — same order as the source sidebar (23 entries).
+/// Blocks available in the gallery.
 const List<ExploreEntry> kBlocks = [
   ExploreEntry(
     title: 'Infinite Masonry',
@@ -768,6 +789,25 @@ const List<ExploreEntry> kBlocks = [
     sourceFile: 'example/lib/demos/prediction_market_demo.dart',
   ),
   ExploreEntry(
+    title: 'Plinko',
+    slug: 'plinko',
+    section: ExploreSection.blocks,
+    isNew: true,
+    blurb:
+        'Responsive Plinko board with animated balls, peg flashes and payouts.',
+    builder: _plinkoDemo,
+    sourceFile: 'example/lib/demos/plinko_demo.dart',
+  ),
+  ExploreEntry(
+    title: 'Card Dealer',
+    slug: 'card-dealer',
+    section: ExploreSection.blocks,
+    isNew: true,
+    blurb: 'A card table with a deck, a fanned hand and a discard pile.',
+    builder: cardDealerDemo,
+    sourceFile: 'example/lib/demos/card_dealer_demo.dart',
+  ),
+  ExploreEntry(
     title: 'Prediction Market Card',
     slug: 'prediction-market-card',
     section: ExploreSection.blocks,
@@ -817,6 +857,15 @@ const List<ExploreEntry> kBlocks = [
     blurb:
         'Feedback popover with sentiment, a required message and a success state.',
     builder: feedbackWidgetDemo,
+  ),
+  ExploreEntry(
+    title: 'Mines',
+    slug: 'mines',
+    section: ExploreSection.blocks,
+    isNew: true,
+    blurb: 'Mines board with source-matched payout readouts and cash-out flow.',
+    builder: _minesDemo,
+    sourceFile: 'example/lib/demos/mines_demo.dart',
   ),
   ExploreEntry(
     title: '404 / Not Found',
@@ -999,6 +1048,10 @@ const List<ExploreEntry> kAgents = [
     builder: agentThemeDemo,
   ),
 ];
+
+Widget _minesDemo(BuildContext context) => const MinesDemo();
+
+Widget _plinkoDemo(BuildContext context) => const PlinkoDemo();
 
 /// All entries across every section, in display order.
 const List<ExploreEntry> kAllEntries = [

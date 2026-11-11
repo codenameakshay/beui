@@ -1,15 +1,17 @@
 import 'dart:async';
 import 'dart:math' as math;
-import 'dart:ui' show ImageFilter;
+import 'dart:ui' show ImageFilter, SemanticsRole;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:flutter/services.dart';
 
 import '../overlay/beui_overlay.dart';
 import '../theme/beui_colors.dart';
 import '../tokens/icons.dart';
 import '../tokens/motion.dart';
 import '_engine.dart';
+import '_focus_ring.dart';
 
 /// One entry in a [BeuiBloomMenu] grid (source `MenuItem`).
 @immutable
@@ -48,6 +50,8 @@ const _itemSpring = SpringMotion(
 const _triggerSize = Size(144, 44); // source `h-11 w-36`
 const _panelMaxWidth = 420.0; // min(86vw, 420px)
 const _enterMs = 800; // hosts the 0.08s + 0.45s iris + item staggers
+
+enum _BloomMenuPhase { closed, open, closing }
 
 /// A "Create" pill that blooms open into a grid menu — the Flutter port of
 /// beUI's `bloom-menu` block.
@@ -94,11 +98,21 @@ class BeuiBloomMenu extends StatefulWidget {
 
 class _BeuiBloomMenuState extends State<BeuiBloomMenu>
     with SingleTickerProviderStateMixin {
-  bool _open = false;
+  _BloomMenuPhase _phase = _BloomMenuPhase.closed;
 
-  /// True while the overlay is mounted (open or morphing closed) — the in-tree
-  /// trigger stays hidden until the box has shrunk back onto it.
-  bool _overlayVisible = false;
+  int _activeIndex = 0;
+
+  final FocusNode _triggerFocusNode = FocusNode(
+    debugLabel: 'Bloom menu trigger',
+  );
+  final List<FocusNode> _itemFocusNodes = [];
+  bool _restoreTriggerFocus = false;
+  bool _closeHasFocus = false;
+
+  bool get _open => _phase == _BloomMenuPhase.open;
+
+  /// Keeps the trigger hidden through the overlay's closing morph.
+  bool get _overlayVisible => _phase != _BloomMenuPhase.closed;
 
   final GlobalKey _sizerKey = GlobalKey();
   Size? _panelSize;
@@ -124,35 +138,188 @@ class _BeuiBloomMenuState extends State<BeuiBloomMenu>
   @override
   void initState() {
     super.initState();
+    _syncItemFocusNodes();
     _clock = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: _enterMs),
     );
   }
 
-  void _setOpen(bool value) {
+  @override
+  void didUpdateWidget(covariant BeuiBloomMenu oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (!_sameItems(oldWidget.items, widget.items)) {
+      final activeLabel = _activeIndex < oldWidget.items.length
+          ? oldWidget.items[_activeIndex].label
+          : null;
+      final available = <String, List<FocusNode>>{};
+      for (var i = 0; i < oldWidget.items.length; i++) {
+        available
+            .putIfAbsent(oldWidget.items[i].label, () => [])
+            .add(_itemFocusNodes[i]);
+      }
+      _itemFocusNodes.clear();
+      for (final item in widget.items) {
+        final retained = available[item.label];
+        _itemFocusNodes.add(
+          retained != null && retained.isNotEmpty
+              ? retained.removeAt(0)
+              : FocusNode(debugLabel: 'Bloom menu item ${item.label}'),
+        );
+      }
+      for (final removed in available.values.expand((nodes) => nodes)) {
+        removed.dispose();
+      }
+      final retainedIndex = widget.items.indexWhere(
+        (item) => item.label == activeLabel,
+      );
+      _activeIndex = retainedIndex < 0 ? 0 : retainedIndex;
+      if (_open && retainedIndex < 0) {
+        _requestActiveItemFocus();
+      }
+    }
+  }
+
+  bool _sameItems(List<BeuiBloomMenuItem> a, List<BeuiBloomMenuItem> b) {
+    if (a.length != b.length) return false;
+    for (var i = 0; i < a.length; i++) {
+      if (a[i].label != b[i].label || a[i].icon != b[i].icon) return false;
+    }
+    return true;
+  }
+
+  void _syncItemFocusNodes() {
+    for (var i = 0; i < widget.items.length; i++) {
+      _itemFocusNodes.add(
+        FocusNode(debugLabel: 'Bloom menu item ${widget.items[i].label}'),
+      );
+    }
+  }
+
+  void _disposeItemFocusNodes() {
+    for (final node in _itemFocusNodes) {
+      node.dispose();
+    }
+    _itemFocusNodes.clear();
+  }
+
+  void _setOpen(bool value, {bool returnFocus = false}) {
+    if (!mounted) return;
     _unhideTimer?.cancel();
+    if (!value && returnFocus && _menuHasFocus) {
+      _restoreTriggerFocus = true;
+    }
     setState(() {
-      _open = value;
-      if (value) _overlayVisible = true;
+      _phase = value ? _BloomMenuPhase.open : _BloomMenuPhase.closing;
+      if (value) {
+        _activeIndex = 0;
+      }
     });
     if (value) {
       _clock.forward(from: 0);
+      _requestActiveItemFocus();
     } else {
       _clock.stop();
       // 420ms exit (see `exitDuration` below) plus ~60ms settle before the
       // in-tree trigger — hidden while the overlay's own copy morphs — comes
       // back.
       _unhideTimer = Timer(const Duration(milliseconds: 480), () {
-        if (mounted && !_open) setState(() => _overlayVisible = false);
+        if (!mounted || _open) return;
+        setState(() => _phase = _BloomMenuPhase.closed);
+        if (_restoreTriggerFocus) {
+          _restoreTriggerFocus = false;
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            if (!mounted || _open) return;
+            final currentFocus = FocusManager.instance.primaryFocus;
+            if (currentFocus == null ||
+                currentFocus is FocusScopeNode ||
+                _menuHasFocus) {
+              _triggerFocusNode.requestFocus();
+            }
+          });
+        }
       });
     }
+  }
+
+  bool get _menuHasFocus =>
+      _closeHasFocus || _itemFocusNodes.any((node) => node.hasFocus);
+
+  void _requestActiveItemFocus() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted && _open && _itemFocusNodes.isNotEmpty) {
+          _itemFocusNodes[_activeIndex].requestFocus();
+        }
+      });
+    });
+  }
+
+  void _focusItem(int index) {
+    if (_itemFocusNodes.isEmpty) return;
+    final next = index.clamp(0, _itemFocusNodes.length - 1);
+    setState(() => _activeIndex = next);
+    _itemFocusNodes[next].requestFocus();
+  }
+
+  KeyEventResult _handleGridKey(FocusNode node, KeyEvent event) {
+    if (!_open || event is! KeyDownEvent || widget.items.isEmpty) {
+      return KeyEventResult.ignored;
+    }
+    final last = widget.items.length - 1;
+    final step = switch (event.logicalKey) {
+      LogicalKeyboardKey.arrowRight => 1,
+      LogicalKeyboardKey.arrowLeft => -1,
+      LogicalKeyboardKey.arrowDown => 3,
+      LogicalKeyboardKey.arrowUp => -3,
+      _ => null,
+    };
+    if (step != null) {
+      final target = _activeIndex + step;
+      if (target >= 0 && target <= last) _focusItem(target);
+    } else if (event.logicalKey == LogicalKeyboardKey.home) {
+      _focusItem(0);
+    } else if (event.logicalKey == LogicalKeyboardKey.end) {
+      _focusItem(last);
+    } else if (event.logicalKey == LogicalKeyboardKey.enter ||
+        event.logicalKey == LogicalKeyboardKey.space) {
+      widget.onSelect?.call(widget.items[_activeIndex].label);
+      _setOpen(false, returnFocus: true);
+    } else if (event.logicalKey == LogicalKeyboardKey.escape) {
+      _setOpen(false, returnFocus: true);
+    } else {
+      return KeyEventResult.ignored;
+    }
+    return KeyEventResult.handled;
+  }
+
+  KeyEventResult _handleTriggerKey(FocusNode node, KeyEvent event) {
+    if (event is! KeyDownEvent) return KeyEventResult.ignored;
+    final key = event.logicalKey;
+    if (key == LogicalKeyboardKey.arrowDown ||
+        key == LogicalKeyboardKey.arrowUp ||
+        key == LogicalKeyboardKey.enter ||
+        key == LogicalKeyboardKey.space) {
+      _setOpen(true);
+      return KeyEventResult.handled;
+    }
+    return KeyEventResult.ignored;
+  }
+
+  void _checkFocusLeaving() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted && _open && !_menuHasFocus) _setOpen(false);
+      });
+    });
   }
 
   @override
   void dispose() {
     _unhideTimer?.cancel();
     _clock.dispose();
+    _triggerFocusNode.dispose();
+    _disposeItemFocusNodes();
     super.dispose();
   }
 
@@ -179,6 +346,7 @@ class _BeuiBloomMenuState extends State<BeuiBloomMenu>
   @override
   Widget build(BuildContext context) {
     final colors = BeuiColors.resolve(context);
+    final reduce = MediaQuery.disableAnimationsOf(context);
     _scheduleMeasure();
 
     return Stack(
@@ -191,6 +359,12 @@ class _BeuiBloomMenuState extends State<BeuiBloomMenu>
               width: _panelWidth(context),
               child: _PanelContent(
                 items: widget.items,
+                focusNodes: const [],
+                activeIndex: _activeIndex,
+                onItemFocus: (index) => _activeIndex = index,
+                onGridKey: _handleGridKey,
+                onFocusLeaving: _checkFocusLeaving,
+                onCloseFocus: (_) {},
                 colors: colors,
                 title: widget.triggerLabel,
                 measuring: true,
@@ -202,14 +376,19 @@ class _BeuiBloomMenuState extends State<BeuiBloomMenu>
           open: _open,
           onDismiss: () => _setOpen(false),
           barrierColor: const Color(0x00000000), // outside tap closes, unseen
+          trapFocus: false,
           enterDuration: const Duration(milliseconds: 240),
           exitDuration: const Duration(milliseconds: 420),
-          overlayBuilder: _buildOverlay,
+          overlayBuilder: (context, animation, link) =>
+              _buildOverlay(context, animation, link, reduce: reduce),
           child: _Trigger(
             key: _triggerKey,
             label: widget.triggerLabel,
             colors: colors,
             hidden: _overlayVisible,
+            focusNode: _triggerFocusNode,
+            onKeyEvent: _handleTriggerKey,
+            expanded: _open,
             onPressed: () => _setOpen(true),
           ),
         ),
@@ -220,10 +399,10 @@ class _BeuiBloomMenuState extends State<BeuiBloomMenu>
   Widget _buildOverlay(
     BuildContext context,
     Animation<double> animation,
-    LayerLink link,
-  ) {
+    LayerLink link, {
+    required bool reduce,
+  }) {
     final colors = BeuiColors.resolve(context);
-    final reduce = MediaQuery.disableAnimationsOf(context);
     final panelSize = _panelSize ?? Size(_panelWidth(context), 300);
     final triggerSize = _triggerMeasured ?? _triggerSize;
 
@@ -285,14 +464,28 @@ class _BeuiBloomMenuState extends State<BeuiBloomMenu>
                 width: _panelWidth(context),
                 child: _PanelContent(
                   items: widget.items,
+                  focusNodes: _itemFocusNodes,
+                  activeIndex: _activeIndex,
+                  onItemFocus: (index) {
+                    if (_activeIndex != index) {
+                      setState(() => _activeIndex = index);
+                    }
+                  },
+                  onGridKey: _handleGridKey,
+                  onFocusLeaving: _checkFocusLeaving,
+                  onCloseFocus: (focused) {
+                    _closeHasFocus = focused;
+                    if (!focused) _checkFocusLeaving();
+                  },
                   colors: colors,
                   title: widget.triggerLabel,
                   clock: _clock,
                   reduce: reduce,
-                  onClose: () => _setOpen(false),
+                  onClose: () => _setOpen(false, returnFocus: true),
                   onSelect: (label) {
+                    if (!_open) return;
                     widget.onSelect?.call(label);
-                    _setOpen(false);
+                    if (mounted) _setOpen(false, returnFocus: true);
                   },
                 ),
               ),
@@ -322,12 +515,18 @@ class _Trigger extends StatefulWidget {
     required this.label,
     required this.colors,
     required this.hidden,
+    required this.focusNode,
+    required this.onKeyEvent,
+    required this.expanded,
     required this.onPressed,
   });
 
   final String label;
   final BeuiColors colors;
   final bool hidden;
+  final FocusNode focusNode;
+  final KeyEventResult Function(FocusNode, KeyEvent) onKeyEvent;
+  final bool expanded;
   final VoidCallback onPressed;
 
   @override
@@ -336,6 +535,7 @@ class _Trigger extends StatefulWidget {
 
 class _TriggerState extends State<_Trigger> {
   bool _pressed = false;
+  bool _focusVisible = false;
 
   @override
   Widget build(BuildContext context) {
@@ -361,6 +561,11 @@ class _TriggerState extends State<_Trigger> {
       ),
       child: _TriggerLabel(label: widget.label, colors: colors),
     );
+    body = BeuiFocusRing(
+      focused: _focusVisible,
+      borderRadius: BorderRadius.circular(16),
+      child: body,
+    );
 
     // Trigger press feedback — source `whileTap={{ scale: 0.97 }}`.
     body = SingleMotionBuilder(
@@ -376,19 +581,37 @@ class _TriggerState extends State<_Trigger> {
       maintainSize: true,
       maintainAnimation: true,
       maintainState: true,
-      child: Semantics(
-        button: true,
-        expanded: widget.hidden,
-        label: widget.label,
-        child: MouseRegion(
-          cursor: SystemMouseCursors.click,
-          child: GestureDetector(
-            behavior: HitTestBehavior.opaque,
-            onTapDown: (_) => setState(() => _pressed = true),
-            onTapUp: (_) => setState(() => _pressed = false),
-            onTapCancel: () => setState(() => _pressed = false),
-            onTap: widget.onPressed,
-            child: body,
+      child: Focus(
+        focusNode: widget.focusNode,
+        canRequestFocus: !widget.hidden,
+        skipTraversal: widget.hidden,
+        onKeyEvent: widget.onKeyEvent,
+        onFocusChange: (hasFocus) {
+          setState(
+            () => _focusVisible =
+                hasFocus &&
+                FocusManager.instance.highlightMode ==
+                    FocusHighlightMode.traditional,
+          );
+        },
+        child: Semantics(
+          container: true,
+          button: true,
+          focusable: true,
+          focused: widget.focusNode.hasFocus,
+          expanded: widget.expanded,
+          label: widget.label,
+          onTap: widget.onPressed,
+          child: MouseRegion(
+            cursor: SystemMouseCursors.click,
+            child: GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTapDown: (_) => setState(() => _pressed = true),
+              onTapUp: (_) => setState(() => _pressed = false),
+              onTapCancel: () => setState(() => _pressed = false),
+              onTap: widget.onPressed,
+              child: body,
+            ),
           ),
         ),
       ),
@@ -428,6 +651,12 @@ class _TriggerLabel extends StatelessWidget {
 class _PanelContent extends StatelessWidget {
   const _PanelContent({
     required this.items,
+    required this.focusNodes,
+    required this.activeIndex,
+    required this.onItemFocus,
+    required this.onGridKey,
+    required this.onFocusLeaving,
+    required this.onCloseFocus,
     required this.colors,
     required this.title,
     this.clock,
@@ -438,6 +667,12 @@ class _PanelContent extends StatelessWidget {
   });
 
   final List<BeuiBloomMenuItem> items;
+  final List<FocusNode> focusNodes;
+  final int activeIndex;
+  final ValueChanged<int> onItemFocus;
+  final KeyEventResult Function(FocusNode, KeyEvent) onGridKey;
+  final VoidCallback onFocusLeaving;
+  final ValueChanged<bool> onCloseFocus;
   final BeuiColors colors;
   final String title;
   final Animation<double>? clock;
@@ -462,6 +697,14 @@ class _PanelContent extends StatelessWidget {
                   child: r * cols + c < items.length
                       ? _Cell(
                           item: items[r * cols + c],
+                          index: r * cols + c,
+                          focusNode: measuring
+                              ? null
+                              : focusNodes[r * cols + c],
+                          active: activeIndex == r * cols + c,
+                          onFocus: onItemFocus,
+                          onKeyEvent: onGridKey,
+                          onFocusLeaving: onFocusLeaving,
                           colors: colors,
                           // Radial stagger: distance from the grid centre.
                           delayMs: reduce || measuring
@@ -475,7 +718,7 @@ class _PanelContent extends StatelessWidget {
                           clock: measuring ? null : clock,
                           reduce: reduce,
                           borderRight: c != cols - 1,
-                          borderBottom: r != rows - 1,
+                          borderBottom: r == 0,
                           onTap: onSelect == null
                               ? null
                               : () => onSelect!(items[r * cols + c].label),
@@ -486,6 +729,16 @@ class _PanelContent extends StatelessWidget {
           ),
       ],
     );
+
+    if (items.isNotEmpty) {
+      grid = Semantics(
+        container: true,
+        explicitChildNodes: true,
+        label: title,
+        role: SemanticsRole.menu,
+        child: grid,
+      );
+    }
 
     // Iris reveal: inset(45% 34%) → inset(0) over 450ms EASE_OUT, 80ms delay.
     if (!measuring && clock != null && !reduce) {
@@ -526,7 +779,11 @@ class _PanelContent extends StatelessWidget {
                   ),
                 ),
               ),
-              _CloseButton(colors: colors, onTap: onClose),
+              _CloseButton(
+                colors: colors,
+                onTap: onClose,
+                onFocusChange: onCloseFocus,
+              ),
             ],
           ),
         ),
@@ -542,10 +799,15 @@ const _hoverCurve = Curves.fastOutSlowIn;
 
 /// The header dismiss glyph (source `hover:text-foreground`).
 class _CloseButton extends StatefulWidget {
-  const _CloseButton({required this.colors, required this.onTap});
+  const _CloseButton({
+    required this.colors,
+    required this.onTap,
+    required this.onFocusChange,
+  });
 
   final BeuiColors colors;
   final VoidCallback? onTap;
+  final ValueChanged<bool> onFocusChange;
 
   @override
   State<_CloseButton> createState() => _CloseButtonState();
@@ -553,27 +815,67 @@ class _CloseButton extends StatefulWidget {
 
 class _CloseButtonState extends State<_CloseButton> {
   bool _hovered = false;
+  bool _focusVisible = false;
+  late final FocusNode _focusNode = FocusNode(debugLabel: 'Close bloom menu');
 
   @override
-  Widget build(BuildContext context) => Semantics(
-    button: true,
-    label: 'Close menu',
-    child: MouseRegion(
-      cursor: SystemMouseCursors.click,
-      onEnter: (_) => setState(() => _hovered = true),
-      onExit: (_) => setState(() => _hovered = false),
-      child: GestureDetector(
-        onTap: widget.onTap,
-        child: TweenAnimationBuilder<Color?>(
-          duration: _hoverFade,
-          curve: _hoverCurve,
-          tween: ColorTween(
-            end: _hovered
-                ? widget.colors.foreground
-                : widget.colors.mutedForeground,
+  void dispose() {
+    _focusNode.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) => Focus(
+    focusNode: _focusNode,
+    canRequestFocus: widget.onTap != null,
+    skipTraversal: widget.onTap == null,
+    onKeyEvent: (node, event) {
+      if (event is KeyDownEvent &&
+          (event.logicalKey == LogicalKeyboardKey.enter ||
+              event.logicalKey == LogicalKeyboardKey.space)) {
+        widget.onTap?.call();
+        return KeyEventResult.handled;
+      }
+      if (event is KeyDownEvent &&
+          event.logicalKey == LogicalKeyboardKey.escape) {
+        widget.onTap?.call();
+        return KeyEventResult.handled;
+      }
+      return KeyEventResult.ignored;
+    },
+    onFocusChange: (focused) {
+      setState(
+        () => _focusVisible =
+            focused &&
+            FocusManager.instance.highlightMode ==
+                FocusHighlightMode.traditional,
+      );
+      widget.onFocusChange(focused);
+    },
+    child: Semantics(
+      button: widget.onTap != null,
+      label: 'Close menu',
+      onTap: widget.onTap,
+      child: MouseRegion(
+        cursor: SystemMouseCursors.click,
+        onEnter: (_) => setState(() => _hovered = true),
+        onExit: (_) => setState(() => _hovered = false),
+        child: GestureDetector(
+          onTap: widget.onTap,
+          child: TweenAnimationBuilder<Color?>(
+            duration: _hoverFade,
+            curve: _hoverCurve,
+            tween: ColorTween(
+              end: _hovered
+                  ? widget.colors.foreground
+                  : widget.colors.mutedForeground,
+            ),
+            builder: (context, color, _) => BeuiFocusRing(
+              focused: _focusVisible,
+              borderRadius: BorderRadius.circular(4),
+              child: Icon(LucideIcons.x, size: 16, color: color),
+            ),
           ),
-          builder: (context, color, _) =>
-              Icon(LucideIcons.x, size: 16, color: color),
         ),
       ),
     ),
@@ -600,6 +902,12 @@ class _IrisClipper extends CustomClipper<Rect> {
 class _Cell extends StatefulWidget {
   const _Cell({
     required this.item,
+    required this.index,
+    required this.focusNode,
+    required this.active,
+    required this.onFocus,
+    required this.onKeyEvent,
+    required this.onFocusLeaving,
     required this.colors,
     required this.delayMs,
     required this.clock,
@@ -610,6 +918,12 @@ class _Cell extends StatefulWidget {
   });
 
   final BeuiBloomMenuItem item;
+  final int index;
+  final FocusNode? focusNode;
+  final bool active;
+  final ValueChanged<int> onFocus;
+  final KeyEventResult Function(FocusNode, KeyEvent) onKeyEvent;
+  final VoidCallback onFocusLeaving;
   final BeuiColors colors;
   final double delayMs;
   final Animation<double>? clock;
@@ -624,6 +938,7 @@ class _Cell extends StatefulWidget {
 
 class _CellState extends State<_Cell> {
   bool _hovered = false;
+  bool _focusVisible = false;
 
   @override
   Widget build(BuildContext context) {
@@ -640,7 +955,9 @@ class _CellState extends State<_Cell> {
       duration: _hoverFade,
       curve: _hoverCurve,
       tween: ColorTween(
-        end: _hovered ? colors.foreground : colors.mutedForeground,
+        end: _hovered || _focusVisible
+            ? colors.foreground
+            : colors.mutedForeground,
       ),
       builder: (context, color, _) => Column(
         mainAxisSize: MainAxisSize.min,
@@ -698,9 +1015,13 @@ class _CellState extends State<_Cell> {
 
     // Static cell with hairline borders (no animated fill) so the grid lines
     // never flicker as items stagger in.
-    return Semantics(
+    Widget cell = Semantics(
       button: onTap != null,
+      focusable: onTap != null,
+      focused: widget.focusNode?.hasFocus ?? false,
       label: item.label,
+      role: onTap == null ? null : SemanticsRole.menuItem,
+      onTap: onTap,
       child: MouseRegion(
         cursor: SystemMouseCursors.click,
         onEnter: (_) => setState(() => _hovered = true),
@@ -711,6 +1032,7 @@ class _CellState extends State<_Cell> {
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 24),
             decoration: BoxDecoration(
+              color: _focusVisible ? colors.muted.withValues(alpha: 0.6) : null,
               border: Border(
                 // Tailwind `border-r` / `border-b` are a full 1px.
                 right: widget.borderRight
@@ -726,5 +1048,29 @@ class _CellState extends State<_Cell> {
         ),
       ),
     );
+    final focusNode = widget.focusNode;
+    if (focusNode != null) {
+      cell = Focus(
+        focusNode: focusNode,
+        canRequestFocus: onTap != null,
+        skipTraversal: !widget.active,
+        onKeyEvent: widget.onKeyEvent,
+        onFocusChange: (focused) {
+          setState(
+            () => _focusVisible =
+                focused &&
+                FocusManager.instance.highlightMode ==
+                    FocusHighlightMode.traditional,
+          );
+          if (focused) {
+            widget.onFocus(widget.index);
+          } else {
+            widget.onFocusLeaving();
+          }
+        },
+        child: cell,
+      );
+    }
+    return cell;
   }
 }

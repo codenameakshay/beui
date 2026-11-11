@@ -32,7 +32,21 @@ class BeuiThinkingShimmer extends StatelessWidget {
     this.duration = const Duration(milliseconds: 1800),
     this.style,
     super.key,
-  });
+  }) : _child = null;
+
+  /// Creates a thinking shimmer over an arbitrary widget subtree.
+  ///
+  /// The [text] compatibility value is empty for this constructor. The child
+  /// keeps ownership of its layout, semantics, focus, and callbacks. The
+  /// shimmer's shader colors all painted alpha, so non-text paint is colored
+  /// too; this is not equivalent to CSS text-only clipping for mixed content.
+  const BeuiThinkingShimmer.child(
+    Widget child, {
+    this.duration = const Duration(milliseconds: 1800),
+    this.style,
+    super.key,
+  }) : text = '',
+       _child = child;
 
   /// Loading message shown to the user (source `children`, default
   /// `"Thinking…"`).
@@ -45,8 +59,22 @@ class BeuiThinkingShimmer extends StatelessWidget {
   /// [DefaultTextStyle].
   final TextStyle? style;
 
+  final Widget? _child;
+
   @override
   Widget build(BuildContext context) {
+    final child = _child;
+    if (child != null) {
+      final childStyle =
+          style?.copyWith(fontWeight: style?.fontWeight ?? FontWeight.w500) ??
+          const TextStyle(fontWeight: FontWeight.w500);
+      return BeuiTextShimmer.child(
+        child,
+        duration: duration,
+        style: childStyle,
+      );
+    }
+
     final base = style ?? DefaultTextStyle.of(context).style;
     return BeuiTextShimmer(
       text,

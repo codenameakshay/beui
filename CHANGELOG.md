@@ -1,4 +1,37 @@
-## Unreleased
+## 3.1.0
+
+beUI 3.1.0 adds Avatar Group, Pagination, three blocks and three charts, and aligns more widgets with the source.
+
+### Compatibility changes
+
+* beUI now depends on `file_selector` and `super_drag_and_drop` for File Upload and Attachment Upload, and directly on `web` for browser APIs. `super_drag_and_drop` builds native code: Android apps need `minSdkVersion 23` and the NDK, which the first build downloads if it is missing. On the other platforms it downloads precompiled binaries, unless Rust is installed. See its [setup notes](https://pub.dev/packages/super_drag_and_drop).
+* `flutter_lucide` is capped below 1.64.0, because 1.64.0 removes glyphs that beUI uses.
+* Three Agents defaults now match the source. `BeuiMessage.animateIn` and `BeuiMessageBubble.animateIn` default to `false`, and an uncontrolled `BeuiToolApproval` starts closed. To keep the old behavior, pass `animateIn: true` or `defaultOpen: true`.
+* Chart readouts use the source number format, so a value shows as `100`, not `100.00`. Donut, Price Target Fan and Returns Calendar render differently to match the source. The Price Target Fan host now sizes to its content.
+
+### Components
+
+* Add `BeuiAvatarGroup` (with `BeuiAvatar`, member models and controlled expansion) and `BeuiPagination`, including `beuiPaginationRange`, range item types, and `getHref` / `linkBuilder` hooks for consumer-owned navigation.
+* `BeuiAdaptiveStepperValue.builder` accepts decorative content for the clamped value; `BeuiAdaptiveStepper.formatValueText` controls its spoken text. Step calculations stay finite near the `double` limit. Number Ticker adds `decimals` and `formatNumber`; the legacy integer `format` callback remains supported.
+* `BeuiTextShimmer.child` shimmers rich content.
+* Select and Animated Sidebar match the source more closely. Tooltip anchors in overlay space and supports external anchors.
+* Pagination places its indicator correctly in right-to-left layouts.
+
+### Blocks
+
+* Add Card Dealer (`BeuiCardDealer`), Mines (`BeuiMines`) and Plinko (`BeuiPlinko`), with gallery routes. Card Dealer exports its card contract and zone enum. Mines exports `MinesRound`, result types and multiplier helpers; Plinko exports `BeuiPlinkoValue` and `beuiPlinkoSlots`.
+* File Upload and Attachment Upload use the platform file picker and desktop/web drag and drop. Both expose `onFilesAdded`, `accept`, `multiple`, `enableDrop` and `onAcquisitionError`; `onBrowse` exclusively replaces the picker, not drops. `BeuiUploadFile` provides lazy byte and stream reads. Attachment Upload adds `onFilesRejected` and bounded, cancellable previews. Rejected files no longer count toward `maxFiles`. Upload transport remains the consumer's responsibility.
+* Bloom Menu ignores selections during its exit. Notification Stack keeps one tab stop per item. Infinite Masonry mounts the visible and overscan window, with `overscan` separate from load-ahead `prefetch` and optional `estimateSize` for lane assignment. Morphing Search Chips keeps recents in browser storage on the web.
+
+### Agents
+
+* Citations accept an item `icon` and an accessible marker `label`. Each marker is one focusable button, and markers drop stale numbers when the list empties.
+* `BeuiThinkingShimmer.child` shimmers rich content.
+
+### Charts
+
+* Add `BeuiLineChart`, `BeuiBarChart` and `BeuiSparkline` on shared internal XY geometry and inspection helpers. Line and Bar export plot, tooltip, legend and series APIs. Line supports line/area variants, interpolation, explicit domains and loading status; Bar supports grouped/stacked layouts, orientation and sorting.
+* CSS color literals parse without throwing. Stacked bar totals and bar lengths stay finite near the `double` limit.
 
 ### Fixes
 

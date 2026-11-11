@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math' as math;
 import 'dart:ui' show ImageFilter;
 
@@ -8,19 +9,26 @@ import '../overlay/beui_overlay.dart';
 import '../theme/beui_colors.dart';
 import '../tokens/icons.dart';
 import '../tokens/motion.dart';
-import '_engine.dart' show SingleMotionBuilder, SpringMotion;
+import '_engine.dart'
+    show
+        CurvedMotion,
+        SingleMotionBuilder,
+        SingleMotionController,
+        SpringMotion;
 
 /// One selectable option in a [BeuiSelect] / [BeuiMorphSelect].
 ///
 /// The Flutter analog of the source's `<SelectItem value="…">Label</SelectItem>`
-/// — [value] is committed through `onChanged`; [label] is what the option row
-/// and the trigger display.
+/// — [value] is committed through `onChanged`; [label] supplies stable text for
+/// semantics and typeahead, and is the fallback display when [labelWidget] is
+/// absent.
 @immutable
 class BeuiSelectOption {
   /// Creates an option carrying [value] and shown as [label].
   const BeuiSelectOption({
     required this.value,
     required this.label,
+    this.labelWidget,
     this.icon,
     this.enabled = true,
   });
@@ -28,8 +36,12 @@ class BeuiSelectOption {
   /// The value committed when this option is chosen.
   final String value;
 
-  /// The visible label (also shown in the trigger once selected).
+  /// The stable text used by semantics, typeahead and fallback display.
   final String label;
+
+  /// Optional display-only option content. [label] remains the stable textual
+  /// label used by accessibility and keyboard typeahead.
+  final Widget? labelWidget;
 
   /// Optional leading glyph, rendered at 16px before [label] in the list and
   /// standard trigger, and at 14px in the compact trigger's 16px slot.
@@ -47,30 +59,28 @@ class BeuiSelectOption {
 }
 
 // ---------------------------------------------------------------------------
-// Springs — Framer `{ type: "spring", duration, bounce }` tokens converted to
-// SpringDescription (mass 1): ω = 2π/duration, ζ = 1 − bounce, stiffness = ω²,
-// damping = 2ζω (the house conversion, see popover.dart / PORTING_SPEC §1).
+// Default Select motion — source UNFOLD_SPRING and UNFOLD_EXIT.
 // ---------------------------------------------------------------------------
 
-/// Chevron rotate — source `CHEVRON_TRANSITION = { duration: 0.4, bounce: 0.3 }`.
-/// ω = 2π/0.4 ≈ 15.71, ζ = 0.7 → stiffness ≈ 247, damping ≈ 22.
-const _chevronSpring = SpringMotion(
+/// Framer Motion 12.43.0 `motion-dom/dist/es/animation/generators/spring.mjs`
+/// resolves `visualDuration` as `root = 2π/(visualDuration*1.2)`,
+/// `stiffness = root² * mass`, `damping = 2*clamp(0.05,1,1-bounce)*sqrt(mass*stiffness)`.
+/// For source `{visualDuration: .2, bounce: .12}`, mass=1 yields 685.389 / 46.076.
+/// `visualDuration` is perceptual, not an exact duration: don't use the old
+/// `2π/duration` approximation.
+const _unfoldSpring = SpringMotion(
+  SpringDescription(mass: 1, stiffness: 685.389, damping: 46.076),
+);
+
+/// Source `UNFOLD_EXIT = {duration: .2, ease: EASE_OUT}`.
+const _unfoldExit = CurvedMotion(Duration(milliseconds: 200), beuiEaseOut);
+
+const _rowsEnter = CurvedMotion(Duration(milliseconds: 120), beuiEaseOut);
+const _rowsExit = CurvedMotion(Duration(milliseconds: 80), beuiEaseOut);
+
+/// Morph Select retains its independent chevron transition.
+const _morphChevronSpring = SpringMotion(
   SpringDescription(mass: 1, stiffness: 247, damping: 22),
-);
-
-/// Panel height accordion — source content `height` spring
-/// `{ duration: 0.42, bounce: 0.14 }`. ω = 2π/0.42 ≈ 14.96, ζ = 0.86 →
-/// stiffness ≈ 224, damping ≈ 26.
-const _heightSpring = SpringMotion(
-  SpringDescription(mass: 1, stiffness: 224, damping: 26),
-);
-
-/// Gap open — the panel pinches away from the trigger — source content
-/// `marginTop/Bottom` spring `{ duration: 0.6, bounce: 0.5 }`. ω = 2π/0.6 ≈
-/// 10.47, ζ = 0.5 → stiffness ≈ 110, damping ≈ 10.5. The high bounce is what
-/// springs the gap open past its rest and settles it back.
-const _gapSpring = SpringMotion(
-  SpringDescription(mass: 1, stiffness: 110, damping: 10.5),
 );
 
 /// Shared-layout morph — source `MORPH = { duration: 0.5, bounce: 0.22 }`.
@@ -80,34 +90,18 @@ const _morphSpring = SpringMotion(
   SpringDescription(mass: 1, stiffness: 158, damping: 20),
 );
 
-const double _gap = 8; // source nearGap (marginTop 8)
+const double _gap = 8; // source GAP / panel pull-away
+const double _lip = 8; // source LIP / initial near-edge reveal
 const double _radius = 12; // rounded-xl
 
 enum _Placement { bottom, top }
 
-// Stagger constants (ms), normalized against the enter clock in-builder.
+class _OpenSelectIntent extends Intent {
+  const _OpenSelectIntent();
+}
+
 const int _staggerMs = 35; // source staggerChildren 0.035
 const int _itemDurMs = 300;
-
-// Gap opens 0.12s after height on the 0.6s enter clock — source `gapT` carries
-// `delay: 0.12` relative to the height spring. Below this fraction the gap holds
-// flush at 0; above it the bouncy gap spring runs.
-const double _gapDelayFraction = 0.12 / 0.6; // 0.2
-
-// Panel near-corner (the edge facing the trigger) uses the source's DEDICATED
-// corner transition `radiusT`, NOT the height spring: open eases 0→12 over 0.3s
-// (EASE_OUT) after a 0.14s delay; close eases 12→0 over 0.16s (EASE_OUT). Both
-// are normalized against the overlay enter/exit clocks (600ms / 300ms).
-double _panelNearOpen(double t) {
-  const delay = 0.14 / 0.6; // 0.2333…
-  const dur = 0.3 / 0.6; // 0.5
-  return _radius * beuiEaseOut.transform(((t - delay) / dur).clamp(0.0, 1.0));
-}
-
-double _panelNearClose(double t) {
-  const dur = 0.16 / 0.3; // 0.5333… (the exit clock `t` runs 1→0)
-  return _radius * (1 - beuiEaseOut.transform(((1 - t) / dur).clamp(0.0, 1.0)));
-}
 
 // ===========================================================================
 // BeuiSelect — the default (gooey accordion) dropdown.
@@ -130,26 +124,18 @@ enum BeuiSelectVariant {
 /// anchored to the trigger with a [LayerLink] + [CompositedTransformFollower],
 /// the same overlay pattern as [BeuiTooltip].
 ///
-/// **Open choreography** (mirrors the source's per-channel transitions): the
-/// panel starts flush against the trigger (gap 0, near corners square) then
-/// **separates** — its height springs open on [_heightSpring]
-/// (`duration 0.42, bounce 0.14`), a gap springs apart on the bouncy
-/// [_gapSpring] (`0.6/0.5`), and the corners facing the trigger round from 0→12
-/// while the far corners stay rounded. Options **stagger in** (source
-/// `staggerChildren 0.035, delayChildren 0.05`), each rising 6px through a
-/// blur(3px)→0 opacity fade. The chevron rotates 180° on [_chevronSpring], and
-/// the trigger edge facing the panel **stays flat then rounds back up** on open
-/// (source `[0,0,12]`) and pinches on close (`[12,0,12]`). The panel flips above
-/// the trigger when there
-/// isn't room below. Each channel springs on enter (via `from: 0`, like the
-/// tooltip) and eases *forward* to its collapse on exit — the exit is not a
-/// time-reversed entrance.
+/// **Open choreography**: one source-derived unfold progress controls the
+/// full-size panel's near-edge clip, its 8px pull-away gap and corners, and the
+/// chevron. Rows reveal together from y=-4 in 120ms; they fade out in 80ms on
+/// close, without blur or stagger. The trigger remains laid out at full size;
+/// only paint/transform properties animate. The panel flips above the trigger
+/// when there isn't room below.
 ///
 /// **Controlled or uncontrolled**: pass [value] + [onChanged] to control it, or
 /// omit [value] and seed [defaultValue] for internal state. **Keyboard**: Enter
 /// / Space / ArrowDown open it; Up/Down move the highlight; Enter commits; Esc
-/// closes. Reduced motion keeps a quick height + opacity reveal but drops the
-/// gap, the corner pinch and the per-option movement (options fade only).
+/// closes. Reduced motion keeps static panel geometry with a short opacity
+/// fade and no row transform.
 class BeuiSelect extends StatefulWidget {
   /// Creates a select over [options].
   const BeuiSelect({
@@ -157,6 +143,9 @@ class BeuiSelect extends StatefulWidget {
     this.value,
     this.defaultValue,
     this.onChanged,
+    this.open,
+    this.defaultOpen = false,
+    this.onOpenChange,
     this.placeholder = 'Select',
     this.enabled = true,
     this.variant = BeuiSelectVariant.standard,
@@ -174,6 +163,15 @@ class BeuiSelect extends StatefulWidget {
 
   /// Called with the chosen option's value.
   final ValueChanged<String>? onChanged;
+
+  /// Controlled panel visibility. When null, [BeuiSelect] owns open state.
+  final bool? open;
+
+  /// Initial visibility for an uncontrolled select.
+  final bool defaultOpen;
+
+  /// Called whenever an interaction requests a visibility change.
+  final ValueChanged<bool>? onOpenChange;
 
   /// Shown in the trigger until a value is selected.
   final String placeholder;
@@ -303,15 +301,25 @@ mixin _SelectStateMixin<W extends StatefulWidget> on State<W> {
 }
 
 class _BeuiSelectState extends State<BeuiSelect>
-    with SingleTickerProviderStateMixin, _SelectStateMixin<BeuiSelect> {
-  late final AnimationController _cornerCtrl;
-  Animatable<double> _cornerTween = ConstantTween<double>(_radius);
-
+    with TickerProviderStateMixin, _SelectStateMixin<BeuiSelect> {
   bool _open = false;
   _Placement _placement = _Placement.bottom;
   bool _triggerHovered = false; // source hover:border-(--color-border-strong)
   bool _triggerFocused =
       false; // source focus-visible:ring-2 ring-foreground/20
+  late final SingleMotionController _unfold;
+  late final SingleMotionController _rows;
+  late final Listenable _motion;
+  final FocusNode _triggerFocus = FocusNode(debugLabel: 'beui_select_trigger');
+  final Map<String, FocusNode> _rowFocusNodes = {};
+  String? _activeValue;
+  String? _spacePressedValue;
+  String _typedPrefix = '';
+  DateTime? _typedAt;
+  Timer? _typeaheadReset;
+  bool? _lastReduce;
+
+  bool get _isOpen => widget.open ?? _open;
 
   @override
   List<BeuiSelectOption> get _options => widget.options;
@@ -330,17 +338,72 @@ class _BeuiSelectState extends State<BeuiSelect>
   @override
   void initState() {
     super.initState();
-    _cornerCtrl = AnimationController(
+    _open = widget.defaultOpen;
+    _syncActive(reset: true);
+    _unfold = SingleMotionController(
       vsync: this,
-      duration: const Duration(milliseconds: 600),
-      value: 1,
+      motion: _unfoldSpring,
+      initialValue: _isOpen ? 1 : 0,
     );
+    _rows = SingleMotionController(
+      vsync: this,
+      motion: _rowsEnter,
+      initialValue: _isOpen ? 1 : 0,
+    );
+    _motion = Listenable.merge([_unfold, _rows]);
   }
 
   @override
   void dispose() {
-    _cornerCtrl.dispose();
+    _typeaheadReset?.cancel();
+    _triggerFocus.dispose();
+    for (final node in _rowFocusNodes.values) {
+      node.dispose();
+    }
+    _unfold.dispose();
+    _rows.dispose();
     super.dispose();
+  }
+
+  @override
+  void didUpdateWidget(covariant BeuiSelect oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    final wasOpen = oldWidget.open ?? _open;
+    if (wasOpen != _isOpen) {
+      _animateOpen(
+        _isOpen,
+        setStateNeeded: false,
+        restoreFocus: !_isOpen && _panelFocus.hasFocus,
+      );
+    }
+    if (oldWidget.options != widget.options) {
+      _syncActive();
+      final values = widget.options.map((option) => option.value).toSet();
+      for (final value in _rowFocusNodes.keys.toList()) {
+        if (!values.contains(value)) _rowFocusNodes.remove(value)?.dispose();
+      }
+      if (_isOpen) _focusActiveAfterFrame();
+    }
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final reduce = MediaQuery.disableAnimationsOf(context);
+    if (reduce && _lastReduce != true) {
+      _unfold.value = _isOpen ? 1 : 0;
+      _rows.value = _isOpen ? 1 : 0;
+    }
+    _lastReduce = reduce;
+  }
+
+  @override
+  void _measure() {
+    super._measure();
+    if (!_isOpen || _triggerSize == Size.zero || _panelHeight <= 0) return;
+    final previous = _placement;
+    _decidePlacement();
+    if (_placement != previous) setState(() {});
   }
 
   void _decidePlacement() {
@@ -389,27 +452,215 @@ class _BeuiSelectState extends State<BeuiSelect>
   }
 
   @override
-  void _setOpen(bool next) {
-    if (next == _open) return;
+  void _setOpen(bool next, {bool restoreFocus = true}) {
+    if (next == _isOpen) return;
+    widget.onOpenChange?.call(next);
+    if (widget.open != null) return;
+    _open = next;
+    _animateOpen(next, restoreFocus: restoreFocus);
+  }
+
+  void _animateOpen(
+    bool next, {
+    bool setStateNeeded = true,
+    bool restoreFocus = true,
+  }) {
+    if (!next) _spacePressedValue = null;
     if (next) {
       _decidePlacement();
-      final sel = _selectedIndex();
-      _active = sel >= 0 ? sel : _firstEnabled();
-      // Trigger edge pinches flat (0) then rounds back to 12 — source open
-      // keyframes [12,0,12] over 0.6s.
-      _cornerTween = _openCornerSeq;
-      _cornerCtrl.duration = const Duration(milliseconds: 600);
-    } else {
-      // Close keyframes [12,0,12] over 0.42s.
-      _cornerTween = _closeCornerSeq;
-      _cornerCtrl.duration = const Duration(milliseconds: 420);
+      _syncActive(reset: true);
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted && _isOpen) _focusActiveAfterFrame();
+      });
+    } else if (restoreFocus) {
+      _triggerFocus.requestFocus();
     }
-    _cornerCtrl.forward(from: 0);
-    setState(() => _open = next);
-    if (next) {
-      WidgetsBinding.instance.addPostFrameCallback(
-        (_) => _panelFocus.requestFocus(),
-      );
+    final reduce = MediaQuery.disableAnimationsOf(context);
+    if (reduce) {
+      _unfold.value = next ? 1 : 0;
+      _rows.value = next ? 1 : 0;
+    } else {
+      _unfold.motion = next ? _unfoldSpring : _unfoldExit;
+      _unfold.animateTo(next ? 1 : 0);
+      _rows.motion = next ? _rowsEnter : _rowsExit;
+      _rows.animateTo(next ? 1 : 0);
+    }
+    if (setStateNeeded) setState(() {});
+  }
+
+  void _syncActive({bool reset = false}) {
+    final current = _options.indexWhere(
+      (option) => option.value == _activeValue && option.enabled,
+    );
+    if (!reset && current >= 0) {
+      _active = current;
+      return;
+    }
+    final selected = reset
+        ? _options.indexWhere(
+            (option) => option.value == _value && option.enabled,
+          )
+        : -1;
+    _active = selected >= 0 ? selected : _firstEnabled();
+    _activeValue = _active >= 0 ? _options[_active].value : null;
+  }
+
+  void _moveActiveDefault(int delta) {
+    _syncActive();
+    var i = _active;
+    while (i + delta >= 0 && i + delta < _options.length) {
+      i += delta;
+      if (_options[i].enabled) {
+        setState(() {
+          _active = i;
+          _activeValue = _options[i].value;
+        });
+        _focusActiveAfterFrame();
+        return;
+      }
+    }
+  }
+
+  void _moveToEnabled({required bool last}) {
+    final indices = [
+      for (var i = 0; i < _options.length; i++)
+        if (_options[i].enabled) i,
+    ];
+    if (indices.isEmpty) return;
+    final i = last ? indices.last : indices.first;
+    setState(() {
+      _active = i;
+      _activeValue = _options[i].value;
+    });
+    _focusActiveAfterFrame();
+  }
+
+  void _typeahead(String character) {
+    if (character.isEmpty || character.length != 1) return;
+    final now = DateTime.now();
+    _typedPrefix =
+        _typedAt != null && now.difference(_typedAt!).inMilliseconds < 500
+        ? '$_typedPrefix${character.toLowerCase()}'
+        : character.toLowerCase();
+    _typedAt = now;
+    _typeaheadReset?.cancel();
+    _typeaheadReset = Timer(const Duration(milliseconds: 500), () {
+      _typedPrefix = '';
+      _typedAt = null;
+    });
+    _syncActive();
+    final query = _typedPrefix;
+    final start = _typedPrefix.length == 1 ? _active + 1 : _active;
+    for (var step = 0; step < _options.length; step++) {
+      final i = (start + step) % _options.length;
+      final option = _options[i];
+      if (option.enabled && option.label.toLowerCase().startsWith(query)) {
+        setState(() {
+          _active = i;
+          _activeValue = option.value;
+        });
+        _focusActiveAfterFrame();
+        return;
+      }
+    }
+  }
+
+  KeyEventResult _onPanelKeyDefault(FocusNode node, KeyEvent event) {
+    final key = event.logicalKey;
+    if (key == LogicalKeyboardKey.space) {
+      final activeFocused =
+          _activeValue != null &&
+          (_rowFocusNodes[_activeValue]?.hasPrimaryFocus ?? false);
+      if (event is KeyDownEvent) {
+        _spacePressedValue = activeFocused ? _activeValue : null;
+      } else if (event is KeyUpEvent) {
+        final pressed = _spacePressedValue;
+        _spacePressedValue = null;
+        if (pressed != null && pressed == _activeValue && activeFocused) {
+          _selectDefault(_active);
+        }
+      }
+      return KeyEventResult.handled;
+    }
+    if (event is! KeyDownEvent) return KeyEventResult.ignored;
+    if (key == LogicalKeyboardKey.escape) {
+      _setOpen(false);
+      return KeyEventResult.handled;
+    }
+    if (key == LogicalKeyboardKey.tab) {
+      final backwards = HardwareKeyboard.instance.isShiftPressed;
+      _setOpen(false, restoreFocus: false);
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) {
+          _triggerFocus.requestFocus();
+          FocusManager.instance.applyFocusChangesIfNeeded();
+          if (backwards) {
+            _triggerFocus.previousFocus();
+          } else {
+            _triggerFocus.nextFocus();
+          }
+        }
+      });
+      return KeyEventResult.handled;
+    }
+    if (key == LogicalKeyboardKey.arrowDown) {
+      _moveActiveDefault(1);
+      return KeyEventResult.handled;
+    }
+    if (key == LogicalKeyboardKey.arrowUp) {
+      _moveActiveDefault(-1);
+      return KeyEventResult.handled;
+    }
+    if (key == LogicalKeyboardKey.home) {
+      _moveToEnabled(last: false);
+      return KeyEventResult.handled;
+    }
+    if (key == LogicalKeyboardKey.end) {
+      _moveToEnabled(last: true);
+      return KeyEventResult.handled;
+    }
+    if (key == LogicalKeyboardKey.enter ||
+        key == LogicalKeyboardKey.numpadEnter) {
+      _selectDefault(_active);
+      return KeyEventResult.handled;
+    }
+    if (!HardwareKeyboard.instance.isControlPressed &&
+        !HardwareKeyboard.instance.isMetaPressed &&
+        !HardwareKeyboard.instance.isAltPressed &&
+        event.character != null &&
+        event.character != ' ') {
+      _typeahead(event.character!);
+      return KeyEventResult.handled;
+    }
+    return KeyEventResult.ignored;
+  }
+
+  void _selectDefault(int index) {
+    if (index < 0 || index >= _options.length || !_options[index].enabled) {
+      return;
+    }
+    final option = _options[index];
+    if (_controlledValue == null) setState(() => _internalValue = option.value);
+    widget.onChanged?.call(option.value);
+    _setOpen(false);
+  }
+
+  FocusNode _focusNodeForOption(int index) => _rowFocusNodes.putIfAbsent(
+    _options[index].value,
+    () => FocusNode(debugLabel: 'beui_select_option_${_options[index].value}'),
+  );
+
+  void _focusActiveAfterFrame() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted && _isOpen) _focusActive();
+    });
+  }
+
+  void _focusActive() {
+    if (_active >= 0 && _options[_active].enabled) {
+      _focusNodeForOption(_active).requestFocus();
+    } else {
+      _panelFocus.requestFocus();
     }
   }
 
@@ -419,152 +670,202 @@ class _BeuiSelectState extends State<BeuiSelect>
       if (mounted) _measure();
     });
     final colors = BeuiColors.resolve(context);
-    final reduce = MediaQuery.disableAnimationsOf(context);
-
-    return BeuiOverlay(
-      open: _open,
-      barrier: true,
-      barrierColor: const Color(0x00000000),
-      barrierDismissible: true,
-      trapFocus: false,
-      onDismiss: () => _setOpen(false),
-      enterDuration: Duration(milliseconds: reduce ? 160 : 600),
-      exitDuration: Duration(milliseconds: reduce ? 120 : 300),
-      overlayBuilder: _buildPanel,
-      child: Stack(
-        clipBehavior: Clip.none,
-        children: [
-          // Off-stage panel content, measured for the accordion height. Laid
-          // out but never painted.
-          Positioned(
-            left: 0,
-            top: 0,
-            child: Offstage(
-              child: SizedBox(
-                width: _panelWidth,
-                child: KeyedSubtree(
-                  key: _measureKey,
-                  child: _OptionColumn(
-                    options: widget.options,
-                    value: _value,
-                    active: -1,
-                    colors: colors,
-                    clock: null,
-                    reduce: true,
-                    onHover: (_) {},
-                    onTap: (_) {},
+    final reduced = MediaQuery.disableAnimationsOf(context);
+    return AnimatedBuilder(
+      animation: _motion,
+      builder: (context, _) {
+        final progress = _unfold.value.clamp(0.0, 1.0);
+        return BeuiOverlay(
+          open: _isOpen,
+          barrier: true,
+          barrierColor: const Color(0x00000000),
+          barrierDismissible: true,
+          trapFocus: false,
+          onDismiss: () => _setOpen(false, restoreFocus: false),
+          enterDuration: Duration(milliseconds: reduced ? 120 : 200),
+          exitDuration: Duration(milliseconds: reduced ? 120 : 200),
+          overlayBuilder: (context, animation, link) =>
+              _buildPanel(context, animation, link, progress),
+          child: Stack(
+            clipBehavior: Clip.none,
+            children: [
+              // Keep content laid out for measurement; it is not animated.
+              Positioned(
+                left: 0,
+                top: 0,
+                child: Offstage(
+                  child: SizedBox(
+                    width: _panelWidth,
+                    child: KeyedSubtree(
+                      key: _measureKey,
+                      child: _OptionColumn(
+                        options: widget.options,
+                        value: _value,
+                        active: -1,
+                        colors: colors,
+                        clock: null,
+                        reduce: true,
+                        togetherReveal: true,
+                        onHover: (_) {},
+                        onTap: (_) {},
+                      ),
+                    ),
                   ),
                 ),
               ),
-            ),
+              KeyedSubtree(
+                key: _triggerKey,
+                child: _buildTrigger(colors, progress),
+              ),
+            ],
           ),
-          KeyedSubtree(key: _triggerKey, child: _buildTrigger(colors, reduce)),
-        ],
-      ),
+        );
+      },
     );
   }
 
-  Widget _buildTrigger(BeuiColors colors, bool reduce) {
+  Widget _buildTrigger(BeuiColors colors, double progress) {
     final selected = _selectedIndex() >= 0;
-    final label = selected
-        ? widget.options[_selectedIndex()].label
-        : widget.placeholder;
+    final selectedOption = selected ? widget.options[_selectedIndex()] : null;
+    final label = selectedOption?.label ?? widget.placeholder;
     final icon = _selectedIcon;
     final compact = widget.variant == BeuiSelectVariant.compact;
 
-    return Focus(
-      canRequestFocus: widget.enabled,
-      onKeyEvent: widget.enabled ? _onTriggerKey : null,
-      onFocusChange: (f) => setState(() => _triggerFocused = f),
-      child: MouseRegion(
-        onEnter: widget.enabled
-            ? (_) => setState(() => _triggerHovered = true)
-            : null,
-        onExit: compact || widget.enabled
-            ? (_) => setState(() => _triggerHovered = false)
-            : null,
-        child: GestureDetector(
-          behavior: HitTestBehavior.opaque,
-          onTap: widget.enabled ? () => _setOpen(!_open) : null,
-          child: AnimatedBuilder(
-            animation: _cornerCtrl,
-            builder: (context, _) {
-              final near = reduce
-                  ? _radius
-                  : _cornerTween.evaluate(_cornerCtrl);
-              final labelText = Text(
-                label,
-                maxLines: compact ? 1 : null,
-                overflow: TextOverflow.ellipsis,
-                style: compact
-                    ? TextStyle(
-                        fontSize: 12,
-                        height: 16 / 12,
-                        color: colors.mutedForeground,
-                      )
-                    : TextStyle(
-                        fontSize: 14,
-                        color: selected
-                            ? colors.foreground
-                            : colors.mutedForeground,
-                      ),
-              );
-              return Opacity(
-                opacity: widget.enabled ? 1 : 0.5,
-                child: Container(
-                  constraints: compact
-                      ? const BoxConstraints(minHeight: 32, maxWidth: 208)
-                      : null,
-                  decoration: BoxDecoration(
-                    color: compact
-                        ? (widget.enabled && _triggerHovered
-                              ? colors.muted
-                              : const Color(0x00000000))
-                        : colors.background,
-                    // hover:border-(--color-border-strong)
-                    border: compact
-                        ? null
-                        : Border.all(
-                            color: _triggerHovered
-                                ? colors.borderStrong
-                                : colors.border,
+    return Semantics(
+      label: label,
+      button: true,
+      enabled: widget.enabled,
+      expanded: _isOpen,
+      onTap: widget.enabled
+          ? () {
+              _triggerFocus.requestFocus();
+              _setOpen(!_isOpen);
+            }
+          : null,
+      child: ExcludeSemantics(
+        child: FocusableActionDetector(
+          focusNode: _triggerFocus,
+          enabled: widget.enabled,
+          shortcuts: const {
+            SingleActivator(LogicalKeyboardKey.arrowUp): _OpenSelectIntent(),
+            SingleActivator(LogicalKeyboardKey.arrowDown): _OpenSelectIntent(),
+            SingleActivator(LogicalKeyboardKey.enter): _OpenSelectIntent(),
+            SingleActivator(LogicalKeyboardKey.numpadEnter):
+                _OpenSelectIntent(),
+            SingleActivator(LogicalKeyboardKey.space): _OpenSelectIntent(),
+          },
+          actions: {
+            _OpenSelectIntent: CallbackAction<_OpenSelectIntent>(
+              onInvoke: (_) {
+                _setOpen(true);
+                return null;
+              },
+            ),
+          },
+          onShowFocusHighlight: (f) => setState(() => _triggerFocused = f),
+          child: MouseRegion(
+            onEnter: widget.enabled
+                ? (_) => setState(() => _triggerHovered = true)
+                : null,
+            onExit: compact || widget.enabled
+                ? (_) => setState(() => _triggerHovered = false)
+                : null,
+            child: GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTap: widget.enabled
+                  ? () {
+                      _triggerFocus.requestFocus();
+                      _setOpen(!_isOpen);
+                    }
+                  : null,
+              child: Builder(
+                builder: (context) {
+                  final labelText = Text(
+                    label,
+                    maxLines: compact ? 1 : null,
+                    overflow: TextOverflow.ellipsis,
+                    style: compact
+                        ? TextStyle(
+                            fontSize: 12,
+                            height: 16 / 12,
+                            color: colors.mutedForeground,
+                          )
+                        : TextStyle(
+                            fontSize: 14,
+                            color: selected
+                                ? colors.foreground
+                                : colors.mutedForeground,
                           ),
-                    borderRadius: _triggerCorners(near),
-                    // focus-visible:ring-2 ring-foreground/20
-                    boxShadow: _triggerFocused
-                        ? [
-                            BoxShadow(
-                              color: colors.foreground.withValues(alpha: 0.2),
-                              spreadRadius: 2,
+                  );
+                  return Opacity(
+                    opacity: widget.enabled ? 1 : 0.5,
+                    child: Container(
+                      constraints: compact
+                          ? const BoxConstraints(minHeight: 32, maxWidth: 208)
+                          : null,
+                      decoration: BoxDecoration(
+                        color: compact
+                            ? (widget.enabled && _triggerHovered
+                                  ? colors.muted
+                                  : const Color(0x00000000))
+                            : colors.background,
+                        border: compact
+                            ? null
+                            : Border.all(
+                                color: _triggerHovered
+                                    ? colors.borderStrong
+                                    : colors.border,
+                              ),
+                        borderRadius: _triggerCorners(_triggerNear(progress)),
+                        boxShadow: _triggerFocused
+                            ? [
+                                BoxShadow(
+                                  color: colors.foreground.withValues(
+                                    alpha: 0.2,
+                                  ),
+                                  spreadRadius: 2,
+                                ),
+                              ]
+                            : null,
+                      ),
+                      padding: compact
+                          ? const EdgeInsets.symmetric(horizontal: 8)
+                          : const EdgeInsets.symmetric(
+                              horizontal: 12,
+                              vertical: 8,
                             ),
-                          ]
-                        : null,
-                  ),
-                  padding: compact
-                      ? const EdgeInsets.symmetric(horizontal: 8)
-                      : const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                  child: Row(
-                    mainAxisSize: compact ? MainAxisSize.min : MainAxisSize.max,
-                    children: [
-                      if (icon != null) ...[
-                        _OptionIcon(
-                          icon: icon,
-                          color: colors.mutedForeground,
-                          glyphSize: compact ? 14 : 16,
-                        ),
-                        SizedBox(width: compact ? 6 : 8),
-                      ],
-                      if (compact)
-                        Flexible(child: labelText)
-                      else
-                        Expanded(child: labelText),
-                      const SizedBox(width: 8),
-                      _Chevron(open: _open, color: colors.mutedForeground),
-                    ],
-                  ),
-                ),
-              );
-            },
+                      child: Row(
+                        mainAxisSize: compact
+                            ? MainAxisSize.min
+                            : MainAxisSize.max,
+                        children: [
+                          if (icon != null) ...[
+                            _OptionIcon(
+                              icon: icon,
+                              color: colors.mutedForeground,
+                              glyphSize: compact ? 14 : 16,
+                            ),
+                            SizedBox(width: compact ? 6 : 8),
+                          ],
+                          if (selectedOption?.labelWidget
+                              case final labelWidget?)
+                            Flexible(child: labelWidget)
+                          else if (compact)
+                            Flexible(child: labelText)
+                          else
+                            Expanded(child: labelText),
+                          const SizedBox(width: 8),
+                          _Chevron(
+                            progress: progress,
+                            color: colors.mutedForeground,
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ),
           ),
         ),
       ),
@@ -591,13 +892,20 @@ class _BeuiSelectState extends State<BeuiSelect>
           );
   }
 
+  double _triggerNear(double progress) {
+    final p = progress.clamp(0.0, 1.0);
+    if (p < 0.2) return _radius * (1 - p / 0.2);
+    if (p < 0.4) return 0;
+    return _radius * ((p - 0.4) / 0.6);
+  }
+
   Widget _buildPanel(
     BuildContext context,
     Animation<double> animation,
     LayerLink link,
+    double progress,
   ) {
     final colors = BeuiColors.resolve(context);
-    final reduce = MediaQuery.disableAnimationsOf(context);
     final isTop = _placement == _Placement.top;
     final width = _panelWidth;
     final offsetX = _compactPanelOffsetX(context);
@@ -610,7 +918,10 @@ class _BeuiSelectState extends State<BeuiSelect>
       followerAnchor: isTop ? Alignment.bottomLeft : Alignment.topLeft,
       child: Focus(
         focusNode: _panelFocus,
-        onKeyEvent: _onPanelKey,
+        skipTraversal: true,
+        descendantsAreFocusable: _isOpen,
+        descendantsAreTraversable: _isOpen,
+        onKeyEvent: _onPanelKeyDefault,
         child: SizedBox(
           width: width,
           child: AnimatedBuilder(
@@ -620,63 +931,23 @@ class _BeuiSelectState extends State<BeuiSelect>
               final exiting =
                   animation.status == AnimationStatus.reverse ||
                   animation.status == AnimationStatus.dismissed;
-              if (reduce) {
-                return _panelBody(
-                  colors: colors,
-                  reduce: true,
-                  isTop: isTop,
-                  width: width,
-                  clock: t,
-                  hp: t,
-                  gp: 0,
-                  near: _radius,
-                );
-              }
-              if (exiting) {
-                // Forward-eased collapse (its own targets, not a reversed
-                // spring): height and gap ease back to flush; the near corner
-                // squares off on its dedicated close transition (0.16s).
-                final hp = beuiEaseOut.transform(t);
-                return _panelBody(
-                  colors: colors,
-                  reduce: false,
-                  isTop: isTop,
-                  width: width,
-                  clock: t,
-                  hp: hp,
-                  gp: t,
-                  near: _panelNearClose(t),
-                );
-              }
-              // Enter: height springs from 0 on its own ticker (the `from: 0`
-              // makes it animate on mount, like the tooltip); the gap is held
-              // flush until 0.12s (source `gapT` delay) then springs open on the
-              // bouncy gap spring; the near corner rounds on its dedicated
-              // transition (delay 0.14s, 0.3s), independent of the height.
-              return SingleMotionBuilder(
-                value: 1.0,
-                from: 0.0,
-                motion: _heightSpring,
-                builder: (context, hp, _) {
-                  final gapTarget = t >= _gapDelayFraction ? 1.0 : 0.0;
-                  return SingleMotionBuilder(
-                    value: gapTarget,
-                    from: 0.0,
-                    motion: _gapSpring,
-                    builder: (context, gp, _) {
-                      return _panelBody(
-                        colors: colors,
-                        reduce: false,
-                        isTop: isTop,
-                        width: width,
-                        clock: t,
-                        hp: hp,
-                        gp: gp,
-                        near: _panelNearOpen(t),
-                      );
-                    },
-                  );
-                },
+              final reduced = MediaQuery.disableAnimationsOf(context);
+              final geometryProgress = reduced && exiting ? 1.0 : progress;
+              final detach = ((geometryProgress - 0.4) / 0.6).clamp(0.0, 1.0);
+              final opacity = reduced
+                  ? exiting
+                        ? 1 - beuiEaseOut.transform(1 - t)
+                        : beuiEaseOut.transform(t)
+                  : (progress / 0.12).clamp(0.0, 1.0);
+              return _panelBody(
+                colors: colors,
+                reduce: reduced,
+                isTop: isTop,
+                width: width,
+                progress: geometryProgress,
+                detach: detach,
+                opacity: opacity,
+                rowPhase: reduced ? null : _rows.value,
               );
             },
           ),
@@ -690,51 +961,53 @@ class _BeuiSelectState extends State<BeuiSelect>
     required bool reduce,
     required bool isTop,
     required double width,
-    required double clock,
-    required double hp,
-    required double gp,
-    required double near,
+    required double progress,
+    required double detach,
+    required double opacity,
+    required double? rowPhase,
   }) {
-    final gap = _gap * gp.clamp(0.0, 1.5);
-    final opacity = beuiEaseOut.transform(
-      (clock * (600 / 180)).clamp(0.0, 1.0),
-    );
+    final gap = _gap * detach;
 
     final content = _OptionColumn(
       options: widget.options,
       value: _value,
       active: _active,
       colors: colors,
-      clock: reduce ? null : clock,
+      clock: rowPhase,
       reduce: reduce,
+      togetherReveal: true,
+      rovingFocus: true,
+      focusNodeForOption: _focusNodeForOption,
       onHover: (i) {
         if (widget.options[i].enabled && _active != i) {
-          setState(() => _active = i);
+          setState(() {
+            _active = i;
+            _activeValue = widget.options[i].value;
+          });
+          _focusActiveAfterFrame();
         }
       },
-      onTap: _select,
+      onTap: _selectDefault,
     );
 
-    final panel = Container(
-      decoration: BoxDecoration(
-        color: colors.background,
-        border: Border.all(color: colors.border),
-        borderRadius: _panelCorners(near, isTop),
-        boxShadow: const [
-          BoxShadow(
-            color: Color(0x1A000000),
-            blurRadius: 24,
-            offset: Offset(0, 12),
-          ),
-        ],
-      ),
-      clipBehavior: Clip.antiAlias,
-      child: ClipRect(
-        child: Align(
-          alignment: isTop ? Alignment.bottomCenter : Alignment.topCenter,
-          heightFactor: hp.clamp(0.0, 1.0),
-          child: SizedBox(width: width, child: content),
+    final panel = ClipRect(
+      clipper: _UnfoldClipper(progress: progress, isTop: isTop),
+      clipBehavior: progress.clamp(0.0, 1.0) == 1 ? Clip.none : Clip.hardEdge,
+      child: Container(
+        decoration: BoxDecoration(
+          color: colors.background,
+          border: Border.all(color: colors.border),
+          borderRadius: _panelCorners(_radius * detach, isTop),
+          boxShadow: const [
+            BoxShadow(
+              color: Color(0x1A000000),
+              blurRadius: 24,
+              offset: Offset(0, 12),
+            ),
+          ],
         ),
+        clipBehavior: Clip.antiAlias,
+        child: SizedBox(width: width, child: content),
       ),
     );
 
@@ -1107,7 +1380,7 @@ class _MorphRowState extends State<_MorphRow> {
               color: colors.mutedForeground,
             ),
           )
-        : _Chevron(open: false, color: colors.mutedForeground);
+        : _MorphChevron(open: false, color: colors.mutedForeground);
 
     Widget row = Container(
       decoration: widget.bordered
@@ -1210,32 +1483,64 @@ class _OptionIcon extends StatelessWidget {
   );
 }
 
-/// The chevron glyph that rotates 180° between closed and open on
-/// [_chevronSpring].
+/// The chevron glyph that rotates from the shared default-Select progress.
 class _Chevron extends StatelessWidget {
-  const _Chevron({required this.open, required this.color});
-  final bool open;
+  const _Chevron({required this.progress, required this.color});
+  final double progress;
   final Color color;
 
   @override
   Widget build(BuildContext context) {
-    return SingleMotionBuilder(
-      value: open ? 1.0 : 0.0,
-      motion: motionFor(
-        context,
-        _chevronSpring,
-        isMovement: true,
-        reducedFallback: beuiSpringSnap,
-      ),
-      builder: (context, p, child) =>
-          Transform.rotate(angle: p * math.pi, child: child),
+    return Transform.rotate(
+      angle: progress * math.pi,
       child: Icon(LucideIcons.chevron_down, size: 16, color: color),
     );
   }
 }
 
-/// The list of option rows, optionally staggering each in (opacity + 6px rise +
-/// blur(3px)→0) as the panel opens. Shared by both variants.
+class _MorphChevron extends StatelessWidget {
+  const _MorphChevron({required this.open, required this.color});
+
+  final bool open;
+  final Color color;
+
+  @override
+  Widget build(BuildContext context) => SingleMotionBuilder(
+    value: open ? 1 : 0,
+    motion: motionFor(
+      context,
+      _morphChevronSpring,
+      isMovement: true,
+      reducedFallback: beuiSpringSnap,
+    ),
+    builder: (context, progress, child) =>
+        Transform.rotate(angle: progress * math.pi, child: child),
+    child: Icon(LucideIcons.chevron_down, size: 16, color: color),
+  );
+}
+
+class _UnfoldClipper extends CustomClipper<Rect> {
+  const _UnfoldClipper({required this.progress, required this.isTop});
+
+  final double progress;
+  final bool isTop;
+
+  @override
+  Rect getClip(Size size) {
+    final p = progress.clamp(0.0, 1.0);
+    final revealHeight =
+        _lip + (size.height - _lip).clamp(0.0, size.height) * p;
+    return isTop
+        ? Rect.fromLTWH(0, size.height - revealHeight, size.width, revealHeight)
+        : Rect.fromLTWH(0, 0, size.width, revealHeight);
+  }
+
+  @override
+  bool shouldReclip(covariant _UnfoldClipper oldClipper) =>
+      oldClipper.progress != progress || oldClipper.isTop != isTop;
+}
+
+/// Option rows with default Select's together reveal or unchanged Morph motion.
 class _OptionColumn extends StatelessWidget {
   const _OptionColumn({
     required this.options,
@@ -1244,6 +1549,9 @@ class _OptionColumn extends StatelessWidget {
     required this.colors,
     required this.clock,
     required this.reduce,
+    this.togetherReveal = false,
+    this.rovingFocus = false,
+    this.focusNodeForOption,
     required this.onHover,
     required this.onTap,
     this.delayChildrenMs = 50,
@@ -1258,6 +1566,9 @@ class _OptionColumn extends StatelessWidget {
   final double? clock;
 
   final bool reduce;
+  final bool togetherReveal;
+  final bool rovingFocus;
+  final FocusNode? Function(int index)? focusNodeForOption;
   final ValueChanged<int> onHover;
   final ValueChanged<int> onTap;
   final int delayChildrenMs;
@@ -1273,14 +1584,25 @@ class _OptionColumn extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          for (var i = 0; i < options.length; i++) _wrapStagger(i, c, _row(i)),
+          for (var i = 0; i < options.length; i++) _wrapReveal(i, c, _row(i)),
         ],
       ),
     );
   }
 
-  Widget _wrapStagger(int i, double? c, Widget row) {
+  Widget _wrapReveal(int i, double? c, Widget row) {
     if (c == null) return row;
+    if (togetherReveal) {
+      final p = c.clamp(0.0, 1.0);
+      return Opacity(
+        opacity: p,
+        child: Transform.translate(
+          key: ValueKey('beui-select-row-reveal-${options[i].value}'),
+          offset: Offset(0, reduce ? 0 : -4 * (1 - p)),
+          child: row,
+        ),
+      );
+    }
     final start = (delayChildrenMs + i * _staggerMs) / _windowMs;
     const width = _itemDurMs / _windowMs;
     final p = beuiEaseOut.transform(((c - start) / width).clamp(0.0, 1.0));
@@ -1307,7 +1629,7 @@ class _OptionColumn extends StatelessWidget {
     final isSelected = opt.value == value;
     final isActive = i == active;
     final highlight = isSelected || isActive;
-    return MouseRegion(
+    final row = MouseRegion(
       onEnter: opt.enabled ? (_) => onHover(i) : null,
       cursor: opt.enabled ? SystemMouseCursors.click : SystemMouseCursors.basic,
       child: GestureDetector(
@@ -1334,16 +1656,18 @@ class _OptionColumn extends StatelessWidget {
                   const SizedBox(width: 8),
                 ],
                 Expanded(
-                  child: Text(
-                    opt.label,
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: highlight
-                          ? colors.foreground
-                          : colors.mutedForeground,
-                    ),
-                  ),
+                  child:
+                      (togetherReveal ? opt.labelWidget : null) ??
+                      Text(
+                        opt.label,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: highlight
+                              ? colors.foreground
+                              : colors.mutedForeground,
+                        ),
+                      ),
                 ),
                 if (isSelected) ...[
                   const SizedBox(width: 8),
@@ -1355,38 +1679,25 @@ class _OptionColumn extends StatelessWidget {
         ),
       ),
     );
+    Widget result = row;
+    if (togetherReveal) {
+      result = Semantics(
+        label: opt.label,
+        button: true,
+        enabled: opt.enabled,
+        selected: isSelected,
+        onTap: opt.enabled ? () => onTap(i) : null,
+        child: ExcludeSemantics(child: row),
+      );
+    }
+    if (rovingFocus) {
+      result = Focus(
+        focusNode: focusNodeForOption?.call(i),
+        canRequestFocus: opt.enabled && isActive,
+        skipTraversal: !opt.enabled || !isActive,
+        child: result,
+      );
+    }
+    return result;
   }
 }
-
-// Trigger corner keyframe sequences for the default variant.
-// Open: source keyframes `[0,0,12]` with `times:[0,0.4,1]`, ease EASE_OUT over
-// 0.6s — the near edge stays flat at 0 through the first 40% while the panel is
-// attached, then rounds 0→12 across the last 60% as it separates (no pinch on
-// open). Close: `[12,0,12]` with `times:[0,0.5,1]` (50/50) over 0.42s.
-final Animatable<double> _openCornerSeq = TweenSequence<double>([
-  TweenSequenceItem(tween: ConstantTween<double>(0.0), weight: 40),
-  TweenSequenceItem(
-    tween: Tween(
-      begin: 0.0,
-      end: _radius,
-    ).chain(CurveTween(curve: beuiEaseOut)),
-    weight: 60,
-  ),
-]);
-
-final Animatable<double> _closeCornerSeq = TweenSequence<double>([
-  TweenSequenceItem(
-    tween: Tween(
-      begin: _radius,
-      end: 0.0,
-    ).chain(CurveTween(curve: beuiEaseOut)),
-    weight: 50,
-  ),
-  TweenSequenceItem(
-    tween: Tween(
-      begin: 0.0,
-      end: _radius,
-    ).chain(CurveTween(curve: beuiEaseOut)),
-    weight: 50,
-  ),
-]);

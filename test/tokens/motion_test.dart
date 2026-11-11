@@ -64,6 +64,12 @@ void main() {
       expect(beuiSpringMouse.description.stiffness, 200);
       expect(beuiSpringMouse.description.damping, 15);
     });
+
+    test('beuiSpringGlide — slider thumb and fill glide', () {
+      expect(beuiSpringGlide.description.mass, 0.5);
+      expect(beuiSpringGlide.description.stiffness, 700);
+      expect(beuiSpringGlide.description.damping, 50);
+    });
   });
 
   group('easing curves carry the source ease.ts cubic-beziers verbatim', () {
@@ -131,5 +137,30 @@ void main() {
       );
       expect(resolved, same(beuiSpringMouse));
     });
+
+    testWidgets('beuiSpringGlide is untouched when animations are enabled', (
+      tester,
+    ) async {
+      final resolved = await _resolve(
+        tester,
+        disableAnimations: false,
+        input: beuiSpringGlide,
+        isMovement: true,
+      );
+      expect(resolved, same(beuiSpringGlide));
+    });
+
+    testWidgets(
+      'beuiSpringGlide resolves to NoMotion when animations are disabled',
+      (tester) async {
+        final resolved = await _resolve(
+          tester,
+          disableAnimations: true,
+          input: beuiSpringGlide,
+          isMovement: true,
+        );
+        expect(resolved, isA<NoMotion>());
+      },
+    );
   });
 }

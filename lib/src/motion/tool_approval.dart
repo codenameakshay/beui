@@ -255,11 +255,9 @@ class BeuiToolApprovalCode extends StatelessWidget {
 /// **This is the trust surface.** Four properties are load-bearing and are
 /// tested as such:
 ///
-/// 1. *The command is visible when there is one.* [defaultOpen] is null by
-///    default, which resolves to `parameters.isNotEmpty` — a card that has
-///    something to show shows it. Being asked to allow `terminal.run` with the
-///    command folded away is not consent. Parameterless approvals still start
-///    collapsed, because there is nothing behind the chevron.
+/// 1. *Evidence is closed by default.* A caller may pass [defaultOpen] `true`
+///    to explicitly open the parameter disclosure. Parameterless approvals
+///    have no details disclosure to open.
 /// 2. *Every action is keyboard-reachable.* [BeuiButton] backs Allow once /
 ///    Always allow / Deny and the details toggle, so Tab reaches them,
 ///    Enter/Space activates, and the focus ring is visible. `Deny` is in the
@@ -274,11 +272,9 @@ class BeuiToolApprovalCode extends StatelessWidget {
 /// [BeuiToolApprovalStatus.pending] auto-collapses the details panel — the
 /// decision is made, so the evidence folds away.
 ///
-/// **`defaultOpen` policy.** Across the transcript the rule
-/// is: *a surface that is still asking or still running opens; a historical
-/// record collapses.* This card is asking, so it opens whenever it has
-/// parameters. [BeuiToolResult] force-opens while running and collapses on
-/// completion for the same reason.
+/// **`defaultOpen` policy.** Uncontrolled details start closed by default,
+/// matching the source. Pass `true` to opt into initially open evidence;
+/// controlled [open] remains owned by the caller.
 ///
 /// **Motion.** Chevron rotates on [beuiSpringSwap]; the disclosure opens in
 /// 220ms / closes in 140ms [beuiEaseOut] via [BeuiAgentDisclosureInternal];
@@ -383,9 +379,9 @@ class BeuiToolApproval extends StatefulWidget {
 
   /// Initial open state when uncontrolled.
   ///
-  /// **Null (the default) means "open when there is something to show"** —
-  /// it resolves to `parameters.isNotEmpty`. Pass `false` to force a card with
-  /// parameters to start collapsed; pass `true` to open a parameterless one.
+  /// Null (the default) resolves to `false`, so evidence starts closed. Pass
+  /// `true` to opt into an initially open disclosure; explicit `false` also
+  /// starts closed. Controlled [open] state is unaffected.
   final bool? defaultOpen;
 
   /// Height cap on the details panel before it scrolls. Defaults to 240.
@@ -473,9 +469,7 @@ class _BeuiToolApprovalState extends State<BeuiToolApproval>
   bool get _pending => widget.status == BeuiToolApprovalStatus.pending;
   bool get _currentOpen => widget.open ?? _internalOpen;
 
-  /// A card with something to show, shows it.
-  bool get _resolvedDefaultOpen =>
-      widget.defaultOpen ?? widget.parameters.isNotEmpty;
+  bool get _resolvedDefaultOpen => widget.defaultOpen ?? false;
 
   bool get _showAlwaysAllow =>
       (widget.allowAlways ??

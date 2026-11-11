@@ -130,7 +130,7 @@ class BeuiMessageBubble extends StatefulWidget {
     required this.child,
     this.variant = BeuiMessageBubbleVariant.soft,
     this.align,
-    this.animateIn = true,
+    this.animateIn = false,
     super.key,
   });
 
@@ -146,11 +146,8 @@ class BeuiMessageBubble extends StatefulWidget {
 
   /// Plays the surface pop once when this bubble mounts.
   ///
-  /// Defaults to **true**. The source defaults it off, and the audit
-  /// found the consequence: nothing in the library animated out of the box and
-  /// the flagship preview opted assistant rows out entirely, so the port's
-  /// best asset — its entrance motion — was invisible unless you knew to ask
-  /// for it.
+  /// Defaults to **false**, matching the source. Pass `true` to opt into the
+  /// mount-only surface pop and content reveal.
   ///
   /// "New" is derived from key identity, not from this flag: the entrance is
   /// seeded once at mount and never replays, so a bubble whose content streams

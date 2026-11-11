@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart' show RenderProxyBox;
 
 import '../theme/beui_agent_theme.dart';
 import '../theme/beui_colors.dart';
@@ -26,7 +27,7 @@ typedef BeuiMasonryKeyBuilder<T> =
 typedef BeuiMasonryItemBuilder<T> = Widget Function(T item, int index);
 
 /// Estimates the pixel height of [item] at [index] before layout, used only for
-/// shortest-column lane assignment and the prefetch trigger distance. The actual
+/// shortest-column lane assignment. The actual
 /// rendered height is measured by Flutter — see [BeuiInfiniteMasonry].
 typedef BeuiMasonrySizeEstimator<T> = double Function(T item, int index);
 
@@ -38,41 +39,26 @@ typedef BeuiMasonrySizeEstimator<T> = double Function(T item, int index);
 /// / end / error tail states. New items (those appended after the initial batch)
 /// reveal with a per-lane-staggered spring rise + fade.
 ///
-/// ## Virtualization simplification (read this)
+/// ## Windowing
 ///
-/// The source uses `@tanstack/react-virtual` (`useVirtualizer` with
-/// `lanes = columns`) for **windowed** virtualization: it positions every item
-/// absolutely from *measured* heights and only mounts the DOM nodes inside the
-/// scroll viewport + `overscan`. Flutter has no equivalent — neither `SliverGrid`
-/// nor `flutter_staggered_grid_view` does windowed, variable-height masonry with
-/// dynamic measurement, and doing it faithfully requires a bespoke `RenderSliver`
-/// with a measurement feedback loop (which risks layout jitter and never-settling
-/// tests).
+/// The source uses measured lane positions and mounts only virtual items. This
+/// implementation retains each mounted item's measured height by stable key.
 ///
-/// This port therefore implements a **correct, eager masonry** rather than true
-/// windowing, matching the *observable* behavior and API:
+/// It computes shortest-lane positions from measured heights and mounts only
+/// viewport items plus [overscan] * columns around them.
 ///
 /// * **Responsive columns** — `columns = min(maxColumns, max(1,
 ///   floor((width + gap) / (minColumnWidth + gap))))`, from a [LayoutBuilder]
 ///   (the Flutter analog of the source's `ResizeObserver`), identical formula.
-/// * **Shortest-column-first distribution** — items are assigned to the currently
-///   shortest lane using [estimateSize], exactly as react-virtual assigns lanes
-///   from estimates *before* measurement. Each column is a real Flutter [Column],
-///   so items lay out at their **true measured heights** — no overlap, no
-///   estimate-driven position drift (a fidelity improvement over absolute
-///   estimate positioning).
-/// * **Lazy at the feed level** — the "infinite" behavior lives in [onLoadMore]:
-///   more items are fetched on demand as you scroll near the end. Per-item DOM
-///   windowing is *not* replicated; all currently-loaded items are built.
-/// * **[overscan] / [estimateSize] are threaded through, not dropped** —
-///   [estimateSize] drives lane assignment and the prefetch distance; [overscan]
-///   widens the prefetch trigger window (its react-virtual role of enlarging the
-///   render window has no analog in an eager build, so it is repurposed to the
-///   nearest observable effect and documented here).
+/// * **Shortest-column-first distribution** — items use measured height when
+///   available, then [estimateSize], to choose the next lane.
+/// * **Windowed rendering** — only virtual items are mounted, and measurements
+///   persist by stable key across scroll windows and column reflow.
+/// * **Separate windows** — [overscan] controls rendered items; [prefetch]
+///   controls the last-visible-index load trigger.
 ///
-/// **Trade-off:** memory and build cost grow with the total number of loaded
-/// items. For very long feeds, consumers should cap the retained [items]
-/// (windowing their own data), just as they would page a `ListView`.
+/// **Trade-off:** geometry is recomputed in O(n) per update, while mounted item
+/// widgets remain bounded to the viewport and overscan window.
 ///
 /// ## Motion
 ///
@@ -142,8 +128,8 @@ class BeuiInfiniteMasonry<T> extends StatefulWidget {
   /// Retry callback shown on the error tail card (source `onRetry`).
   final VoidCallback? onRetry;
 
-  /// Estimated item height for lane assignment and the prefetch distance. The
-  /// real height is measured at layout. Defaults to `240` (source
+  /// Estimated item height for lane assignment until measured at the current
+  /// column width. Defaults to `240` (source
   /// `estimateSize = () => 240`).
   final BeuiMasonrySizeEstimator<T>? estimateSize;
 
@@ -169,12 +155,11 @@ class BeuiInfiniteMasonry<T> extends StatefulWidget {
   /// Gap between columns and between items, in px (source `gap = 12`).
   final double gap;
 
-  /// Extra prefetch window depth. Threaded through to widen the load-more
-  /// trigger distance (source `overscan = 4`; see the class docs on how its
-  /// react-virtual role maps here).
+  /// Extra rendered items per column before and after the visible range
+  /// (source `overscan = 4`). It does not widen the load-more threshold.
   final int overscan;
 
-  /// Loads more when the feed scrolls within roughly this many items of the end
+  /// Loads more when the last visible item is within this many items of the end
   /// (source `prefetch = 3`).
   final int prefetch;
 
@@ -195,8 +180,13 @@ class BeuiInfiniteMasonry<T> extends StatefulWidget {
 
 class _BeuiInfiniteMasonryState<T> extends State<BeuiInfiniteMasonry<T>> {
   ScrollController? _internalController;
-  ScrollController get _controller =>
-      widget.controller ?? (_internalController ??= ScrollController());
+  ScrollController? _listeningController;
+  ScrollController get _controller {
+    final controller =
+        widget.controller ?? (_internalController ??= ScrollController());
+    _bindController(controller);
+    return controller;
+  }
 
   /// Keys revealed at least once — a reveal never fires twice for the same item
   /// (the source's `revealedKeysRef`).
@@ -211,14 +201,23 @@ class _BeuiInfiniteMasonryState<T> extends State<BeuiInfiniteMasonry<T>> {
   bool _loadPending = false;
 
   bool _postFrameScheduled = false;
+  bool _controllerRebuildScheduled = false;
 
-  // Cached per-build geometry the scroll callback reads.
-  double _triggerInset = 320;
+  final Map<Object, _MeasuredMasonryItem> _measuredItems = {};
+  List<_MasonryPlacement> _placements = const [];
+  int _firstVisibleIndex = -1;
+  int _lastVisibleIndex = -1;
+  double _scrollOffset = 0;
+  double _contentHeight = 0;
+  double _viewportHeight = 0;
+  bool _measurementUpdateScheduled = false;
 
   @override
   void initState() {
     super.initState();
     _initialItemCount = widget.items.length;
+    final controller = widget.controller;
+    if (controller != null) _bindController(controller);
   }
 
   @override
@@ -228,15 +227,64 @@ class _BeuiInfiniteMasonryState<T> extends State<BeuiInfiniteMasonry<T>> {
     if (oldWidget.loading && !widget.loading) _loadPending = false;
     if (widget.controller != oldWidget.controller &&
         oldWidget.controller == null) {
+      if (identical(_listeningController, _internalController)) {
+        _unbindController();
+      }
       _internalController?.dispose();
       _internalController = null;
     }
+    _bindControllerIfAvailable();
   }
 
   @override
   void dispose() {
+    _unbindController();
     _internalController?.dispose();
     super.dispose();
+  }
+
+  void _bindControllerIfAvailable() {
+    final controller = widget.controller ?? _internalController;
+    if (controller == null) {
+      _unbindController();
+    } else {
+      _bindController(controller);
+    }
+  }
+
+  void _bindController(ScrollController controller) {
+    if (identical(controller, _listeningController)) return;
+    _unbindController();
+    _listeningController = controller;
+    controller.addListener(_handleControllerScroll);
+  }
+
+  void _unbindController() {
+    _listeningController?.removeListener(_handleControllerScroll);
+    _listeningController = null;
+  }
+
+  void _handleControllerScroll() {
+    final positions = _listeningController?.positions;
+    if (positions == null || positions.isEmpty) return;
+    for (final position in positions) {
+      if (!position.hasContentDimensions) continue;
+      final oldFirst = _firstVisibleIndex;
+      final oldLast = _lastVisibleIndex;
+      _scrollOffset = position.pixels;
+      _viewportHeight = position.viewportDimension;
+      _updateVisibleRange();
+      if ((oldFirst != _firstVisibleIndex || oldLast != _lastVisibleIndex) &&
+          mounted &&
+          !_controllerRebuildScheduled) {
+        _controllerRebuildScheduled = true;
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          _controllerRebuildScheduled = false;
+          if (mounted) setState(() {});
+        });
+      }
+      _maybeLoadMore(position);
+    }
   }
 
   double _estimate(T item, int index) =>
@@ -250,29 +298,17 @@ class _BeuiInfiniteMasonryState<T> extends State<BeuiInfiniteMasonry<T>> {
     return math.min(widget.maxColumns, math.max(1, raw));
   }
 
-  /// Prefetch trigger distance in px from the bottom. Derived from [prefetch] +
-  /// [overscan] converted to vertical rows via the column count and the mean
-  /// estimated item height — so [estimateSize], [overscan], [prefetch] and
-  /// [gap] all feed the load-more window (see class docs).
-  double _computeTriggerInset(int columns) {
-    final items = widget.items;
-    final n = items.length;
-    double avg;
-    if (n == 0) {
-      avg = 240;
-    } else {
-      final sample = math.min(n, 12);
-      var sum = 0.0;
-      for (var i = n - sample; i < n; i++) {
-        sum += _estimate(items[i], i);
-      }
-      avg = sum / sample;
-    }
-    final rows = (widget.prefetch + widget.overscan) / columns;
-    return math.max(avg, rows * (avg + widget.gap));
-  }
-
   bool _onScrollNotification(ScrollNotification notification) {
+    if (notification.depth == 0 && notification.metrics.axis == Axis.vertical) {
+      _scrollOffset = notification.metrics.pixels;
+      _viewportHeight = notification.metrics.viewportDimension;
+      final oldFirst = _firstVisibleIndex;
+      final oldLast = _lastVisibleIndex;
+      _updateVisibleRange();
+      if (oldFirst != _firstVisibleIndex || oldLast != _lastVisibleIndex) {
+        setState(() {});
+      }
+    }
     _maybeLoadMore(notification.metrics);
     return false;
   }
@@ -285,8 +321,11 @@ class _BeuiInfiniteMasonryState<T> extends State<BeuiInfiniteMasonry<T>> {
         !metrics.hasContentDimensions) {
       return;
     }
-    final remaining = metrics.maxScrollExtent - metrics.pixels;
-    if (remaining <= _triggerInset) _fireLoadMore();
+    if (widget.items.isNotEmpty &&
+        _lastVisibleIndex >=
+            math.max(0, widget.items.length - widget.prefetch)) {
+      _fireLoadMore();
+    }
   }
 
   void _fireLoadMore() {
@@ -306,21 +345,36 @@ class _BeuiInfiniteMasonryState<T> extends State<BeuiInfiniteMasonry<T>> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _postFrameScheduled = false;
       if (!mounted) return;
-      if (_hasError || widget.loading || !widget.hasMore || _loadPending) {
-        return;
-      }
       final positions = _controller.positions;
       if (positions.isEmpty) {
         // Source does not auto-load the first page from an empty feed (its fill
         // effect early-returns when items is empty). Only fill an underfilled
         // *non-empty* feed whose scroll view hasn't attached yet.
-        if (widget.items.isNotEmpty) _fireLoadMore();
+        if (!_hasError &&
+            !widget.loading &&
+            widget.hasMore &&
+            !_loadPending &&
+            widget.items.isNotEmpty) {
+          _fireLoadMore();
+        }
         return;
       }
       for (final position in positions) {
         if (!position.hasContentDimensions) continue;
-        final remaining = position.maxScrollExtent - position.pixels;
-        if (remaining <= _triggerInset) {
+        final oldFirst = _firstVisibleIndex;
+        final oldLast = _lastVisibleIndex;
+        _scrollOffset = position.pixels;
+        _viewportHeight = position.viewportDimension;
+        _updateVisibleRange();
+        if (oldFirst != _firstVisibleIndex || oldLast != _lastVisibleIndex) {
+          setState(() {});
+        }
+        if (_hasError || widget.loading || !widget.hasMore || _loadPending) {
+          continue;
+        }
+        if (widget.items.isNotEmpty &&
+            _lastVisibleIndex >=
+                math.max(0, widget.items.length - widget.prefetch)) {
           _fireLoadMore();
           return;
         }
@@ -372,36 +426,61 @@ class _BeuiInfiniteMasonryState<T> extends State<BeuiInfiniteMasonry<T>> {
             builder: (context, constraints) {
               final width = math.max(0.0, constraints.maxWidth - 24); // p-3
               final columns = _columnsFor(width);
-              _triggerInset = _computeTriggerInset(columns);
+              _viewportHeight = constraints.maxHeight;
+              final positions = _controller.positions;
+              if (positions.isNotEmpty &&
+                  positions.first.hasContentDimensions) {
+                _scrollOffset = positions.first.pixels;
+                _viewportHeight = positions.first.viewportDimension;
+              }
+              final layout = _layoutItems(columns, width);
+              _placements = layout.placements;
+              final hasEndState =
+                  !widget.hasMore &&
+                  widget.items.isNotEmpty &&
+                  widget.endState != null;
+              _contentHeight = layout.height + (hasEndState ? 48 : 0);
+              _updateVisibleRange();
               _scheduleFillCheck();
-
-              final cols = _distribute(columns, colors, reduce);
 
               return NotificationListener<ScrollNotification>(
                 onNotification: _onScrollNotification,
                 child: SingleChildScrollView(
                   controller: _controller,
                   padding: const EdgeInsets.all(12), // p-3
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      _MasonryRow(columns: cols, gap: widget.gap),
-                      if (!widget.hasMore &&
-                          widget.items.isNotEmpty &&
-                          widget.endState != null)
-                        Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 16),
-                          child: DefaultTextStyle.merge(
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              fontSize: 12,
-                              color: colors.mutedForeground,
-                            ),
-                            child: Center(child: widget.endState!),
+                  child: SizedBox(
+                    width: width,
+                    height: _contentHeight,
+                    child: Stack(
+                      clipBehavior: Clip.none,
+                      children: [
+                        for (final placement in _visiblePlacements(columns))
+                          _buildPlacement(
+                            placement,
+                            width,
+                            columns,
+                            colors,
+                            reduce,
                           ),
-                        ),
-                    ],
+                        if (hasEndState)
+                          Positioned(
+                            left: 0,
+                            top: layout.height,
+                            width: width,
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 16),
+                              child: DefaultTextStyle.merge(
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  color: colors.mutedForeground,
+                                ),
+                                child: Center(child: widget.endState!),
+                              ),
+                            ),
+                          ),
+                      ],
+                    ),
                   ),
                 ),
               );
@@ -412,113 +491,319 @@ class _BeuiInfiniteMasonryState<T> extends State<BeuiInfiniteMasonry<T>> {
     );
   }
 
-  /// Distributes real items (+ the loading/error tail) into [columns] lane
-  /// buckets, shortest-lane-first by estimated height.
-  List<List<Widget>> _distribute(int columns, BeuiColors colors, bool reduce) {
+  _MasonryLayout _layoutItems(int columns, double width) {
     final laneHeights = List<double>.filled(columns, 0);
-    final buckets = List<List<Widget>>.generate(columns, (_) => <Widget>[]);
+    final placements = <_MasonryPlacement>[];
+    final columnWidth = math.max(
+      0.0,
+      (width - widget.gap * (columns - 1)) / columns,
+    );
 
-    int shortest() {
-      var idx = 0;
-      for (var c = 1; c < columns; c++) {
-        if (laneHeights[c] < laneHeights[idx] - 1e-6) idx = c;
+    int shortestLane() {
+      var shortest = 0;
+      for (var lane = 1; lane < columns; lane++) {
+        if (laneHeights[lane] < laneHeights[shortest] - 1e-6) shortest = lane;
       }
-      return idx;
+      return shortest;
     }
 
-    final items = widget.items;
-    for (var i = 0; i < items.length; i++) {
-      final lane = shortest();
-      final key = widget.getItemKey(items[i], i);
-      final animate = widget.animateItems && !reduce && i >= _initialItemCount;
-      buckets[lane].add(
-        _MasonryItemReveal(
-          key: ValueKey<BeuiInfiniteMasonryKey>(key),
-          itemKey: key,
+    for (var index = 0; index < widget.items.length; index++) {
+      final item = widget.items[index];
+      final key = widget.getItemKey(item, index);
+      final lane = shortestLane();
+      final measured = _measuredItems[key];
+      final height =
+          measured != null && (measured.width - columnWidth).abs() < 0.5
+          ? measured.height
+          : _estimate(item, index);
+      placements.add(
+        _MasonryPlacement(
+          index: index,
           lane: lane,
-          revealedKeys: _revealedKeys,
-          animate: animate,
-          child: widget.renderItem(items[i], i),
+          top: laneHeights[lane],
+          height: height,
+          key: key,
         ),
       );
-      laneHeights[lane] += _estimate(items[i], i) + widget.gap;
+      laneHeights[lane] += height + widget.gap;
     }
 
-    // Tail: an error card takes precedence over loading skeletons (source
-    // `tailCount = hasError ? 1 : loading ? columns : 0`).
     if (_hasError) {
-      final lane = shortest();
-      buckets[lane].add(
-        _ErrorTailCard(
-          key: const ValueKey('masonry-tail-error'),
-          colors: colors,
-          error: widget.error!,
-          onRetry: widget.onRetry,
+      final lane = shortestLane();
+      const measurementKey = _MasonryTailMeasurementKey(
+        isError: true,
+        index: 0,
+      );
+      final measured = _measuredItems[measurementKey];
+      final height =
+          measured != null && (measured.width - columnWidth).abs() < 0.5
+          ? measured.height
+          : 144.0;
+      placements.add(
+        _MasonryPlacement(
+          index: widget.items.length,
+          lane: lane,
+          top: laneHeights[lane],
+          height: height,
+          isError: true,
+          measurementKey: measurementKey,
         ),
       );
+      laneHeights[lane] += height + widget.gap;
     } else if (widget.loading) {
-      for (var i = 0; i < columns; i++) {
-        final lane = shortest();
-        buckets[lane].add(
-          widget.renderLoadingItem?.call(i) ??
+      for (var index = 0; index < columns; index++) {
+        final lane = shortestLane();
+        final measurementKey = _MasonryTailMeasurementKey(
+          isError: false,
+          index: index,
+        );
+        final measured = _measuredItems[measurementKey];
+        final height =
+            measured != null && (measured.width - columnWidth).abs() < 0.5
+            ? measured.height
+            : 144 + (index % 3) * 36.0;
+        placements.add(
+          _MasonryPlacement(
+            index: widget.items.length + index,
+            lane: lane,
+            top: laneHeights[lane],
+            height: height,
+            tailIndex: index,
+            measurementKey: measurementKey,
+          ),
+        );
+        laneHeights[lane] += height + widget.gap;
+      }
+    }
+
+    final height = laneHeights.fold<double>(
+      0,
+      (largest, laneHeight) => math.max(largest, laneHeight),
+    );
+    return _MasonryLayout(
+      placements: placements,
+      height: math.max(0, height - (placements.isEmpty ? 0 : widget.gap)),
+    );
+  }
+
+  void _updateVisibleRange() {
+    final start = math.max(0.0, _scrollOffset - 12);
+    final end = _scrollOffset + _viewportHeight - 12;
+    final visible = _placements
+        .where((placement) => placement.top < end)
+        .where((placement) => placement.top + placement.height > start)
+        .toList();
+    _firstVisibleIndex = visible.isEmpty
+        ? -1
+        : visible.map((placement) => placement.index).reduce(math.min);
+    _lastVisibleIndex = visible.isEmpty
+        ? -1
+        : visible.map((placement) => placement.index).reduce(math.max);
+  }
+
+  List<_MasonryPlacement> _visiblePlacements(int columns) {
+    if (_placements.isEmpty) return const [];
+    final start = math.max(0.0, _scrollOffset - 12);
+    final end = _scrollOffset + _viewportHeight - 12;
+    final visible = _placements
+        .where(
+          (placement) =>
+              placement.top < end && placement.top + placement.height > start,
+        )
+        .toList();
+    if (visible.isEmpty) return const [];
+    final window = widget.overscan * columns;
+    final lower = math.max(0, _firstVisibleIndex - window);
+    final upper = _lastVisibleIndex + window;
+    return _placements
+        .where(
+          (placement) => placement.index >= lower && placement.index <= upper,
+        )
+        .toList();
+  }
+
+  Widget _buildPlacement(
+    _MasonryPlacement placement,
+    double width,
+    int columns,
+    BeuiColors colors,
+    bool reduce,
+  ) {
+    final columnWidth = math.max(
+      0.0,
+      (width - widget.gap * (columns - 1)) / columns,
+    );
+    final left = placement.lane * (columnWidth + widget.gap);
+    if (placement.isError) {
+      return Positioned(
+        key: const ValueKey('masonry-tail-error'),
+        left: left,
+        top: placement.top,
+        width: columnWidth,
+        child: _MasonrySizeReporter(
+          onSize: (size) => _recordMeasurement(
+            placement.measurementKey!,
+            columnWidth,
+            size.height,
+          ),
+          child: _ErrorTailCard(
+            colors: colors,
+            error: widget.error!,
+            onRetry: widget.onRetry,
+          ),
+        ),
+      );
+    }
+    final tailIndex = placement.tailIndex;
+    if (tailIndex != null) {
+      return Positioned(
+        key: ValueKey('masonry-tail-loading-$tailIndex'),
+        left: left,
+        top: placement.top,
+        width: columnWidth,
+        child: _MasonrySizeReporter(
+          onSize: (size) => _recordMeasurement(
+            placement.measurementKey!,
+            columnWidth,
+            size.height,
+          ),
+          child:
+              widget.renderLoadingItem?.call(tailIndex) ??
               _DefaultLoadingItem(
-                key: ValueKey('masonry-tail-loading-$i'),
-                index: i,
+                index: tailIndex,
                 colors: colors,
                 reduce: reduce,
               ),
-        );
-        laneHeights[lane] += (144 + (i % 3) * 36) + widget.gap;
-      }
-    }
-
-    return buckets;
-  }
-}
-
-/// A [Row] of gap-separated, equal-width lane [Column]s.
-class _MasonryRow extends StatelessWidget {
-  const _MasonryRow({required this.columns, required this.gap});
-
-  final List<List<Widget>> columns;
-  final double gap;
-
-  @override
-  Widget build(BuildContext context) {
-    final children = <Widget>[];
-    for (var c = 0; c < columns.length; c++) {
-      if (c > 0) children.add(SizedBox(width: gap));
-      children.add(
-        Expanded(
-          child: _MasonryColumn(items: columns[c], gap: gap),
         ),
       );
     }
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: children,
+
+    final index = placement.index;
+    final key = placement.key!;
+    final animate =
+        widget.animateItems && !reduce && index >= _initialItemCount;
+    return Positioned(
+      key: ValueKey<BeuiInfiniteMasonryKey>(key),
+      left: left,
+      top: placement.top,
+      width: columnWidth,
+      child: _MasonrySizeReporter(
+        onSize: (size) => _recordMeasurement(key, columnWidth, size.height),
+        child: _MasonryItemReveal(
+          key: ValueKey<BeuiInfiniteMasonryKey>(key),
+          itemKey: key,
+          lane: placement.lane,
+          revealedKeys: _revealedKeys,
+          animate: animate,
+          child: widget.renderItem(widget.items[index], index),
+        ),
+      ),
     );
+  }
+
+  void _recordMeasurement(Object key, double width, double height) {
+    final previous = _measuredItems[key];
+    if (previous != null &&
+        (previous.width - width).abs() < 0.5 &&
+        (previous.height - height).abs() < 0.5) {
+      return;
+    }
+    _measuredItems[key] = _MeasuredMasonryItem(width: width, height: height);
+    if (_measurementUpdateScheduled) return;
+    _measurementUpdateScheduled = true;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _measurementUpdateScheduled = false;
+      if (mounted) setState(() {});
+    });
   }
 }
 
-class _MasonryColumn extends StatelessWidget {
-  const _MasonryColumn({required this.items, required this.gap});
+class _MasonryLayout {
+  const _MasonryLayout({required this.placements, required this.height});
 
-  final List<Widget> items;
-  final double gap;
+  final List<_MasonryPlacement> placements;
+  final double height;
+}
+
+class _MasonryPlacement {
+  const _MasonryPlacement({
+    required this.index,
+    required this.lane,
+    required this.top,
+    required this.height,
+    this.key,
+    this.tailIndex,
+    this.measurementKey,
+    this.isError = false,
+  });
+
+  final int index;
+  final int lane;
+  final double top;
+  final double height;
+  final BeuiInfiniteMasonryKey? key;
+  final int? tailIndex;
+  final Object? measurementKey;
+  final bool isError;
+}
+
+class _MasonryTailMeasurementKey {
+  const _MasonryTailMeasurementKey({
+    required this.isError,
+    required this.index,
+  });
+
+  final bool isError;
+  final int index;
 
   @override
-  Widget build(BuildContext context) {
-    final children = <Widget>[];
-    for (var i = 0; i < items.length; i++) {
-      if (i > 0) children.add(SizedBox(height: gap));
-      children.add(items[i]);
+  bool operator ==(Object other) =>
+      other is _MasonryTailMeasurementKey &&
+      other.isError == isError &&
+      other.index == index;
+
+  @override
+  int get hashCode => Object.hash(isError, index);
+}
+
+class _MeasuredMasonryItem {
+  const _MeasuredMasonryItem({required this.width, required this.height});
+
+  final double width;
+  final double height;
+}
+
+class _MasonrySizeReporter extends SingleChildRenderObjectWidget {
+  const _MasonrySizeReporter({required this.onSize, required super.child});
+
+  final ValueChanged<Size> onSize;
+
+  @override
+  RenderObject createRenderObject(BuildContext context) =>
+      _RenderMasonrySizeReporter(onSize);
+
+  @override
+  void updateRenderObject(
+    BuildContext context,
+    covariant _RenderMasonrySizeReporter renderObject,
+  ) {
+    renderObject.onSize = onSize;
+  }
+}
+
+class _RenderMasonrySizeReporter extends RenderProxyBox {
+  _RenderMasonrySizeReporter(this.onSize);
+
+  ValueChanged<Size> onSize;
+  Size? _lastReportedSize;
+
+  @override
+  void performLayout() {
+    super.performLayout();
+    if (size != _lastReportedSize) {
+      _lastReportedSize = size;
+      onSize(size);
     }
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: children,
-    );
   }
 }
 
@@ -600,7 +885,6 @@ class _DefaultLoadingItem extends StatefulWidget {
     required this.index,
     required this.colors,
     required this.reduce,
-    super.key,
   });
 
   final int index;
@@ -697,7 +981,6 @@ class _ErrorTailCard extends StatelessWidget {
     required this.colors,
     required this.error,
     required this.onRetry,
-    super.key,
   });
 
   final BeuiColors colors;

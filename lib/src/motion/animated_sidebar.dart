@@ -226,6 +226,7 @@ class BeuiAnimatedSidebarScope extends InheritedWidget {
     required this.toggle,
     required this.setExpanded,
     required this.setOpenMobile,
+    this.isExpandedControlled = false,
     required super.child,
     super.key,
   });
@@ -248,7 +249,12 @@ class BeuiAnimatedSidebarScope extends InheritedWidget {
   /// Set mobile sheet open state.
   final ValueChanged<bool> setOpenMobile;
 
-  /// Nearest scope, or null outside a [BeuiAnimatedSidebar].
+  /// Whether desktop expansion is controlled by the state owner.
+  ///
+  /// Optional to preserve source compatibility for manually-created scopes.
+  final bool isExpandedControlled;
+
+  /// Nearest scope, or null outside a provider or sidebar.
   static BeuiAnimatedSidebarScope? maybeOf(BuildContext context) {
     return context
         .dependOnInheritedWidgetOfExactType<BeuiAnimatedSidebarScope>();
@@ -259,7 +265,7 @@ class BeuiAnimatedSidebarScope extends InheritedWidget {
     final scope = maybeOf(context);
     assert(
       scope != null,
-      'BeuiAnimatedSidebarScope.of() called outside BeuiAnimatedSidebar.',
+      'BeuiAnimatedSidebarScope.of() called outside a sidebar provider.',
     );
     return scope!;
   }
@@ -268,17 +274,273 @@ class BeuiAnimatedSidebarScope extends InheritedWidget {
   bool updateShouldNotify(BeuiAnimatedSidebarScope old) {
     return expanded != old.expanded ||
         openMobile != old.openMobile ||
-        isMobile != old.isMobile;
+        isMobile != old.isMobile ||
+        isExpandedControlled != old.isExpandedControlled ||
+        toggle != old.toggle ||
+        setExpanded != old.setExpanded ||
+        setOpenMobile != old.setOpenMobile;
   }
+}
+
+/// Shared expansion/mobile-open owner for [BeuiAnimatedSidebar] compositions.
+///
+/// This provider can be used without rendering a sidebar panel, allowing a
+/// trigger or composed shell to share the same open state. When a legacy
+/// [BeuiAnimatedSidebar] is nested below it, that widget borrows this owner.
+class BeuiAnimatedSidebarProvider extends StatefulWidget {
+  /// Creates a shared sidebar state owner.
+  const BeuiAnimatedSidebarProvider({
+    required this.child,
+    this.expanded,
+    this.defaultExpanded = true,
+    this.onExpandedChange,
+    this.openMobile,
+    this.defaultOpenMobile = false,
+    this.onOpenMobileChange,
+    this.mobileBreakpoint = kBeuiAnimatedSidebarMobileBreakpoint,
+    this.enableKeyboardShortcut = true,
+    super.key,
+  });
+
+  /// Descendant composition that consumes the sidebar scope.
+  final Widget child;
+
+  /// Controlled desktop expansion; null leaves it uncontrolled.
+  final bool? expanded;
+
+  /// Initial desktop expansion when [expanded] is null.
+  final bool defaultExpanded;
+
+  /// Receives desktop expansion requests.
+  final ValueChanged<bool>? onExpandedChange;
+
+  /// Controlled mobile sheet state; null leaves it uncontrolled.
+  final bool? openMobile;
+
+  /// Initial mobile sheet state when [openMobile] is null.
+  final bool defaultOpenMobile;
+
+  /// Receives mobile sheet open/close requests.
+  final ValueChanged<bool>? onOpenMobileChange;
+
+  /// Width below which the owner exposes mobile presentation mode.
+  final double mobileBreakpoint;
+
+  /// Whether this owner handles ⌘/Ctrl+B for its subtree.
+  final bool enableKeyboardShortcut;
+
+  @override
+  State<BeuiAnimatedSidebarProvider> createState() =>
+      _BeuiAnimatedSidebarProviderState();
+}
+
+class _BeuiAnimatedSidebarProviderState
+    extends State<BeuiAnimatedSidebarProvider> {
+  late final _BeuiAnimatedSidebarModel _model;
+
+  @override
+  void initState() {
+    super.initState();
+    _model = _BeuiAnimatedSidebarModel(
+      expanded: widget.expanded,
+      defaultExpanded: widget.defaultExpanded,
+      onExpandedChange: widget.onExpandedChange,
+      openMobile: widget.openMobile,
+      defaultOpenMobile: widget.defaultOpenMobile,
+      onOpenMobileChange: widget.onOpenMobileChange,
+      mobileBreakpoint: widget.mobileBreakpoint,
+    );
+  }
+
+  @override
+  void didUpdateWidget(BeuiAnimatedSidebarProvider oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    _model.configure(
+      expanded: widget.expanded,
+      onExpandedChange: widget.onExpandedChange,
+      openMobile: widget.openMobile,
+      onOpenMobileChange: widget.onOpenMobileChange,
+      mobileBreakpoint: widget.mobileBreakpoint,
+    );
+  }
+
+  @override
+  void dispose() {
+    _model.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final width = MediaQuery.sizeOf(context).width;
+    _model.setViewportWidth(width);
+    return AnimatedBuilder(
+      animation: _model,
+      builder: (context, child) => _SidebarOwnerScope(
+        model: _model,
+        child: _buildOwner(context, child!),
+      ),
+      child: widget.child,
+    );
+  }
+
+  Widget _buildOwner(BuildContext context, Widget child) {
+    final width = MediaQuery.sizeOf(context).width;
+    final isMobile = width < _model.mobileBreakpoint;
+    final scope = BeuiAnimatedSidebarScope(
+      expanded: _model.expanded,
+      openMobile: _model.openMobile,
+      isMobile: isMobile,
+      isExpandedControlled: _model.isExpandedControlled,
+      toggle: _model.toggle,
+      setExpanded: _model.setExpanded,
+      setOpenMobile: _model.setOpenMobile,
+      child: child,
+    );
+    return Focus(
+      onKeyEvent: widget.enableKeyboardShortcut
+          ? _model.onKey
+          : _model.consumeShortcut,
+      canRequestFocus: false,
+      skipTraversal: true,
+      child: scope,
+    );
+  }
+}
+
+class _BeuiAnimatedSidebarModel extends ChangeNotifier {
+  _BeuiAnimatedSidebarModel({
+    required bool? expanded,
+    required bool defaultExpanded,
+    required this.onExpandedChange,
+    required bool? openMobile,
+    required bool defaultOpenMobile,
+    required this.onOpenMobileChange,
+    required this.mobileBreakpoint,
+  }) : _expanded = defaultExpanded,
+       _openMobile = defaultOpenMobile,
+       _controlledExpanded = expanded,
+       _controlledOpenMobile = openMobile;
+
+  bool _expanded;
+  bool _openMobile;
+  bool? _controlledExpanded;
+  bool? _controlledOpenMobile;
+  ValueChanged<bool>? onExpandedChange;
+  ValueChanged<bool>? onOpenMobileChange;
+  double mobileBreakpoint;
+  final Set<FocusNode> _triggerFocusNodes = {};
+
+  bool get expanded => _controlledExpanded ?? _expanded;
+  bool get openMobile => _controlledOpenMobile ?? _openMobile;
+  bool get isExpandedControlled => _controlledExpanded != null;
+
+  void configure({
+    required bool? expanded,
+    required ValueChanged<bool>? onExpandedChange,
+    required bool? openMobile,
+    required ValueChanged<bool>? onOpenMobileChange,
+    required double mobileBreakpoint,
+  }) {
+    // Widget updates rebuild each host; notifications are reserved for requests.
+    _controlledExpanded = expanded;
+    _controlledOpenMobile = openMobile;
+    this.onExpandedChange = onExpandedChange;
+    this.onOpenMobileChange = onOpenMobileChange;
+    this.mobileBreakpoint = mobileBreakpoint;
+  }
+
+  void setViewportWidth(double width) {
+    // The mode is derived from current constraints; state values are retained.
+    _viewportWidth = width;
+  }
+
+  double _viewportWidth = 1024;
+  bool get isMobile => _viewportWidth < mobileBreakpoint;
+
+  void setExpanded(bool next) {
+    if (_controlledExpanded == null && _expanded != next) {
+      _expanded = next;
+      notifyListeners();
+    }
+    onExpandedChange?.call(next);
+  }
+
+  void setOpenMobile(bool next) {
+    if (next && !openMobile && isMobile) {
+      _mobileInvoker = FocusManager.instance.primaryFocus;
+    }
+    if (_controlledOpenMobile == null && _openMobile != next) {
+      _openMobile = next;
+      notifyListeners();
+    }
+    onOpenMobileChange?.call(next);
+  }
+
+  FocusNode? _mobileInvoker;
+
+  FocusNode? takeMobileInvoker() {
+    final invoker = _mobileInvoker;
+    _mobileInvoker = null;
+    return invoker;
+  }
+
+  void registerTrigger(FocusNode node) => _triggerFocusNodes.add(node);
+
+  void unregisterTrigger(FocusNode node) => _triggerFocusNodes.remove(node);
+
+  Iterable<FocusNode> get triggerFocusNodes => _triggerFocusNodes;
+
+  void toggle() {
+    if (isMobile) {
+      setOpenMobile(!openMobile);
+    } else {
+      setExpanded(!expanded);
+    }
+  }
+
+  KeyEventResult onKey(FocusNode node, KeyEvent event) {
+    if (event is! KeyDownEvent) return KeyEventResult.ignored;
+    final isMod =
+        HardwareKeyboard.instance.isMetaPressed ||
+        HardwareKeyboard.instance.isControlPressed;
+    if (!isMod || event.logicalKey != _shortcutKey) {
+      return KeyEventResult.ignored;
+    }
+    toggle();
+    return KeyEventResult.handled;
+  }
+
+  KeyEventResult consumeShortcut(FocusNode node, KeyEvent event) {
+    if (event is! KeyDownEvent || event.logicalKey != _shortcutKey) {
+      return KeyEventResult.ignored;
+    }
+    final isMod =
+        HardwareKeyboard.instance.isMetaPressed ||
+        HardwareKeyboard.instance.isControlPressed;
+    return isMod ? KeyEventResult.handled : KeyEventResult.ignored;
+  }
+}
+
+class _SidebarOwnerScope extends InheritedWidget {
+  const _SidebarOwnerScope({required this.model, required super.child});
+
+  final _BeuiAnimatedSidebarModel model;
+
+  static _BeuiAnimatedSidebarModel? maybeOf(BuildContext context) =>
+      context.dependOnInheritedWidgetOfExactType<_SidebarOwnerScope>()?.model;
+
+  @override
+  bool updateShouldNotify(_SidebarOwnerScope oldWidget) => true;
 }
 
 // ---------------------------------------------------------------------------
 // Trigger (source `AnimatedSidebarTrigger`)
 // ---------------------------------------------------------------------------
 
-/// Icon button that toggles the nearest [BeuiAnimatedSidebar] (desktop expand
-/// or mobile sheet). Place it in the inset header.
-class BeuiAnimatedSidebarTrigger extends StatelessWidget {
+/// Icon button that toggles the nearest sidebar scope (desktop expand or
+/// mobile sheet). It can be used with a provider even without a panel.
+class BeuiAnimatedSidebarTrigger extends StatefulWidget {
   /// Creates a trigger. Defaults to a [LucideIcons.panel_left] glyph.
   const BeuiAnimatedSidebarTrigger({
     this.icon,
@@ -293,7 +555,38 @@ class BeuiAnimatedSidebarTrigger extends StatelessWidget {
   final String tooltip;
 
   @override
+  State<BeuiAnimatedSidebarTrigger> createState() =>
+      _BeuiAnimatedSidebarTriggerState();
+}
+
+class _BeuiAnimatedSidebarTriggerState
+    extends State<BeuiAnimatedSidebarTrigger> {
+  final FocusNode _focusNode = FocusNode(
+    debugLabel: 'beui_animated_sidebar_trigger',
+  );
+  _BeuiAnimatedSidebarModel? _ownerModel;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final nextOwner = _SidebarOwnerScope.maybeOf(context);
+    if (!identical(nextOwner, _ownerModel)) {
+      _ownerModel?.unregisterTrigger(_focusNode);
+      _ownerModel = nextOwner;
+      _ownerModel?.registerTrigger(_focusNode);
+    }
+  }
+
+  @override
+  void dispose() {
+    _ownerModel?.unregisterTrigger(_focusNode);
+    _focusNode.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final widget = this.widget;
     final scope = BeuiAnimatedSidebarScope.maybeOf(context);
     final colors = BeuiColors.resolve(context);
     final open = scope == null
@@ -301,12 +594,13 @@ class BeuiAnimatedSidebarTrigger extends StatelessWidget {
         : (scope.isMobile ? scope.openMobile : scope.expanded);
 
     return Tooltip(
-      message: tooltip,
+      message: widget.tooltip,
       child: IconButton(
-        tooltip: tooltip,
+        focusNode: _focusNode,
+        tooltip: widget.tooltip,
         onPressed: scope?.toggle,
         icon: Icon(
-          icon ?? LucideIcons.panel_left,
+          widget.icon ?? LucideIcons.panel_left,
           size: 16,
           color: colors.mutedForeground,
         ),
@@ -475,27 +769,30 @@ class BeuiAnimatedSidebar extends StatefulWidget {
 }
 
 class _BeuiAnimatedSidebarState extends State<BeuiAnimatedSidebar> {
-  late bool _internalExpanded;
-  late bool _internalOpenMobile;
+  _BeuiAnimatedSidebarModel? _ownedModel;
+  late _BeuiAnimatedSidebarModel _model;
   String? _internalSelected;
   final Set<String> _openSections = {};
   final GlobalKey _panelStackKey = GlobalKey();
   final Map<String, GlobalKey> _itemKeys = {};
+  final FocusScopeNode _mobileFocusScope = FocusScopeNode(
+    debugLabel: 'beui_animated_sidebar_mobile_sheet',
+  );
+  bool? _lastRenderedMobile;
+  bool _lastRenderedOpenMobile = false;
   Rect? _activeRect;
-  late final FocusNode _shortcutFocus;
-
-  bool get _controlledExpanded => widget.expanded != null;
-  bool get _controlledOpenMobile => widget.openMobile != null;
   bool get _controlledSelected => widget.selectedId != null;
 
   bool get _expanded {
-    if (widget.collapsible == BeuiAnimatedSidebarCollapsible.none) return true;
-    return widget.expanded ?? _internalExpanded;
+    if (widget.collapsible == BeuiAnimatedSidebarCollapsible.none) {
+      return true;
+    }
+    return _model.expanded;
   }
 
-  /// Mirrors `openMobile ?? internalOpenMobile` in the source provider.
-  bool get _openMobile =>
-      _controlledOpenMobile ? widget.openMobile! : _internalOpenMobile;
+  _BeuiAnimatedSidebarModel? _borrowedModel;
+
+  bool get _openMobile => _model.openMobile;
 
   String? get _selected {
     final id = _controlledSelected ? widget.selectedId : _internalSelected;
@@ -507,10 +804,7 @@ class _BeuiAnimatedSidebarState extends State<BeuiAnimatedSidebar> {
   @override
   void initState() {
     super.initState();
-    _internalExpanded = widget.defaultExpanded;
-    _internalOpenMobile = widget.defaultOpenMobile;
     _internalSelected = widget.defaultSelectedId ?? _firstSelectableId();
-    _shortcutFocus = FocusNode(debugLabel: 'beui_animated_sidebar_shortcut');
     _ensureItemKeys();
     // Open parent of default selection.
     final sel = _selected;
@@ -521,8 +815,43 @@ class _BeuiAnimatedSidebarState extends State<BeuiAnimatedSidebar> {
   }
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final borrowed = _SidebarOwnerScope.maybeOf(context);
+    if (borrowed == _borrowedModel && _ownedModel != null) return;
+
+    _borrowedModel = borrowed;
+    _ownedModel?.removeListener(_onModelChanged);
+    if (borrowed != null) {
+      _ownedModel?.dispose();
+      _ownedModel = null;
+    }
+    if (borrowed == null) {
+      _ownedModel ??= _BeuiAnimatedSidebarModel(
+        expanded: widget.expanded,
+        defaultExpanded: widget.defaultExpanded,
+        onExpandedChange: widget.onExpandedChange,
+        openMobile: widget.openMobile,
+        defaultOpenMobile: widget.defaultOpenMobile,
+        onOpenMobileChange: widget.onOpenMobileChange,
+        mobileBreakpoint: widget.mobileBreakpoint,
+      )..addListener(_onModelChanged);
+    }
+    _model = borrowed ?? _ownedModel!;
+  }
+
+  @override
   void didUpdateWidget(BeuiAnimatedSidebar old) {
     super.didUpdateWidget(old);
+    if (_borrowedModel == null) {
+      _model.configure(
+        expanded: widget.expanded,
+        onExpandedChange: widget.onExpandedChange,
+        openMobile: widget.openMobile,
+        onOpenMobileChange: widget.onOpenMobileChange,
+        mobileBreakpoint: widget.mobileBreakpoint,
+      );
+    }
     _ensureItemKeys();
     final sel = _selected;
     if (sel != null) {
@@ -535,8 +864,49 @@ class _BeuiAnimatedSidebarState extends State<BeuiAnimatedSidebar> {
 
   @override
   void dispose() {
-    _shortcutFocus.dispose();
+    _ownedModel?.removeListener(_onModelChanged);
+    _ownedModel?.dispose();
+    _mobileFocusScope.dispose();
     super.dispose();
+  }
+
+  void _requestMobileFocus() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted || !_model.isMobile || !_model.openMobile) return;
+      _mobileFocusScope.nextFocus();
+    });
+  }
+
+  void _restoreMobileFocus() {
+    final invoker = _model.takeMobileInvoker();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      if (invoker != null &&
+          invoker is! FocusScopeNode &&
+          invoker.context != null &&
+          invoker.canRequestFocus) {
+        invoker.requestFocus();
+        return;
+      }
+      for (final trigger in _model.triggerFocusNodes) {
+        if (trigger.context != null && trigger.canRequestFocus) {
+          trigger.requestFocus();
+          return;
+        }
+      }
+    });
+  }
+
+  void _setOpenMobile(bool next) {
+    _model.setOpenMobile(next);
+  }
+
+  void _toggle() {
+    _model.toggle();
+  }
+
+  void _onModelChanged() {
+    if (mounted) setState(() {});
   }
 
   void _ensureItemKeys() {
@@ -599,30 +969,6 @@ class _BeuiAnimatedSidebarState extends State<BeuiAnimatedSidebar> {
     return null;
   }
 
-  void _setExpanded(bool next) {
-    if (!_controlledExpanded) {
-      setState(() => _internalExpanded = next);
-    }
-    widget.onExpandedChange?.call(next);
-  }
-
-  /// Same controlled/uncontrolled shape as [_setExpanded] (source `setOpenMobile`:
-  /// only writes internal state when the prop is uncontrolled, always notifies).
-  void _setOpenMobile(bool next) {
-    if (!_controlledOpenMobile) {
-      setState(() => _internalOpenMobile = next);
-    }
-    widget.onOpenMobileChange?.call(next);
-  }
-
-  void _toggle({required bool isMobile}) {
-    if (isMobile) {
-      _setOpenMobile(!_openMobile);
-    } else {
-      _setExpanded(!_expanded);
-    }
-  }
-
   void _select(String id, {required bool isMobile}) {
     final item = _findItem(id);
     if (item == null || item.disabled) return;
@@ -651,7 +997,7 @@ class _BeuiAnimatedSidebarState extends State<BeuiAnimatedSidebar> {
       setState(() => _openSections.add(parent));
     }
 
-    if (isMobile) _setOpenMobile(false);
+    if (isMobile) _model.setOpenMobile(false);
   }
 
   void _scheduleActiveMeasure() {
@@ -689,28 +1035,36 @@ class _BeuiAnimatedSidebarState extends State<BeuiAnimatedSidebar> {
     }
   }
 
-  KeyEventResult _onKey(FocusNode node, KeyEvent event) {
-    if (!widget.enableKeyboardShortcut) return KeyEventResult.ignored;
-    if (event is! KeyDownEvent) return KeyEventResult.ignored;
-    final isMod =
-        HardwareKeyboard.instance.isMetaPressed ||
-        HardwareKeyboard.instance.isControlPressed;
-    if (!isMod || event.logicalKey != _shortcutKey) {
-      return KeyEventResult.ignored;
-    }
-    final width = MediaQuery.sizeOf(context).width;
-    final isMobile = width < widget.mobileBreakpoint;
-    _toggle(isMobile: isMobile);
-    return KeyEventResult.handled;
-  }
-
   @override
   Widget build(BuildContext context) {
+    assert(
+      _borrowedModel == null ||
+          (widget.expanded == null &&
+              widget.onExpandedChange == null &&
+              widget.openMobile == null &&
+              widget.onOpenMobileChange == null),
+      'A BeuiAnimatedSidebar under BeuiAnimatedSidebarProvider must configure '
+      'expanded/openMobile and callbacks on the nearest provider.',
+    );
     final colors = BeuiColors.resolve(context);
     final screenW = MediaQuery.sizeOf(context).width;
-    final isMobile = screenW < widget.mobileBreakpoint;
+    if (_borrowedModel == null) _model.setViewportWidth(screenW);
+    final isMobile = _model.isMobile;
     final expanded = _expanded;
     final reduce = MediaQuery.disableAnimationsOf(context);
+
+    if (_lastRenderedMobile == true &&
+        _lastRenderedOpenMobile &&
+        (!isMobile || !_openMobile)) {
+      _restoreMobileFocus();
+    }
+    if (isMobile &&
+        _openMobile &&
+        (_lastRenderedMobile != true || !_lastRenderedOpenMobile)) {
+      _requestMobileFocus();
+    }
+    _lastRenderedMobile = isMobile;
+    _lastRenderedOpenMobile = _openMobile;
 
     _scheduleActiveMeasure();
 
@@ -718,25 +1072,29 @@ class _BeuiAnimatedSidebarState extends State<BeuiAnimatedSidebar> {
       expanded: expanded,
       openMobile: _openMobile,
       isMobile: isMobile,
-      toggle: () => _toggle(isMobile: isMobile),
-      setExpanded: _setExpanded,
+      isExpandedControlled: _model.isExpandedControlled,
+      toggle: _toggle,
+      setExpanded: _model.setExpanded,
       setOpenMobile: _setOpenMobile,
-      child: Focus(
-        focusNode: _shortcutFocus,
-        onKeyEvent: _onKey,
-        canRequestFocus: false,
-        skipTraversal: true,
-        child: _buildShell(
-          context: context,
-          colors: colors,
-          isMobile: isMobile,
-          expanded: expanded,
-          reduce: reduce,
-        ),
+      child: _buildShell(
+        context: context,
+        colors: colors,
+        isMobile: isMobile,
+        expanded: expanded,
+        reduce: reduce,
       ),
     );
 
-    return scope;
+    if (_borrowedModel != null) return scope;
+    final owner = _SidebarOwnerScope(model: _model, child: scope);
+    return widget.enableKeyboardShortcut
+        ? Focus(
+            onKeyEvent: _model.onKey,
+            canRequestFocus: false,
+            skipTraversal: true,
+            child: owner,
+          )
+        : owner;
   }
 
   Widget _buildShell({
@@ -772,6 +1130,7 @@ class _BeuiAnimatedSidebarState extends State<BeuiAnimatedSidebar> {
           if (widget.child != null) Positioned.fill(child: widget.child!),
           _MobileSheet(
             open: _openMobile,
+            focusScopeNode: _mobileFocusScope,
             side: widget.side,
             width: widget.mobileWidth,
             colors: colors,
@@ -800,7 +1159,7 @@ class _BeuiAnimatedSidebarState extends State<BeuiAnimatedSidebar> {
       variant: widget.variant,
       colors: colors,
       reduce: reduce,
-      onRailTap: () => _toggle(isMobile: false),
+      onRailTap: _model.toggle,
       child: panel,
     );
 
@@ -1043,6 +1402,7 @@ class _InsetContent extends StatelessWidget {
 class _MobileSheet extends StatelessWidget {
   const _MobileSheet({
     required this.open,
+    required this.focusScopeNode,
     required this.side,
     required this.width,
     required this.colors,
@@ -1053,6 +1413,7 @@ class _MobileSheet extends StatelessWidget {
   });
 
   final bool open;
+  final FocusScopeNode focusScopeNode;
   final BeuiAnimatedSidebarSide side;
   final double width;
   final BeuiColors colors;
@@ -1060,6 +1421,35 @@ class _MobileSheet extends StatelessWidget {
   final String semanticLabel;
   final VoidCallback onDismiss;
   final Widget child;
+
+  KeyEventResult _handleKeyEvent(FocusNode node, KeyEvent event) {
+    if (!open || event is! KeyDownEvent) return KeyEventResult.ignored;
+    if (event.logicalKey == LogicalKeyboardKey.escape) {
+      onDismiss();
+      return KeyEventResult.handled;
+    }
+    if (event.logicalKey != LogicalKeyboardKey.tab) {
+      return KeyEventResult.ignored;
+    }
+
+    final focusable = focusScopeNode.traversalDescendants
+        .where((focusNode) => focusNode.context != null)
+        .toList();
+    if (focusable.isEmpty) return KeyEventResult.handled;
+
+    final current = FocusManager.instance.primaryFocus;
+    final first = focusable.first;
+    final last = focusable.last;
+    if (HardwareKeyboard.instance.isShiftPressed && current == first) {
+      last.requestFocus();
+      return KeyEventResult.handled;
+    }
+    if (!HardwareKeyboard.instance.isShiftPressed && current == last) {
+      first.requestFocus();
+      return KeyEventResult.handled;
+    }
+    return KeyEventResult.ignored;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -1117,31 +1507,47 @@ class _MobileSheet extends StatelessWidget {
                 opacity: opacity,
                 child: Transform.translate(
                   offset: Offset(dx, 0),
-                  child: Material(
-                    key: beuiAnimatedSidebarMobilePanelKey,
-                    elevation: 16,
-                    color: colors.background,
-                    child: Semantics(
-                      namesRoute: true,
-                      scopesRoute: true,
-                      label: semanticLabel,
-                      explicitChildNodes: true,
-                      child: SizedBox(
-                        width: panelW,
-                        height: double.infinity,
-                        child: DecoratedBox(
-                          decoration: BoxDecoration(
+                  child: FocusScope(
+                    node: focusScopeNode,
+                    child: Focus(
+                      onKeyEvent: _handleKeyEvent,
+                      canRequestFocus: open,
+                      skipTraversal: true,
+                      descendantsAreFocusable: open,
+                      descendantsAreTraversable: open,
+                      child: ExcludeSemantics(
+                        excluding: !open,
+                        child: IgnorePointer(
+                          ignoring: !open,
+                          child: Material(
+                            key: beuiAnimatedSidebarMobilePanelKey,
+                            elevation: 16,
                             color: colors.background,
-                            border: Border(
-                              right: isLeft
-                                  ? BorderSide(color: colors.border)
-                                  : BorderSide.none,
-                              left: isLeft
-                                  ? BorderSide.none
-                                  : BorderSide(color: colors.border),
+                            child: Semantics(
+                              namesRoute: true,
+                              scopesRoute: true,
+                              label: semanticLabel,
+                              explicitChildNodes: true,
+                              child: SizedBox(
+                                width: panelW,
+                                height: double.infinity,
+                                child: DecoratedBox(
+                                  decoration: BoxDecoration(
+                                    color: colors.background,
+                                    border: Border(
+                                      right: isLeft
+                                          ? BorderSide(color: colors.border)
+                                          : BorderSide.none,
+                                      left: isLeft
+                                          ? BorderSide.none
+                                          : BorderSide(color: colors.border),
+                                    ),
+                                  ),
+                                  child: child,
+                                ),
+                              ),
                             ),
                           ),
-                          child: child,
                         ),
                       ),
                     ),

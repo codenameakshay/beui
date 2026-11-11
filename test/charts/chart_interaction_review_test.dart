@@ -222,7 +222,7 @@ void main() {
   });
 
   testWidgets(
-    'review fan nearest projection clears the overlap and now zones',
+    'review fan projection geometry clears the overlap and now zones without a covering tooltip',
     (tester) async {
       BeuiPriceTargetFanActive? active;
       await tester.pumpWidget(
@@ -235,6 +235,9 @@ void main() {
               BeuiPriceHistoryPoint(date: '2026-10-03', price: 95),
             ],
             onActiveChange: (value) => active = value,
+            // Test projection picking independently of the source's interactive
+            // overlay, which can cover a subsequent pointer coordinate.
+            child: const BeuiPriceTargetPlot(child: BeuiPriceTargetSvg()),
           ),
           reduce: true,
         ),

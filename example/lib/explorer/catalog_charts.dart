@@ -1,5 +1,6 @@
 // Charts family catalog — sidebar order matches https://beui.dev/charts.
 import '../demos/bump_chart_demo.dart';
+import '../demos/bar_chart_demo.dart';
 import '../demos/sankey_chart_demo.dart';
 import '../demos/candlestick_chart_demo.dart';
 import '../demos/composition_chart_demo.dart';
@@ -7,16 +8,45 @@ import '../demos/donut_chart_demo.dart';
 import '../demos/funnel_chart_demo.dart';
 import '../demos/heat_calendar_demo.dart';
 import '../demos/liquidity_heatmap_demo.dart';
+import '../demos/line_chart_demo.dart';
 import '../demos/order_book_demo.dart';
 import '../demos/price_target_fan_demo.dart';
 import '../demos/returns_calendar_demo.dart';
 import '../demos/status_bar_demo.dart';
+import '../demos/sparkline_demo.dart';
 import '../demos/treemap_demo.dart';
 import '../demos/volume_profile_demo.dart';
 import 'catalog.dart';
 
 /// Charts explorer entries in beui.dev sidebar order.
 const List<ExploreEntry> kCharts = [
+  ExploreEntry(
+    title: 'Line Chart',
+    slug: 'line-chart',
+    section: ExploreSection.charts,
+    isNew: true,
+    blurb:
+        'Line and area charts that morph with your data, with a snapping crosshair and value tooltips.',
+    builder: lineChartDemo,
+  ),
+  ExploreEntry(
+    title: 'Bar Chart',
+    slug: 'bar-chart',
+    section: ExploreSection.charts,
+    isNew: true,
+    blurb:
+        'Grouped and stacked bars that grow, reorder, and rescale with your data.',
+    builder: barChartDemo,
+  ),
+  ExploreEntry(
+    title: 'Sparkline',
+    slug: 'sparkline',
+    section: ExploreSection.charts,
+    isNew: true,
+    blurb:
+        'Compact trend lines with a live value, delta, and sample inspection.',
+    builder: sparklineDemo,
+  ),
   ExploreEntry(
     title: 'Sankey Chart',
     slug: 'sankey-chart',

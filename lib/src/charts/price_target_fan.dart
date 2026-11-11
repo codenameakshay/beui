@@ -11,6 +11,7 @@ import 'package:flutter/services.dart';
 import '../motion/number_ticker.dart';
 import '../motion/_engine.dart' show SpringMotion;
 import '../theme/beui_colors.dart';
+import '../theme/beui_text_theme.dart';
 import '../tokens/motion.dart';
 import '_shared.dart';
 
@@ -100,6 +101,66 @@ class BeuiPriceTargetFanActive {
   int get hashCode => Object.hash(type, date, key);
 }
 
+/// One labeled row in a source-shaped price-target tooltip.
+@immutable
+class BeuiPriceTargetFanTooltipMetric {
+  /// Creates a tooltip metric.
+  const BeuiPriceTargetFanTooltipMetric({
+    required this.label,
+    required this.value,
+  });
+
+  /// Row label.
+  final String label;
+
+  /// Row value.
+  final String value;
+}
+
+/// Optional source-shaped accent row in a target tooltip.
+@immutable
+class BeuiPriceTargetFanTooltipAccent {
+  /// Creates a tooltip accent row.
+  const BeuiPriceTargetFanTooltipAccent({
+    required this.label,
+    required this.value,
+    required this.color,
+  });
+
+  /// Accent label.
+  final String label;
+
+  /// Accent value.
+  final String value;
+
+  /// Original target CSS color literal.
+  final String color;
+}
+
+/// Source-derived content and plot anchor passed to a dynamic tooltip builder.
+@immutable
+class BeuiPriceTargetFanTooltipData {
+  /// Creates a source-shaped tooltip description.
+  const BeuiPriceTargetFanTooltipData({
+    required this.title,
+    required this.anchor,
+    required this.metrics,
+    this.accent,
+  });
+
+  /// Tooltip title.
+  final String title;
+
+  /// Anchor point in the 520×236 plot coordinate space.
+  final Offset anchor;
+
+  /// Ordered metric rows.
+  final List<BeuiPriceTargetFanTooltipMetric> metrics;
+
+  /// Optional target change row.
+  final BeuiPriceTargetFanTooltipAccent? accent;
+}
+
 /// Data and interaction owner for a composable price-target fan.
 class BeuiPriceTargetFan extends StatefulWidget {
   /// Creates a price-target fan.
@@ -109,8 +170,9 @@ class BeuiPriceTargetFan extends StatefulWidget {
     required this.targets,
     this.dates = const BeuiPriceTargetDates(),
     this.history = const [],
-    this.label = 'Price target fan',
+    this.label = 'Price target · 12 months',
     this.active,
+    this.activeIsControlled = false,
     this.defaultActive,
     this.onActiveChange,
     this.child,
@@ -133,6 +195,12 @@ class BeuiPriceTargetFan extends StatefulWidget {
 
   /// Controlled active point.
   final BeuiPriceTargetFanActive? active;
+
+  /// Treats [active] as controlled even when it is explicitly null.
+  ///
+  /// A non-null [active] is already controlled. Set this flag when the parent
+  /// owns the empty selection and wants callbacks without internal mutation.
+  final bool activeIsControlled;
 
   /// Initial active point for uncontrolled use.
   final BeuiPriceTargetFanActive? defaultActive;
@@ -158,6 +226,9 @@ class _BeuiPriceTargetFanState extends State<BeuiPriceTargetFan>
   final _historyFocus = FocusNode();
   final _targetFocus = <String, FocusNode>{};
   PointerDeviceKind? _targetPointerKind;
+  PointerDeviceKind? _historyPointerKind;
+  bool _historyFocused = false;
+  bool _historyFocusVisible = false;
 
   FocusNode focusFor(String key) =>
       _targetFocus.putIfAbsent(key, FocusNode.new);
@@ -167,6 +238,21 @@ class _BeuiPriceTargetFanState extends State<BeuiPriceTargetFan>
         !_targetFocus.values.any((focus) => focus.hasFocus)) {
       setActiveId(null);
     }
+  }
+
+  void _setHistoryFocus(bool focused) {
+    if (_historyFocused == focused || !mounted) return;
+    setState(() => _historyFocused = focused);
+  }
+
+  void _setHistoryFocusVisible(bool visible) {
+    if (_historyFocusVisible == visible || !mounted) return;
+    setState(() => _historyFocusVisible = visible);
+  }
+
+  void _setHistoryPointerKind(PointerDeviceKind kind) {
+    _historyPointerKind = kind;
+    _setHistoryFocusVisible(false);
   }
 
   @override
@@ -188,8 +274,9 @@ class _BeuiPriceTargetFanState extends State<BeuiPriceTargetFan>
   @override
   Iterable<String> get knownIds => inspectableIds;
   @override
-  String? get activeId =>
-      widget.active == null ? super.activeId : _id(widget.active);
+  String? get activeId => widget.activeIsControlled || widget.active != null
+      ? _id(widget.active)
+      : super.activeId;
   @override
   List<String> get inspectableIds => [
     for (final point in widget.history) 'h:${point.date}',
@@ -237,39 +324,39 @@ class _BeuiPriceTargetFanState extends State<BeuiPriceTargetFan>
         input.targets.any(
           (target) => !target.price.isFinite || target.price <= 0,
         ) ||
-        input.targets.map((target) => target.price).toSet().length != 3 ||
-        input.targets.map((target) => target.key).toSet().length != 3 ||
-        input.targets.any((target) => target.key.trim().isEmpty)) {
+        input.targets.map((target) => target.key).toSet().length != 3) {
       throw ArgumentError(
         'BeuiPriceTargetFan requires exactly three unique positive targets.',
       );
     }
-    String? previous;
+    int? previous;
     for (final point in input.history) {
-      final parsed = DateTime.tryParse(point.date);
       final isoDate = RegExp(
-        r'^\d{4}-\d{2}-\d{2}(?:T.*)?$',
+        r'^\d{4}-\d{2}-\d{2}(?:T.*(?:Z|[+-]\d{2}:\d{2}))?$',
       ).hasMatch(point.date);
+      final timestamp = isoDate
+          ? _tryHistoryDate(point.date)?.millisecondsSinceEpoch
+          : null;
       if (!isoDate ||
-          parsed == null ||
+          timestamp == null ||
           !point.price.isFinite ||
           point.price <= 0) {
         throw ArgumentError(
           'BeuiPriceTargetFan history requires positive prices and ISO dates.',
         );
       }
-      if (previous != null && point.date.compareTo(previous) <= 0) {
+      if (previous != null && timestamp <= previous) {
         throw ArgumentError(
           'BeuiPriceTargetFan history dates must be strictly increasing.',
         );
       }
-      previous = point.date;
+      previous = timestamp;
     }
   }
 
   @override
   void setActiveId(String? id) {
-    if (widget.active != null) {
+    if (widget.activeIsControlled || widget.active != null) {
       widget.onActiveChange?.call(_active(id));
       return;
     }
@@ -370,16 +457,38 @@ class _BeuiPriceTargetFanState extends State<BeuiPriceTargetFan>
     state: this,
     child: Semantics(
       container: true,
-      label: widget.label,
-      child:
-          widget.child ??
-          const Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            mainAxisSize: MainAxisSize.min,
-            children: [BeuiPriceTargetHeader(), BeuiPriceTargetPlot()],
-          ),
+      explicitChildNodes: true,
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          final width = constraints.maxWidth.isFinite
+              ? math.min(520.0, constraints.maxWidth)
+              : 520.0;
+          return Align(
+            alignment: AlignmentDirectional.topStart,
+            // Size to content like the source block host; do not fill height.
+            heightFactor: 1,
+            child: SizedBox(
+              width: width,
+              child:
+                  widget.child ??
+                  const Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [BeuiPriceTargetHeader(), BeuiPriceTargetPlot()],
+                  ),
+            ),
+          );
+        },
+      ),
     ),
   );
+
+  Rect? get _historyPathBounds {
+    if (widget.history.isEmpty) return null;
+    final bounds = _historyPath(this).getBounds();
+    const halfStroke = .75;
+    return bounds.inflate(halfStroke);
+  }
 }
 
 class _PriceTargetScope extends InheritedWidget {
@@ -402,10 +511,14 @@ class _PriceTargetScope extends InheritedWidget {
 /// Active projection price, signed change, and target caption.
 class BeuiPriceTargetHeader extends StatelessWidget {
   /// Creates the fan header.
-  const BeuiPriceTargetHeader({super.key});
+  const BeuiPriceTargetHeader({super.key, this.child});
+
+  /// Replaces the default headline, like source `PriceTargetFanHeader` children.
+  final Widget? child;
 
   @override
   Widget build(BuildContext context) {
+    if (child != null) return child!;
     final state = _PriceTargetScope.of(context);
     final colors = BeuiColors.resolve(context);
     final active = state._resolvedActive;
@@ -430,10 +543,11 @@ class BeuiPriceTargetHeader extends StatelessWidget {
             stagger: Duration.zero,
             prefix: r'$',
             format: (value) => (value / 100).toStringAsFixed(2),
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 24,
               fontWeight: FontWeight.w600,
-              fontFamily: 'monospace',
+              fontFamily: const BeuiTextTheme().monoFamily,
+              fontFamilyFallback: const BeuiTextTheme().monoFamilyFallback,
               letterSpacing: -0.4,
               fontFeatures: [FontFeature.tabularFigures()],
             ),
@@ -448,9 +562,15 @@ class BeuiPriceTargetHeader extends StatelessWidget {
             style: TextStyle(
               fontSize: 12,
               fontWeight: FontWeight.w500,
-              fontFamily: 'monospace',
+              fontFamily: const BeuiTextTheme().monoFamily,
+              fontFamilyFallback: const BeuiTextTheme().monoFamilyFallback,
               fontFeatures: const [FontFeature.tabularFigures()],
-              color: change >= 0 ? colors.success : colors.destructive,
+              color: active?.type == 'target'
+                  ? _targetInkColor(state, target, colors)
+                  : _sourceTokenInk(
+                      change >= 0 ? 'success' : 'warning',
+                      colors,
+                    ),
             ),
           ),
           Text(
@@ -472,22 +592,39 @@ class BeuiPriceTargetPlot extends StatelessWidget {
   final Widget? child;
 
   @override
-  Widget build(BuildContext context) => Center(
-    child: SizedBox(
-      width: 520,
-      height: 236,
-      child:
-          child ??
-          const Stack(
-            clipBehavior: Clip.none,
-            children: [
-              BeuiPriceTargetSvg(),
-              Positioned.fill(
-                child: IgnorePointer(child: BeuiPriceTargetTooltip()),
-              ),
-            ],
+  Widget build(BuildContext context) => LayoutBuilder(
+    builder: (context, constraints) {
+      final scale = constraints.maxWidth.isFinite
+          ? math.min(1.0, constraints.maxWidth / 520)
+          : 1.0;
+      final width = 520 * scale;
+      final height = 236 * scale;
+      return Center(
+        child: SizedBox(
+          width: width,
+          height: height,
+          child: FittedBox(
+            alignment: Alignment.topLeft,
+            fit: BoxFit.fill,
+            child: SizedBox(
+              width: 520,
+              height: 236,
+              child:
+                  child ??
+                  const Stack(
+                    clipBehavior: Clip.none,
+                    children: [
+                      BeuiPriceTargetSvg(),
+                      Positioned.fill(
+                        child: IgnorePointer(child: BeuiPriceTargetTooltip()),
+                      ),
+                    ],
+                  ),
+            ),
           ),
-    ),
+        ),
+      );
+    },
   );
 }
 
@@ -509,7 +646,7 @@ class BeuiPriceTargetSvg extends StatelessWidget {
         container: true,
         explicitChildNodes: true,
         label:
-            '${state.widget.label}, current ${state.widget.current}, mean target ${state.widget.targets[1].price}',
+            '${state.widget.label}: mean ${_formatFanPrice(state.widget.targets[1].price)}, now ${_formatFanPrice(state.widget.current)}',
         child: MouseRegion(
           cursor: SystemMouseCursors.precise,
           onHover: (event) {
@@ -537,10 +674,9 @@ class BeuiPriceTargetSvg extends StatelessWidget {
                 ...(children ??
                     const [
                       IgnorePointer(child: BeuiPriceTargetAxes()),
-                      IgnorePointer(child: BeuiPriceTargetHistory()),
+                      BeuiPriceTargetFanHistory(),
                       IgnorePointer(child: BeuiPriceTargetNow()),
                       IgnorePointer(child: BeuiPriceTargetCursor()),
-                      BeuiPriceTargetHistoryPoints(),
                       BeuiPriceTargetTargets(),
                     ]),
               ],
@@ -587,6 +723,21 @@ class BeuiPriceTargetHistory extends StatelessWidget {
   );
 }
 
+/// Source-aligned history path and its keyboard slider as one chart layer.
+class BeuiPriceTargetFanHistory extends StatelessWidget {
+  /// Creates the history line and accessible history slider composition.
+  const BeuiPriceTargetFanHistory({super.key});
+
+  @override
+  Widget build(BuildContext context) => Stack(
+    clipBehavior: Clip.none,
+    children: const [
+      IgnorePointer(child: BeuiPriceTargetHistory()),
+      BeuiPriceTargetHistoryPoints(),
+    ],
+  );
+}
+
 /// Forecast fan and keyboardable target choices.
 class BeuiPriceTargetTargets extends StatelessWidget {
   /// Creates target projections.
@@ -602,6 +753,7 @@ class BeuiPriceTargetTargets extends StatelessWidget {
       delay: const Duration(milliseconds: 850),
       isMovement: true,
       builder: (context, reveal) => ClipRect(
+        key: const ValueKey('price-target-fan-reveal'),
         clipper: _FanRevealClip(state._nowX, reveal),
         child: Stack(
           children: [
@@ -623,26 +775,25 @@ class BeuiPriceTargetTargets extends StatelessWidget {
                         value: 1,
                         duration: const Duration(milliseconds: 350),
                         isMovement: true,
-                        builder: (context, solid) => BeuiChartTween(
-                          value:
+                        builder: (context, solid) => AnimatedOpacity(
+                          opacity:
                               state._resolvedActive?.type == 'target' &&
                                   state._resolvedActive?.key != target.key
                               ? .3
                               : 1,
-                          duration: const Duration(milliseconds: 250),
-                          snapWhenReduced: true,
-                          builder: (context, opacity) => Opacity(
-                            opacity: opacity.clamp(0, 1),
-                            child: CustomPaint(
-                              painter: _PriceTargetsPainter(
-                                state,
-                                colors,
-                                target: target,
-                                radius: radius,
-                                solid: solid,
-                              ),
-                              size: const Size(520, 236),
+                          duration: MediaQuery.disableAnimationsOf(context)
+                              ? Duration.zero
+                              : const Duration(milliseconds: 250),
+                          curve: beuiEaseOut,
+                          child: CustomPaint(
+                            painter: _PriceTargetsPainter(
+                              state,
+                              colors,
+                              target: target,
+                              radius: radius,
+                              solid: solid,
                             ),
+                            size: const Size(520, 236),
                           ),
                         ),
                       ),
@@ -680,7 +831,7 @@ class BeuiPriceTargetTargets extends StatelessWidget {
                       button: true,
                       selected: state._resolvedActive?.key == target.key,
                       label:
-                          '${target.key} target ${target.price}, ${target.analysts} analysts',
+                          '${target.key} target ${_formatFanPrice(target.price)}, ${target.analysts} analysts',
                       child: Focus(
                         canRequestFocus: false,
                         onKeyEvent: (_, event) {
@@ -738,24 +889,25 @@ class BeuiPriceTargetTargets extends StatelessWidget {
                               tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                               alignment: Alignment.centerLeft,
                             ),
-                            child: BeuiChartTween(
-                              value:
+                            child: AnimatedOpacity(
+                              opacity:
                                   state._resolvedActive?.type == 'target' &&
                                       state._resolvedActive?.key != target.key
                                   ? .3
                                   : 1,
-                              duration: const Duration(milliseconds: 250),
-                              snapWhenReduced: true,
-                              builder: (context, opacity) => Opacity(
-                                opacity: opacity.clamp(0, 1),
-                                child: Text(
-                                  target.price.toStringAsFixed(0),
-                                  style: TextStyle(
-                                    fontSize: 11,
-                                    fontFamily: 'monospace',
-                                    fontWeight: FontWeight.w600,
-                                    color: _targetColor(state, target, colors),
-                                  ),
+                              duration: MediaQuery.disableAnimationsOf(context)
+                                  ? Duration.zero
+                                  : const Duration(milliseconds: 250),
+                              curve: beuiEaseOut,
+                              child: Text(
+                                _formatTargetPrice(target.price),
+                                style: TextStyle(
+                                  fontSize: 11,
+                                  fontFamily: const BeuiTextTheme().monoFamily,
+                                  fontFamilyFallback:
+                                      const BeuiTextTheme().monoFamilyFallback,
+                                  fontWeight: FontWeight.w600,
+                                  color: _targetInkColor(state, target, colors),
                                 ),
                               ),
                             ),
@@ -793,25 +945,45 @@ class BeuiPriceTargetHistoryPoints extends StatelessWidget {
     return Focus(
       key: const ValueKey('price-target-history-slider'),
       focusNode: state._historyFocus,
-      onFocusChange: (focused) => focused
-          ? state._activeHistory == null
-                ? select(state.widget.history.length - 1)
-                : null
-          : state.clearBlurredInspection(),
+      onFocusChange: (focused) {
+        state._setHistoryFocus(focused);
+        if (focused) {
+          state._setHistoryFocusVisible(
+            state._historyPointerKind == null &&
+                FocusManager.instance.highlightMode ==
+                    FocusHighlightMode.traditional,
+          );
+          select(state.widget.history.length - 1);
+        } else {
+          state._setHistoryFocusVisible(false);
+          state._historyPointerKind = null;
+          state.clearBlurredInspection();
+        }
+      },
       onKeyEvent: (_, event) {
         if (event is! KeyDownEvent && event is! KeyRepeatEvent) {
           return KeyEventResult.ignored;
         }
         switch (event.logicalKey) {
           case LogicalKeyboardKey.home:
+            state._historyPointerKind = null;
+            state._setHistoryFocusVisible(true);
             select(0);
           case LogicalKeyboardKey.end:
+            state._historyPointerKind = null;
+            state._setHistoryFocusVisible(true);
             select(state.widget.history.length - 1);
           case LogicalKeyboardKey.arrowRight:
+            state._historyPointerKind = null;
+            state._setHistoryFocusVisible(true);
             select(index + 1);
           case LogicalKeyboardKey.arrowLeft:
+            state._historyPointerKind = null;
+            state._setHistoryFocusVisible(true);
             select(index - 1);
           case LogicalKeyboardKey.escape:
+            state._historyPointerKind = null;
+            state._setHistoryFocusVisible(true);
             state.setActiveId(null);
           default:
             return KeyEventResult.ignored;
@@ -834,6 +1006,19 @@ class BeuiPriceTargetHistoryPoints extends StatelessWidget {
             child: Stack(
               clipBehavior: Clip.none,
               children: [
+                if (state._historyFocused && state._historyFocusVisible)
+                  Positioned.fromRect(
+                    key: const ValueKey('price-target-history-focus-outline'),
+                    rect: state._historyPathBounds ?? Rect.zero,
+                    child: IgnorePointer(
+                      child: DecoratedBox(
+                        decoration: BoxDecoration(
+                          border: Border.all(color: colors.focusRing, width: 2),
+                          borderRadius: BorderRadius.circular(3),
+                        ),
+                      ),
+                    ),
+                  ),
                 for (
                   var index = 0;
                   index < state.widget.history.length;
@@ -890,28 +1075,31 @@ class _PriceTargetHistoryHitTarget extends StatelessWidget {
           cursor: SystemMouseCursors.click,
           onEnter: (_) => state._setHistoryHover(point.date, true),
           onExit: (_) => state._setHistoryHover(point.date, false),
-          child: Semantics(
-            button: true,
-            selected: selected,
-            label: '${point.date}, ${point.price.toStringAsFixed(2)}',
-            child: GestureDetector(
-              key: ValueKey('price-target-history-${point.date}'),
-              behavior: HitTestBehavior.opaque,
-              onTap: () {
-                state.setActiveId('h:${point.date}');
-                state._historyFocus.requestFocus();
-              },
-              child: Center(
-                child: DecoratedBox(
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: selected ? colors.primary : Colors.transparent,
-                    border: Border.all(
+          child: Listener(
+            onPointerDown: (event) => state._setHistoryPointerKind(event.kind),
+            child: Semantics(
+              button: true,
+              selected: selected,
+              label: '${point.date}, ${point.price.toStringAsFixed(2)}',
+              child: GestureDetector(
+                key: ValueKey('price-target-history-${point.date}'),
+                behavior: HitTestBehavior.opaque,
+                onTap: () {
+                  state.setActiveId('h:${point.date}');
+                  state._historyFocus.requestFocus();
+                },
+                child: Center(
+                  child: DecoratedBox(
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
                       color: selected ? colors.primary : Colors.transparent,
-                      width: 2,
+                      border: Border.all(
+                        color: selected ? colors.primary : Colors.transparent,
+                        width: 2,
+                      ),
                     ),
+                    child: const SizedBox(width: 8, height: 8),
                   ),
-                  child: const SizedBox(width: 8, height: 8),
                 ),
               ),
             ),
@@ -1031,7 +1219,13 @@ class BeuiPriceTargetCursor extends StatelessWidget {
 /// Floating readout anchored to the active history or target coordinate.
 class BeuiPriceTargetTooltip extends StatelessWidget {
   /// Creates the active value tooltip.
-  const BeuiPriceTargetTooltip({super.key});
+  const BeuiPriceTargetTooltip({super.key, this.child, this.contentBuilder});
+
+  /// Optional custom content for the active history or target tooltip.
+  final Widget? child;
+
+  /// Builds custom content from source title, metrics, accent, and anchor data.
+  final Widget Function(BeuiPriceTargetFanTooltipData data)? contentBuilder;
   @override
   Widget build(BuildContext context) {
     final state = _PriceTargetScope.of(context);
@@ -1050,37 +1244,89 @@ class BeuiPriceTargetTooltip extends StatelessWidget {
         : point != null
         ? state._y(point.price)
         : 0.0;
-    return Stack(
-      clipBehavior: Clip.none,
-      children: [
-        Positioned(
-          left: x,
-          top: y,
-          child: BeuiChartTooltip(
-            open: active != null,
-            onOpenChange: (open) {
-              if (!open) state.setActiveId(null);
-            },
-            content: target != null
-                ? _fanTargetCard(context, state, target)
-                : point != null
-                ? SizedBox(
-                    width: 126,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        _mutedTooltipTitle(context, _scrubDate(point.date)),
-                        const SizedBox(height: 6),
-                        _priceMetric(context, point.price),
-                      ],
-                    ),
-                  )
-                : const SizedBox.shrink(),
-            child: const SizedBox(width: 1, height: 1),
+    final data = target != null
+        ? BeuiPriceTargetFanTooltipData(
+            title:
+                '${target.key} target${state.widget.dates.horizon == null ? '' : ' · ${state.widget.dates.horizon}'}',
+            anchor: Offset(x, y),
+            metrics: [
+              BeuiPriceTargetFanTooltipMetric(
+                label: 'Price',
+                value: _formatFanPrice(target.price),
+              ),
+              BeuiPriceTargetFanTooltipMetric(
+                label: 'Analysts',
+                value: '${target.analysts}',
+              ),
+            ],
+            accent: BeuiPriceTargetFanTooltipAccent(
+              label: 'vs now',
+              value: beuiChartSignedPercent(
+                (target.price / state.widget.current - 1) * 100,
+              ),
+              color:
+                  target.color ??
+                  switch (state.widget.targets.indexOf(target)) {
+                    0 => 'var(--success)',
+                    2 => 'var(--warning)',
+                    _ => 'var(--accent)',
+                  },
+            ),
+          )
+        : point != null
+        ? BeuiPriceTargetFanTooltipData(
+            title: _scrubDate(point.date),
+            anchor: Offset(x, y),
+            metrics: [
+              BeuiPriceTargetFanTooltipMetric(
+                label: 'Price',
+                value: _formatFanPrice(point.price),
+              ),
+            ],
+          )
+        : null;
+    return SizedBox(
+      width: 520,
+      height: 236,
+      child: Stack(
+        clipBehavior: Clip.none,
+        children: [
+          Positioned(
+            left: x,
+            top: y,
+            child: BeuiChartTooltip(
+              open: active != null,
+              onOpenChange: (open) {
+                if (!open) state.setActiveId(null);
+              },
+              content:
+                  (data == null
+                      ? child
+                      : contentBuilder?.call(data) ?? child) ??
+                  (target != null
+                      ? _fanTargetCard(context, state, target)
+                      : point != null
+                      ? SizedBox(
+                          width: 126,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              _mutedTooltipTitle(
+                                context,
+                                _scrubDate(point.date),
+                              ),
+                              const SizedBox(height: 6),
+                              _priceMetric(context, point.price),
+                            ],
+                          ),
+                        )
+                      : const SizedBox.shrink()),
+              child: const SizedBox(width: 1, height: 1),
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }
@@ -1093,6 +1339,12 @@ String _scrubDate(String iso) {
   const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
   return '${days[date.weekday - 1]}, ${_months[date.month - 1]} ${date.day}';
 }
+
+String _formatFanPrice(double price) => '\$${price.toStringAsFixed(2)}';
+
+String _formatTargetPrice(double price) => price == price.roundToDouble()
+    ? price.toStringAsFixed(0)
+    : price.toString();
 
 const _months = [
   'Jan',
@@ -1108,6 +1360,25 @@ const _months = [
   'Nov',
   'Dec',
 ];
+
+DateTime? _tryHistoryDate(String iso) {
+  try {
+    final date = RegExp(r'^(\d{4})-(\d{2})-(\d{2})').firstMatch(iso);
+    if (date == null) return null;
+    final year = int.parse(date.group(1)!);
+    final month = int.parse(date.group(2)!);
+    final day = int.parse(date.group(3)!);
+    final calendarDate = DateTime.utc(year, month, day);
+    if (calendarDate.year != year ||
+        calendarDate.month != month ||
+        calendarDate.day != day) {
+      return null;
+    }
+    return _historyDate(iso);
+  } on FormatException {
+    return null;
+  }
+}
 
 DateTime _historyDate(String iso) =>
     DateTime.parse(iso.length == 10 ? '${iso}T00:00:00Z' : iso).toUtc();
@@ -1140,7 +1411,11 @@ Widget _fanTargetCard(
           beuiChartSignedPercent(
             (target.price / state.widget.current - 1) * 100,
           ),
-          valueColor: _targetColor(state, target, BeuiColors.resolve(context)),
+          valueColor: _targetInkColor(
+            state,
+            target,
+            BeuiColors.resolve(context),
+          ),
         ),
       ],
     ),
@@ -1183,7 +1458,8 @@ Widget _metricRow(
         style: TextStyle(
           color: valueColor ?? foreground,
           fontSize: 12,
-          fontFamily: 'monospace',
+          fontFamily: const BeuiTextTheme().monoFamily,
+          fontFamilyFallback: const BeuiTextTheme().monoFamilyFallback,
           fontFeatures: const [FontFeature.tabularFigures()],
           fontWeight: FontWeight.w400,
         ),
@@ -1196,15 +1472,176 @@ Color _targetColor(
   _BeuiPriceTargetFanState state,
   BeuiPriceTarget target,
   BeuiColors colors,
-) => beuiChartColor(
-  target.color,
-  colors,
-  fallback: target.key.toLowerCase() == 'high'
-      ? colors.success
-      : target.key.toLowerCase() == 'low'
-      ? colors.warning
-      : colors.accent,
-);
+) {
+  final index = state.widget.targets.indexWhere(
+    (item) => item.key == target.key,
+  );
+  final fallback = switch (index) {
+    0 => colors.success,
+    1 => colors.accent,
+    2 => colors.warning,
+    _ => colors.accent,
+  };
+  return beuiChartColor(target.color, colors, fallback: fallback);
+}
+
+Color _targetInkColor(
+  _BeuiPriceTargetFanState state,
+  BeuiPriceTarget target,
+  BeuiColors colors,
+) {
+  final explicit = target.color?.trim();
+  if (explicit == null || explicit.isEmpty) {
+    final index = state.widget.targets.indexWhere(
+      (item) => item.key == target.key,
+    );
+    return _sourceTokenInk(switch (index) {
+      0 => 'success',
+      1 => 'accent',
+      2 => 'warning',
+      _ => 'accent',
+    }, colors);
+  }
+  final role = switch (explicit) {
+    'var(--success)' => 'success',
+    'var(--accent)' => 'accent',
+    'var(--warning)' => 'warning',
+    'var(--destructive)' || 'var(--danger)' => 'destructive',
+    _ => null,
+  };
+  return role == null
+      ? _targetLiteralInkColor(
+          explicit,
+          _targetColor(state, target, colors),
+          colors,
+        )
+      : _sourceTokenInk(role, colors);
+}
+
+Color _targetLiteralInkColor(String css, Color raw, BeuiColors colors) {
+  if (css.startsWith('var(') ||
+      css.toLowerCase() == 'currentcolor' ||
+      raw.a == 0) {
+    return raw;
+  }
+  final hex = RegExp(
+    r'^#(?:[\da-f]{3,4}|[\da-f]{6}|[\da-f]{8})$',
+    caseSensitive: false,
+  );
+  final supportedBySharedParser =
+      beuiChartColor(css, colors, fallback: const Color(0x01000000)) !=
+      const Color(0x01000000);
+  final isLiteral = hex.hasMatch(css) || supportedBySharedParser;
+  return isLiteral ? _inkSrgbLiteral(raw, colors.brightness) : raw;
+}
+
+Color _inkSrgbLiteral(Color color, Brightness brightness) {
+  if (brightness == Brightness.dark) return color;
+  double linear(double channel) => channel <= .04045
+      ? channel / 12.92
+      : math.pow((channel + .055) / 1.055, 2.4).toDouble();
+  double cubeRoot(double value) => value < 0
+      ? -math.pow(-value, 1 / 3).toDouble()
+      : math.pow(value, 1 / 3).toDouble();
+
+  final red = linear(color.r);
+  final green = linear(color.g);
+  final blue = linear(color.b);
+  final l = cubeRoot(
+    .4122214708 * red + .5363325363 * green + .0514459929 * blue,
+  );
+  final m = cubeRoot(
+    .2119034982 * red + .6806995451 * green + .1073969566 * blue,
+  );
+  final s = cubeRoot(
+    .0883024619 * red + .2817188376 * green + .6299787005 * blue,
+  );
+  final lightness = .2104542553 * l + .793617785 * m - .0040720468 * s;
+  final a = 1.9779984951 * l - 2.428592205 * m + .4505937099 * s;
+  final b = .0259040371 * l + .7827717662 * m - .808675766 * s;
+  return _oklchColor(
+    math.min(lightness, .5),
+    math.sqrt(a * a + b * b),
+    math.atan2(b, a) * 180 / math.pi,
+    alpha: color.a,
+  );
+}
+
+/// Applies the source chart's relative-OKLCH ink cap to source-owned palette
+/// inputs. Geometry deliberately continues to consume `_targetColor` unchanged.
+/// Inputs come from pinned `lib/theme-css.ts` and theme literals, not by
+/// reversing BeuiColors' already-clipped and quantized sRGB output.
+Color _sourceTokenInk(String role, BeuiColors colors) {
+  final sourcePalette = BeuiColors.of(
+    BeuiColorTheme.defaultMono,
+    colors.brightness,
+  );
+  final sourceValue = switch (role) {
+    'success' => sourcePalette.success,
+    'warning' => sourcePalette.warning,
+    'destructive' => sourcePalette.destructive,
+    _ => sourcePalette.accent,
+  };
+  final currentValue = switch (role) {
+    'success' => colors.success,
+    'warning' => colors.warning,
+    'destructive' => colors.destructive,
+    _ => colors.accent,
+  };
+  if (currentValue != sourceValue) return currentValue;
+  if (colors.brightness == Brightness.dark) {
+    return switch (role) {
+      'success' => colors.success,
+      'warning' => colors.warning,
+      'destructive' => colors.destructive,
+      _ => colors.accent,
+    };
+  }
+  if (role == 'success') return _oklchColor(.5, .18, 155);
+  if (role == 'warning') return _oklchColor(.5, .18, 75);
+  if (role == 'destructive') return _oklchColor(.5, .22, 25);
+  if (role == 'accent' && colors.colorTheme == BeuiColorTheme.defaultMono) {
+    // Pinned generic source CSS: --accent is oklch(72% 0.18 195) in light.
+    return _oklchColor(.5, .18, 195);
+  }
+  // Colored Beui themes act like consumer-level CSS overrides; the pinned
+  // generic CSS does not establish their effective source --accent values.
+  return colors.accent;
+}
+
+Color _oklchColor(
+  double lightness,
+  double chroma,
+  double hue, {
+  double alpha = 1,
+}) {
+  final radians = hue * math.pi / 180;
+  final a = chroma * math.cos(radians);
+  final b = chroma * math.sin(radians);
+  final l1 = lightness + .3963377774 * a + .2158037573 * b;
+  final m1 = lightness - .1055613458 * a - .0638541728 * b;
+  final s1 = lightness - .0894841775 * a - 1.291485548 * b;
+  final l = l1 * l1 * l1;
+  final m = m1 * m1 * m1;
+  final s = s1 * s1 * s1;
+  final red = 4.0767416621 * l - 3.3077115913 * m + .2309699292 * s;
+  final green = -1.2684380046 * l + 2.6097574011 * m - .3413193965 * s;
+  final blue = -.0041960863 * l - .7034186147 * m + 1.707614701 * s;
+  int channel(double linear) {
+    final clipped = linear.clamp(0.0, 1.0);
+    final encoded = clipped <= .0031308
+        ? 12.92 * clipped
+        : 1.055 * math.pow(clipped, 1 / 2.4) - .055;
+    return (encoded * 255).round().clamp(0, 255);
+  }
+
+  return Color.fromARGB(
+    (alpha * 255).round().clamp(0, 255),
+    channel(red),
+    channel(green),
+    channel(blue),
+  );
+}
 
 class _PriceAxesPainter extends CustomPainter {
   _PriceAxesPainter(this.state, this.colors) : widget = state.widget;
@@ -1299,23 +1736,13 @@ class _PriceHistoryPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     if (state.widget.history.isEmpty) return;
-    final path = Path();
-    for (var i = 0; i < state.widget.history.length; i++) {
-      final p = state.widget.history[i];
-      final point = Offset(state._historyX(i), state._y(p.price));
-      if (i == 0) {
-        path.moveTo(point.dx, point.dy);
-      } else {
-        path.lineTo(point.dx, point.dy);
-      }
-    }
-    path.lineTo(state._nowX, state._y(state.widget.current));
+    final path = _historyPath(state);
     final metric = path.computeMetrics().first;
     canvas.drawPath(
       metric.extractPath(0, metric.length * reveal),
       Paint()
         ..color = colors.foreground
-        ..strokeWidth = 1.6
+        ..strokeWidth = 1.5
         ..style = PaintingStyle.stroke
         ..strokeCap = StrokeCap.round
         ..strokeJoin = StrokeJoin.round,
@@ -1327,6 +1754,23 @@ class _PriceHistoryPainter extends CustomPainter {
       oldDelegate.widget != widget ||
       oldDelegate.colors != colors ||
       oldDelegate.reveal != reveal;
+}
+
+Path _historyPath(_BeuiPriceTargetFanState state) {
+  final path = Path();
+  for (var index = 0; index < state.widget.history.length; index++) {
+    final point = state.widget.history[index];
+    final position = Offset(state._historyX(index), state._y(point.price));
+    if (index == 0) {
+      path.moveTo(position.dx, position.dy);
+    } else {
+      path.lineTo(position.dx, position.dy);
+    }
+  }
+  if (state.widget.history.isNotEmpty) {
+    path.lineTo(state._nowX, state._y(state.widget.current));
+  }
+  return path;
 }
 
 class _PriceTargetsPainter extends CustomPainter {
@@ -1541,7 +1985,8 @@ void _drawText(
       style: TextStyle(
         color: color,
         fontSize: fontSize,
-        fontFamily: 'monospace',
+        fontFamily: const BeuiTextTheme().monoFamily,
+        fontFamilyFallback: const BeuiTextTheme().monoFamilyFallback,
       ),
     ),
     textDirection: TextDirection.ltr,
@@ -1549,3 +1994,27 @@ void _drawText(
   )..layout(minWidth: width, maxWidth: width);
   painter.paint(canvas, offset);
 }
+
+/// Source-aligned name for [BeuiPriceTargetHeader].
+typedef BeuiPriceTargetFanHeader = BeuiPriceTargetHeader;
+
+/// Source-aligned name for [BeuiPriceTargetPlot].
+typedef BeuiPriceTargetFanPlot = BeuiPriceTargetPlot;
+
+/// Source-aligned name for [BeuiPriceTargetSvg].
+typedef BeuiPriceTargetFanSvg = BeuiPriceTargetSvg;
+
+/// Source-aligned name for [BeuiPriceTargetAxes].
+typedef BeuiPriceTargetFanAxes = BeuiPriceTargetAxes;
+
+/// Source-aligned name for [BeuiPriceTargetTargets].
+typedef BeuiPriceTargetFanTargets = BeuiPriceTargetTargets;
+
+/// Source-aligned name for [BeuiPriceTargetNow].
+typedef BeuiPriceTargetFanNow = BeuiPriceTargetNow;
+
+/// Source-aligned name for [BeuiPriceTargetCursor].
+typedef BeuiPriceTargetFanCursor = BeuiPriceTargetCursor;
+
+/// Source-aligned name for [BeuiPriceTargetTooltip].
+typedef BeuiPriceTargetFanTooltip = BeuiPriceTargetTooltip;
